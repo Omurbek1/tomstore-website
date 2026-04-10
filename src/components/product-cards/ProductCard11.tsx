@@ -7,6 +7,7 @@ import FlexBox from "@component/FlexBox";
 import NextImage from "@component/NextImage";
 import { H6, SemiSpan, Small } from "@component/Typography";
 import { calculateDiscount, currency } from "@utils/utils";
+import { useLocale } from "next-intl";
 
 // STYLED COMPONENT
 const StyledProductCard = styled.div`
@@ -46,10 +47,11 @@ type ProductCard11Props = {
 // ===================================================
 
 export default function ProductCard11(props: ProductCard11Props) {
+    const locale = useLocale();
   const { title, imgUrl, price, rating, slug, off = 0 } = props;
 
   return (
-    <Link href={`/product/${slug}`}>
+    <Link href={`/${locale}/product/${slug}`}>
       <StyledProductCard>
         <Box mb="1rem" className="image-holder">
           <NextImage src={imgUrl} width={150} height={150} alt="bonik" />

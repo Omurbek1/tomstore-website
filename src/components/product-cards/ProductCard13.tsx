@@ -14,6 +14,7 @@ import { Button } from "@component/buttons";
 import { H3, Paragraph, Span } from "@component/Typography";
 import { calculateDiscount, currency } from "@utils/utils";
 import useCart from "@hook/useCart";
+import { useLocale } from "next-intl";
 
 // STYLED COMPONENTS
 const StyledCard = styled("div")(({ theme }) => ({
@@ -132,6 +133,7 @@ export default function ProductCard13({
   rating,
   productColors
 }: Props) {
+    const locale = useLocale();
   const { state, dispatch } = useCart();
   const cartItem = state.cart.find((item) => item.slug === slug);
 
@@ -147,7 +149,7 @@ export default function ProductCard13({
 
   return (
     <StyledCard>
-      <Link href={`/product/${slug}`}>
+      <Link href={`/${locale}/product/${slug}`}>
         <ImgBox id="imgBox">
           {status && (
             <StatusChipBox>
@@ -181,7 +183,7 @@ export default function ProductCard13({
       <ContentWrapper>
         <FlexBox>
           <Box flex="1 1 0" minWidth="0px" mr={1}>
-            <Link href={`/product/${slug}`}>
+            <Link href={`/${locale}/product/${slug}`}>
               <H3
                 mb={1}
                 title={title}

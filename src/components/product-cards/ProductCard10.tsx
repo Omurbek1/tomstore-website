@@ -16,6 +16,7 @@ import { Button, IconButton } from "@component/buttons";
 import ProductQuickView from "@component/products/ProductQuickView";
 import useCart from "@hook/useCart";
 import { calculateDiscount, currency } from "@utils/utils";
+import { useLocale } from "next-intl";
 
 // STYLED COMPONENT
 const Wrapper = styled(Card)`
@@ -127,6 +128,7 @@ export default function ProductCard10({
   imgUrl,
   images
 }: ProductCard10Props) {
+    const locale = useLocale();
   const { state, dispatch } = useCart();
   const [open, setOpen] = useState(false);
   const [discountPrice, setDiscountPrice] = useState<string>("");
@@ -178,7 +180,7 @@ export default function ProductCard10({
           </IconButton>
         </FlexBox>
 
-        <Link href={`/product/${slug}`}>
+        <Link href={`/${locale}/product/${slug}`}>
           <NextImage src={imgUrl} width={100} height={100} alt={title} />
         </Link>
       </div>
@@ -186,7 +188,7 @@ export default function ProductCard10({
       <div className="details">
         <FlexBox>
           <Box flex="1 1 0" minWidth="0px" mr="0.5rem">
-            <Link href={`/product/${slug}`}>
+            <Link href={`/${locale}/product/${slug}`}>
               <H3
                 mb="6px"
                 title={title}

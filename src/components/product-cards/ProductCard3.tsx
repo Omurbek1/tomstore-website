@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.colors.body.default};
 
   &:hover {
-    box-shadow: ${({ theme }) => theme.shadows.regular};
+    box-shadow: ${({ theme }) => theme?.shadows?.regular || "0 1px 4px rgba(0, 0, 0, 0.12)"};
     .details {
       .add-cart {
         display: flex;

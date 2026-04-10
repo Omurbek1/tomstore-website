@@ -1,4 +1,8 @@
 {
+  "LocaleLayout": {
+    "title": "TomStore — Ноутбуки, принтеры, ПК и электроника в Бишкеке",
+    "description": "Магазин электроники. В наличии, гарантия, рассрочка, доставка."
+  },
   "nav": {
     "categories": "Категории",
     "recommendedCategories": "Рекомендуемые категории",
@@ -100,5 +104,14 @@
     "msi": "MSI",
     "epson": "Epson",
     "canon": "Canon"
+  },
+  "topbar": {
+    "themeFaq": "FAQ",
+    "needHelp": "Нужна помощь?",
+    "switchLanguage": "Сменить язык",
+    "languages": {
+      "ru": "Русский",
+      "en": "English"
+    }
   }
 }

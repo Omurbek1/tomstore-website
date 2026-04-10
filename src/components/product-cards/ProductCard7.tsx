@@ -14,6 +14,7 @@ import Typography from "@component/Typography";
 import { IconButton } from "@component/buttons";
 
 import { currency, isValidProp } from "@utils/utils";
+import { useLocale } from "next-intl";
 
 // STYLED COMPONENTS
 const Wrapper = styled.div.withConfig({
@@ -66,6 +67,7 @@ export default function ProductCard7({
   ...others
 }: ProductCard7Props) {
   const { dispatch } = useCart();
+  const locale = useLocale();
 
   const handleCartAmountChange = (amount: number) => () => {
     dispatch({
@@ -89,7 +91,7 @@ export default function ProductCard7({
         flexDirection="column"
         className="product-details"
         justifyContent="space-between">
-        <Link href={`/product/${slug}`}>
+        <Link href={`/${locale}/product/${slug}`}>
           <Typography className="title" fontWeight="500" fontSize="18px" mb="0.5rem">
             {name}
           </Typography>

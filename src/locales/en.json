@@ -1,4 +1,8 @@
 {
+  "LocaleLayout": {
+    "title": "TomStore — Laptops, Printers, PCs & Electronics in Bishkek",
+    "description": "Electronics store. In stock, warranty, installment and delivery."
+  },
   "nav": {
     "categories": "Categories",
     "recommendedCategories": "Recommended Categories",
@@ -100,5 +104,14 @@
     "msi": "MSI",
     "epson": "Epson",
     "canon": "Canon"
+  },
+  "topbar": {
+    "themeFaq": "FAQ",
+    "needHelp": "Need Help?",
+    "switchLanguage": "Change language",
+    "languages": {
+      "ru": "Русский",
+      "en": "English"
+    }
   }
 }

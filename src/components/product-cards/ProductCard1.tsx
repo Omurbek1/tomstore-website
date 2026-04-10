@@ -19,6 +19,7 @@ import ProductQuickView from "@component/products/ProductQuickView";
 
 import { calculateDiscount, currency } from "@utils/utils";
 import { deviceSize } from "@utils/constants";
+import { useLocale } from "next-intl";
 
 // STYLED COMPONENT
 const Wrapper = styled(Card)`
@@ -132,6 +133,7 @@ export default function ProductCard1({
   ...props
 }: ProductCard1Props) {
   const theme = useTheme();
+    const locale = useLocale();
   const { state, dispatch } = useCart();
   const [open, setOpen] = useState(false);
   const cartItem = state.cart.find((item) => item.id === id);
@@ -189,7 +191,7 @@ export default function ProductCard1({
             </IconButton>
           </FlexBox>
 
-          <Link href={`/product/${slug}`}>
+          <Link href={`/${locale}/product/${slug}`}>
             <NextImage alt={title} width={277} src={imgUrl} height={270} />
           </Link>
         </div>
@@ -197,7 +199,7 @@ export default function ProductCard1({
         <div className="details">
           <FlexBox>
             <Box flex="1 1 0" minWidth="0px" mr="0.5rem">
-              <Link href={`/product/${slug}`}>
+              <Link href={`/${locale}/product/${slug}`}>
                 <H3
                   mb="10px"
                   title={title}

@@ -1,7 +1,7 @@
 "use client";
 
 import { ComponentPropsWithRef } from "react";
-import { SpaceProps, ColorProps, LayoutProps, BorderProps, BackgroundProps } from "styled-system";
+import { SpaceProps, LayoutProps, BorderProps, BackgroundProps } from "styled-system";
 import { colorOptions } from "interfaces";
 import { StyledButton } from "./styles";
 
@@ -16,8 +16,7 @@ interface ButtonBaseProps {
   variant?: ButtonVariant;
 }
 
-export type StyledButtonProps = ColorProps &
-  BackgroundProps &
+export type StyledButtonProps = BackgroundProps &
   BorderProps &
   SpaceProps &
   LayoutProps &

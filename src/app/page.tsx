@@ -1,11 +1,6 @@
-import AppLayout from "@component/layout/layout-1";
-import Navbar from "@component/navbar/Navbar";
-import HomePage from "@sections/home/HomePage";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <AppLayout navbar={<Navbar navListOpen />}>
-      <HomePage />
-    </AppLayout>
-  );
+// This page only renders when the app is built statically (output: 'export')
+export default function RootPage() {
+  redirect("/ru");
 }

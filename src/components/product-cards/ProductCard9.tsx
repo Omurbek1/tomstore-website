@@ -18,6 +18,7 @@ import { H5, SemiSpan } from "../Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
 import useCart from "@hook/useCart";
 import { calculateDiscount, currency } from "@utils/utils";
+import { useLocale } from "next-intl";
 
 // STYLED COMPONENT
 const Wrapper = styled(Card)`
@@ -121,6 +122,7 @@ export default function ProductCard9({
   categories,
   ...props
 }: ProductCard9Props) {
+    const locale = useLocale();
   const [open, setOpen] = useState(false);
   const { state, dispatch } = useCart();
   const cartItem = state.cart.find((item) => item.id === id);
@@ -175,7 +177,7 @@ export default function ProductCard9({
               </div>
             )}
 
-            <Link href={`/product/${slug}`}>
+            <Link href={`/${locale}/product/${slug}`}>
               <H5 fontWeight="600" my="0.5rem">
                 {title}
               </H5>
@@ -185,10 +187,10 @@ export default function ProductCard9({
 
             <FlexBox mt="0.5rem" mb="1rem" alignItems="center">
               <H5 fontWeight={600} color="primary.main" mr="0.5rem">
-                {calculateDiscount(price, off as number)}
+                {calculateDiscount(price, off ?? 0)}
               </H5>
 
-              {off > 0 && (
+              {(off ?? 0) > 0 && (
                 <SemiSpan fontWeight="600">
                   <del>{currency(price)}</del>
                 </SemiSpan>

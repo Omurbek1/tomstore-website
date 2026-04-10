@@ -25,7 +25,7 @@ export const StyledCategory = styled.div.withConfig({
 `;
 
 export const StyledCategoryDropdown = styled.div.withConfig({
-  shouldForwardProp: isValidProp
+  shouldForwardProp: isValidProp,
 })<CategoryDropdownProps>`
   left: 0;
   right: auto;
@@ -36,7 +36,7 @@ export const StyledCategoryDropdown = styled.div.withConfig({
   transform: ${({ open }) => (open ? "scaleY(1)" : "scaleY(0)")};
   top: ${({ position }) => (position === "absolute" ? "calc(100% + 0.7rem)" : "0.5rem")};
   background-color: ${({ theme }) => theme.colors.body.paper};
-  box-shadow: ${({ theme }) => theme.shadows.regular};
+  box-shadow: ${({ theme }) => theme?.shadows?.regular || "0 1px 4px rgba(0, 0, 0, 0.12)"};
   transition: all 250ms ease-in-out;
   z-index: 98;
 `;

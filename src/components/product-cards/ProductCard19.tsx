@@ -15,6 +15,7 @@ import { H4, Paragraph, Small } from "@component/Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
 import useCart from "@hook/useCart";
 import { currency } from "@utils/utils";
+import { useLocale } from "next-intl";
 
 // styled components
 const CardBox = styled(Box)(({ theme }) => ({
@@ -75,6 +76,7 @@ export default function ProductCard19({
   images,
   reviews
 }: ProductCard19Props) {
+    const locale = useLocale();
   const theme = useTheme();
   const { state, dispatch } = useCart();
   const [openDialog, setOpenDialog] = useState(false);
@@ -103,7 +105,7 @@ export default function ProductCard19({
     <Fragment>
       <CardBox height="100%">
         <CardMedia>
-          <Link href={`/product/${slug}`}>
+          <Link href={`/${locale}/product/${slug}`}>
             <NextImage src={img} width={300} height={300} alt="category" className="product-img" />
           </Link>
 

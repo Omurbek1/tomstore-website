@@ -13,6 +13,7 @@ import { H3, Paragraph, Span } from "@component/Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
 import { calculateDiscount, currency } from "@utils/utils";
 import useCart from "@hook/useCart";
+import { useLocale } from "next-intl";
 
 // STYLED COMPONENTS
 const StyledCard = styled("div")(({ theme }) => ({
@@ -111,6 +112,7 @@ export default function ProductCard15({
   rating,
   images
 }: Props) {
+    const locale = useLocale();
   const [open, setOpen] = useState(false);
   const { state, dispatch } = useCart();
 
@@ -136,7 +138,7 @@ export default function ProductCard15({
       <ImgBox id="imgBox">
         {off !== 0 && <StyledChip color="primary">{off}% off</StyledChip>}
 
-        <Link href={`/product/${slug}`}>
+        <Link href={`/${locale}/product/${slug}`}>
           <LazyImage
             src={imgUrl}
             width={200}
@@ -184,7 +186,7 @@ export default function ProductCard15({
           )}
         </FlexBox>
 
-        <Link href={`/product/${slug}`}>
+        <Link href={`/${locale}/product/${slug}`}>
           <H3
             my=".5rem"
             title={title}

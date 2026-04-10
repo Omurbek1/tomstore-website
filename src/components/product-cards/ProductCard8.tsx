@@ -6,6 +6,7 @@ import HoverBox from "@component/HoverBox";
 import NextImage from "@component/NextImage";
 import { H6, SemiSpan } from "@component/Typography";
 import { calculateDiscount, currency } from "@utils/utils";
+import { useLocale } from "next-intl";
 
 // ==============================================================
 type ProductCard8Props = {
@@ -28,9 +29,11 @@ export default function ProductCard8({
   imgUrl,
   ...props
 }: ProductCard8Props) {
+    const locale = useLocale();
+    
   return (
     <Card p="1rem" borderRadius={12} {...props}>
-      <Link href={`/product/${slug}`}>
+      <Link href={`/${locale}/product/${slug}`}>
         <HoverBox mb="0.75rem" borderRadius={8} overflow="hidden">
           <NextImage
             src={imgUrl || "/assets/images/products/Rectangle 116.png"}

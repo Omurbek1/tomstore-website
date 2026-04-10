@@ -15,6 +15,7 @@ import NextImage from "@component/NextImage";
 import { H3, Paragraph, Span } from "@component/Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
 import { calculateDiscount, currency } from "@utils/utils";
+import { useLocale } from "next-intl";
 
 // STYLED COMPONENTS
 const Wrapper = styled("div")`
@@ -122,6 +123,7 @@ export default function ProductCard12({
   rating,
   images
 }: ProductCard12Props) {
+    const locale = useLocale();
   const [open, setOpen] = useState(false);
   const { state, dispatch } = useCart();
 
@@ -165,7 +167,7 @@ export default function ProductCard12({
         )}
 
         <ImageBox className="hoverImgBox">
-          <Link href={`/product/${slug}`}>
+          <Link href={`/${locale}/product/${slug}`}>
             <NextImage alt={title} width={190} height={190} src={imgUrl} />
           </Link>
         </ImageBox>

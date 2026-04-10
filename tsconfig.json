@@ -1,12 +1,9 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "baseUrl": "src",
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -25,44 +22,24 @@
       }
     ],
     "paths": {
-      "@lib/*": [
-        "lib/*"
-      ],
-      "@data/*": [
-        "data/*"
-      ],
-      "@hook/*": [
-        "hooks/*"
-      ],
-      "@utils/*": [
-        "utils/*"
-      ],
-      "@context/*": [
-        "contexts/*"
-      ],
-      "@reducer/*": [
-        "reducers/*"
-      ],
-      "@component/*": [
-        "components/*"
-      ],
-      "@sections/*": [
-        "page-sections/*"
-      ],
-      "@models/*": [
-        "models/*"
-      ]
+      "@lib/*": ["lib/*"],
+      "@data/*": ["data/*"],
+      "@hook/*": ["hooks/*"],
+      "@utils/*": ["utils/*"],
+      "@context/*": ["contexts/*"],
+      "@reducer/*": ["reducers/*"],
+      "@component/*": ["components/*"],
+      "@sections/*": ["page-sections/*"],
+      "@models/*": ["models/*"],
+      "@types/*": ["types/*"],
+      "@assets/*": ["assets/*"],
+      "i18n/*": ["i18n/*"],
+      "@pages/*": ["pages/*"],
+      "@layouts/*": ["layouts/*"],
+      "@locales/*": ["locales/*"]
     },
     "strictNullChecks": true
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "./src/components/icon/Icon.tsx"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", "./src/components/icon/Icon.tsx"]
 }

@@ -1,4 +1,13 @@
-import { ReactElement, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { CSSProperties } from "styled-components";
 import { AnimatePresence, motion } from "motion/react";
 // STYLED COMPONENT
@@ -10,7 +19,9 @@ interface MenuProps {
   style?: CSSProperties;
   direction?: "left" | "right";
   children: ReactElement | ReactElement[];
-  handler: (handleOpen: (e: React.MouseEvent<HTMLElement>) => void) => ReactNode;
+  handler:
+    | ReactElement<{ onClick?: (e: React.MouseEvent<HTMLElement>) => void }>
+    | ((handleOpen: (e: React.MouseEvent<HTMLElement>) => void) => ReactNode);
 }
 // ============================================
 
@@ -43,9 +54,21 @@ export default function Menu({
     return () => window.removeEventListener("click", handleDocumentClick);
   }, []);
 
+  const renderedHandler =
+    typeof handler === "function"
+      ? handler(togglePopover)
+      : isValidElement<{ onClick?: (e: React.MouseEvent<HTMLElement>) => void }>(handler)
+        ? cloneElement(handler, {
+            onClick: (e: React.MouseEvent<HTMLElement>) => {
+              handler.props.onClick?.(e);
+              togglePopover(e);
+            }
+          })
+        : handler;
+
   return (
     <StyledMenu direction={direction} className={className} style={style}>
-      {handler(togglePopover)}
+      {renderedHandler}
 
       <AnimatePresence>
         {show && (
