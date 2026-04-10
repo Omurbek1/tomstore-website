@@ -1,11 +1,11 @@
-import Box from "@component/Box";
-import Market1 from "./market-1/page";
-// PAGE SECTION COMPONENTS
+import AppLayout from "@component/layout/layout-1";
+import Navbar from "@component/navbar/Navbar";
+import HomePage from "@sections/home/HomePage";
 
 export default function Home() {
   return (
-    <Box id="top" overflow="hidden" bg="gray.white">
-      <Market1 />
-    </Box>
+    <AppLayout navbar={<Navbar navListOpen />}>
+      <HomePage />
+    </AppLayout>
   );
 }
