@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Fragment, useEffect, useState } from "react";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 // GLOBAL CUSTOM COMPONENTS
 import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
@@ -20,6 +21,8 @@ import { MobileCategoryNavStyle } from "./styles";
 import MobileCategoryImageBox from "./MobileCategoryImageBox";
 
 import navigations from "@data/navigations";
+import type { LocalizedNavigationItem } from "@data/types";
+import localizeNavigations from "@utils/localizeNavigations";
 
 // ==============================================================
 interface Suggestion {
@@ -30,22 +33,30 @@ interface Suggestion {
 // ==============================================================
 
 export default function MobileCategoryNav() {
+  const t = useTranslations();
   const width = useWindowSize();
-  const [category, setCategory] = useState<any>(navigations[0]);
+  const localizedNavigations = localizeNavigations(navigations, t);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(localizedNavigations[0]?.id || "");
   const [suggestedList, setSuggestedList] = useState<Suggestion[]>([]);
-  const [subCategoryList, setSubCategoryList] = useState<any[]>([]);
-
-  const handleCategoryClick = (cat: any) => () => {
-    let menuData = cat.menuData;
-    if (menuData) setSubCategoryList(menuData.categories || menuData);
-    else setSubCategoryList([]);
-    setCategory(cat);
-  };
 
   useEffect(() => setSuggestedList(suggestion), []);
+  useEffect(() => {
+    if (!localizedNavigations.length) return;
+    if (!localizedNavigations.some((item) => item.id === selectedCategoryId)) {
+      setSelectedCategoryId(localizedNavigations[0].id);
+    }
+  }, [localizedNavigations, selectedCategoryId]);
+
+  const category =
+    localizedNavigations.find((item) => item.id === selectedCategoryId) || localizedNavigations[0];
+  const subCategoryList = category?.menuData?.categories || [];
+
+  const handleCategoryClick = (cat: LocalizedNavigationItem) => () => {
+    setSelectedCategoryId(cat.id);
+  };
 
   // HIDDEN IN LARGE DEVICE
-  if (width > 900) return null;
+  if (typeof width === "number" && width > 900) return null;
 
   return (
     <MobileCategoryNavStyle>
@@ -53,10 +64,10 @@ export default function MobileCategoryNav() {
 
       <div className="main-category-holder">
         <Scrollbar>
-          {navigations.map((item) => (
+          {localizedNavigations.map((item) => (
             <div
-              key={item.title}
-              className={clsx({ "main-category-box": true, active: category?.href === item.href })}
+              key={item.id}
+              className={clsx({ "main-category-box": true, active: category?.id === item.id })}
               onClick={handleCategoryClick(item)}
               // borderLeft={`${category?.href === item.href ? "3" : "0"}px solid`}
             >
@@ -74,7 +85,7 @@ export default function MobileCategoryNav() {
 
       <div className="container">
         <Typography fontWeight="600" fontSize="15px" mb="1rem">
-          Recommended Categories
+          {t("nav.recommendedCategories")}
         </Typography>
 
         <Box mb="2rem">
@@ -91,7 +102,7 @@ export default function MobileCategoryNav() {
 
         {category?.menuComponent === "MegaMenu1" ? (
           subCategoryList.map((item, ind) => (
-            <Fragment key={ind}>
+            <Fragment key={item.href || item.title || ind}>
               <Divider />
               <Accordion>
                 <AccordionHeader px="0px" py="10px">
@@ -102,7 +113,7 @@ export default function MobileCategoryNav() {
 
                 <Box mb="2rem" mt="0.5rem">
                   <Grid container spacing={3}>
-                    {item.subCategories?.map((item: any, ind: number) => (
+                    {item.subCategories?.map((item, ind: number) => (
                       <Grid item lg={1} md={2} sm={3} xs={4} key={ind}>
                         <Link href="/product/search/423423">
                           <MobileCategoryImageBox {...item} />

@@ -6,4 +6,5 @@ export interface IconProps {
   color?: colorOptions;
   variant?: "small" | "medium" | "large";
   defaultColor?: "currentColor" | "auto";
+  source?: "svg" | "library";
 }

@@ -1,22 +1,5 @@
 const navbarNavigations = [
   {
-    title: "Home",
-    child: [
-      { title: "Market 1", url: "/market-1" },
-      { title: "Market 2", url: "/market-2" },
-      { title: "Fashion 1", url: "/fashion-1" },
-      { title: "Fashion 2", url: "/fashion-2" },
-      { title: "Fashion 3", url: "/fashion-3" },
-      { title: "Grocery-1", url: "/grocery-1" },
-      { title: "Grocery-2", url: "/grocery-2" },
-      { title: "Grocery-3", url: "/grocery-3" },
-      { title: "Gift Shop", url: "/gift-shop" },
-      { title: "Gadget Shop", url: "/gadget-shop" },
-      { title: "Furniture Shop", url: "/furniture-shop" },
-      { title: "Health and Beauty", url: "/health-beauty" }
-    ]
-  },
-  {
     title: "Pages",
     child: [
       {
@@ -108,13 +91,6 @@ const navbarNavigations = [
     ]
   },
   { title: "Track My Orders", url: "/orders" },
-  { title: "Back to Demos", url: "/" }
-  // {
-  //   title: "Documentation",
-  //   url:
-  //     "https://docs.google.com/document/d/13Bnyugzcty75hzi9GdbVh01YV75a7AhViZws0qGf5yo/edit?usp=sharing",
-  //   extLink: true,
-  // },
 ];
 
 export default navbarNavigations;

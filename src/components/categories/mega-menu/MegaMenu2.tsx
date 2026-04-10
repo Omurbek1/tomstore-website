@@ -10,7 +10,7 @@ export default function MegaMenu2({ data }: MegaMenu2Props) {
       <Card ml="1rem" py="0.5rem" boxShadow="regular" overflow="hidden" borderRadius={8}>
         {data?.map((item) => (
           <CategoryMenuItem
-            key={item.title}
+            key={item.href}
             href={item.href}
             icon={item.icon}
             title={item.title}

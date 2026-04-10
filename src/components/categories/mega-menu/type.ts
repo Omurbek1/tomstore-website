@@ -1,30 +1,14 @@
-type Image = { href: string; imgUrl: string };
+import type {
+  LocalizedNavCategoryGroup,
+  LocalizedNavigationImage,
+  LocalizedNavigationItem,
+  LocalizedNavigationMenuData
+} from "@data/types";
 
-type SubCategory = { href: string; title: string };
+export type MegaMenu1Props = { data: LocalizedNavigationMenuData; minWidth?: string };
 
-type Category = {
-  title: string;
-  href?: string;
-  subCategories: SubCategory[];
-};
+export type MegaMenu2Props = { data: LocalizedNavigationItem[] };
 
-type MegaMenu1 = {
-  rightImage?: Image;
-  bottomImage?: Image;
-  categories: Category[];
-};
-
-export type MegaMenu1Props = { data: MegaMenu1; minWidth?: string };
-
-type MegaMenu2 = {
-  icon: string;
-  href: string;
-  title: string;
-  menuData?: any;
-};
-
-export type MegaMenu2Props = { data: MegaMenu2[] };
-
-type MegaMenu3 = { rightImage?: Image; categories: Category[] };
+type MegaMenu3 = { rightImage?: LocalizedNavigationImage; categories: LocalizedNavCategoryGroup[] };
 
 export type MegaMenu3Props = { data: MegaMenu3; minWidth?: string };

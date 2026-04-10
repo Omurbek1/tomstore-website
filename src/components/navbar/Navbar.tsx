@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useTheme } from "styled-components";
 import { IconCategoryFilled, IconChevronDown, IconChevronRight } from "@tabler/icons-react";
 
@@ -30,6 +31,9 @@ type NavbarProps = { navListOpen?: boolean };
 // ==============================================================
 
 const NavItem = ({ nav, isRoot = false }: { nav: Nav; isRoot?: boolean }) => {
+  const href = nav.url || "/";
+  const childList = nav.child || [];
+
   const renderBadgeOrSpan = (title: string) =>
     nav.badge ? (
       <Badge style={{ marginRight: "0px" }} title={nav.badge}>
@@ -41,7 +45,7 @@ const NavItem = ({ nav, isRoot = false }: { nav: Nav; isRoot?: boolean }) => {
 
   const renderExternalLink = () => (
     <NavLink
-      href={nav.url}
+      href={href}
       key={nav.title}
       target="_blank"
       className="nav-link"
@@ -51,7 +55,7 @@ const NavItem = ({ nav, isRoot = false }: { nav: Nav; isRoot?: boolean }) => {
   );
 
   const renderInternalLink = () => (
-    <NavLink className={isRoot ? "nav-link" : ""} href={nav.url} key={nav.title}>
+    <NavLink className={isRoot ? "nav-link" : ""} href={href} key={nav.title}>
       {isRoot ? renderBadgeOrSpan(nav.title) : <MenuItem>{renderBadgeOrSpan(nav.title)}</MenuItem>}
     </NavLink>
   );
@@ -68,7 +72,7 @@ const NavItem = ({ nav, isRoot = false }: { nav: Nav; isRoot?: boolean }) => {
           {renderBadgeOrSpan(nav.title)}
           <div className="root-child">
             <Card borderRadius={8} mt="1.25rem" py="0.5rem" boxShadow="large" minWidth="230px">
-              <NestedNav list={nav.child} />
+              <NestedNav list={childList} />
             </Card>
           </div>
         </FlexBox>
@@ -84,7 +88,7 @@ const NavItem = ({ nav, isRoot = false }: { nav: Nav; isRoot?: boolean }) => {
 
         <Box className="child" pl="0.5rem">
           <Card py="0.5rem" borderRadius={8} boxShadow="large" minWidth="230px">
-            <NestedNav list={nav.child} />
+            <NestedNav list={childList} />
           </Card>
         </Box>
       </Box>
@@ -112,6 +116,7 @@ const renderNestedNav = (list: Nav[], isRoot = false) => {
 };
 
 export default function Navbar({ navListOpen }: NavbarProps) {
+  const t = useTranslations();
   const theme = useTheme();
 
   return (
@@ -134,7 +139,7 @@ export default function Navbar({ navListOpen }: NavbarProps) {
                 fontWeight="600"
                 textAlign="left"
                 color="text.muted">
-                Categories
+                {t("nav.categories")}
               </Typography>
 
               <IconChevronDown className="dropdown-icon" size={18} stroke={1.5} />

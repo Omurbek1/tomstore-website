@@ -24,8 +24,8 @@ export default function MegaMenu3({
         <FlexBox px="1.25rem" py="0.875rem">
           <Box flex="1 1 0">
             <Grid container spacing={4}>
-              {categories?.map((item, ind) => (
-                <Grid item md={3} key={ind}>
+              {categories?.map((item) => (
+                <Grid item md={3} key={item.href || item.title}>
                   {item.href ? (
                     <NavLink className="title-link" href={item.href}>
                       {item.title}
@@ -33,8 +33,8 @@ export default function MegaMenu3({
                   ) : (
                     <SemiSpan className="title-link">{item.title}</SemiSpan>
                   )}
-                  {item.subCategories?.map((sub, ind) => (
-                    <NavLink key={ind} className="child-link" href={sub.href}>
+                  {item.subCategories?.map((sub) => (
+                    <NavLink key={sub.href} className="child-link" href={sub.href}>
                       {sub.title}
                     </NavLink>
                   ))}

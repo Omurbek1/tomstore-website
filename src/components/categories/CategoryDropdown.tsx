@@ -1,6 +1,9 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import navigations from "@data/navigations";
+import localizeNavigations from "@utils/localizeNavigations";
 import MegaMenu1 from "./mega-menu/MegaMenu1";
-import MegaMenu2 from "./mega-menu/MegaMenu2";
 import CategoryMenuItem from "./CategoryMenuItem";
 import { StyledCategoryDropdown } from "./styles";
 
@@ -11,22 +14,21 @@ type CategoryDropdownProps = {
 };
 // =========================================
 
-const megaMenu = { MegaMenu1, MegaMenu2 };
-
 export default function CategoryDropdown({ open, position = "absolute" }: CategoryDropdownProps) {
+  const t = useTranslations();
+  const localizedNavigations = localizeNavigations(navigations, t);
+
   return (
     <StyledCategoryDropdown open={open} position={position}>
-      {navigations.map((item) => {
-        const MegaMenu = megaMenu[item.menuComponent];
-
+      {localizedNavigations.map((item) => {
         return (
           <CategoryMenuItem
-            key={item.title}
+            key={item.href}
             href={item.href}
             icon={item.icon}
             title={item.title}
             caret={!!item.menuData}>
-            <MegaMenu data={item.menuData || {}} />
+            {item.menuComponent === "MegaMenu1" && <MegaMenu1 data={item.menuData ?? {}} />}
           </CategoryMenuItem>
         );
       })}
