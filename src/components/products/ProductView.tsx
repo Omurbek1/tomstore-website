@@ -1,12 +1,11 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
+import { Tabs } from "antd";
 import { useTranslations } from "next-intl";
 
 import Box from "@component/Box";
 import Shop from "@models/shop.model";
-import FlexBox from "@component/FlexBox";
-import { H6 } from "@component/Typography";
 import ProductReview from "@component/products/ProductReview";
 import AvailableShops from "@component/products/AvailableShops";
 import RelatedProducts from "@component/products/RelatedProducts";
@@ -24,40 +23,28 @@ type Props = {
 
 export default function ProductView({ shops, relatedProducts, frequentlyBought }: Props) {
   const t = useTranslations("product");
-  const [selectedOption, setSelectedOption] = useState("description");
-  const handleOptionClick = (opt: any) => () => setSelectedOption(opt);
+  const tabItems = [
+    {
+      key: "description",
+      label: t("descriptionTab"),
+      children: <ProductDescription />
+    },
+    {
+      key: "review",
+      label: t("reviewTab", { count: 3 }),
+      children: <ProductReview />
+    }
+  ];
 
   return (
     <Fragment>
-      <FlexBox borderBottom="1px solid" borderColor="gray.400" mt="80px" mb="26px">
-        <H6
-          mr="25px"
-          p="4px 10px"
-          fontWeight={500}
-          className="cursor-pointer"
-          borderColor="primary.main"
-          onClick={handleOptionClick("description")}
-          borderBottom={selectedOption === "description" ? "2px solid" : ""}
-          color={selectedOption === "description" ? "primary.main" : "text.muted"}>
-          {t("descriptionTab")}
-        </H6>
-
-        <H6
-          p="4px 10px"
-          fontWeight={500}
-          className="cursor-pointer"
-          borderColor="primary.main"
-          onClick={handleOptionClick("review")}
-          borderBottom={selectedOption === "review" ? "2px solid" : ""}
-          color={selectedOption === "review" ? "primary.main" : "text.muted"}>
-          {t("reviewTab", { count: 3 })}
-        </H6>
-      </FlexBox>
-
-      {/* DESCRIPTION AND REVIEW TAB DETAILS */}
-      <Box mb="50px">
-        {selectedOption === "description" && <ProductDescription />}
-        {selectedOption === "review" && <ProductReview />}
+      <Box mt="80px" mb="50px">
+        <Tabs
+          size="large"
+          defaultActiveKey="description"
+          items={tabItems}
+          tabBarStyle={{ marginBottom: 24 }}
+        />
       </Box>
 
       {/* FREQUENTLY BOUGHT TOGETHER PRODUCTS */}
