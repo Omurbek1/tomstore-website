@@ -67,6 +67,8 @@ export const StyledTopbar = styled.div`
 
     .menu-item-holder > div {
       .country-flag {
+        width: 14px;
+        height: 10px;
         margin-right: 0.5rem;
       }
     }
