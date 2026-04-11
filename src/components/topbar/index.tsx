@@ -5,22 +5,29 @@ import NextImage from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { IconChevronDown, IconMail, IconPhone } from "@tabler/icons-react";
+import {  KG, RU, US } from "country-flag-icons/react/3x2";
 
 import { usePathname, useRouter } from "../../i18n/navigation";
 import FlexBox from "@component/FlexBox";
 import Menu from "../menu";
-import Image from "../Image";
 import NavLink from "../nav-link";
 import MenuItem from "../MenuItem";
 import Container from "../Container";
 import { Small } from "../Typography";
 import { StyledTopbar } from "./styles";
 import { LANGUAGES, CURRENCIES } from "./data";
-import type { LanguageOption } from "./data";
+import type { FlagCode, LanguageOption } from "./data";
 
 import logo from "../../../public/assets/images/logo.svg";
 
 const LOCALE_SWITCH_SUPPORTED_PATHS = new Set<string>(["/"]);
+const FLAG_COMPONENTS = { KG, RU, US } as const;
+
+function FlagIcon({ code, title }: { code: FlagCode; title: string }) {
+  const Flag = FLAG_COMPONENTS[code];
+
+  return <Flag className="country-flag" aria-label={title} title={title} />;
+}
 
 function TopbarContent() {
   const t = useTranslations("topbar");
@@ -97,7 +104,7 @@ function TopbarContent() {
                 aria-label={t("switchLanguage")}
                 aria-busy={isPending}
               >
-                <Image src={language.imgUrl} alt={language.title} />
+                <FlagIcon code={language.flagCode} title={language.title} />
                 <Small fontWeight="600">{language.title}</Small>
                 <IconChevronDown size={16} stroke={1.5} />
               </div>
@@ -116,12 +123,7 @@ function TopbarContent() {
                   color={isActive ? "primary.main" : undefined}
                   style={{ opacity: isPending && !isActive ? 0.7 : 1 }}
                 >
-                  <Image
-                    src={item.imgUrl}
-                    borderRadius="2px"
-                    mr="0.5rem"
-                    alt={item.title}
-                  />
+                  <FlagIcon code={item.flagCode} title={item.title} />
                   <Small fontWeight="600">{t(`languages.${item.id}`)}</Small>
                 </MenuItem>
               );
@@ -136,7 +138,7 @@ function TopbarContent() {
                 alignItems="center"
                 height="40px"
               >
-                <Image src={currency.imgUrl} alt={currency.title} />
+                <FlagIcon code={currency.flagCode} title={currency.title} />
                 <Small fontWeight="600">{currency.title}</Small>
                 <IconChevronDown size={16} stroke={1.5} />
               </FlexBox>
@@ -144,12 +146,7 @@ function TopbarContent() {
           >
             {CURRENCIES.map((item) => (
               <MenuItem key={item.id} onClick={handleCurrencyClick(item)}>
-                <Image
-                  src={item.imgUrl}
-                  borderRadius="2px"
-                  mr="0.5rem"
-                  alt={item.title}
-                />
+                <FlagIcon code={item.flagCode} title={item.title} />
                 <Small fontWeight="600">{item.title}</Small>
               </MenuItem>
             ))}

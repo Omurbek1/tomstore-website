@@ -52,13 +52,22 @@ export const StyledTopbar = styled.div`
       align-items: center;
       height: 40px;
       cursor: pointer;
-      img {
+      .country-flag {
+        width: 20px;
         height: 14px;
-        border-radius: 4px;
+        border-radius: 3px;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+        flex-shrink: 0;
       }
       span {
         margin-right: 0.25rem;
         margin-left: 0.5rem;
+      }
+    }
+
+    .menu-item-holder > div {
+      .country-flag {
+        margin-right: 0.5rem;
       }
     }
     @media only screen and (max-width: 900px) {
