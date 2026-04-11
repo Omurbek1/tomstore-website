@@ -12,12 +12,14 @@ interface Props {
 export default async function ProductDetails({ params }: Props) {
   const { slug } = await params;
 
-  const [product, shops, relatedProducts, frequentlyBought] = await Promise.all([
-    api.getProduct(slug),
-    api.getAvailableShop(),
-    api.getRelatedProducts(),
-    api.getFrequentlyBought()
-  ]);
+  const [product, shops, relatedProducts, frequentlyBought] = await Promise.all(
+    [
+      api.getProduct(slug),
+      api.getAvailableShop(),
+      api.getRelatedProducts(),
+      api.getFrequentlyBought(),
+    ],
+  );
 
   return (
     <Fragment>
@@ -25,7 +27,7 @@ export default async function ProductDetails({ params }: Props) {
         id={product.id}
         price={product.price}
         title={product.title}
-        images={product.images}
+        images={product.images || []}
       />
 
       <ProductView

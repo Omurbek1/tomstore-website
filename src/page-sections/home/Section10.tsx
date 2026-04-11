@@ -14,7 +14,11 @@ export default async function Section10() {
 
   return (
     <Container mb="70px">
-      <CategorySectionHeader title="Categories" iconName="categories" seeMoreLink="#" />
+      <CategorySectionHeader
+        title="Categories"
+        iconName="categories"
+        seeMoreLink="#"
+      />
 
       <Grid container spacing={6}>
         {categories.map((item) => (
@@ -26,9 +30,15 @@ export default async function Section10() {
                 display="flex"
                 borderRadius={8}
                 boxShadow="small"
-                alignItems="center">
+                alignItems="center"
+              >
                 <Box width={50} height={50}>
-                  <NextImage width={52} height={52} alt="fashion" src={item.image} />
+                  <NextImage
+                    width={52}
+                    height={52}
+                    alt="fashion"
+                    src={item.image ?? ""}
+                  />
                 </Box>
 
                 <Typography fontWeight={600} fontSize={14} ml="8px">

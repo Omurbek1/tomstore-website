@@ -32,7 +32,7 @@ const accountSchema = yup.object().shape({
   country: yup.mixed().required("Country is required"),
   city: yup.string().required("City is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
-  contact: yup.string().required("Contact is required")
+  contact: yup.string().required("Contact is required"),
 });
 
 export default function AccountSettings() {
@@ -42,16 +42,19 @@ export default function AccountSettings() {
     country: "",
     city: "",
     email: "",
-    contact: ""
+    contact: "",
   };
 
   const handleFormSubmit = useCallback(async (values: FormValues) => {
     console.log(values);
   }, []);
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.files);
-  }, []);
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      console.log(e.target.files);
+    },
+    [],
+  );
 
   return (
     <Fragment>
@@ -64,8 +67,18 @@ export default function AccountSettings() {
           overflow="hidden"
           borderRadius="10px"
           position="relative"
-          style={{ background: "url(/assets/images/banners/banner-10.png) center/cover" }}>
-          <Box display="flex" alignItems="flex-end" position="absolute" bottom="20px" left="24px">
+          style={{
+            background:
+              "url(/assets/images/banners/banner-10.png) center/cover",
+          }}
+        >
+          <Box
+            display="flex"
+            alignItems="flex-end"
+            position="absolute"
+            bottom="20px"
+            left="24px"
+          >
             <Avatar
               size={80}
               border="4px solid"
@@ -81,7 +94,8 @@ export default function AccountSettings() {
                   size="small"
                   height="auto"
                   color="secondary"
-                  borderRadius="50%">
+                  borderRadius="50%"
+                >
                   <IconCamera size={18} />
                 </Button>
               </label>
@@ -98,7 +112,13 @@ export default function AccountSettings() {
             </Hidden>
           </Box>
 
-          <Box display="flex" alignItems="flex-end" position="absolute" top="20px" right="24px">
+          <Box
+            display="flex"
+            alignItems="flex-end"
+            position="absolute"
+            top="20px"
+            right="24px"
+          >
             <label htmlFor="cover-image">
               <Button
                 p="6px"
@@ -106,7 +126,8 @@ export default function AccountSettings() {
                 size="small"
                 color="primary"
                 height="auto"
-                borderRadius="50%">
+                borderRadius="50%"
+              >
                 <IconCamera size={18} />
               </Button>
             </label>
@@ -126,8 +147,17 @@ export default function AccountSettings() {
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={initialValues}
-          validationSchema={accountSchema}>
-          {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue }) => (
+          validationSchema={accountSchema}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            setFieldValue,
+          }) => (
             <form onSubmit={handleSubmit}>
               <Box mb="30px">
                 <Grid container horizontal_spacing={6} vertical_spacing={4}>
@@ -140,7 +170,9 @@ export default function AccountSettings() {
                       onChange={handleChange}
                       value={values.first_name}
                       placeholder="Enter your first name"
-                      errorText={touched.first_name && errors.first_name}
+                      errorText={
+                        (touched.first_name && errors.first_name) || undefined
+                      }
                     />
                   </Grid>
 
@@ -153,7 +185,9 @@ export default function AccountSettings() {
                       onChange={handleChange}
                       value={values.last_name}
                       placeholder="Enter your last name"
-                      errorText={touched.last_name && errors.last_name}
+                      errorText={
+                        (touched.last_name && errors.last_name) || undefined
+                      }
                     />
                   </Grid>
 
@@ -167,7 +201,9 @@ export default function AccountSettings() {
                       value={values.email}
                       onChange={handleChange}
                       placeholder="Enter your email"
-                      errorText={touched.email && errors.email}
+                      errorText={
+                        (touched.email && errors.email) || undefined
+                      }
                     />
                   </Grid>
 
@@ -181,7 +217,9 @@ export default function AccountSettings() {
                       value={values.contact}
                       onChange={handleChange}
                       placeholder="Enter your phone number"
-                      errorText={touched.contact && errors.contact}
+                      errorText={
+                        (touched.contact && errors.contact) || undefined
+                      }
                     />
                   </Grid>
 
@@ -191,7 +229,9 @@ export default function AccountSettings() {
                       options={countryList}
                       value={values.country}
                       placeholder="Select your country"
-                      errorText={touched.country && errors.country}
+                      errorText={
+                        (touched.country && errors.country) || undefined
+                      }
                       onChange={(country) => setFieldValue("country", country)}
                     />
                   </Grid>
@@ -205,7 +245,9 @@ export default function AccountSettings() {
                       onBlur={handleBlur}
                       onChange={handleChange}
                       placeholder="Enter your city"
-                      errorText={touched.city && errors.city}
+                      errorText={
+                        (touched.city && errors.city) || undefined
+                      }
                     />
                   </Grid>
                 </Grid>

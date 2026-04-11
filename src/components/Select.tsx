@@ -8,7 +8,7 @@ import Typography from "@component/Typography";
 interface SelectProps extends Omit<Props, "theme">, SpaceProps {
   label?: string;
   isMulti?: boolean;
-  errorText?: string;
+  errorText?: string | false | undefined;
 }
 
 const styles = (errorText: string) =>
@@ -65,7 +65,7 @@ const Select = memo(({ options, isMulti = false, id, label, errorText, ...props 
         isMulti={isMulti}
         options={options}
         theme={selectTheme}
-        styles={styles(errorText)}
+        styles={styles(errorText||'')}
         {...props}
       />
 

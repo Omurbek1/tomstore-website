@@ -12,7 +12,7 @@ type OtherProps = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, SpacingKeys>
 interface TextAreaProps extends SpaceProps, BorderProps, OtherProps {
   id?: string;
   label?: string;
-  errorText?: string;
+  errorText?: string | false | undefined;
   fullWidth?: boolean;
   labelColor?: colorOptions;
 }

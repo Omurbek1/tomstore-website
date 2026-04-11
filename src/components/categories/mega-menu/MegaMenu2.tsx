@@ -15,7 +15,7 @@ export default function MegaMenu2({ data }: MegaMenu2Props) {
             icon={item.icon}
             title={item.title}
             caret={!!item.menuData}>
-            {item.menuData && <MegaMenu3 minWidth="560px" data={item.menuData} />}
+            {item.menuData && <MegaMenu3 minWidth="560px" data={{ ...item.menuData, categories: item.menuData.categories ?? [] }} />}
           </CategoryMenuItem>
         ))}
       </Card>

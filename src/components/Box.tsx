@@ -17,14 +17,15 @@ import {
   LayoutProps,
   FlexboxProps,
   PositionProps,
-  TypographyProps
+  TypographyProps,
 } from "styled-system";
 import styled from "styled-components";
 import { isValidProp } from "@utils/utils";
 
 // ==============================================================
 interface BoxProps
-  extends LayoutProps,
+  extends
+    LayoutProps,
     GridProps,
     ColorProps,
     SpaceProps,
@@ -39,14 +40,14 @@ interface BoxProps
 // ==============================================================
 
 const Box = styled.div.withConfig({
-  shouldForwardProp: isValidProp
+  shouldForwardProp: isValidProp,
 })<BoxProps>(
   ({ shadow = 0, cursor = "unset", transition, theme }) => ({
     cursor,
     transition,
-    boxShadow: theme.shadows[shadow]
+    boxShadow: theme.shadows[shadow ?? 0],
   }),
-  compose(layout, space, color, grid, position, flexbox, border, typography)
+  compose(layout, space, color, grid, position, flexbox, border, typography),
 );
 
 export default Box;

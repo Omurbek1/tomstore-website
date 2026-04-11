@@ -19,9 +19,13 @@ interface DashboardPageHeaderProps {
 }
 // ==============================================================
 
-export default function DashboardPageHeader({ Icon, title, button }: DashboardPageHeaderProps) {
+export default function DashboardPageHeader({
+  Icon,
+  title,
+  button,
+}: DashboardPageHeaderProps) {
   const theme = useTheme();
-  const width = useWindowSize();
+  const width = useWindowSize() ?? 0;
   const [open, setOpen] = useState(false);
 
   const isTablet = width < 1025;
@@ -40,7 +44,12 @@ export default function DashboardPageHeader({ Icon, title, button }: DashboardPa
           )}
 
           {title && (
-            <H2 ml="12px" my="0px" lineHeight="1" textStyle={{ whiteSpace: "pre" }}>
+            <H2
+              ml="12px"
+              my="0px"
+              lineHeight="1"
+              textStyle={{ whiteSpace: "pre" }}
+            >
               {title}
             </H2>
           )}
@@ -51,11 +60,15 @@ export default function DashboardPageHeader({ Icon, title, button }: DashboardPa
             open={open}
             position="left"
             handle={
-              <Span onClick={handleOpenSidenav} style={{ cursor: "pointer", display: "flex" }}>
+              <Span
+                onClick={handleOpenSidenav}
+                style={{ cursor: "pointer", display: "flex" }}
+              >
                 <IconMenu2 size={24} />
               </Span>
             }
-            onClose={handleCloseSidenav}>
+            onClose={handleCloseSidenav}
+          >
             <DashboardNavigation />
           </Sidenav>
         )}

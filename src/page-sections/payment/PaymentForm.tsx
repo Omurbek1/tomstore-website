@@ -57,7 +57,7 @@ type FormValues = yup.InferType<typeof checkoutSchema>;
 
 export default function PaymentForm() {
   const router = useRouter();
-  const width = useWindowSize();
+  const width = useWindowSize()??0;
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
 
   const isMobile = width < 769;

@@ -23,7 +23,7 @@ const initialValues = {
   email: "",
   password: "",
   re_password: "",
-  agreement: false
+  agreement: false,
 };
 
 const formSchema = yup.object().shape({
@@ -32,16 +32,16 @@ const formSchema = yup.object().shape({
   password: yup.string().required("${path} is required"),
   re_password: yup
     .string()
-    .oneOf([yup.ref("password"), null], "Passwords must match")
+    .oneOf([yup.ref("password")], "Passwords must match")
     .required("Please re-type password"),
   agreement: yup
     .bool()
     .test(
       "agreement",
       "You have to agree with our Terms and Conditions!",
-      (value) => value === true
+      (value) => value === true,
     )
-    .required("You have to agree with our Terms and Conditions!")
+    .required("You have to agree with our Terms and Conditions!"),
 });
 
 type FormValues = yup.InferType<typeof formSchema>;
@@ -53,11 +53,12 @@ export default function Signup() {
     console.log(values);
   };
 
-  const { values, errors, touched, handleBlur, handleChange, handleSubmit } = useFormik({
-    initialValues,
-    onSubmit: handleFormSubmit,
-    validationSchema: formSchema
-  });
+  const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
+    useFormik({
+      initialValues,
+      onSubmit: handleFormSubmit,
+      validationSchema: formSchema,
+    });
 
   return (
     <StyledRoot mx="auto" my="2rem" boxShadow="large" borderRadius={8}>
@@ -66,7 +67,13 @@ export default function Signup() {
           Create Your Account
         </H3>
 
-        <H5 fontWeight="600" fontSize="12px" color="gray.800" textAlign="center" mb="2.25rem">
+        <H5
+          fontWeight="600"
+          fontSize="12px"
+          color="gray.800"
+          textAlign="center"
+          mb="2.25rem"
+        >
           Please fill all forms to continued
         </H5>
 
@@ -79,7 +86,7 @@ export default function Signup() {
           value={values.name}
           onChange={handleChange}
           placeholder="Ralph Adwards"
-          errorText={touched.name && errors.name}
+          errorText={touched.name && errors.name ? errors.name : undefined}
         />
 
         <TextField
@@ -92,7 +99,7 @@ export default function Signup() {
           onChange={handleChange}
           placeholder="exmple@mail.com"
           label="Email or Phone Number"
-          errorText={touched.email && errors.email}
+          errorText={touched.email && errors.email ? errors.email : undefined}
         />
 
         <TextField
@@ -104,7 +111,7 @@ export default function Signup() {
           onBlur={handleBlur}
           value={values.password}
           onChange={handleChange}
-          errorText={touched.password && errors.password}
+          errorText={touched.password && errors.password ? errors.password : undefined}
           type={passwordVisibility ? "text" : "password"}
           endAdornment={
             <IconButton
@@ -112,7 +119,8 @@ export default function Signup() {
               mr="0.25rem"
               type="button"
               color={passwordVisibility ? "gray.700" : "gray.600"}
-              onClick={togglePasswordVisibility}>
+              onClick={togglePasswordVisibility}
+            >
               <Icon variant="small" defaultColor="currentColor">
                 {passwordVisibility ? "eye-alt" : "eye"}
               </Icon>
@@ -129,7 +137,7 @@ export default function Signup() {
           onChange={handleChange}
           value={values.re_password}
           type={passwordVisibility ? "text" : "password"}
-          errorText={touched.re_password && errors.re_password}
+          errorText={touched.re_password && errors.re_password ? errors.re_password : undefined}
           endAdornment={
             <IconButton
               p="0.25rem"
@@ -137,7 +145,8 @@ export default function Signup() {
               mr="0.25rem"
               type="button"
               onClick={togglePasswordVisibility}
-              color={passwordVisibility ? "gray.700" : "gray.600"}>
+              color={passwordVisibility ? "gray.700" : "gray.600"}
+            >
               <Icon variant="small" defaultColor="currentColor">
                 {passwordVisibility ? "eye-alt" : "eye"}
               </Icon>
@@ -163,7 +172,13 @@ export default function Signup() {
           }
         />
 
-        <Button mb="1.65rem" variant="contained" color="primary" type="submit" fullWidth>
+        <Button
+          mb="1.65rem"
+          variant="contained"
+          color="primary"
+          type="submit"
+          fullWidth
+        >
           Create Account
         </Button>
 

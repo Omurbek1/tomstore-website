@@ -90,7 +90,7 @@ export default function CheckoutForm() {
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.shipping_name}
-                  errorText={touched.shipping_name && errors.shipping_name}
+                  errorText={touched.shipping_name && errors.shipping_name ? errors.shipping_name : undefined}
                 />
 
                 <TextField
@@ -102,7 +102,7 @@ export default function CheckoutForm() {
                   onChange={handleChange}
                   name="shipping_contact"
                   value={values.shipping_contact}
-                  errorText={touched.shipping_contact && errors.shipping_contact}
+                  errorText={touched.shipping_contact && errors.shipping_contact ? errors.shipping_contact : undefined}
                 />
 
                 <TextField
@@ -115,7 +115,7 @@ export default function CheckoutForm() {
                   name="shipping_zip"
                   onChange={handleChange}
                   value={values.shipping_zip}
-                  errorText={touched.shipping_zip && errors.shipping_zip}
+                  errorText={touched.shipping_zip && errors.shipping_zip ? errors.shipping_zip : undefined}
                 />
 
                 <TextField
@@ -126,7 +126,7 @@ export default function CheckoutForm() {
                   onChange={handleChange}
                   name="shipping_address1"
                   value={values.shipping_address1}
-                  errorText={touched.shipping_address1 && errors.shipping_address1}
+                  errorText={touched.shipping_address1 && errors.shipping_address1 ? errors.shipping_address1 : undefined}
                 />
               </Grid>
 
@@ -141,7 +141,7 @@ export default function CheckoutForm() {
                   name="shipping_email"
                   onChange={handleChange}
                   value={values.shipping_email}
-                  errorText={touched.shipping_email && errors.shipping_email}
+                  errorText={touched.shipping_email && errors.shipping_email ? errors.shipping_email : undefined}
                 />
 
                 <TextField
@@ -153,7 +153,7 @@ export default function CheckoutForm() {
                   onChange={handleChange}
                   name="shipping_company"
                   value={values.shipping_company}
-                  errorText={touched.shipping_company && errors.shipping_company}
+                  errorText={touched.shipping_company && errors.shipping_company ? errors.shipping_company : undefined}
                 />
 
                 <Select
@@ -161,7 +161,7 @@ export default function CheckoutForm() {
                   label="Country"
                   options={countryList}
                   value={values.shipping_country || "US"}
-                  errorText={touched.shipping_country && errors.shipping_country}
+                  errorText={touched.shipping_country && errors.shipping_country ? errors.shipping_country : undefined}
                   onChange={(country) => setFieldValue("shipping_country", country)}
                 />
 
@@ -173,7 +173,7 @@ export default function CheckoutForm() {
                   onChange={handleChange}
                   name="shipping_address2"
                   value={values.shipping_address2}
-                  errorText={touched.shipping_address2 && errors.shipping_address2}
+                  errorText={touched.shipping_address2 && errors.shipping_address2 ? errors.shipping_address2 : undefined}
                 />
               </Grid>
             </Grid>
@@ -203,7 +203,7 @@ export default function CheckoutForm() {
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.billing_name}
-                    errorText={touched.billing_name && errors.billing_name}
+                    errorText={touched.billing_name && errors.billing_name ? errors.billing_name : undefined}
                   />
 
                   <TextField
@@ -215,7 +215,7 @@ export default function CheckoutForm() {
                     name="billing_contact"
                     onChange={handleChange}
                     value={values.billing_contact}
-                    errorText={touched.billing_contact && errors.billing_contact}
+                    errorText={touched.billing_contact && errors.billing_contact ? errors.billing_contact : undefined}
                   />
 
                   <TextField
@@ -228,7 +228,7 @@ export default function CheckoutForm() {
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.billing_zip}
-                    errorText={touched.billing_zip && errors.billing_zip}
+                    errorText={touched.billing_zip && errors.billing_zip ? errors.billing_zip : undefined}
                   />
 
                   <TextField
@@ -239,7 +239,7 @@ export default function CheckoutForm() {
                     onChange={handleChange}
                     name="billing_address1"
                     value={values.billing_address1}
-                    errorText={touched.billing_address1 && errors.billing_address1}
+                    errorText={touched.billing_address1 && errors.billing_address1 ? errors.billing_address1 : undefined}
                   />
                 </Grid>
 
@@ -254,7 +254,7 @@ export default function CheckoutForm() {
                     label="Email Address"
                     onChange={handleChange}
                     value={values.billing_email}
-                    errorText={touched.billing_email && errors.billing_email}
+                    errorText={touched.billing_email && errors.billing_email ? errors.billing_email : undefined}
                   />
 
                   <TextField
@@ -266,7 +266,7 @@ export default function CheckoutForm() {
                     name="billing_company"
                     onChange={handleChange}
                     value={values.billing_company}
-                    errorText={touched.billing_company && errors.billing_company}
+                    errorText={touched.billing_company && errors.billing_company ? errors.billing_company : undefined}
                   />
 
                   <Select
@@ -274,7 +274,7 @@ export default function CheckoutForm() {
                     label="Country"
                     options={countryList}
                     value={values.billing_country || "US"}
-                    errorText={touched.billing_country && errors.billing_country}
+                    errorText={touched.billing_country && errors.billing_country ? errors.billing_country : undefined}
                     onChange={(country) => setFieldValue("billing_country", country)}
                   />
 
@@ -286,7 +286,7 @@ export default function CheckoutForm() {
                     name="billing_address2"
                     onChange={handleChange}
                     value={values.billing_address2}
-                    errorText={touched.billing_address2 && errors.billing_address2}
+                    errorText={touched.billing_address2 && errors.billing_address2 ? errors.billing_address2 : undefined}
                   />
                 </Grid>
               </Grid>

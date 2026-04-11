@@ -16,7 +16,7 @@ const stepIconList = ["package-box", "truck-1", "delivery"];
 const orderStatusList = ["packaging", "shipping", "delivering", "complete"];
 
 export default function OrderStatus() {
-  const width = useWindowSize();
+  const width = useWindowSize() ?? 0;
 
   const breakpoint = 350;
   const statusIndex = orderStatusList.indexOf(orderStatus);
@@ -28,14 +28,16 @@ export default function OrderStatus() {
         flexWrap="wrap"
         alignItems="center"
         justifyContent="space-between"
-        flexDirection={width < breakpoint ? "column" : "row"}>
+        flexDirection={(width ?? 0) < breakpoint ? "column" : "row"}
+      >
         {stepIconList.map((item, ind) => (
           <Fragment key={item}>
             <Box position="relative">
               <Avatar
                 size={64}
                 bg={ind <= statusIndex ? "primary.main" : "gray.300"}
-                color={ind <= statusIndex ? "gray.white" : "primary.main"}>
+                color={ind <= statusIndex ? "gray.white" : "primary.main"}
+              >
                 <Icon size="32px" defaultColor="currentColor">
                   {item}
                 </Icon>
@@ -70,7 +72,8 @@ export default function OrderStatus() {
           bg="primary.light"
           textAlign="center"
           borderRadius="300px"
-          color="primary.main">
+          color="primary.main"
+        >
           Estimated Delivery Date <b>4th October</b>
         </Typography>
       </FlexBox>

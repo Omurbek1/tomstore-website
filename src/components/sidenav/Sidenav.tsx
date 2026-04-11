@@ -8,7 +8,7 @@ import {
   useCallback,
   MouseEvent,
   CSSProperties,
-  useState
+  useState,
 } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -22,10 +22,14 @@ const styles = {
     bottom: 0,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     zIndex: 1200,
-    display: "flex"
+    display: "flex",
   } as CSSProperties,
 
-  container: (width: number, position: "left" | "right", scroll: boolean): CSSProperties => ({
+  container: (
+    width: number,
+    position: "left" | "right",
+    scroll: boolean,
+  ): CSSProperties => ({
     position: "fixed",
     top: 0,
     bottom: 0,
@@ -34,13 +38,13 @@ const styles = {
     backgroundColor: "white",
     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
     zIndex: 1201,
-    overflowY: scroll ? "auto" : "hidden"
+    overflowY: scroll ? "auto" : "hidden",
   }),
 
   content: {
     height: "100%",
-    padding: "1rem"
-  } as CSSProperties
+    padding: "1rem",
+  } as CSSProperties,
 };
 
 // ==============================================================
@@ -64,7 +68,7 @@ export default function Sidenav({
   open = false,
   width = 280,
   scroll = false,
-  position = "right"
+  position = "right",
 }: SidenavProps) {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -90,28 +94,28 @@ export default function Sidenav({
   const backdropVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
-    exit: { opacity: 0 }
+    exit: { opacity: 0 },
   };
 
   const sidenavVariants = {
     hidden: {
       opacity: 0,
-      x: position === "right" ? width : -width
+      x: position === "right" ? width : -width,
     },
     visible: {
       x: 0,
       opacity: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         damping: 30,
-        stiffness: 300
-      }
+        stiffness: 300,
+      },
     },
     exit: {
       x: position === "right" ? width : -width,
       opacity: 0,
-      transition: { duration: 0.2 }
-    }
+      transition: { duration: 0.2 },
+    },
   };
 
   if (!isMounted) return null;
@@ -127,13 +131,15 @@ export default function Sidenav({
           initial="hidden"
           animate="visible"
           variants={backdropVariants}
-          transition={{ duration: 0.2 }}>
+          transition={{ duration: 0.2 }}
+        >
           <motion.div
             style={styles.container(width, position, scroll)}
             variants={sidenavVariants}
             role="dialog"
             aria-modal="true"
-            onClick={handleModalContentClick}>
+            onClick={handleModalContentClick}
+          >
             {children}
           </motion.div>
         </motion.div>

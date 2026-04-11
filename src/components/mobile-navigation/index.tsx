@@ -47,7 +47,7 @@ export default function MobileNavigationBar() {
   const { state } = useCart();
   const width = useWindowSize();
 
-  if (width <= 900) {
+  if (width && width <= 900) {
     return (
       <Wrapper>
         {list.map((item) => (

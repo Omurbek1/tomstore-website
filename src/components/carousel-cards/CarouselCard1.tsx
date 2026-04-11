@@ -2,6 +2,7 @@ import styled from "styled-components";
 // GLOBAL CUSTOM COMPONENTS
 import { Button } from "@component/buttons";
 import Typography from "@component/Typography";
+import { JSX } from "react/jsx-runtime";
 
 // STYLED COMPONENT
 const StyledCarouselCard1 = styled.div`
@@ -55,10 +56,10 @@ const StyledCarouselCard1 = styled.div`
 
 // ===============================================
 interface Props {
-  title: string;
-  image: string;
-  buttonText: string;
-  description: string;
+  title: string | undefined;
+  image: string | undefined;
+  buttonText: string | string[] | JSX.Element | undefined;
+  description: string | string[] | JSX.Element | undefined;
 }
 // ===============================================
 

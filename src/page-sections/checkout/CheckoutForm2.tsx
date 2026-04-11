@@ -24,7 +24,7 @@ const initialValues = {
   card: "",
   date: "",
   time: "",
-  voucher: ""
+  voucher: "",
 };
 
 const checkoutSchema = yup.object().shape({
@@ -33,7 +33,7 @@ const checkoutSchema = yup.object().shape({
   card: yup.string().required("required"),
   date: yup.object().required("required"),
   time: yup.object().required("required"),
-  voucher: yup.string()
+  voucher: yup.string(),
 });
 
 type FormValues = yup.InferType<typeof checkoutSchema>;
@@ -48,14 +48,15 @@ export default function CheckoutForm2() {
     router.push("/payment");
   };
 
-  const handleFieldValueChange = (value: string, fieldName: string, setFieldValue: any) => () => {
-    setFieldValue(fieldName, value);
-  };
+  const handleFieldValueChange =
+    (value: string, fieldName: string, setFieldValue: any) => () => {
+      setFieldValue(fieldName, value);
+    };
 
   const toggleHasVoucher = () => setHasVoucher((has) => !has);
 
   useEffect(() => {
-    let list = [];
+    let list: { label: string; value: Date }[] = [];
     let today = new Date();
     let dateCount = today.getDate();
 
@@ -73,12 +74,25 @@ export default function CheckoutForm2() {
     <Formik
       onSubmit={handleFormSubmit}
       initialValues={initialValues}
-      validationSchema={checkoutSchema}>
-      {({ values, errors, touched, handleChange, handleSubmit, setFieldValue }) => (
+      validationSchema={checkoutSchema}
+    >
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleSubmit,
+        setFieldValue,
+      }) => (
         <form onSubmit={handleSubmit}>
           <Card1 mb="1.5rem" borderRadius={8}>
             <FlexBox alignItems="center" mb="1.75rem">
-              <Avatar bg="primary.main" size={32} color="primary.text" mr="0.875rem">
+              <Avatar
+                bg="primary.main"
+                size={32}
+                color="primary.text"
+                mr="0.875rem"
+              >
                 1
               </Avatar>
               <Typography fontSize="20px">Delivery Details</Typography>
@@ -118,8 +132,17 @@ export default function CheckoutForm2() {
                     boxShadow="none"
                     border="1px solid"
                     cursor="pointer"
-                    borderColor={item.address === values.address ? "primary.main" : "transparent"}
-                    onClick={handleFieldValueChange(item.address, "address", setFieldValue)}>
+                    borderColor={
+                      item.address === values.address
+                        ? "primary.main"
+                        : "transparent"
+                    }
+                    onClick={handleFieldValueChange(
+                      item.address,
+                      "address",
+                      setFieldValue,
+                    )}
+                  >
                     <H6 mb="0.25rem">{item.addressType}</H6>
                     <Paragraph color="gray.700">{item.address}</Paragraph>
                   </Card>
@@ -130,7 +153,12 @@ export default function CheckoutForm2() {
 
           <Card1 mb="1.5rem" borderRadius={8}>
             <FlexBox alignItems="center" mb="1.75rem">
-              <Avatar bg="primary.main" size={32} color="primary.text" mr="0.875rem">
+              <Avatar
+                bg="primary.main"
+                size={32}
+                color="primary.text"
+                mr="0.875rem"
+              >
                 3
               </Avatar>
               <Typography fontSize="20px">Personal Details</Typography>
@@ -148,8 +176,17 @@ export default function CheckoutForm2() {
                     boxShadow="none"
                     border="1px solid"
                     cursor="pointer"
-                    borderColor={item.contact === values.contact ? "primary.main" : "transparent"}
-                    onClick={handleFieldValueChange(item.contact, "contact", setFieldValue)}>
+                    borderColor={
+                      item.contact === values.contact
+                        ? "primary.main"
+                        : "transparent"
+                    }
+                    onClick={handleFieldValueChange(
+                      item.contact,
+                      "contact",
+                      setFieldValue,
+                    )}
+                  >
                     <H6 mb="0.25rem">{item.contactType}</H6>
                     <Paragraph color="gray.700">{item.contact}</Paragraph>
                   </Card>
@@ -160,7 +197,12 @@ export default function CheckoutForm2() {
 
           <Card1 mb="1.5rem" borderRadius={8}>
             <FlexBox alignItems="center" mb="1.75rem">
-              <Avatar bg="primary.main" size={32} color="primary.text" mr="0.875rem">
+              <Avatar
+                bg="primary.main"
+                size={32}
+                color="primary.text"
+                mr="0.875rem"
+              >
                 3
               </Avatar>
               <Typography fontSize="20px">Payment Details</Typography>
@@ -178,9 +220,23 @@ export default function CheckoutForm2() {
                     boxShadow="none"
                     border="1px solid"
                     cursor="pointer"
-                    borderColor={item.last4Digits === values.card ? "primary.main" : "transparent"}
-                    onClick={handleFieldValueChange(item.last4Digits, "card", setFieldValue)}>
-                    <Box height="24px" width="36px" position="relative" mb="0.5rem">
+                    borderColor={
+                      item.last4Digits === values.card
+                        ? "primary.main"
+                        : "transparent"
+                    }
+                    onClick={handleFieldValueChange(
+                      item.last4Digits,
+                      "card",
+                      setFieldValue,
+                    )}
+                  >
+                    <Box
+                      height="24px"
+                      width="36px"
+                      position="relative"
+                      mb="0.5rem"
+                    >
                       <NextImage
                         fill
                         alt="payment"
@@ -188,7 +244,9 @@ export default function CheckoutForm2() {
                       />
                     </Box>
 
-                    <Paragraph color="gray.700">**** **** **** {item.last4Digits}</Paragraph>
+                    <Paragraph color="gray.700">
+                      **** **** **** {item.last4Digits}
+                    </Paragraph>
                     <Paragraph color="gray.700">{item.name}</Paragraph>
                   </Card>
                 </Grid>
@@ -200,7 +258,8 @@ export default function CheckoutForm2() {
               color="primary.main"
               mt="1.5rem"
               lineHeight="1"
-              onClick={toggleHasVoucher}>
+              onClick={toggleHasVoucher}
+            >
               I have a voucher.
             </Paragraph>
 
@@ -213,13 +272,24 @@ export default function CheckoutForm2() {
                   value={values.voucher || ""}
                   onChange={handleChange}
                 />
-                <Button variant="contained" color="primary" type="button" ml="1rem">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="button"
+                  ml="1rem"
+                >
                   Apply
                 </Button>
               </FlexBox>
             )}
 
-            <Button variant="contained" color="primary" mt="1.5rem" type="submit" fullWidth>
+            <Button
+              variant="contained"
+              color="primary"
+              mt="1.5rem"
+              type="submit"
+              fullWidth
+            >
               Place Order
             </Button>
           </Card1>
@@ -232,23 +302,23 @@ export default function CheckoutForm2() {
 const addressList = [
   { addressType: "Home", address: "435 Bristol Avenue, Abington MA 2351" },
   { addressType: "Office", address: "777 Brockton Avenue, Abington MA 2351" },
-  { addressType: "Office 2", address: "777 Kazi Avenue, Abington MA 2351" }
+  { addressType: "Office 2", address: "777 Kazi Avenue, Abington MA 2351" },
 ];
 
 const contactList = [
   { contactType: "Primary", contact: "+1-202-555-0119" },
-  { contactType: "Secondary", contact: "+1-202-555-0222" }
+  { contactType: "Secondary", contact: "+1-202-555-0222" },
 ];
 
 const paymentMethodList = [
   { cardType: "Amex", last4Digits: "4765", name: "Jaslynn Land" },
   { cardType: "Mastercard", last4Digits: "5432", name: "Jaslynn Land" },
-  { cardType: "Visa", last4Digits: "4543", name: "Jaslynn Land" }
+  { cardType: "Visa", last4Digits: "4543", name: "Jaslynn Land" },
 ];
 
 const timeList = [
   { label: "9AM - 11AM", value: "9AM - 11AM" },
   { label: "11AM - 1PM", value: "11AM - 1PM" },
   { label: "3PM - 5PM", value: "3PM - 5PM" },
-  { label: "5PM - 7PM", value: "5PM - 7PM" }
+  { label: "5PM - 7PM", value: "5PM - 7PM" },
 ];

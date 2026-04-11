@@ -129,7 +129,7 @@ export default function Navbar({ navListOpen }: NavbarProps) {
               width="278px"
               variant="text"
               height="40px"
-              bg="body.default"
+              background="body.default"
               onClick={handleOpen}>
               <IconCategoryFilled stroke={1.5} size={18} color={theme.colors.primary.main} />
 

@@ -32,7 +32,7 @@ export async function generateMetadata({
 }: Omit<LocaleLayoutProps, "children">): Promise<Metadata> {
   const { locale } = await params;
 
-  if (!routing.locales.includes(locale as Locale)) {
+  if (!routing.locales.includes((locale as any) || "")) {
     notFound();
   }
 
@@ -53,7 +53,7 @@ export default async function LocaleLayout({
 }: LocaleLayoutProps) {
   const { locale } = await params;
 
-  if (!routing.locales.includes(locale as unknown as Locale)) {
+  if (!routing.locales.includes((locale as any) || "")) {
     notFound();
   }
 

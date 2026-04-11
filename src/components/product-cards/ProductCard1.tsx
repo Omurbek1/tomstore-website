@@ -116,8 +116,8 @@ interface ProductCard1Props extends CardProps {
   price: number;
   imgUrl: string;
   rating: number;
-  images: string[];
-  id?: string | number;
+  images: string[] | undefined;
+  id: string | number;
 }
 // =======================================================================
 
@@ -133,7 +133,7 @@ export default function ProductCard1({
   ...props
 }: ProductCard1Props) {
   const theme = useTheme();
-    const locale = useLocale();
+  const locale = useLocale();
   const { state, dispatch } = useCart();
   const [open, setOpen] = useState(false);
   const cartItem = state.cart.find((item) => item.id === id);
@@ -152,11 +152,11 @@ export default function ProductCard1({
           price,
           imgUrl,
           name: title,
-          qty: amount
-        }
+          qty: amount,
+        },
       });
     },
-    []
+    [],
   );
 
   return (
@@ -173,7 +173,8 @@ export default function ProductCard1({
               bg="primary.main"
               position="absolute"
               color="primary.text"
-              zIndex={1}>
+              zIndex={1}
+            >
               {off}% off
             </Chip>
           )}
@@ -182,11 +183,15 @@ export default function ProductCard1({
             <IconButton
               size="small"
               onClick={toggleDialog}
-              style={{ width: 35, height: 35, padding: "0.5rem" }}>
+              style={{ width: 35, height: 35, padding: "0.5rem" }}
+            >
               <IconEye size={18} color={theme.colors.gray[500]} />
             </IconButton>
 
-            <IconButton size="small" style={{ width: 35, height: 35, padding: "0.5rem" }}>
+            <IconButton
+              size="small"
+              style={{ width: 35, height: 35, padding: "0.5rem" }}
+            >
               <IconHeart size={18} color={theme.colors.gray[500]} />
             </IconButton>
           </FlexBox>
@@ -207,7 +212,8 @@ export default function ProductCard1({
                   textAlign="left"
                   fontWeight="600"
                   className="title"
-                  color="text.secondary">
+                  color="text.secondary"
+                >
                   {title}
                 </H3>
               </Link>
@@ -231,14 +237,16 @@ export default function ProductCard1({
               width="30px"
               alignItems="center"
               flexDirection="column-reverse"
-              justifyContent={!!cartItem?.qty ? "space-between" : "flex-start"}>
+              justifyContent={!!cartItem?.qty ? "space-between" : "flex-start"}
+            >
               <Button
                 size="none"
                 padding="3px"
                 color="primary"
                 variant="outlined"
                 borderColor="primary.light"
-                onClick={handleCartAmountChange((cartItem?.qty || 0) + 1)}>
+                onClick={handleCartAmountChange((cartItem?.qty || 0) + 1)}
+              >
                 <IconPlus size={18} />
               </Button>
 
@@ -254,7 +262,8 @@ export default function ProductCard1({
                     color="primary"
                     variant="outlined"
                     borderColor="primary.light"
-                    onClick={handleCartAmountChange(cartItem.qty - 1)}>
+                    onClick={handleCartAmountChange(cartItem.qty - 1)}
+                  >
                     <IconMinus size={18} />
                   </Button>
                 </Fragment>
@@ -267,7 +276,7 @@ export default function ProductCard1({
       <ProductQuickView
         open={open}
         onClose={toggleDialog}
-        product={{ images, title, price, id: id as number | string, slug }}
+        product={{ images: images || [], title, price, id: id as number | string, slug }}
       />
     </Fragment>
   );

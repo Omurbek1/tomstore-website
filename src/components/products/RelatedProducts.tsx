@@ -23,7 +23,7 @@ export default function RelatedProducts({ products }: Props) {
               price={item.price}
               title={item.title}
               off={item.discount}
-              images={item.images}
+              images={item.images || []}
               imgUrl={item.thumbnail}
               rating={item.rating || 4}
             />

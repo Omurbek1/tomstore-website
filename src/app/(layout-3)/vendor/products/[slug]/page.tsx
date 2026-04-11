@@ -12,12 +12,12 @@ import { SlugParams } from "interfaces";
 
 const CATEGORIES = [
   { label: "Fashion", value: "fashion" },
-  { label: "Gadget", value: "gadget" }
+  { label: "Gadget", value: "gadget" },
 ];
 
 const BACK_BUTTON = (
   <Link href="/vendor/products">
-    <Button color="primary" bg="primary.light" px="2rem">
+    <Button color="primary" size={"large"} px="2rem">
       Back
     </Button>
   </Link>

@@ -17,7 +17,7 @@ const dropdownVariants = {
   hidden: {
     y: -10,
     opacity: 0,
-    scale: 0.95
+    scale: 0.95,
   },
   visible: {
     y: 0,
@@ -25,15 +25,15 @@ const dropdownVariants = {
     opacity: 1,
     transition: {
       duration: 0.2,
-      ease: "easeOut"
-    }
+      easing: [0.25, 0.46, 0.45, 0.94],
+    },
   },
   exit: {
     y: -10,
     opacity: 0,
     scale: 0.95,
-    transition: { duration: 0.15 }
-  }
+    transition: { duration: 0.15 },
+  },
 };
 
 export default function SearchInputWithCategory() {
@@ -62,7 +62,13 @@ export default function SearchInputWithCategory() {
   }, []);
 
   return (
-    <Box zIndex={99} position="relative" flex="1 1 0" maxWidth="670px" mx="auto">
+    <Box
+      zIndex={99}
+      position="relative"
+      flex="1 1 0"
+      maxWidth="670px"
+      mx="auto"
+    >
       <StyledSearchBox>
         <IconSearch size={18} stroke={1.5} className="search-icon" />
 
@@ -77,11 +83,16 @@ export default function SearchInputWithCategory() {
           direction="right"
           className="category-dropdown"
           handler={(openMenu) => (
-            <FlexBox className="dropdown-handler" alignItems="center" onClick={openMenu}>
+            <FlexBox
+              className="dropdown-handler"
+              alignItems="center"
+              onClick={openMenu}
+            >
               <span>{category}</span>
               <IconChevronDown size={18} stroke={1.5} />
             </FlexBox>
-          )}>
+          )}
+        >
           {categories.map((item) => (
             <MenuItem key={item} onClick={handleCategoryChange(item)}>
               {item}
@@ -102,9 +113,15 @@ export default function SearchInputWithCategory() {
               top: "100%",
               zIndex: 99,
               width: "100%",
-              position: "absolute"
-            }}>
-            <Card py="0.5rem" mt="0.25rem" boxShadow="large" borderRadius=".5rem">
+              position: "absolute",
+            }}
+          >
+            <Card
+              py="0.5rem"
+              mt="0.25rem"
+              boxShadow="large"
+              borderRadius=".5rem"
+            >
               {resultList.map((item) => (
                 <Link href={`/product/search/${item}`} key={item}>
                   <MenuItem key={item}>
@@ -128,7 +145,12 @@ const categories = [
   "Laptop",
   "Desktop",
   "Camera",
-  "Toys"
+  "Toys",
 ];
 
-const dummySearchResult = ["Macbook Air 13", "Ksus K555LA", "Acer Aspire X453", "iPad Mini 3"];
+const dummySearchResult = [
+  "Macbook Air 13",
+  "Ksus K555LA",
+  "Acer Aspire X453",
+  "iPad Mini 3",
+];

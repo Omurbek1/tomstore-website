@@ -53,7 +53,7 @@ export default function AddressForm({ address }: AddressFormProps) {
                   onBlur={handleBlur}
                   value={values.name}
                   onChange={handleChange}
-                  errorText={touched.name && errors.name}
+                  errorText={touched.name && errors.name ? errors.name : undefined}
                 />
               </Grid>
 

@@ -14,7 +14,7 @@ interface Props {
 
 export default function ProductGridView({ products }: Props) {
   const width = useWindowSize();
-  const isTablet = width < 1025;
+  const isTablet = (width ?? 0) < 1025;
 
   return (
     <div>
@@ -27,7 +27,7 @@ export default function ProductGridView({ products }: Props) {
               price={item.price}
               title={item.title}
               off={item.discount}
-              images={item.images}
+              images={item.images??[]}
               imgUrl={item.thumbnail}
               rating={item.rating || 4}
             />
