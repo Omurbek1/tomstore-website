@@ -1,14 +1,15 @@
 import createMiddleware from "next-intl/middleware";
-import { routing } from 'i18n/routing';
+import { routing } from "./i18n/routing"; // Добавили "./"
 
 export default createMiddleware(routing);
 
 export const config = {
-  // Более надежный матчер для Next.js 15
   matcher: [
-    // Устанавливает локаль для корневого пути
+    // 1. Обработка корня
     "/",
-    // Устанавливает локаль для всех путей, кроме исключений
+    // 2. Обработка всех путей с префиксами локалей (en/ru)
+    "/(ru|en)/:path*",
+    // 3. Исключение служебных файлов
     "/((?!api|_next|_vercel|.*\\..*).*)",
   ],
 };
