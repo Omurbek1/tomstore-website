@@ -302,6 +302,7 @@
       "dateRequired": "Дата обязательна"
     },
     "filters": {
+      "title": "Фильтры",
       "categories": "Категории",
       "priceRange": "Диапазон цен",
       "brands": "Бренды",
@@ -358,9 +359,75 @@
       "company": "Компания",
       "country": "Страна",
       "backToCart": "Назад в корзину",
-      "proceedToPayment": "Перейти к оплате"
+      "proceedToPayment": "Перейти к оплате",
+      "validation": {
+        "required": "Это поле обязательно",
+        "invalidEmail": "Введите корректный email"
+      }
+    },
+    "paymentForm": {
+      "methods": {
+        "creditCard": "Оплата банковской картой",
+        "paypal": "Оплата через PayPal",
+        "cod": "Оплата при доставке"
+      },
+      "fields": {
+        "cardNumber": "Номер карты",
+        "expDate": "Срок действия",
+        "nameOnCard": "Имя на карте",
+        "cvc": "CVC",
+        "paypalEmail": "Email PayPal"
+      },
+      "buttons": {
+        "backToCheckout": "Назад к оформлению",
+        "review": "Проверить"
+      },
+      "validation": {
+        "required": "Это поле обязательно",
+        "invalidEmail": "Введите корректный email"
+      }
+    },
+    "alternative": {
+      "title": "Ваш заказ",
+      "sections": {
+        "deliveryDetails": "Детали доставки",
+        "deliveryAddress": "Адрес доставки",
+        "personalDetails": "Персональные данные",
+        "contactInformation": "Контактная информация",
+        "paymentDetails": "Детали оплаты",
+        "savedPaymentMethods": "Сохраненные способы оплаты"
+      },
+      "fields": {
+        "deliveryDate": "Дата доставки",
+        "deliveryTime": "Время доставки",
+        "voucherPlaceholder": "Введите промокод"
+      },
+      "buttons": {
+        "haveVoucher": "У меня есть промокод.",
+        "applyVoucher": "Применить",
+        "placeOrder": "Оформить заказ"
+      },
+      "addressTypes": {
+        "home": "Дом",
+        "office": "Офис",
+        "office2": "Офис 2"
+      },
+      "contactTypes": {
+        "primary": "Основной",
+        "secondary": "Дополнительный"
+      },
+      "timeSlots": {
+        "morning": "9AM - 11AM",
+        "midday": "11AM - 1PM",
+        "afternoon": "3PM - 5PM",
+        "evening": "5PM - 7PM"
+      },
+      "validation": {
+        "required": "Это поле обязательно"
+      }
     },
     "summary": {
+      "title": "Сводка заказа",
       "subtotal": "Подытог:",
       "shipping": "Доставка:",
       "tax": "Налог:",
@@ -401,14 +468,37 @@
       "orders": "Заказы",
       "products": "Товары",
       "addProduct": "Добавить товар",
-      "editProduct": "Редактировать товар"
+      "editProduct": "Редактировать товар",
+      "editProfile": "Редактировать профиль",
+      "addAddress": "Добавить адрес",
+      "editAddress": "Редактировать адрес"
     },
     "buttons": {
       "addAllToCart": "Добавить все в корзину",
       "editProfile": "Редактировать профиль",
       "addNewAddress": "Добавить адрес",
       "addNew": "Добавить",
-      "back": "Назад"
+      "back": "Назад",
+      "viewDetails": "Открыть детали",
+      "saveChanges": "Сохранить изменения",
+      "changePhoto": "Сменить фото"
+    },
+    "orderStatus": {
+      "pending": "В ожидании",
+      "processing": "В обработке",
+      "delivered": "Доставлен",
+      "cancelled": "Отменен"
+    },
+    "validation": {
+      "required": "Это поле обязательно",
+      "invalidEmail": "Введите корректный email",
+      "invalidDate": "Выберите корректную дату"
+    },
+    "forms": {
+      "addressTitle": "Название адреса",
+      "street": "Улица",
+      "city": "Город",
+      "country": "Страна"
     },
     "profile": {
       "balance": "Баланс:",
@@ -428,6 +518,8 @@
       "status": "Статус",
       "datePurchased": "Дата покупки",
       "total": "Итого",
+      "action": "Действие",
+      "noOrders": "Заказов пока нет",
       "name": "Название",
       "regularPrice": "Обычная цена",
       "salePrice": "Цена со скидкой"

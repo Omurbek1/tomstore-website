@@ -1,27 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { Button, Checkbox, Col, Form, Input, Row, Select } from "antd";
 import { useTranslations } from "next-intl";
-import * as yup from "yup";
-import { Formik } from "formik";
 
-import Select from "@component/Select";
-import Grid from "@component/grid/Grid";
 import { Card1 } from "@component/Card1";
-import CheckBox from "@component/CheckBox";
 import countryList from "@data/countryList";
-import { Button } from "@component/buttons";
-import TextField from "@component/text-field";
 import Typography from "@component/Typography";
-import { Link, useRouter } from "i18n/navigation";
+import { useRouter } from "i18n/navigation";
 
-const initialValues = {
+type CheckoutFormValues = {
+  shipping_name: string;
+  shipping_email: string;
+  shipping_contact: string;
+  shipping_company: string;
+  shipping_zip: string;
+  shipping_country: string;
+  shipping_address1: string;
+  shipping_address2: string;
+  billing_name: string;
+  billing_email: string;
+  billing_contact: string;
+  billing_company: string;
+  billing_zip: string;
+  billing_country: string;
+  billing_address1: string;
+  billing_address2: string;
+  same_as_shipping: boolean;
+};
+
+const COUNTRY_OPTIONS = countryList.map((item) => ({ label: item.label, value: item.value }));
+
+const initialValues: CheckoutFormValues = {
   shipping_name: "",
   shipping_email: "",
   shipping_contact: "",
   shipping_company: "",
   shipping_zip: "",
-  shipping_country: "",
+  shipping_country: "US",
   shipping_address1: "",
   shipping_address2: "",
 
@@ -30,287 +45,143 @@ const initialValues = {
   billing_contact: "",
   billing_company: "",
   billing_zip: "",
-  billing_country: "",
+  billing_country: "US",
   billing_address1: "",
-  billing_address2: ""
+  billing_address2: "",
+  same_as_shipping: false
 };
 
-const checkoutSchema = yup.object({
-  // shipping_name: yup.string().required("required"),
-  // shipping_email: yup.string().email("invalid email").required("required"),
-  // shipping_contact: yup.string().required("required"),
-  // shipping_zip: yup.string().required("required"),
-  // shipping_country: yup.object().required("required"),
-  // shipping_address1: yup.string().required("required"),
-  // billing_name: yup.string().required("required"),
-  // billing_email: yup.string().required("required"),
-  // billing_contact: yup.string().required("required"),
-  // billing_zip: yup.string().required("required"),
-  // billing_country: yup.string().required("required"),
-  // billing_address1: yup.string().required("required"),
-});
-
 export default function CheckoutForm() {
+  const [form] = Form.useForm<CheckoutFormValues>();
   const router = useRouter();
   const t = useTranslations("checkout.form");
-  const [sameAsShipping, setSameAsShipping] = useState(false);
+  const sameAsShipping = Form.useWatch("same_as_shipping", form) ?? false;
 
-  const handleFormSubmit = async (values: typeof initialValues) => {
-    console.log(values);
+  const handleFormSubmit = async (values: CheckoutFormValues) => {
+    const normalizedValues = values.same_as_shipping
+      ? {
+          ...values,
+          billing_name: values.shipping_name,
+          billing_email: values.shipping_email,
+          billing_contact: values.shipping_contact,
+          billing_company: values.shipping_company,
+          billing_zip: values.shipping_zip,
+          billing_country: values.shipping_country,
+          billing_address1: values.shipping_address1,
+          billing_address2: values.shipping_address2
+        }
+      : values;
+
+    console.log(normalizedValues);
     router.push("/payment");
   };
 
-  const handleCheckboxChange =
-    (values: typeof initialValues, setFieldValue: any) =>
-    ({ target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
-      setSameAsShipping(checked);
-      setFieldValue("same_as_shipping", checked);
-      setFieldValue("billing_name", checked ? values.shipping_name : "");
-    };
+  const renderAddressFields = (prefix: "shipping" | "billing") => (
+    <Row gutter={[24, 0]}>
+      <Col xs={24} sm={12}>
+        <Form.Item
+          name={`${prefix}_name`}
+          label={t("fullName")}
+          rules={[{ required: true, message: t("validation.required") }]}>
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name={`${prefix}_contact`}
+          label={t("phoneNumber")}
+          rules={[{ required: true, message: t("validation.required") }]}>
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name={`${prefix}_zip`}
+          label={t("zipCode")}
+          rules={[{ required: true, message: t("validation.required") }]}>
+          <Input inputMode="numeric" />
+        </Form.Item>
+
+        <Form.Item
+          name={`${prefix}_address1`}
+          label={t("address1")}
+          rules={[{ required: true, message: t("validation.required") }]}>
+          <Input />
+        </Form.Item>
+      </Col>
+
+      <Col xs={24} sm={12}>
+        <Form.Item
+          name={`${prefix}_email`}
+          label={t("emailAddress")}
+          rules={[
+            { required: true, message: t("validation.required") },
+            { type: "email", message: t("validation.invalidEmail") }
+          ]}>
+          <Input type="email" />
+        </Form.Item>
+
+        <Form.Item name={`${prefix}_company`} label={t("company")}>
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name={`${prefix}_country`}
+          label={t("country")}
+          rules={[{ required: true, message: t("validation.required") }]}>
+          <Select
+            showSearch
+            options={COUNTRY_OPTIONS}
+            optionFilterProp="label"
+            placeholder={t("country")}
+          />
+        </Form.Item>
+
+        <Form.Item name={`${prefix}_address2`} label={t("address2")}>
+          <Input />
+        </Form.Item>
+      </Col>
+    </Row>
+  );
 
   return (
-    <Formik
+    <Form<CheckoutFormValues>
+      form={form}
+      layout="vertical"
+      requiredMark={false}
       initialValues={initialValues}
-      validationSchema={checkoutSchema}
-      onSubmit={handleFormSubmit}>
-      {({ values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue }) => (
-        <form onSubmit={handleSubmit}>
-          <Card1 mb="2rem">
-            <Typography fontWeight="600" mb="1rem">
-              {t("shippingAddress")}
-            </Typography>
+      onFinish={handleFormSubmit}>
+      <Card1 mb="2rem">
+        <Typography fontWeight="600" mb="1rem">
+          {t("shippingAddress")}
+        </Typography>
 
-            <Grid container spacing={7}>
-              <Grid item sm={6} xs={12}>
-                <TextField
-                  fullWidth
-                  mb="1rem"
-                  label={t("fullName")}
-                  name="shipping_name"
-                  placeholder={t("fullName")}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.shipping_name}
-                  errorText={touched.shipping_name && errors.shipping_name ? errors.shipping_name : undefined}
-                />
+        {renderAddressFields("shipping")}
+      </Card1>
 
-                <TextField
-                  fullWidth
-                  mb="1rem"
-                  label={t("phoneNumber")}
-                  placeholder={t("phoneNumber")}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  name="shipping_contact"
-                  value={values.shipping_contact}
-                  errorText={touched.shipping_contact && errors.shipping_contact ? errors.shipping_contact : undefined}
-                />
+      <Card1 mb="2rem">
+        <Typography fontWeight="600" mb="1rem">
+          {t("billingAddress")}
+        </Typography>
 
-                <TextField
-                  fullWidth
-                  mb="1rem"
-                  type="number"
-                  label={t("zipCode")}
-                  placeholder={t("zipCode")}
-                  onBlur={handleBlur}
-                  name="shipping_zip"
-                  onChange={handleChange}
-                  value={values.shipping_zip}
-                  errorText={touched.shipping_zip && errors.shipping_zip ? errors.shipping_zip : undefined}
-                />
+        <Form.Item name="same_as_shipping" valuePropName="checked" style={{ marginBottom: 16 }}>
+          <Checkbox>{t("sameAsShipping")}</Checkbox>
+        </Form.Item>
 
-                <TextField
-                  fullWidth
-                  label={t("address1")}
-                  placeholder={t("address1")}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  name="shipping_address1"
-                  value={values.shipping_address1}
-                  errorText={touched.shipping_address1 && errors.shipping_address1 ? errors.shipping_address1 : undefined}
-                />
-              </Grid>
+        {!sameAsShipping && renderAddressFields("billing")}
+      </Card1>
 
-              <Grid item sm={6} xs={12}>
-                <TextField
-                  fullWidth
-                  mb="1rem"
-                  type="email"
-                  placeholder={t("emailAddress")}
-                  onBlur={handleBlur}
-                  label={t("emailAddress")}
-                  name="shipping_email"
-                  onChange={handleChange}
-                  value={values.shipping_email}
-                  errorText={touched.shipping_email && errors.shipping_email ? errors.shipping_email : undefined}
-                />
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12}>
+          <Button block onClick={() => router.push("/cart")}>
+            {t("backToCart")}
+          </Button>
+        </Col>
 
-                <TextField
-                  fullWidth
-                  mb="1rem"
-                  label={t("company")}
-                  placeholder={t("company")}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  name="shipping_company"
-                  value={values.shipping_company}
-                  errorText={touched.shipping_company && errors.shipping_company ? errors.shipping_company : undefined}
-                />
-
-                <Select
-                  mb="1rem"
-                  label={t("country")}
-                  options={countryList}
-                  value={values.shipping_country || "US"}
-                  errorText={touched.shipping_country && errors.shipping_country ? errors.shipping_country : undefined}
-                  onChange={(country) => setFieldValue("shipping_country", country)}
-                />
-
-                <TextField
-                  fullWidth
-                  label={t("address2")}
-                  placeholder={t("address2")}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  name="shipping_address2"
-                  value={values.shipping_address2}
-                  errorText={touched.shipping_address2 && errors.shipping_address2 ? errors.shipping_address2 : undefined}
-                />
-              </Grid>
-            </Grid>
-          </Card1>
-
-          <Card1 mb="2rem">
-            <Typography fontWeight="600" mb="1rem">
-              {t("billingAddress")}
-            </Typography>
-
-            <CheckBox
-              color="secondary"
-              label={t("sameAsShipping")}
-              mb={sameAsShipping ? "" : "1rem"}
-              onChange={handleCheckboxChange(values, setFieldValue)}
-            />
-
-            {!sameAsShipping && (
-              <Grid container spacing={7}>
-                <Grid item sm={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    mb="1rem"
-                    label={t("fullName")}
-                    placeholder={t("fullName")}
-                    name="billing_name"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.billing_name}
-                    errorText={touched.billing_name && errors.billing_name ? errors.billing_name : undefined}
-                  />
-
-                  <TextField
-                    fullWidth
-                    mb="1rem"
-                    label={t("phoneNumber")}
-                    placeholder={t("phoneNumber")}
-                    onBlur={handleBlur}
-                    name="billing_contact"
-                    onChange={handleChange}
-                    value={values.billing_contact}
-                    errorText={touched.billing_contact && errors.billing_contact ? errors.billing_contact : undefined}
-                  />
-
-                  <TextField
-                    fullWidth
-                    mb="1rem"
-                    type="number"
-                    label={t("zipCode")}
-                    placeholder={t("zipCode")}
-                    name="billing_zip"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.billing_zip}
-                    errorText={touched.billing_zip && errors.billing_zip ? errors.billing_zip : undefined}
-                  />
-
-                  <TextField
-                    fullWidth
-                    label={t("address1")}
-                    placeholder={t("address1")}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    name="billing_address1"
-                    value={values.billing_address1}
-                    errorText={touched.billing_address1 && errors.billing_address1 ? errors.billing_address1 : undefined}
-                  />
-                </Grid>
-
-                <Grid item sm={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    mb="1rem"
-                    type="email"
-                    placeholder={t("emailAddress")}
-                    onBlur={handleBlur}
-                    name="billing_email"
-                    label={t("emailAddress")}
-                    onChange={handleChange}
-                    value={values.billing_email}
-                    errorText={touched.billing_email && errors.billing_email ? errors.billing_email : undefined}
-                  />
-
-                  <TextField
-                    fullWidth
-                    mb="1rem"
-                    label={t("company")}
-                    placeholder={t("company")}
-                    onBlur={handleBlur}
-                    name="billing_company"
-                    onChange={handleChange}
-                    value={values.billing_company}
-                    errorText={touched.billing_company && errors.billing_company ? errors.billing_company : undefined}
-                  />
-
-                  <Select
-                    mb="1rem"
-                    label={t("country")}
-                    options={countryList}
-                    value={values.billing_country || "US"}
-                    errorText={touched.billing_country && errors.billing_country ? errors.billing_country : undefined}
-                    onChange={(country) => setFieldValue("billing_country", country)}
-                  />
-
-                  <TextField
-                    fullWidth
-                    label={t("address2")}
-                    placeholder={t("address2")}
-                    onBlur={handleBlur}
-                    name="billing_address2"
-                    onChange={handleChange}
-                    value={values.billing_address2}
-                    errorText={touched.billing_address2 && errors.billing_address2 ? errors.billing_address2 : undefined}
-                  />
-                </Grid>
-              </Grid>
-            )}
-          </Card1>
-
-          <Grid container spacing={7}>
-            <Grid item sm={6} xs={12}>
-              <Link href="/cart">
-                <Button variant="outlined" color="primary" type="button" fullWidth>
-                  {t("backToCart")}
-                </Button>
-              </Link>
-            </Grid>
-
-            <Grid item sm={6} xs={12}>
-              <Button variant="contained" color="primary" type="submit" fullWidth>
-                {t("proceedToPayment")}
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-      )}
-    </Formik>
+        <Col xs={24} sm={12}>
+          <Button htmlType="submit" type="primary" block>
+            {t("proceedToPayment")}
+          </Button>
+        </Col>
+      </Row>
+    </Form>
   );
 }

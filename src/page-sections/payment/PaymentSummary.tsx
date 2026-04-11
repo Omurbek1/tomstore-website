@@ -1,61 +1,25 @@
-import { Card1 } from "@component/Card1";
-import Divider from "@component/Divider";
-import FlexBox from "@component/FlexBox";
-import Typography from "@component/Typography";
+"use client";
 
-export default function CheckoutSummary() {
+import { useTranslations } from "next-intl";
+
+import OrderSummaryCard from "@component/checkout/OrderSummaryCard";
+import { ORDER_SUMMARY } from "@data/order-summary";
+
+export default function PaymentSummary() {
+  const t = useTranslations("checkout.summary");
+  const rows = [
+    { label: t("subtotal"), value: ORDER_SUMMARY.subtotal },
+    { label: t("shipping"), value: ORDER_SUMMARY.shipping },
+    { label: t("tax"), value: ORDER_SUMMARY.tax },
+    { label: t("discount"), value: ORDER_SUMMARY.discount }
+  ];
+
   return (
-    <Card1>
-      <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
-        <Typography color="text.hint">Subtotal:</Typography>
-
-        <FlexBox alignItems="flex-end">
-          <Typography fontSize="18px" fontWeight="600" lineHeight="1">
-            $2610.
-          </Typography>
-          <Typography fontWeight="600" fontSize="14px" lineHeight="1">
-            00
-          </Typography>
-        </FlexBox>
-      </FlexBox>
-
-      <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
-        <Typography color="text.hint">Shipping:</Typography>
-
-        <FlexBox alignItems="flex-end">
-          <Typography fontSize="18px" fontWeight="600" lineHeight="1">
-            -
-          </Typography>
-        </FlexBox>
-      </FlexBox>
-
-      <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
-        <Typography color="text.hint">Tax:</Typography>
-
-        <FlexBox alignItems="flex-end">
-          <Typography fontSize="18px" fontWeight="600" lineHeight="1">
-            $40.
-          </Typography>
-          <Typography fontWeight="600" fontSize="14px" lineHeight="1">
-            00
-          </Typography>
-        </FlexBox>
-      </FlexBox>
-
-      <FlexBox justifyContent="space-between" alignItems="center" mb="1rem">
-        <Typography color="text.hint">Discount:</Typography>
-        <FlexBox alignItems="flex-end">
-          <Typography fontSize="18px" fontWeight="600" lineHeight="1">
-            -
-          </Typography>
-        </FlexBox>
-      </FlexBox>
-
-      <Divider mb="1rem" />
-
-      <Typography fontSize="25px" fontWeight="600" lineHeight="1" textAlign="right">
-        $2610.00
-      </Typography>
-    </Card1>
+    <OrderSummaryCard
+      title={t("title")}
+      rows={rows}
+      total={ORDER_SUMMARY.total}
+      totalLabel={t("total")}
+    />
   );
 }

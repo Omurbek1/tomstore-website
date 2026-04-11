@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useCallback, useState } from "react";
+import { Drawer } from "antd";
 import { useParams } from "next/navigation";
 import { useTheme } from "styled-components";
 import { IconLayoutGrid, IconList } from "@tabler/icons-react";
@@ -13,7 +14,6 @@ import Icon from "@component/icon/Icon";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import { IconButton } from "@component/buttons";
-import Sidenav from "@component/sidenav/Sidenav";
 import { H5, Paragraph } from "@component/Typography";
 import ProductGridView from "@component/products/ProductCard1List";
 import ProductListView from "@component/products/ProductCard9List";
@@ -26,6 +26,7 @@ export default function SearchResult() {
   const width = useWindowSize();
   const params = useParams<{ slug: string }>();
   const t = useTranslations("search");
+  const filtersT = useTranslations("product.filters");
 
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -42,6 +43,7 @@ export default function SearchResult() {
   const handleCloseSidenav = useCallback(() => setOpen(false), []);
 
   const isTablet = width ? width < 1025 : false;
+  const showDesktopFilters = !isTablet;
   const toggleView = useCallback((v: any) => () => setView(v), []);
 
   return (
@@ -97,31 +99,39 @@ export default function SearchResult() {
           </IconButton>
 
           {isTablet && (
-            <Sidenav
-              position="left"
-              open={open}
-              scroll={true}
-              onClose={handleCloseSidenav}
-              handle={
-                <IconButton onClick={handleOpenSidenav}>
-                  <Icon>options</Icon>
-                </IconButton>
-              }
-            >
-              <ProductFilterCard />
-            </Sidenav>
+            <Fragment>
+              <IconButton
+                onClick={handleOpenSidenav}
+                aria-label={filtersT("title")}
+                title={filtersT("title")}>
+                <Icon>options</Icon>
+              </IconButton>
+
+              <Drawer
+                placement="left"
+                size={320}
+                open={open}
+                title={filtersT("title")}
+                onClose={handleCloseSidenav}
+                destroyOnHidden
+                styles={{ body: { padding: 16, background: theme.colors.body.paper } }}>
+                <ProductFilterCard />
+              </Drawer>
+            </Fragment>
           )}
         </FlexBox>
       </FlexBox>
 
       <Grid container spacing={6}>
-        <Grid item lg={3} xs={12}>
-          <ProductFilterCard />
-        </Grid>
+        {showDesktopFilters && (
+          <Grid item lg={3} xs={12}>
+            <ProductFilterCard />
+          </Grid>
+        )}
 
-        <Grid item lg={9} xs={12}>
+        <Grid item lg={showDesktopFilters ? 9 : 12} xs={12}>
           {view === "grid" ? (
-            <ProductGridView products={db.slice(95, 104) as any[]}  />
+            <ProductGridView products={db.slice(95, 104) as any[]} />
           ) : (
             <ProductListView products={db.slice(95, 104) as any[]} />
           )}

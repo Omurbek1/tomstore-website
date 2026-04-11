@@ -1,29 +1,29 @@
 "use client";
 
-import * as yup from "yup";
-import { Formik } from "formik";
+import { Button, Col, Form, Input, Row, Select } from "antd";
+import { useTranslations } from "next-intl";
+
 import Box from "@component/Box";
-import Grid from "@component/grid/Grid";
-import { Button } from "@component/buttons";
-import TextField from "@component/text-field";
+import countryList from "@data/countryList";
 import Address from "@models/address.model";
 
-const VALIDATION_SCHEMA = yup.object({
-  name: yup.string().required("Name is required"),
-  street: yup.string().required("Street is required"),
-  city: yup.string().required("City is required"),
-  country: yup.string().required("Country is required"),
-  contact: yup.string().required("Contact is required")
-});
+const COUNTRY_OPTIONS = countryList.map((item) => ({ label: item.label, value: item.label }));
 
-type FormValues = yup.InferType<typeof VALIDATION_SCHEMA>;
+type FormValues = {
+  name: string;
+  street: string;
+  city: string;
+  country: string;
+  contact: string;
+};
 
 // ===========================================================
 type AddressFormProps = { address?: Address };
 // ===========================================================
 
 export default function AddressForm({ address }: AddressFormProps) {
-  const INITIAL_VALUES = {
+  const t = useTranslations("dashboard");
+  const initialValues: FormValues = {
     name: address?.title || "",
     contact: address?.phone || "",
     city: address?.city || "",
@@ -36,86 +36,68 @@ export default function AddressForm({ address }: AddressFormProps) {
   };
 
   return (
-    <Formik
-      onSubmit={handleFormSubmit}
-      initialValues={INITIAL_VALUES}
-      validationSchema={VALIDATION_SCHEMA}>
-      {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-        <form onSubmit={handleSubmit}>
-          <Box mb="30px">
-            <Grid container horizontal_spacing={6} vertical_spacing={4}>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  fullWidth
-                  name="name"
-                  label="Name"
-                  placeholder="Enter your name"
-                  onBlur={handleBlur}
-                  value={values.name}
-                  onChange={handleChange}
-                  errorText={touched.name && errors.name ? errors.name : undefined}
-                />
-              </Grid>
+    <Form<FormValues>
+      layout="vertical"
+      requiredMark={false}
+      initialValues={initialValues}
+      onFinish={handleFormSubmit}>
+      <Box mb="30px">
+        <Row gutter={[24, 16]}>
+          <Col xs={24} md={12}>
+            <Form.Item
+              name="name"
+              label={t("forms.addressTitle")}
+              rules={[{ required: true, message: t("validation.required") }]}>
+              <Input />
+            </Form.Item>
+          </Col>
 
-              <Grid item md={6} xs={12}>
-                <TextField
-                  fullWidth
-                  label="Phone"
-                  placeholder="Enter your phone number"
-                  name="contact"
-                  onBlur={handleBlur}
-                  value={values.contact}
-                  onChange={handleChange}
-                  errorText={touched.contact && errors.contact}
-                />
-              </Grid>
+          <Col xs={24} md={12}>
+            <Form.Item
+              name="contact"
+              label={t("profile.phone")}
+              rules={[{ required: true, message: t("validation.required") }]}>
+              <Input />
+            </Form.Item>
+          </Col>
 
-              <Grid item md={6} xs={12}>
-                <TextField
-                  fullWidth
-                  name="street"
-                  label="Street"
-                  placeholder="Enter your street"
-                  onBlur={handleBlur}
-                  value={values.street}
-                  onChange={handleChange}
-                  errorText={touched.street && errors.street}
-                />
-              </Grid>
+          <Col xs={24} md={12}>
+            <Form.Item
+              name="street"
+              label={t("forms.street")}
+              rules={[{ required: true, message: t("validation.required") }]}>
+              <Input />
+            </Form.Item>
+          </Col>
 
-              <Grid item md={6} xs={12}>
-                <TextField
-                  fullWidth
-                  name="city"
-                  label="City"
-                  placeholder="Enter your city"
-                  onBlur={handleBlur}
-                  value={values.city}
-                  onChange={handleChange}
-                  errorText={touched.city && errors.city}
-                />
-              </Grid>
+          <Col xs={24} md={12}>
+            <Form.Item
+              name="city"
+              label={t("forms.city")}
+              rules={[{ required: true, message: t("validation.required") }]}>
+              <Input />
+            </Form.Item>
+          </Col>
 
-              <Grid item md={6} xs={12}>
-                <TextField
-                  fullWidth
-                  name="country"
-                  label="Country"
-                  placeholder="Enter your country"
-                  onBlur={handleBlur}
-                  value={values.country}
-                  onChange={handleChange}
-                  errorText={touched.country && errors.country}
-                />
-              </Grid>
-            </Grid>
-          </Box>
+          <Col xs={24} md={12}>
+            <Form.Item
+              name="country"
+              label={t("forms.country")}
+              rules={[{ required: true, message: t("validation.required") }]}>
+              <Select
+                showSearch
+                options={COUNTRY_OPTIONS}
+                optionFilterProp="label"
+                placeholder={t("forms.country")}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Box>
 
-          <Button type="submit" variant="contained" color="primary">
-            Save Changes
-          </Button>
-        </form>
-      )}
-    </Formik>
+      <Button htmlType="submit" type="primary">
+        {t("buttons.saveChanges")}
+      </Button>
+    </Form>
   );
 }

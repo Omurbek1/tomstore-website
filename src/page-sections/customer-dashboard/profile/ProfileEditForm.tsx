@@ -1,38 +1,40 @@
 "use client";
 
-import * as yup from "yup";
-import { Formik } from "formik";
-import { format } from "date-fns/format";
+import dayjs, { type Dayjs } from "dayjs";
+import { Button, Col, DatePicker, Form, Input, Row } from "antd";
 import { IconCamera } from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
 
 import Box from "@component/Box";
 import Hidden from "@component/hidden";
 import Avatar from "@component/avatar";
-import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
-import { Button } from "@component/buttons";
-import TextField from "@component/text-field";
 import User from "@models/user.model";
 
-const VALIDATION_SCHEMA = yup.object().shape({
-  first_name: yup.string().required("required"),
-  last_name: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  contact: yup.string().required("required"),
-  birth_date: yup.date().required("invalid date")
-});
+type ProfileFormValues = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  contact: string;
+  birth_date: Dayjs | null;
+};
 
 export default function ProfileEditForm({ user }: { user: User }) {
-  const INITIAL_VALUES = {
+  const t = useTranslations("dashboard");
+  const birthDate = dayjs(user.dateOfBirth);
+  const initialValues: ProfileFormValues = {
     first_name: user.name.firstName || "",
     last_name: user.name.lastName || "",
     email: user.email || "",
     contact: user.phone || "",
-    birth_date: format(new Date(user.dateOfBirth), "yyyy-MM-dd") || ""
+    birth_date: birthDate.isValid() ? birthDate : null
   };
 
-  const handleFormSubmit = async (values: typeof INITIAL_VALUES) => {
-    console.log(values);
+  const handleFormSubmit = async (values: ProfileFormValues) => {
+    console.log({
+      ...values,
+      birth_date: values.birth_date?.format("YYYY-MM-DD") || ""
+    });
   };
 
   return (
@@ -42,9 +44,14 @@ export default function ProfileEditForm({ user }: { user: User }) {
 
         <Box ml="-20px" zIndex={1}>
           <label htmlFor="profile-image">
-            <Button p="6px" as="span" size="small" height="auto" color="primary" borderRadius="50%">
-              <IconCamera size={18} />
-            </Button>
+            <Button
+              size="small"
+              shape="circle"
+              type="primary"
+              icon={<IconCamera size={16} />}
+              aria-label={t("buttons.changePhoto")}
+              title={t("buttons.changePhoto")}
+            />
           </label>
         </Box>
 
@@ -59,84 +66,67 @@ export default function ProfileEditForm({ user }: { user: User }) {
         </Hidden>
       </FlexBox>
 
-      <Formik
-        onSubmit={handleFormSubmit}
-        initialValues={INITIAL_VALUES}
-        validationSchema={VALIDATION_SCHEMA}>
-        {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
-          <form onSubmit={handleSubmit}>
-            <Box mb="30px">
-              <Grid container horizontal_spacing={6} vertical_spacing={4}>
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    name="first_name"
-                    label="First Name"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.first_name}
-                    errorText={touched.first_name && errors.first_name}
-                  />
-                </Grid>
+      <Form<ProfileFormValues>
+        layout="vertical"
+        requiredMark={false}
+        initialValues={initialValues}
+        onFinish={handleFormSubmit}>
+        <Box mb="30px">
+          <Row gutter={[24, 16]}>
+            <Col xs={24} md={12}>
+              <Form.Item
+                name="first_name"
+                label={t("profile.firstName")}
+                rules={[{ required: true, message: t("validation.required") }]}>
+                <Input />
+              </Form.Item>
+            </Col>
 
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    name="last_name"
-                    label="Last Name"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.last_name}
-                    errorText={touched.last_name && errors.last_name}
-                  />
-                </Grid>
+            <Col xs={24} md={12}>
+              <Form.Item
+                name="last_name"
+                label={t("profile.lastName")}
+                rules={[{ required: true, message: t("validation.required") }]}>
+                <Input />
+              </Form.Item>
+            </Col>
 
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    name="email"
-                    type="email"
-                    label="Email"
-                    onBlur={handleBlur}
-                    value={values.email}
-                    onChange={handleChange}
-                    errorText={touched.email && errors.email}
-                  />
-                </Grid>
+            <Col xs={24} md={12}>
+              <Form.Item
+                name="email"
+                label={t("profile.email")}
+                rules={[
+                  { required: true, message: t("validation.required") },
+                  { type: "email", message: t("validation.invalidEmail") }
+                ]}>
+                <Input type="email" />
+              </Form.Item>
+            </Col>
 
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Phone"
-                    name="contact"
-                    onBlur={handleBlur}
-                    value={values.contact}
-                    onChange={handleChange}
-                    errorText={touched.contact && errors.contact}
-                  />
-                </Grid>
+            <Col xs={24} md={12}>
+              <Form.Item
+                name="contact"
+                label={t("profile.phone")}
+                rules={[{ required: true, message: t("validation.required") }]}>
+                <Input />
+              </Form.Item>
+            </Col>
 
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    type="date"
-                    name="birth_date"
-                    label="Birth Date"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.birth_date}
-                    errorText={touched.birth_date && errors.birth_date}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
+            <Col xs={24} md={12}>
+              <Form.Item
+                name="birth_date"
+                label={t("profile.birthDate")}
+                rules={[{ required: true, message: t("validation.invalidDate") }]}>
+                <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Box>
 
-            <Button type="submit" variant="contained" color="primary">
-              Save Changes
-            </Button>
-          </form>
-        )}
-      </Formik>
+        <Button htmlType="submit" type="primary">
+          {t("buttons.saveChanges")}
+        </Button>
+      </Form>
     </>
   );
 }

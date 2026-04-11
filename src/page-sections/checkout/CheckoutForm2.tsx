@@ -1,90 +1,75 @@
 "use client";
 
 import NextImage from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import * as yup from "yup";
-import { Formik } from "formik";
-import { format } from "date-fns/format";
+import { useMemo, useState } from "react";
+import { Button, Card as AntCard, Col, Form, Input, Row, Select } from "antd";
+import { useLocale, useTranslations } from "next-intl";
 
 import Box from "@component/Box";
-import Card from "@component/Card";
 import Avatar from "@component/avatar";
-import Select from "@component/Select";
-import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import { Card1 } from "@component/Card1";
-import { Button } from "@component/buttons";
-import TextField from "@component/text-field";
 import Typography, { H6, Paragraph } from "@component/Typography";
+import { useRouter } from "i18n/navigation";
 
-const initialValues = {
+type CheckoutAlternativeValues = {
+  address: string;
+  contact: string;
+  card: string;
+  date: string;
+  time: string;
+  voucher: string;
+};
+
+const initialValues: CheckoutAlternativeValues = {
   address: "",
   contact: "",
   card: "",
   date: "",
   time: "",
-  voucher: "",
+  voucher: ""
 };
 
-const checkoutSchema = yup.object().shape({
-  address: yup.string().required("required"),
-  contact: yup.string().required("required"),
-  card: yup.string().required("required"),
-  date: yup.object().required("required"),
-  time: yup.object().required("required"),
-  voucher: yup.string(),
-});
-
-type FormValues = yup.InferType<typeof checkoutSchema>;
-
 export default function CheckoutForm2() {
+  const [form] = Form.useForm<CheckoutAlternativeValues>();
   const router = useRouter();
-  const [dateList, setDateList] = useState([]);
+  const locale = useLocale();
+  const t = useTranslations("checkout.alternative");
   const [hasVoucher, setHasVoucher] = useState(false);
+  const selectedAddress = Form.useWatch("address", form);
+  const selectedContact = Form.useWatch("contact", form);
+  const selectedCard = Form.useWatch("card", form);
 
-  const handleFormSubmit = async (values: FormValues) => {
+  const dateList = useMemo(() => {
+    const formatter = new Intl.DateTimeFormat(locale === "ru" ? "ru-RU" : "en-US", {
+      day: "2-digit",
+      month: "long"
+    });
+    const today = new Date();
+    return Array.from({ length: 10 }, (_, index) => {
+      const nextDate = new Date(today);
+      nextDate.setDate(today.getDate() + index);
+      return {
+        label: formatter.format(nextDate),
+        value: nextDate.toISOString()
+      };
+    });
+  }, [locale]);
+
+  const handleFormSubmit = async (values: CheckoutAlternativeValues) => {
     console.log(values);
     router.push("/payment");
   };
 
-  const handleFieldValueChange =
-    (value: string, fieldName: string, setFieldValue: any) => () => {
-      setFieldValue(fieldName, value);
-    };
-
   const toggleHasVoucher = () => setHasVoucher((has) => !has);
 
-  useEffect(() => {
-    let list: { label: string; value: Date }[] = [];
-    let today = new Date();
-    let dateCount = today.getDate();
-
-    list.push({ label: format(today, "dd MMMM"), value: today });
-
-    for (let i = 1; i < 10; i++) {
-      today.setDate(dateCount + i);
-      list.push({ label: format(today, "dd MMMM"), value: today });
-    }
-
-    setDateList(list as any);
-  }, []);
-
   return (
-    <Formik
-      onSubmit={handleFormSubmit}
+    <Form<CheckoutAlternativeValues>
+      form={form}
+      layout="vertical"
+      requiredMark={false}
       initialValues={initialValues}
-      validationSchema={checkoutSchema}
-    >
-      {({
-        values,
-        errors,
-        touched,
-        handleChange,
-        handleSubmit,
-        setFieldValue,
-      }) => (
-        <form onSubmit={handleSubmit}>
+      onFinish={handleFormSubmit}>
           <Card1 mb="1.5rem" borderRadius={8}>
             <FlexBox alignItems="center" mb="1.75rem">
               <Avatar
@@ -95,60 +80,96 @@ export default function CheckoutForm2() {
               >
                 1
               </Avatar>
-              <Typography fontSize="20px">Delivery Details</Typography>
+              <Typography fontSize="20px">{t("sections.deliveryDetails")}</Typography>
             </FlexBox>
 
             <Box mb="1.75rem">
-              <Grid container spacing={6}>
-                <Grid item sm={6} xs={12}>
-                  <Select
-                    label="Delivery Date"
-                    options={dateList}
-                    value={values.date}
-                    onChange={(date) => setFieldValue("date", date)}
-                    errorText={touched.date && (errors.date as string)}
-                  />
-                </Grid>
-                <Grid item sm={6} xs={12}>
-                  <Select
-                    label="Delivery Time"
-                    options={timeList}
-                    value={values.time}
-                    onChange={(time) => setFieldValue("time", time)}
-                    errorText={touched.time && (errors.time as string)}
-                  />
-                </Grid>
-              </Grid>
+              <Row gutter={[24, 0]}>
+                <Col xs={24} sm={12}>
+                  <Form.Item
+                    name="date"
+                    label={t("fields.deliveryDate")}
+                    rules={[{ required: true, message: t("validation.required") }]}>
+                    <Select options={dateList} />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={12}>
+                  <Form.Item
+                    name="time"
+                    label={t("fields.deliveryTime")}
+                    rules={[{ required: true, message: t("validation.required") }]}>
+                    <Select options={TIME_OPTIONS.map((item) => ({ label: t(`timeSlots.${item.key}`), value: item.value }))} />
+                  </Form.Item>
+                </Col>
+              </Row>
             </Box>
 
-            <Typography mb="0.75rem">Delivery Address</Typography>
-            <Grid container spacing={6}>
-              {addressList.map((item, ind) => (
-                <Grid item md={4} sm={6} xs={12} key={ind}>
-                  <Card
-                    borderRadius={8}
-                    bg="gray.100"
-                    p="1rem"
-                    boxShadow="none"
-                    border="1px solid"
-                    cursor="pointer"
-                    borderColor={
-                      item.address === values.address
-                        ? "primary.main"
-                        : "transparent"
-                    }
-                    onClick={handleFieldValueChange(
-                      item.address,
-                      "address",
-                      setFieldValue,
-                    )}
-                  >
-                    <H6 mb="0.25rem">{item.addressType}</H6>
-                    <Paragraph color="gray.700">{item.address}</Paragraph>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
+            <Typography mb="0.75rem">{t("sections.deliveryAddress")}</Typography>
+            <Form.Item
+              name="address"
+              rules={[{ required: true, message: t("validation.required") }]}>
+              <Row gutter={[24, 24]}>
+                {ADDRESS_LIST.map((item) => {
+                  const selected = selectedAddress === item.address;
+                  return (
+                    <Col md={8} sm={12} xs={24} key={item.address}>
+                      <AntCard
+                        hoverable
+                        styles={{ body: { padding: 16 } }}
+                        style={{
+                          borderColor: selected ? "#E94560" : "transparent",
+                          background: "#F6F9FC"
+                        }}
+                        onClick={() => form.setFieldValue("address", item.address)}>
+                        <H6 mb="0.25rem">{t(`addressTypes.${item.addressTypeKey}`)}</H6>
+                        <Paragraph color="gray.700">{item.address}</Paragraph>
+                      </AntCard>
+                    </Col>
+                  );
+                })}
+              </Row>
+            </Form.Item>
+          </Card1>
+
+          <Card1 mb="1.5rem" borderRadius={8}>
+            <FlexBox alignItems="center" mb="1.75rem">
+              <Avatar
+                bg="primary.main"
+                size={32}
+                color="primary.text"
+                mr="0.875rem"
+              >
+                2
+              </Avatar>
+              <Typography fontSize="20px">{t("sections.personalDetails")}</Typography>
+            </FlexBox>
+
+            <Typography mb="0.75rem">{t("sections.contactInformation")}</Typography>
+
+            <Form.Item
+              name="contact"
+              rules={[{ required: true, message: t("validation.required") }]}>
+              <Row gutter={[24, 24]}>
+                {CONTACT_LIST.map((item) => {
+                  const selected = selectedContact === item.contact;
+                  return (
+                    <Col md={8} sm={12} xs={24} key={item.contact}>
+                      <AntCard
+                        hoverable
+                        styles={{ body: { padding: 16 } }}
+                        style={{
+                          borderColor: selected ? "#E94560" : "transparent",
+                          background: "#F6F9FC"
+                        }}
+                        onClick={() => form.setFieldValue("contact", item.contact)}>
+                        <H6 mb="0.25rem">{t(`contactTypes.${item.contactTypeKey}`)}</H6>
+                        <Paragraph color="gray.700">{item.contact}</Paragraph>
+                      </AntCard>
+                    </Col>
+                  );
+                })}
+              </Row>
+            </Form.Item>
           </Card1>
 
           <Card1 mb="1.5rem" borderRadius={8}>
@@ -161,164 +182,100 @@ export default function CheckoutForm2() {
               >
                 3
               </Avatar>
-              <Typography fontSize="20px">Personal Details</Typography>
+              <Typography fontSize="20px">{t("sections.paymentDetails")}</Typography>
             </FlexBox>
 
-            <Typography mb="0.75rem">Contact Information</Typography>
+            <Typography mb="0.75rem">{t("sections.savedPaymentMethods")}</Typography>
 
-            <Grid container spacing={6}>
-              {contactList.map((item) => (
-                <Grid item md={4} sm={6} xs={12} key={item.contact}>
-                  <Card
-                    borderRadius={8}
-                    bg="gray.100"
-                    p="1rem"
-                    boxShadow="none"
-                    border="1px solid"
-                    cursor="pointer"
-                    borderColor={
-                      item.contact === values.contact
-                        ? "primary.main"
-                        : "transparent"
-                    }
-                    onClick={handleFieldValueChange(
-                      item.contact,
-                      "contact",
-                      setFieldValue,
-                    )}
-                  >
-                    <H6 mb="0.25rem">{item.contactType}</H6>
-                    <Paragraph color="gray.700">{item.contact}</Paragraph>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-          </Card1>
+            <Form.Item
+              name="card"
+              rules={[{ required: true, message: t("validation.required") }]}>
+              <Row gutter={[24, 24]}>
+                {PAYMENT_METHOD_LIST.map((item) => {
+                  const selected = selectedCard === item.last4Digits;
+                  return (
+                    <Col md={8} sm={12} xs={24} key={item.last4Digits}>
+                      <AntCard
+                        hoverable
+                        styles={{ body: { padding: 16 } }}
+                        style={{
+                          borderColor: selected ? "#E94560" : "transparent",
+                          background: "#F6F9FC"
+                        }}
+                        onClick={() => form.setFieldValue("card", item.last4Digits)}>
+                        <Box
+                          height="24px"
+                          width="36px"
+                          position="relative"
+                          mb="0.5rem"
+                        >
+                          <NextImage
+                            fill
+                            alt="payment"
+                            src={`/assets/images/payment-methods/${item.cardType}.svg`}
+                          />
+                        </Box>
 
-          <Card1 mb="1.5rem" borderRadius={8}>
-            <FlexBox alignItems="center" mb="1.75rem">
-              <Avatar
-                bg="primary.main"
-                size={32}
-                color="primary.text"
-                mr="0.875rem"
-              >
-                3
-              </Avatar>
-              <Typography fontSize="20px">Payment Details</Typography>
-            </FlexBox>
+                        <Paragraph color="gray.700">
+                          **** **** **** {item.last4Digits}
+                        </Paragraph>
+                        <Paragraph color="gray.700">{item.name}</Paragraph>
+                      </AntCard>
+                    </Col>
+                  );
+                })}
+              </Row>
+            </Form.Item>
 
-            <Typography mb="0.75rem">Saved Payment Methods</Typography>
-
-            <Grid container spacing={6}>
-              {paymentMethodList.map((item) => (
-                <Grid item md={4} sm={6} xs={12} key={item.last4Digits}>
-                  <Card
-                    p="1rem"
-                    bg="gray.100"
-                    borderRadius={8}
-                    boxShadow="none"
-                    border="1px solid"
-                    cursor="pointer"
-                    borderColor={
-                      item.last4Digits === values.card
-                        ? "primary.main"
-                        : "transparent"
-                    }
-                    onClick={handleFieldValueChange(
-                      item.last4Digits,
-                      "card",
-                      setFieldValue,
-                    )}
-                  >
-                    <Box
-                      height="24px"
-                      width="36px"
-                      position="relative"
-                      mb="0.5rem"
-                    >
-                      <NextImage
-                        fill
-                        alt="payment"
-                        src={`/assets/images/payment-methods/${item.cardType}.svg`}
-                      />
-                    </Box>
-
-                    <Paragraph color="gray.700">
-                      **** **** **** {item.last4Digits}
-                    </Paragraph>
-                    <Paragraph color="gray.700">{item.name}</Paragraph>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-
-            <Paragraph
-              className="cursor-pointer"
-              color="primary.main"
-              mt="1.5rem"
-              lineHeight="1"
-              onClick={toggleHasVoucher}
-            >
-              I have a voucher.
-            </Paragraph>
+            <Button type="link" style={{ paddingLeft: 0, marginTop: 16 }} onClick={toggleHasVoucher}>
+              {t("buttons.haveVoucher")}
+            </Button>
 
             {hasVoucher && (
-              <FlexBox mt="1.5rem" maxWidth="400px">
-                <TextField
-                  fullWidth
-                  name="voucher"
-                  placeholder="Enter voucher code here"
-                  value={values.voucher || ""}
-                  onChange={handleChange}
-                />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="button"
-                  ml="1rem"
-                >
-                  Apply
-                </Button>
-              </FlexBox>
+              <Row gutter={[16, 16]} style={{ maxWidth: 420, marginTop: 12 }}>
+                <Col flex="auto">
+                  <Form.Item name="voucher" style={{ marginBottom: 0 }}>
+                    <Input placeholder={t("fields.voucherPlaceholder")} />
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Button type="default">{t("buttons.applyVoucher")}</Button>
+                </Col>
+              </Row>
             )}
 
             <Button
-              variant="contained"
-              color="primary"
-              mt="1.5rem"
-              type="submit"
-              fullWidth
-            >
-              Place Order
+              htmlType="submit"
+              type="primary"
+              block
+              style={{ marginTop: 24 }}>
+              {t("buttons.placeOrder")}
             </Button>
           </Card1>
-        </form>
-      )}
-    </Formik>
+    </Form>
   );
 }
 
-const addressList = [
-  { addressType: "Home", address: "435 Bristol Avenue, Abington MA 2351" },
-  { addressType: "Office", address: "777 Brockton Avenue, Abington MA 2351" },
-  { addressType: "Office 2", address: "777 Kazi Avenue, Abington MA 2351" },
+const ADDRESS_LIST = [
+  { addressTypeKey: "home", address: "435 Bristol Avenue, Abington MA 2351" },
+  { addressTypeKey: "office", address: "777 Brockton Avenue, Abington MA 2351" },
+  { addressTypeKey: "office2", address: "777 Kazi Avenue, Abington MA 2351" }
 ];
 
-const contactList = [
-  { contactType: "Primary", contact: "+1-202-555-0119" },
-  { contactType: "Secondary", contact: "+1-202-555-0222" },
+const CONTACT_LIST = [
+  { contactTypeKey: "primary", contact: "+1-202-555-0119" },
+  { contactTypeKey: "secondary", contact: "+1-202-555-0222" }
 ];
 
-const paymentMethodList = [
+const PAYMENT_METHOD_LIST = [
   { cardType: "Amex", last4Digits: "4765", name: "Jaslynn Land" },
   { cardType: "Mastercard", last4Digits: "5432", name: "Jaslynn Land" },
   { cardType: "Visa", last4Digits: "4543", name: "Jaslynn Land" },
 ];
 
-const timeList = [
-  { label: "9AM - 11AM", value: "9AM - 11AM" },
-  { label: "11AM - 1PM", value: "11AM - 1PM" },
-  { label: "3PM - 5PM", value: "3PM - 5PM" },
-  { label: "5PM - 7PM", value: "5PM - 7PM" },
+const TIME_OPTIONS = [
+  { key: "morning", value: "9AM - 11AM" },
+  { key: "midday", value: "11AM - 1PM" },
+  { key: "afternoon", value: "3PM - 5PM" },
+  { key: "evening", value: "5PM - 7PM" }
 ];

@@ -302,6 +302,7 @@
       "dateRequired": "Date is required"
     },
     "filters": {
+      "title": "Filters",
       "categories": "Categories",
       "priceRange": "Price Range",
       "brands": "Brands",
@@ -358,9 +359,75 @@
       "company": "Company",
       "country": "Country",
       "backToCart": "Back to Cart",
-      "proceedToPayment": "Proceed to Payment"
+      "proceedToPayment": "Proceed to Payment",
+      "validation": {
+        "required": "This field is required",
+        "invalidEmail": "Enter a valid email"
+      }
+    },
+    "paymentForm": {
+      "methods": {
+        "creditCard": "Pay with credit card",
+        "paypal": "Pay with PayPal",
+        "cod": "Cash On Delivery"
+      },
+      "fields": {
+        "cardNumber": "Card Number",
+        "expDate": "Exp Date",
+        "nameOnCard": "Name on Card",
+        "cvc": "CVC",
+        "paypalEmail": "PayPal Email"
+      },
+      "buttons": {
+        "backToCheckout": "Back to checkout details",
+        "review": "Review"
+      },
+      "validation": {
+        "required": "This field is required",
+        "invalidEmail": "Enter a valid email"
+      }
+    },
+    "alternative": {
+      "title": "Your Order",
+      "sections": {
+        "deliveryDetails": "Delivery Details",
+        "deliveryAddress": "Delivery Address",
+        "personalDetails": "Personal Details",
+        "contactInformation": "Contact Information",
+        "paymentDetails": "Payment Details",
+        "savedPaymentMethods": "Saved Payment Methods"
+      },
+      "fields": {
+        "deliveryDate": "Delivery Date",
+        "deliveryTime": "Delivery Time",
+        "voucherPlaceholder": "Enter voucher code here"
+      },
+      "buttons": {
+        "haveVoucher": "I have a voucher.",
+        "applyVoucher": "Apply",
+        "placeOrder": "Place Order"
+      },
+      "addressTypes": {
+        "home": "Home",
+        "office": "Office",
+        "office2": "Office 2"
+      },
+      "contactTypes": {
+        "primary": "Primary",
+        "secondary": "Secondary"
+      },
+      "timeSlots": {
+        "morning": "9AM - 11AM",
+        "midday": "11AM - 1PM",
+        "afternoon": "3PM - 5PM",
+        "evening": "5PM - 7PM"
+      },
+      "validation": {
+        "required": "This field is required"
+      }
     },
     "summary": {
+      "title": "Order Summary",
       "subtotal": "Subtotal:",
       "shipping": "Shipping:",
       "tax": "Tax:",
@@ -401,14 +468,37 @@
       "orders": "Orders",
       "products": "Products",
       "addProduct": "Add Product",
-      "editProduct": "Edit Product"
+      "editProduct": "Edit Product",
+      "editProfile": "Edit Profile",
+      "addAddress": "Add New Address",
+      "editAddress": "Edit Address"
     },
     "buttons": {
       "addAllToCart": "Add All to Cart",
       "editProfile": "Edit Profile",
       "addNewAddress": "Add New Address",
       "addNew": "Add New",
-      "back": "Back"
+      "back": "Back",
+      "viewDetails": "View details",
+      "saveChanges": "Save Changes",
+      "changePhoto": "Change photo"
+    },
+    "orderStatus": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "validation": {
+      "required": "This field is required",
+      "invalidEmail": "Enter a valid email",
+      "invalidDate": "Select a valid date"
+    },
+    "forms": {
+      "addressTitle": "Address Title",
+      "street": "Street",
+      "city": "City",
+      "country": "Country"
     },
     "profile": {
       "balance": "Balance:",
@@ -428,6 +518,8 @@
       "status": "Status",
       "datePurchased": "Date purchased",
       "total": "Total",
+      "action": "Action",
+      "noOrders": "No orders yet",
       "name": "Name",
       "regularPrice": "Regular price",
       "salePrice": "Sale Price"
