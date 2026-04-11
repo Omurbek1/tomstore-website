@@ -18,7 +18,7 @@ import { H5, SemiSpan } from "../Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
 import useCart from "@hook/useCart";
 import { calculateDiscount, currency } from "@utils/utils";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 // STYLED COMPONENT
 const Wrapper = styled(Card)`
@@ -122,7 +122,8 @@ export default function ProductCard9({
   categories,
   ...props
 }: ProductCard9Props) {
-    const locale = useLocale();
+  const locale = useLocale();
+  const t = useTranslations("product");
   const [open, setOpen] = useState(false);
   const { state, dispatch } = useCart();
   const cartItem = state.cart.find((item) => item.id === id);
@@ -151,7 +152,7 @@ export default function ProductCard9({
                 bg="primary.main"
                 position="absolute"
                 color="primary.text">
-                {off}% off
+                {t("saleOff", { percent: off })}
               </Chip>
             )}
 

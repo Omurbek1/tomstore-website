@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import Box from "@component/Box";
 import Hidden from "@component/hidden";
@@ -19,6 +20,7 @@ type Props = { carList: Product[]; carBrands: Brand[] };
 // ==============================================================
 
 export default function Section6({ carList, carBrands }: Props) {
+  const t = useTranslations("home");
   const [selected, setSelected] = useState("");
 
   const handleCategoryClick = useCallback(
@@ -57,14 +59,14 @@ export default function Section6({ carList, carBrands }: Props) {
               shadow={selected.match("all") ? 4 : null}
               bg={selected.match("all") ? "white" : "gray.100"}>
               <span id="all" className="product-category-title show-all">
-                View All Brands
+                {t("viewAllBrands")}
               </span>
             </StyledProductCategory>
           </Box>
         </Hidden>
 
         <Box flex="1 1 0" minWidth="0px">
-          <CategorySectionHeader title="Cars" seeMoreLink="#" />
+          <CategorySectionHeader title={t("cars")} seeMoreLink="#" />
 
           <Grid container spacing={6}>
             {carList.map((item, ind) => (

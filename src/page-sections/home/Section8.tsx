@@ -1,8 +1,7 @@
-import Link from "next/link";
-
 import Grid from "@component/grid/Grid";
 import Container from "@component/Container";
 import NextImage from "@component/NextImage";
+import { Link } from "i18n/navigation";
 // IMAGES
 import banner1 from "../../../public/assets/images/banners/banner-1.png";
 import banner2 from "../../../public/assets/images/banners/banner-2.png";

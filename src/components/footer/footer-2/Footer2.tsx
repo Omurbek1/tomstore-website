@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import Box from "@component/Box";
 import Image from "@component/Image";
 import Grid from "@component/grid/Grid";
@@ -7,12 +5,17 @@ import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import AppStore from "@component/AppStore";
 import { Paragraph } from "@component/Typography";
+import { getTranslations } from "next-intl/server";
+import { Link } from "i18n/navigation";
 // STYLED COMPONENTS
 import { StyledBox, StyledLink, Wrapper } from "./styles";
 // CUSTOM DATA
-import { customerCareLinks, iconList } from "./data";
+import { customerCareLinkKeys } from "../footer-1/data";
+import { iconList } from "./data";
 
-export default function Footer2() {
+export default async function Footer2() {
+  const t = await getTranslations("footer");
+
   return (
     <footer>
       <Wrapper>
@@ -23,9 +26,7 @@ export default function Footer2() {
         <Grid container spacing={6}>
           <Grid item md={6} sm={6} xs={12}>
             <Paragraph mb="1.25rem" color="gray.500" maxWidth="370px">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor libero id et, in
-              gravida. Sit diam duis mauris nulla cursus. Erat et lectus vel ut sollicitudin elit at
-              amet.
+              {t("description")}
             </Paragraph>
 
             <AppStore />
@@ -34,9 +35,9 @@ export default function Footer2() {
           <Grid item md={6} sm={6} xs={12}>
             <StyledBox maxWidth="230px" mt="-0.35rem">
               <div>
-                {customerCareLinks.map((item, ind) => (
-                  <StyledLink href="/" key={ind}>
-                    {item}
+                {customerCareLinkKeys.map((item) => (
+                  <StyledLink href="/" key={item}>
+                    {t(`customerCareLinks.${item}`)}
                   </StyledLink>
                 ))}
               </div>

@@ -1,16 +1,19 @@
+import { useTranslations } from "next-intl";
 import Typography, { H3 } from "@component/Typography";
 
 export default function ProductDescription() {
+  const t = useTranslations("product");
+
   return (
     <div>
-      <H3 mb="1rem">Specification:</H3>
+      <H3 mb="1rem">{t("specification")}</H3>
       <Typography>
-        Brand: Beats <br />
-        Model: S450 <br />
-        Wireless Bluetooth Headset <br />
-        FM Frequency Response: 87.5 – 108 MHz <br />
-        Feature: FM Radio, Card Supported (Micro SD / TF) <br />
-        Made in China <br />
+        {t("specLines.brand")} <br />
+        {t("specLines.model")} <br />
+        {t("specLines.wireless")} <br />
+        {t("specLines.frequency")} <br />
+        {t("specLines.features")} <br />
+        {t("specLines.origin")} <br />
       </Typography>
     </div>
   );

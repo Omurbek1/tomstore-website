@@ -1,5 +1,6 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
+import { useTranslations } from "next-intl";
 
 import Box from "@component/Box";
 import Rating from "@component/rating";
@@ -8,21 +9,20 @@ import TextArea from "@component/textarea";
 import { Button } from "@component/buttons";
 import { H2, H5 } from "@component/Typography";
 import ProductComment from "./ProductComment";
-
-const validationSchema = yup.object().shape({
-  rating: yup.number().required("Rating is required"),
-  comment: yup.string().required("Comment is required"),
-  date: yup.string().required("Date is required")
-});
-
-type FormValues = yup.InferType<typeof validationSchema>;
+type FormValues = { rating: number; comment: string; date: string };
 
 export default function ProductReview() {
+  const t = useTranslations("product");
   const initialValues: FormValues = {
     rating: 5,
     comment: "",
     date: new Date().toISOString()
   };
+  const validationSchema = yup.object().shape({
+    rating: yup.number().required(t("validation.ratingRequired")),
+    comment: yup.string().required(t("validation.commentRequired")),
+    date: yup.string().required(t("validation.dateRequired"))
+  });
 
   const {
     values,
@@ -50,14 +50,14 @@ export default function ProductReview() {
       ))}
 
       <H2 fontWeight="600" mt="55px" mb="20">
-        Write a Review for this product
+        {t("writeReview")}
       </H2>
 
       <form onSubmit={handleSubmit}>
         <Box mb="20px">
           <FlexBox mb="12px">
             <H5 color="gray.700" mr="6px">
-              Your Rating
+              {t("yourRating")}
             </H5>
             <H5 color="error.main">*</H5>
           </FlexBox>
@@ -75,7 +75,7 @@ export default function ProductReview() {
         <Box mb="24px">
           <FlexBox mb="12px">
             <H5 color="gray.700" mr="6px">
-              Your Review
+              {t("yourReview")}
             </H5>
 
             <H5 color="error.main">*</H5>
@@ -88,7 +88,7 @@ export default function ProductReview() {
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.comment || ""}
-            placeholder="Write a review here..."
+            placeholder={t("reviewPlaceholder")}
             errorText={touched.comment ? errors.comment : undefined}
           />
         </Box>
@@ -99,7 +99,7 @@ export default function ProductReview() {
           color="primary"
           variant="contained"
           disabled={!(dirty && isValid)}>
-          Submit
+          {t("submitReview")}
         </Button>
       </form>
     </div>

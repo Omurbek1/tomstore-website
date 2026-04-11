@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import Box from "@component/Box";
 import Shop from "@models/shop.model";
@@ -22,6 +23,7 @@ type Props = {
 // ==============================================================
 
 export default function ProductView({ shops, relatedProducts, frequentlyBought }: Props) {
+  const t = useTranslations("product");
   const [selectedOption, setSelectedOption] = useState("description");
   const handleOptionClick = (opt: any) => () => setSelectedOption(opt);
 
@@ -37,7 +39,7 @@ export default function ProductView({ shops, relatedProducts, frequentlyBought }
           onClick={handleOptionClick("description")}
           borderBottom={selectedOption === "description" ? "2px solid" : ""}
           color={selectedOption === "description" ? "primary.main" : "text.muted"}>
-          Description
+          {t("descriptionTab")}
         </H6>
 
         <H6
@@ -48,7 +50,7 @@ export default function ProductView({ shops, relatedProducts, frequentlyBought }
           onClick={handleOptionClick("review")}
           borderBottom={selectedOption === "review" ? "2px solid" : ""}
           color={selectedOption === "review" ? "primary.main" : "text.muted"}>
-          Review (3)
+          {t("reviewTab", { count: 3 })}
         </H6>
       </FlexBox>
 

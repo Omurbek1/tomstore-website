@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import styled from "styled-components";
+import { Link } from "i18n/navigation";
 
 import Box from "@component/Box";
 import { deviceSize } from "@utils/constants";

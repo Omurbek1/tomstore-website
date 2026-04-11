@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { IconChevronDown, IconSearch } from "@tabler/icons-react";
 import debounce from "lodash/debounce";
+import { useTranslations } from "next-intl";
 
 import Box from "@component/Box";
 import Menu from "@component/menu/Menu";
@@ -11,6 +11,7 @@ import FlexBox from "@component/FlexBox";
 import MenuItem from "@component/MenuItem";
 import { Span } from "@component/Typography";
 import TextField from "@component/text-field";
+import { Link } from "i18n/navigation";
 import StyledSearchBox from "./styled";
 
 const dropdownVariants = {
@@ -37,16 +38,17 @@ const dropdownVariants = {
 };
 
 export default function SearchInputWithCategory() {
-  const [resultList, setResultList] = useState<string[]>([]);
-  const [category, setCategory] = useState("All Categories");
+  const t = useTranslations("search");
+  const [resultList, setResultList] = useState<(typeof dummySearchResults)[number][]>([]);
+  const [category, setCategory] = useState<(typeof categoryKeys)[number]>("all");
 
-  const handleCategoryChange = (cat: string) => () => setCategory(cat);
+  const handleCategoryChange = (cat: (typeof categoryKeys)[number]) => () => setCategory(cat);
 
   const search = debounce((e) => {
     const value = e.target?.value;
 
     if (!value) setResultList([]);
-    else setResultList(dummySearchResult);
+    else setResultList([...dummySearchResults]);
   }, 200);
 
   const handleSearch = useCallback((event: any) => {
@@ -76,7 +78,7 @@ export default function SearchInputWithCategory() {
           fullWidth
           onChange={handleSearch}
           className="search-field"
-          placeholder="Search and hit enter..."
+          placeholder={t("placeholder")}
         />
 
         <Menu
@@ -88,14 +90,14 @@ export default function SearchInputWithCategory() {
               alignItems="center"
               onClick={openMenu}
             >
-              <span>{category}</span>
+              <span>{t(`categories.${category}`)}</span>
               <IconChevronDown size={18} stroke={1.5} />
             </FlexBox>
           )}
         >
-          {categories.map((item) => (
+          {categoryKeys.map((item) => (
             <MenuItem key={item} onClick={handleCategoryChange(item)}>
-              {item}
+              {t(`categories.${item}`)}
             </MenuItem>
           ))}
         </Menu>
@@ -123,9 +125,9 @@ export default function SearchInputWithCategory() {
               borderRadius=".5rem"
             >
               {resultList.map((item) => (
-                <Link href={`/product/search/${item}`} key={item}>
-                  <MenuItem key={item}>
-                    <Span fontSize="14px">{item}</Span>
+                <Link href={`/product/search/${item.slug}`} key={item.slug}>
+                  <MenuItem key={item.slug}>
+                    <Span fontSize="14px">{t(`results.${item.translationKey}`)}</Span>
                   </MenuItem>
                 </Link>
               ))}
@@ -137,20 +139,11 @@ export default function SearchInputWithCategory() {
   );
 }
 
-const categories = [
-  "All Categories",
-  "Car",
-  "Clothes",
-  "Electronics",
-  "Laptop",
-  "Desktop",
-  "Camera",
-  "Toys",
-];
+const categoryKeys = ["all", "car", "clothes", "electronics", "laptop", "desktop", "camera", "toys"] as const;
 
-const dummySearchResult = [
-  "Macbook Air 13",
-  "Ksus K555LA",
-  "Acer Aspire X453",
-  "iPad Mini 3",
-];
+const dummySearchResults = [
+  { slug: "macbook-air-13", translationKey: "macbookAir13" },
+  { slug: "asus-k555la", translationKey: "asusK555la" },
+  { slug: "acer-aspire-x453", translationKey: "acerAspireX453" },
+  { slug: "ipad-mini-3", translationKey: "ipadMini3" }
+] as const;

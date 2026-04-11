@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Box from "@component/Box";
 import Card from "@component/Card";
 import Grid from "@component/grid/Grid";
@@ -6,16 +5,19 @@ import Container from "@component/Container";
 import NextImage from "@component/NextImage";
 import Typography from "@component/Typography";
 import CategorySectionHeader from "@component/CategorySectionHeader";
+import { getTranslations } from "next-intl/server";
+import { Link } from "i18n/navigation";
 // API FUNCTIONS
 import api from "@utils/__api__/market-1";
 
 export default async function Section10() {
   const categories = await api.getCategories();
+  const t = await getTranslations("home");
 
   return (
     <Container mb="70px">
       <CategorySectionHeader
-        title="Categories"
+        title={t("categories")}
         iconName="categories"
         seeMoreLink="#"
       />
@@ -36,7 +38,7 @@ export default async function Section10() {
                   <NextImage
                     width={52}
                     height={52}
-                    alt="fashion"
+                    alt={item.name}
                     src={item.image ?? ""}
                   />
                 </Box>

@@ -1,7 +1,6 @@
 "use client";
 
 import { Fragment } from "react";
-import { usePathname } from "next/navigation";
 import {
   IconPin,
   IconUser,
@@ -10,6 +9,8 @@ import {
   IconCreditCard,
   IconShoppingBagCheck
 } from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
+import { usePathname } from "i18n/navigation";
 
 import FlexBox from "@component/FlexBox";
 import Typography from "@component/Typography";
@@ -18,10 +19,29 @@ import { DashboardNavigationWrapper, StyledDashboardNav } from "./styles";
 
 export default function DashboardNavigation() {
   const pathname = usePathname();
+  const t = useTranslations("dashboard");
+  const navigationLinks = [
+    {
+      title: t("groups.dashboard"),
+      links: [
+        { href: "/orders", title: t("nav.orders"), Icon: IconShoppingBagCheck, count: 5 },
+        { href: "/wish-list", title: t("nav.wishlist"), Icon: IconHeart, count: 19 },
+        { href: "/support-tickets", title: t("nav.supportTickets"), Icon: IconHelpCircle, count: 1 }
+      ]
+    },
+    {
+      title: t("groups.accountSettings"),
+      links: [
+        { href: "/profile", title: t("nav.profileInfo"), Icon: IconUser, count: 3 },
+        { href: "/address", title: t("nav.addresses"), Icon: IconPin, count: 16 },
+        { href: "/payment-methods", title: t("nav.paymentMethods"), Icon: IconCreditCard, count: 4 }
+      ]
+    }
+  ];
 
   return (
     <DashboardNavigationWrapper px="0px" pb="1.5rem" color="gray.900" borderRadius={8}>
-      {NAVIGATION_LINKS.map((navGroup) => (
+      {navigationLinks.map((navGroup) => (
         <Fragment key={navGroup.title}>
           <Typography p="26px 30px 1rem" color="text.muted" fontSize="12px">
             {navGroup.title}
@@ -43,52 +63,3 @@ export default function DashboardNavigation() {
     </DashboardNavigationWrapper>
   );
 }
-
-const NAVIGATION_LINKS = [
-  {
-    title: "DASHBOARD",
-    links: [
-      {
-        href: "/orders",
-        title: "Orders",
-        Icon: IconShoppingBagCheck,
-        count: 5
-      },
-      {
-        href: "/wish-list",
-        title: "Wishlist",
-        Icon: IconHeart,
-        count: 19
-      },
-      {
-        href: "/support-tickets",
-        title: "Support Tickets",
-        Icon: IconHelpCircle,
-        count: 1
-      }
-    ]
-  },
-  {
-    title: "ACCOUNT SETTINGS",
-    links: [
-      {
-        href: "/profile",
-        title: "Profile Info",
-        Icon: IconUser,
-        count: 3
-      },
-      {
-        href: "/address",
-        title: "Addresses",
-        Icon: IconPin,
-        count: 16
-      },
-      {
-        href: "/payment-methods",
-        title: "Payment Methods",
-        Icon: IconCreditCard,
-        count: 4
-      }
-    ]
-  }
-];

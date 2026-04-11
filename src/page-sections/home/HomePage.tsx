@@ -1,4 +1,5 @@
 // API FUNCTIONS
+import { getTranslations } from "next-intl/server";
 import api from "@utils/__api__/market-1";
 // PAGE SECTION COMPONENTS
 import Section1 from "@sections/home/Section1";
@@ -15,6 +16,7 @@ import Section12 from "@sections/home/Section12";
 import Section13 from "@sections/home/Section13";
 
 export default async function HomePage() {
+  const t = await getTranslations("home");
   const [
     carList,
     carBrands,
@@ -47,14 +49,14 @@ export default async function HomePage() {
       <Section7
         shops={mobileShops}
         brands={mobileBrands}
-        title="Mobile Phones"
+        title={t("mobilePhones")}
         productList={mobileList}
       />
       <Section8 />
       <Section7
         shops={opticsShops}
         brands={opticsBrands}
-        title="Optics / Watch"
+        title={t("opticsWatch")}
         productList={opticsList}
       />
       <Section10 />

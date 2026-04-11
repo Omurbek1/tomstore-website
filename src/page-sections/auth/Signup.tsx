@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useTranslations } from "next-intl";
 
 import useVisibility from "./useVisibility";
 
@@ -12,6 +12,7 @@ import CheckBox from "@component/CheckBox";
 import TextField from "@component/text-field";
 import { Button, IconButton } from "@component/buttons";
 import { H3, H5, H6, SemiSpan } from "@component/Typography";
+import { Link } from "i18n/navigation";
 
 import Divide from "./components/Divide";
 import SocialLinks from "./components/SocialLinks";
@@ -25,29 +26,33 @@ const initialValues = {
   re_password: "",
   agreement: false,
 };
-
-const formSchema = yup.object().shape({
-  name: yup.string().required("${path} is required"),
-  email: yup.string().email("invalid email").required("${path} is required"),
-  password: yup.string().required("${path} is required"),
-  re_password: yup
-    .string()
-    .oneOf([yup.ref("password")], "Passwords must match")
-    .required("Please re-type password"),
-  agreement: yup
-    .bool()
-    .test(
-      "agreement",
-      "You have to agree with our Terms and Conditions!",
-      (value) => value === true,
-    )
-    .required("You have to agree with our Terms and Conditions!"),
-});
-
-type FormValues = yup.InferType<typeof formSchema>;
+type FormValues = {
+  name: string;
+  email: string;
+  password: string;
+  re_password: string;
+  agreement: boolean;
+};
 
 export default function Signup() {
+  const t = useTranslations("auth");
   const { passwordVisibility, togglePasswordVisibility } = useVisibility();
+  const formSchema = yup.object().shape({
+    name: yup.string().required(t("validation.fullNameRequired")),
+    email: yup
+      .string()
+      .email(t("validation.invalidEmail"))
+      .required(t("validation.emailRequired")),
+    password: yup.string().required(t("validation.passwordRequired")),
+    re_password: yup
+      .string()
+      .oneOf([yup.ref("password")], t("validation.passwordsMustMatch"))
+      .required(t("validation.confirmPasswordRequired")),
+    agreement: yup
+      .bool()
+      .test("agreement", t("validation.agreementRequired"), (value) => value === true)
+      .required(t("validation.agreementRequired"))
+  });
 
   const handleFormSubmit = async (values: FormValues) => {
     console.log(values);
@@ -64,7 +69,7 @@ export default function Signup() {
     <StyledRoot mx="auto" my="2rem" boxShadow="large" borderRadius={8}>
       <form className="content" onSubmit={handleSubmit}>
         <H3 textAlign="center" mb="0.5rem">
-          Create Your Account
+          {t("signup.title")}
         </H3>
 
         <H5
@@ -74,18 +79,18 @@ export default function Signup() {
           textAlign="center"
           mb="2.25rem"
         >
-          Please fill all forms to continued
+          {t("signup.subtitle")}
         </H5>
 
         <TextField
           fullWidth
           name="name"
           mb="0.75rem"
-          label="Full Name"
+          label={t("signup.fullNameLabel")}
           onBlur={handleBlur}
           value={values.name}
           onChange={handleChange}
-          placeholder="Ralph Adwards"
+          placeholder={t("signup.fullNamePlaceholder")}
           errorText={touched.name && errors.name ? errors.name : undefined}
         />
 
@@ -97,8 +102,8 @@ export default function Signup() {
           onBlur={handleBlur}
           value={values.email}
           onChange={handleChange}
-          placeholder="exmple@mail.com"
-          label="Email or Phone Number"
+          placeholder={t("signup.emailPlaceholder")}
+          label={t("signup.emailLabel")}
           errorText={touched.email && errors.email ? errors.email : undefined}
         />
 
@@ -106,8 +111,8 @@ export default function Signup() {
           fullWidth
           mb="0.75rem"
           name="password"
-          label="Password"
-          placeholder="*********"
+          label={t("signup.passwordLabel")}
+          placeholder={t("signup.passwordPlaceholder")}
           onBlur={handleBlur}
           value={values.password}
           onChange={handleChange}
@@ -131,8 +136,8 @@ export default function Signup() {
           mb="1rem"
           fullWidth
           name="re_password"
-          placeholder="*********"
-          label="Confirm Password"
+          placeholder={t("signup.confirmPasswordPlaceholder")}
+          label={t("signup.confirmPasswordLabel")}
           onBlur={handleBlur}
           onChange={handleChange}
           value={values.re_password}
@@ -162,10 +167,10 @@ export default function Signup() {
           checked={values.agreement}
           label={
             <FlexBox>
-              <SemiSpan>By signing up, you agree to</SemiSpan>
+              <SemiSpan>{t("signup.agreementPrefix")}</SemiSpan>
               <a href="/" target="_blank" rel="noreferrer noopener">
                 <H6 ml="0.5rem" borderBottom="1px solid" borderColor="gray.900">
-                  Terms & Condition
+                  {t("signup.agreementLink")}
                 </H6>
               </a>
             </FlexBox>
@@ -179,7 +184,7 @@ export default function Signup() {
           type="submit"
           fullWidth
         >
-          Create Account
+          {t("signup.submit")}
         </Button>
 
         <Divide />
@@ -188,10 +193,10 @@ export default function Signup() {
       </form>
 
       <FlexBox justifyContent="center" bg="gray.200" py="19px">
-        <SemiSpan>Already have account?</SemiSpan>
+        <SemiSpan>{t("signup.alreadyHaveAccount")}</SemiSpan>
         <Link href="/login">
           <H6 ml="0.5rem" borderBottom="1px solid" borderColor="gray.900">
-            Log in
+            {t("signup.login")}
           </H6>
         </Link>
       </FlexBox>

@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import styled from "styled-components";
+import { useTranslations } from "next-intl";
 
 import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
@@ -33,9 +34,11 @@ type Props = { products: Product[] };
 // ============================================================
 
 export default function FrequentlyBought({ products }: Props) {
+  const t = useTranslations("product");
+
   return (
     <FrequentlyBoughtWrapper>
-      <H3 mb="24px">Frequently Bought Together</H3>
+      <H3 mb="24px">{t("frequentlyBought")}</H3>
 
       <FlexBox className="card-holder" flexWrap="wrap" m="-0.5rem">
         {products.map((item, ind) => (
@@ -82,15 +85,15 @@ export default function FrequentlyBought({ products }: Props) {
           borderColor="gray.400"
           justifyContent="center">
           <H3 color="primary.main">$2500</H3>
-          <SemiSpan mb="1rem">Save $500</SemiSpan>
+          <SemiSpan mb="1rem">{t("saveAmount", { amount: "$500" })}</SemiSpan>
 
           <FlexBox>
             <Button variant="contained" color="primary" size="small" mr="1rem">
-              Add to Cart
+              {t("addToCart")}
             </Button>
 
             <Button variant="outlined" color="primary" size="small">
-              Add to List
+              {t("addToList")}
             </Button>
           </FlexBox>
         </FlexBox>

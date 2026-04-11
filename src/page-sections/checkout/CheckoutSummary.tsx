@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Card1 } from "@component/Card1";
 import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
@@ -8,10 +9,12 @@ import TextField from "@component/text-field";
 import Typography from "@component/Typography";
 
 export default function CheckoutSummary() {
+  const t = useTranslations("checkout.summary");
+
   return (
     <Card1>
       <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
-        <Typography color="text.hint">Subtotal:</Typography>
+        <Typography color="text.hint">{t("subtotal")}</Typography>
 
         <FlexBox alignItems="flex-end">
           <Typography fontSize="18px" fontWeight="600" lineHeight="1">
@@ -25,7 +28,7 @@ export default function CheckoutSummary() {
       </FlexBox>
 
       <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
-        <Typography color="text.hint">Shipping:</Typography>
+        <Typography color="text.hint">{t("shipping")}</Typography>
 
         <FlexBox alignItems="flex-end">
           <Typography fontSize="18px" fontWeight="600" lineHeight="1">
@@ -35,7 +38,7 @@ export default function CheckoutSummary() {
       </FlexBox>
 
       <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
-        <Typography color="text.hint">Tax:</Typography>
+        <Typography color="text.hint">{t("tax")}</Typography>
 
         <FlexBox alignItems="flex-end">
           <Typography fontSize="18px" fontWeight="600" lineHeight="1">
@@ -49,7 +52,7 @@ export default function CheckoutSummary() {
       </FlexBox>
 
       <FlexBox justifyContent="space-between" alignItems="center" mb="1rem">
-        <Typography color="text.hint">Discount:</Typography>
+        <Typography color="text.hint">{t("discount")}</Typography>
 
         <FlexBox alignItems="flex-end">
           <Typography fontSize="18px" fontWeight="600" lineHeight="1">
@@ -64,10 +67,10 @@ export default function CheckoutSummary() {
         $2610.00
       </Typography>
 
-      <TextField placeholder="Voucher" fullWidth />
+      <TextField placeholder={t("voucher")} fullWidth />
 
       <Button variant="outlined" color="primary" mt="1rem" mb="30px" fullWidth>
-        Apply Voucher
+        {t("applyVoucher")}
       </Button>
     </Card1>
   );

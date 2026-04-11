@@ -5,6 +5,7 @@ import { ProductCard1 } from "@component/product-cards";
 import { SemiSpan } from "@component/Typography";
 import useWindowSize from "@hook/useWindowSize";
 import Product from "@models/product.model";
+import { useTranslations } from "next-intl";
 
 // ==========================================================
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
 export default function ProductGridView({ products }: Props) {
   const width = useWindowSize();
   const isTablet = (width ?? 0) < 1025;
+  const t = useTranslations("common");
 
   return (
     <div>
@@ -45,7 +47,7 @@ export default function ProductGridView({ products }: Props) {
           justifyContent: "space-between",
           [isTablet ? "flex-direction" : "row"]: "column"
         }}>
-        <SemiSpan>Showing 1-9 of 1.3k Products</SemiSpan>
+        <SemiSpan>{t("productsShown", { count: products.length })}</SemiSpan>
         <Pagination pageCount={products.length} />
       </FlexBox>
     </div>

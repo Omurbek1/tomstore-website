@@ -1,16 +1,10 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
 import { Fragment, PropsWithChildren, useCallback, useMemo } from "react";
+import { useTranslations } from "next-intl";
+import { usePathname, useRouter } from "i18n/navigation";
 import Hidden from "@component/hidden";
 import Stepper from "@component/Stepper";
-
-const STEPPER_LIST = [
-  { title: "Cart", disabled: false, path: "/cart" },
-  { title: "Details", disabled: false, path: "/checkout" },
-  { title: "Payment", disabled: false, path: "/payment" },
-  { title: "Review", disabled: true, path: "/orders" }
-];
 
 const PATH_TO_STEP_MAP = {
   "/cart": 1,
@@ -21,24 +15,31 @@ const PATH_TO_STEP_MAP = {
 export default function Layout({ children }: PropsWithChildren) {
   const router = useRouter();
   const pathname = usePathname();
+  const t = useTranslations("checkout.steps");
+  const stepperList = [
+    { title: t("cart"), disabled: false, path: "/cart" },
+    { title: t("details"), disabled: false, path: "/checkout" },
+    { title: t("payment"), disabled: false, path: "/payment" },
+    { title: t("review"), disabled: true, path: "/orders" }
+  ];
 
   const selectedStep = useMemo(() => PATH_TO_STEP_MAP[pathname] ?? 0, [pathname]);
 
   const handleStepChange = useCallback(
     (_step: unknown, index: number) => {
-      const targetPath = STEPPER_LIST[index]?.path;
+      const targetPath = stepperList[index]?.path;
       if (targetPath) {
         router.push(targetPath);
       }
     },
-    [router]
+    [router, stepperList]
   );
 
   return (
     <Fragment>
       <Hidden down="md" mb="2rem">
         <Stepper
-          stepperList={STEPPER_LIST}
+          stepperList={stepperList}
           selectedStep={selectedStep}
           onChange={handleStepChange}
         />

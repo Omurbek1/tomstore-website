@@ -1,4 +1,4 @@
-import Link from "next/link";
+"use client";
 
 import Box from "@component/Box";
 import Image from "@component/Image";
@@ -8,12 +8,16 @@ import FlexBox from "@component/FlexBox";
 import AppStore from "@component/AppStore";
 import Container from "@component/Container";
 import Typography, { Paragraph } from "@component/Typography";
+import { useTranslations } from "next-intl";
+import { Link } from "i18n/navigation";
 // STYLED COMPONENTS
 import { StyledLink } from "./styles";
 // CUSTOM DATA
-import { aboutLinks, customerCareLinks, iconList } from "./data";
+import { aboutLinkKeys, customerCareLinkKeys, iconList } from "./data";
 
 export default function Footer1() {
+  const t = useTranslations("footer");
+
   return (
     <footer>
       <Box bg="#0F3460">
@@ -26,57 +30,70 @@ export default function Footer1() {
                 </Link>
 
                 <Paragraph mb="1.25rem" color="gray.500" maxWidth="320px">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor libero id et, in
-                  gravida. Sit diam duis mauris nulla cursus. Erat et lectus vel ut sollicitudin
-                  elit at amet.
+                  {t("description")}
                 </Paragraph>
 
                 <AppStore />
               </Grid>
 
               <Grid item lg={2} md={6} sm={6} xs={12}>
-                <Typography mb="1.25rem" lineHeight="1" fontSize={20} fontWeight="600">
-                  About Us
+                <Typography
+                  mb="1.25rem"
+                  lineHeight="1"
+                  fontSize={20}
+                  fontWeight="600"
+                >
+                  {t("aboutUs")}
                 </Typography>
 
                 <div>
-                  {aboutLinks.map((item, ind) => (
-                    <StyledLink href="/" key={ind}>
-                      {item}
+                  {aboutLinkKeys.map((item) => (
+                    <StyledLink href="/" key={item}>
+                      {t(`aboutLinks.${item}`)}
                     </StyledLink>
                   ))}
                 </div>
               </Grid>
 
               <Grid item lg={3} md={6} sm={6} xs={12}>
-                <Typography mb="1.25rem" lineHeight="1" fontSize={20} fontWeight="600">
-                  Customer Care
+                <Typography
+                  mb="1.25rem"
+                  lineHeight="1"
+                  fontSize={20}
+                  fontWeight="600"
+                >
+                  {t("customerCare")}
                 </Typography>
 
                 <div>
-                  {customerCareLinks.map((item, ind) => (
-                    <StyledLink href="/" key={ind}>
-                      {item}
+                  {customerCareLinkKeys.map((item) => (
+                    <StyledLink href="/" key={item}>
+                      {t(`customerCareLinks.${item}`)}
                     </StyledLink>
                   ))}
                 </div>
               </Grid>
 
               <Grid item lg={3} md={6} sm={6} xs={12}>
-                <Typography mb="1.25rem" lineHeight="1" fontSize={20} fontWeight="600">
-                  Contact Us
+                <Typography
+                  mb="1.25rem"
+                  lineHeight="1"
+                  fontSize={20}
+                  fontWeight="600"
+                >
+                  {t("contactUs")}
                 </Typography>
 
                 <Typography py="0.3rem" color="gray.500">
-                  70 Washington Square South, New York, NY 10012, United States
+                  {t("address")}
                 </Typography>
 
                 <Typography py="0.3rem" color="gray.500">
-                  Email: uilib.help@gmail.com
+                  {t("emailLabel")}: {t("emailValue")}
                 </Typography>
 
                 <Typography py="0.3rem" mb="1rem" color="gray.500">
-                  Phone: +1 1123 456 780
+                  {t("phoneLabel")}: {t("phoneValue")}
                 </Typography>
 
                 <FlexBox className="flex" mx="-5px">
@@ -85,8 +102,15 @@ export default function Footer1() {
                       href={item.url}
                       target="_blank"
                       key={item.iconName}
-                      rel="noreferrer noopenner">
-                      <Box m="5px" p="10px" size="small" borderRadius="50%" bg="rgba(0,0,0,0.2)">
+                      rel="noreferrer noopenner"
+                    >
+                      <Box
+                        m="5px"
+                        p="10px"
+                        size="small"
+                        borderRadius="50%"
+                        bg="rgba(0,0,0,0.2)"
+                      >
                         <Icon size="12px" defaultColor="auto">
                           {item.iconName}
                         </Icon>

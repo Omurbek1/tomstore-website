@@ -1,6 +1,6 @@
 {
   "LocaleLayout": {
-    "title": "TomStore — Laptops, Printers, PCs & Electronics in Bishkek",
+    "title": "TomStore - Laptops, Printers, PCs & Electronics in Bishkek",
     "description": "Electronics store. In stock, warranty, installment and delivery."
   },
   "nav": {
@@ -110,8 +110,327 @@
     "needHelp": "Need Help?",
     "switchLanguage": "Change language",
     "languages": {
-      "ru": "Русский",
+      "ru": "Russian",
       "en": "English"
+    }
+  },
+  "common": {
+    "viewAll": "View all",
+    "productsShown": "{count, plural, one {Showing # product} other {Showing # products}}",
+    "shopsShown": "{count, plural, one {Showing # shop} other {Showing # shops}}"
+  },
+  "metadata": {
+    "login": {
+      "title": "Login | TomStore",
+      "description": "Sign in to your TomStore account."
+    },
+    "signup": {
+      "title": "Sign Up | TomStore",
+      "description": "Create a new TomStore account."
+    }
+  },
+  "auth": {
+    "divider": "or",
+    "social": {
+      "facebook": "Continue with Facebook",
+      "google": "Continue with Google"
+    },
+    "validation": {
+      "invalidEmail": "Invalid email",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required",
+      "fullNameRequired": "Full name is required",
+      "confirmPasswordRequired": "Please re-type password",
+      "passwordsMustMatch": "Passwords must match",
+      "agreementRequired": "You have to agree with our Terms and Conditions"
+    },
+    "login": {
+      "title": "Welcome to TomStore",
+      "subtitle": "Log in with email and password",
+      "emailLabel": "Email or Phone Number",
+      "emailPlaceholder": "example@mail.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "*********",
+      "submit": "Login",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign Up",
+      "forgotPassword": "Forgot your password?",
+      "reset": "Reset It"
+    },
+    "signup": {
+      "title": "Create Your Account",
+      "subtitle": "Please fill in all fields to continue",
+      "fullNameLabel": "Full Name",
+      "fullNamePlaceholder": "Ralph Edwards",
+      "emailLabel": "Email or Phone Number",
+      "emailPlaceholder": "example@mail.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "*********",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "*********",
+      "agreementPrefix": "By signing up, you agree to",
+      "agreementLink": "Terms & Conditions",
+      "submit": "Create Account",
+      "alreadyHaveAccount": "Already have an account?",
+      "login": "Log in"
+    }
+  },
+  "appStore": {
+    "googlePlay": {
+      "subtitle": "Get it on",
+      "title": "Google Play"
+    },
+    "appleStore": {
+      "subtitle": "Download on the",
+      "title": "App Store"
+    }
+  },
+  "footer": {
+    "description": "TomStore helps you choose laptops, printers, PCs and accessories for home, office and study.",
+    "aboutUs": "About Us",
+    "customerCare": "Customer Care",
+    "contactUs": "Contact Us",
+    "address": "70 Washington Square South, New York, NY 10012, United States",
+    "emailLabel": "Email",
+    "emailValue": "uilib.help@gmail.com",
+    "phoneLabel": "Phone",
+    "phoneValue": "+1 1123 456 780",
+    "aboutLinks": {
+      "careers": "Careers",
+      "ourStores": "Our Stores",
+      "ourStory": "Our Story",
+      "terms": "Terms & Conditions",
+      "privacy": "Privacy Policy"
+    },
+    "customerCareLinks": {
+      "helpCenter": "Help Center",
+      "howToBuy": "How to Buy",
+      "trackOrder": "Track Your Order",
+      "corporatePurchasing": "Corporate & Bulk Purchasing",
+      "returns": "Returns & Refunds"
+    }
+  },
+  "mobileNav": {
+    "home": "Home",
+    "category": "Category",
+    "cart": "Cart",
+    "account": "Account"
+  },
+  "home": {
+    "flashDeals": "Flash Deals",
+    "topCategories": "Top Categories",
+    "topRatings": "Top Ratings",
+    "featuredBrands": "Featured Brands",
+    "newArrivals": "New Arrivals",
+    "bigDiscounts": "Big Discounts",
+    "cars": "Cars",
+    "categories": "Categories",
+    "moreForYou": "More For You",
+    "mobilePhones": "Mobile Phones",
+    "opticsWatch": "Optics / Watch",
+    "brands": "Brands",
+    "shops": "Shops",
+    "viewAllBrands": "View All Brands",
+    "viewAllShops": "View All Shops"
+  },
+  "shops": {
+    "title": "All Shops",
+    "summary": "{count, plural, one {Showing # shop} other {Showing # shops}}"
+  },
+  "search": {
+    "placeholder": "Search and hit enter...",
+    "searchButton": "Search",
+    "searchingFor": "Searching for \"{query}\"",
+    "resultsFound": "{count, plural, one {# result found} other {# results found}}",
+    "sortBy": "Sort by:",
+    "sortPlaceholder": "Sort by",
+    "view": "View:",
+    "sortOptions": {
+      "relevance": "Relevance",
+      "date": "Date",
+      "priceLowToHigh": "Price Low to High",
+      "priceHighToLow": "Price High to Low"
+    },
+    "categories": {
+      "all": "All Categories",
+      "car": "Car",
+      "clothes": "Clothes",
+      "electronics": "Electronics",
+      "laptop": "Laptop",
+      "desktop": "Desktop",
+      "camera": "Camera",
+      "toys": "Toys"
+    },
+    "results": {
+      "macbookAir13": "Macbook Air 13",
+      "asusK555la": "Asus K555LA",
+      "acerAspireX453": "Acer Aspire X453",
+      "ipadMini3": "iPad Mini 3"
+    }
+  },
+  "product": {
+    "saleOff": "{percent}% off",
+    "brand": "Brand",
+    "rated": "Rated",
+    "stockAvailable": "Stock Available",
+    "addToCart": "Add to Cart",
+    "soldBy": "Sold By",
+    "relatedProducts": "Related Products",
+    "availableAt": "Also Available at",
+    "descriptionTab": "Description",
+    "reviewTab": "Review ({count})",
+    "specification": "Specification:",
+    "specLines": {
+      "brand": "Brand: Beats",
+      "model": "Model: S450",
+      "wireless": "Wireless Bluetooth Headset",
+      "frequency": "FM Frequency Response: 87.5 - 108 MHz",
+      "features": "Feature: FM Radio, Card Supported (Micro SD / TF)",
+      "origin": "Made in China"
+    },
+    "frequentlyBought": "Frequently Bought Together",
+    "saveAmount": "Save {amount}",
+    "addToList": "Add to List",
+    "writeReview": "Write a Review for this product",
+    "yourRating": "Your Rating",
+    "yourReview": "Your Review",
+    "reviewPlaceholder": "Write a review here...",
+    "submitReview": "Submit",
+    "validation": {
+      "ratingRequired": "Rating is required",
+      "commentRequired": "Comment is required",
+      "dateRequired": "Date is required"
+    },
+    "filters": {
+      "categories": "Categories",
+      "priceRange": "Price Range",
+      "brands": "Brands",
+      "ratings": "Ratings",
+      "colors": "Colors",
+      "otherOptions": {
+        "onSale": "On Sale",
+        "inStock": "In Stock",
+        "featured": "Featured"
+      },
+      "categoryItems": {
+        "bathPreparations": "Bath Preparations",
+        "bubbleBath": "Bubble Bath",
+        "bathCapsules": "Bath Capsules",
+        "others": "Others",
+        "eyeMakeupPreparations": "Eye Makeup Preparations",
+        "fragrance": "Fragrance",
+        "hairPreparations": "Hair Preparations"
+      }
+    }
+  },
+  "checkout": {
+    "steps": {
+      "cart": "Cart",
+      "details": "Details",
+      "payment": "Payment",
+      "review": "Review"
+    },
+    "cart": {
+      "total": "Total:",
+      "additionalComments": "Additional Comments",
+      "note": "Note",
+      "voucher": "Voucher",
+      "applyVoucher": "Apply Voucher",
+      "shippingEstimates": "Shipping Estimates",
+      "country": "Country",
+      "selectCountry": "Select Country",
+      "state": "State",
+      "selectState": "Select State",
+      "zipCode": "Zip Code",
+      "calculateShipping": "Calculate Shipping",
+      "checkoutNow": "Checkout Now"
+    },
+    "form": {
+      "shippingAddress": "Shipping Address",
+      "billingAddress": "Billing Address",
+      "sameAsShipping": "Same as shipping address",
+      "fullName": "Full Name",
+      "phoneNumber": "Phone Number",
+      "zipCode": "Zip Code",
+      "address1": "Address 1",
+      "address2": "Address 2",
+      "emailAddress": "Email Address",
+      "company": "Company",
+      "country": "Country",
+      "backToCart": "Back to Cart",
+      "proceedToPayment": "Proceed to Payment"
+    },
+    "summary": {
+      "subtotal": "Subtotal:",
+      "shipping": "Shipping:",
+      "tax": "Tax:",
+      "discount": "Discount:",
+      "total": "Total:",
+      "voucher": "Voucher",
+      "applyVoucher": "Apply Voucher"
+    }
+  },
+  "dashboard": {
+    "groups": {
+      "dashboard": "DASHBOARD",
+      "accountSettings": "ACCOUNT SETTINGS"
+    },
+    "nav": {
+      "orders": "Orders",
+      "wishlist": "Wishlist",
+      "supportTickets": "Support Tickets",
+      "profileInfo": "Profile Info",
+      "addresses": "Addresses",
+      "paymentMethods": "Payment Methods"
+    },
+    "vendorNav": {
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "addNewProduct": "Add New Product",
+      "orders": "Orders",
+      "accountSettings": "Account Settings"
+    },
+    "headers": {
+      "myOrders": "My Orders",
+      "myWishList": "My Wish List",
+      "supportTicket": "Support Ticket",
+      "myProfile": "My Profile",
+      "myAddresses": "My Addresses",
+      "paymentMethods": "Payment Methods",
+      "dashboard": "Dashboard",
+      "orders": "Orders",
+      "products": "Products",
+      "addProduct": "Add Product",
+      "editProduct": "Edit Product"
+    },
+    "buttons": {
+      "addAllToCart": "Add All to Cart",
+      "editProfile": "Edit Profile",
+      "addNewAddress": "Add New Address",
+      "addNew": "Add New",
+      "back": "Back"
+    },
+    "profile": {
+      "balance": "Balance:",
+      "silverUser": "SILVER USER",
+      "allOrders": "All Orders",
+      "awaitingPayments": "Awaiting Payments",
+      "awaitingShipment": "Awaiting Shipment",
+      "awaitingDelivery": "Awaiting Delivery",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone",
+      "birthDate": "Birth Date"
+    },
+    "tables": {
+      "orderNumber": "Order #",
+      "status": "Status",
+      "datePurchased": "Date purchased",
+      "total": "Total",
+      "name": "Name",
+      "regularPrice": "Regular price",
+      "salePrice": "Sale Price"
     }
   }
 }

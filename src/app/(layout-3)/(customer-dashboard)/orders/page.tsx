@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { IconShoppingBagCheck } from "@tabler/icons-react";
+import { getTranslations } from "next-intl/server";
 // API FUNCTIONS
 import api from "@utils/__api__/orders";
 // GLOBAL CUSTOM COMPONENTS
@@ -10,18 +11,23 @@ import DashboardPageHeader from "@component/DashboardPageHeader";
 // PAGE SECTION COMPONENTS
 import { OrderRow, OrdersPagination } from "@sections/customer-dashboard/orders";
 
-const ORDER_HEADERS = ["Order #", "Status", "Date purchased", "Total"];
-
 export default async function OrderList() {
   const orderList = await api.getOrders();
+  const t = await getTranslations("dashboard");
+  const orderHeaders = [
+    t("tables.orderNumber"),
+    t("tables.status"),
+    t("tables.datePurchased"),
+    t("tables.total")
+  ];
 
   return (
     <Fragment>
-      <DashboardPageHeader title="My Orders" Icon={<IconShoppingBagCheck size={27} />} />
+      <DashboardPageHeader title={t("headers.myOrders")} Icon={<IconShoppingBagCheck size={27} />} />
 
       <Hidden down={769}>
         <TableRow boxShadow="none" padding="0px 18px" backgroundColor="transparent">
-          {ORDER_HEADERS.map((item) => (
+          {orderHeaders.map((item) => (
             <H5 key={item} fontWeight={500} color="text.muted" my="0px" mx="6px" textAlign="left">
               {item}
             </H5>

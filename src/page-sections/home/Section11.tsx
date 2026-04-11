@@ -2,15 +2,17 @@ import Grid from "@component/grid/Grid";
 import Container from "@component/Container";
 import ProductCard1 from "@component/product-cards/ProductCard1";
 import CategorySectionHeader from "@component/CategorySectionHeader";
+import { getTranslations } from "next-intl/server";
 // API FUNCTIONS
 import api from "@utils/__api__/market-1";
 
 export default async function Section11() {
   const moreItems = await api.getMoreItems();
+  const t = await getTranslations("home");
 
   return (
     <Container mb="70px">
-      <CategorySectionHeader title="More For You" seeMoreLink="#" />
+      <CategorySectionHeader title={t("moreForYou")} seeMoreLink="#" />
 
       <Grid container spacing={6}>
         {moreItems.map((item, ind) => (

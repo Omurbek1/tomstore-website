@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useTranslations } from "next-intl";
 
 import Chip from "@component/Chip";
 import Icon from "@component/icon/Icon";
@@ -46,19 +47,20 @@ const Wrapper = styled.div`
 export default function MobileNavigationBar() {
   const { state } = useCart();
   const width = useWindowSize();
+  const t = useTranslations("mobileNav");
 
   if (width && width <= 900) {
     return (
-      <Wrapper>
-        {list.map((item) => (
-          <NavLink className="link" href={item.href} key={item.title}>
+        <Wrapper>
+          {list.map((item) => (
+          <NavLink className="link" href={item.href} key={item.translationKey}>
             <Icon className="icon" variant="small">
               {item.icon}
             </Icon>
 
-            {item.title}
+            {t(item.translationKey)}
 
-            {item.title === "Cart" && !!state.cart.length && (
+            {item.translationKey === "cart" && !!state.cart.length && (
               <Chip
                 top="4px"
                 px="0.25rem"
@@ -80,8 +82,8 @@ export default function MobileNavigationBar() {
 }
 
 const list = [
-  { title: "Home", icon: "home", href: "/" },
-  { title: "Category", icon: "category", href: "/mobile-category-nav" },
-  { title: "Cart", icon: "bag", href: "/cart" },
-  { title: "Account", icon: "user-2", href: "/profile" }
+  { translationKey: "home", icon: "home", href: "/" },
+  { translationKey: "category", icon: "category", href: "/mobile-category-nav" },
+  { translationKey: "cart", icon: "bag", href: "/cart" },
+  { translationKey: "account", icon: "user-2", href: "/profile" }
 ];

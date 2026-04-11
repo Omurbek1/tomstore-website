@@ -1,24 +1,26 @@
-import Link from "next/link";
 import { Fragment } from "react";
 import { IconCreditCard } from "@tabler/icons-react";
+import { getTranslations } from "next-intl/server";
 // GLOBAL CUSTOM COMPONENTS
 import { Button } from "@component/buttons";
 import DashboardPageHeader from "@component/DashboardPageHeader";
 // PAGE SECTION COMPONENTS
 import { PaymentMethodList } from "@sections/customer-dashboard/payment-method";
+import { Link } from "i18n/navigation";
 
-const HEADER_LINK = (
-  <Link href="/payment-methods/add">
-    <Button color="primary">Add New</Button>
-  </Link>
-);
+export default async function PaymentMethods() {
+  const t = await getTranslations("dashboard");
+  const headerLink = (
+    <Link href="/payment-methods/add">
+      <Button color="primary">{t("buttons.addNew")}</Button>
+    </Link>
+  );
 
-export default function PaymentMethods() {
   return (
     <Fragment>
       <DashboardPageHeader
-        button={HEADER_LINK}
-        title="Payment Methods"
+        button={headerLink}
+        title={t("headers.paymentMethods")}
         Icon={<IconCreditCard size={27} />}
       />
 

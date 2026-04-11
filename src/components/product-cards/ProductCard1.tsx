@@ -19,7 +19,7 @@ import ProductQuickView from "@component/products/ProductQuickView";
 
 import { calculateDiscount, currency } from "@utils/utils";
 import { deviceSize } from "@utils/constants";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 // STYLED COMPONENT
 const Wrapper = styled(Card)`
@@ -134,6 +134,7 @@ export default function ProductCard1({
 }: ProductCard1Props) {
   const theme = useTheme();
   const locale = useLocale();
+  const t = useTranslations("product");
   const { state, dispatch } = useCart();
   const [open, setOpen] = useState(false);
   const cartItem = state.cart.find((item) => item.id === id);
@@ -175,7 +176,7 @@ export default function ProductCard1({
               color="primary.text"
               zIndex={1}
             >
-              {off}% off
+              {t("saleOff", { percent: off })}
             </Chip>
           )}
 

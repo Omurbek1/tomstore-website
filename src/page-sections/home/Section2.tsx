@@ -2,6 +2,7 @@ import Box from "@component/Box";
 import { Carousel } from "@component/carousel";
 import ProductCard1 from "@component/product-cards/ProductCard1";
 import CategorySectionCreator from "@component/CategorySectionCreator";
+import { getTranslations } from "next-intl/server";
 // API FUNCTIONS
 import api from "@utils/__api__/market-1";
 
@@ -14,9 +15,10 @@ const responsive = [
 
 export default async function Section2() {
   const products = await api.getFlashDeals();
+  const t = await getTranslations("home");
 
   return (
-    <CategorySectionCreator iconName="light" title="Flash Deals" seeMoreLink="#">
+    <CategorySectionCreator iconName="light" title={t("flashDeals")} seeMoreLink="#">
       <Box mt="-0.25rem" mb="-0.25rem">
         <Carousel slidesToShow={4} responsive={responsive}>
           {products.map((item, ind) => (

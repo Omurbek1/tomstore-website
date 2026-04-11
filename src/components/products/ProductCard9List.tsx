@@ -5,6 +5,7 @@ import Pagination from "@component/pagination";
 import { SemiSpan } from "@component/Typography";
 import { ProductCard9 } from "@component/product-cards";
 import Product from "@models/product.model";
+import { useTranslations } from "next-intl";
 
 // ==========================================================
 interface Props {
@@ -13,6 +14,8 @@ interface Props {
 // ==========================================================
 
 export default function ProductListView({ products }: Props) {
+  const t = useTranslations("common");
+
   return (
     <Fragment>
       {products.map((item) => (
@@ -32,7 +35,7 @@ export default function ProductListView({ products }: Props) {
       ))}
 
       <FlexBox flexWrap="wrap" justifyContent="space-between" alignItems="center" mt="32px">
-        <SemiSpan>Showing 1-9 of 1.3k Products</SemiSpan>
+        <SemiSpan>{t("productsShown", { count: products.length })}</SemiSpan>
         <Pagination pageCount={10} />
       </FlexBox>
     </Fragment>

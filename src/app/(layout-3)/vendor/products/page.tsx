@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { IconPackage } from "@tabler/icons-react";
+import { getTranslations } from "next-intl/server";
 import axios from "@lib/axios";
 // GLOBAL CUSTOM COMPONENTS
 import Hidden from "@component/hidden";
@@ -15,6 +16,7 @@ type Params = { searchParams: Promise<{ page: string }> };
 // ==============================================================
 
 export default async function Products({ searchParams }: Params) {
+  const t = await getTranslations("dashboard");
   const { page } = await searchParams;
 
   const { data } = await axios.get("/api/products", {
@@ -26,22 +28,22 @@ export default async function Products({ searchParams }: Params) {
 
   return (
     <Fragment>
-      <DashboardPageHeader title="Products" Icon={<IconPackage size={24} />} />
+      <DashboardPageHeader title={t("headers.products")} Icon={<IconPackage size={24} />} />
 
       <Hidden down={769}>
         <TableRow padding="0px 18px" mb="-0.125rem" boxShadow="none" backgroundColor="transparent">
           <FlexBox my="0px" mx="6px" flex="2 2 220px !important">
             <H5 fontWeight={500} ml="56px" color="text.muted" textAlign="left">
-              Name
+              {t("tables.name")}
             </H5>
           </FlexBox>
 
           <H5 fontWeight={500} color="text.muted" my="0px" mx="6px" textAlign="left">
-            Regular price
+            {t("tables.regularPrice")}
           </H5>
 
           <H5 fontWeight={500} color="text.muted" my="0px" mx="6px" textAlign="left">
-            Sale Price
+            {t("tables.salePrice")}
           </H5>
 
           <H5 flex="0 0 0 !important" fontWeight={500} color="text.muted" px="22px" my="0px" />

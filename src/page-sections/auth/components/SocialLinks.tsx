@@ -1,9 +1,12 @@
 import { Fragment } from "react";
 import { IconBrandFacebookFilled, IconBrandGoogleFilled } from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
 import FlexBox from "@component/FlexBox";
 import { Small } from "@component/Typography";
 
 export default function SocialLinks() {
+  const t = useTranslations("auth.social");
+
   return (
     <Fragment>
       <FlexBox
@@ -18,7 +21,7 @@ export default function SocialLinks() {
         <IconBrandFacebookFilled size={16} stroke={1.5} />
 
         <Small fontWeight="600" ml="0.5rem">
-          Continue with Facebook
+          {t("facebook")}
         </Small>
       </FlexBox>
 
@@ -34,7 +37,7 @@ export default function SocialLinks() {
         <IconBrandGoogleFilled size={16} stroke={1.5} />
 
         <Small fontWeight="600" ml="0.5rem">
-          Continue with Google
+          {t("google")}
         </Small>
       </FlexBox>
     </Fragment>

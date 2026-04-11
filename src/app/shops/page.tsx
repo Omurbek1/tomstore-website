@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { getTranslations } from "next-intl/server";
 // GLOBAL CUSTOM COMPONENTS
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
@@ -10,10 +11,11 @@ import api from "@utils/__api__/shops";
 
 export default async function ShopList() {
   const shopList = await api.getShopList();
+  const t = await getTranslations("shops");
 
   return (
     <Fragment>
-      <H2 mb="24px">All Shops</H2>
+      <H2 mb="24px">{t("title")}</H2>
 
       <Grid container spacing={6}>
         {shopList.map((item) => (
@@ -32,7 +34,7 @@ export default async function ShopList() {
       </Grid>
 
       <FlexBox flexWrap="wrap" justifyContent="space-between" alignItems="center" mt="32px">
-        <SemiSpan>Showing 1-9 of {shopList.length} Shops</SemiSpan>
+        <SemiSpan>{t("summary", { count: shopList.length })}</SemiSpan>
         <Pagination pageCount={Math.ceil(shopList.length / 9)} />
       </FlexBox>
     </Fragment>

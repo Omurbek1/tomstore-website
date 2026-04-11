@@ -6,32 +6,32 @@ import {
   IconLayoutDashboard
 } from "@tabler/icons-react";
 
-export const NAVIGATION_LINKS = [
+export const navigationLinkDefs = [
   {
     href: "/vendor/dashboard",
-    title: "Dashboard",
+    titleKey: "dashboard",
     Icon: IconLayoutDashboard
   },
   {
     href: "/vendor/products",
-    title: "Products",
+    titleKey: "products",
     Icon: IconBuildingStore,
     count: 300
   },
   {
     href: "/vendor/products/create",
-    title: "Add New Product",
+    titleKey: "addNewProduct",
     Icon: IconUpload
   },
   {
     href: "/vendor/orders",
-    title: "Orders",
+    titleKey: "orders",
     Icon: IconShoppingCart,
     count: 40
   },
   {
     href: "/vendor/account-settings",
-    title: "Account Settings",
+    titleKey: "accountSettings",
     Icon: IconSettings
   }
-];
+] as const;

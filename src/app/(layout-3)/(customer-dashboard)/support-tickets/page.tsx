@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { Fragment } from "react";
 import { format } from "date-fns/format";
 import { IconArrowRight, IconHelp } from "@tabler/icons-react";
+import { getTranslations } from "next-intl/server";
 // API FUNCTIONS
 import api from "@utils/__api__/ticket";
 // GLOBAL CUSTOM COMPONENTS
@@ -14,13 +14,15 @@ import Typography, { Paragraph, SemiSpan, Small } from "@component/Typography";
 import DashboardPageHeader from "@component/DashboardPageHeader";
 // PAGE SECTION COMPONENTS
 import { SupportPagination } from "@sections/customer-dashboard/support-ticket";
+import { Link } from "i18n/navigation";
 
 export default async function TicketList() {
   const ticketList = await api.getTicketList();
+  const t = await getTranslations("dashboard");
 
   return (
     <Fragment>
-      <DashboardPageHeader title="Support Ticket" Icon={<IconHelp size={27} />} />
+      <DashboardPageHeader title={t("headers.supportTicket")} Icon={<IconHelp size={27} />} />
 
       {ticketList.map((item) => (
         <Link href={`/support-tickets/${item.slug}`} key={item.id}>

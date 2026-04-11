@@ -1,18 +1,12 @@
-export const aboutLinks = [
-  "Careers",
-  "Our Stores",
-  "Our Cares",
-  "Terms & Conditions",
-  "Privacy Policy"
-];
+export const aboutLinkKeys = ["careers", "ourStores", "ourStory", "terms", "privacy"] as const;
 
-export const customerCareLinks = [
-  "Help Center",
-  "How to Buy",
-  "Track Your Order",
-  "Corporate & Bulk Purchasing",
-  "Returns & Refunds"
-];
+export const customerCareLinkKeys = [
+  "helpCenter",
+  "howToBuy",
+  "trackOrder",
+  "corporatePurchasing",
+  "returns"
+] as const;
 
 export const iconList = [
   { iconName: "facebook", url: "https://www.facebook.com/UILibOfficial" },

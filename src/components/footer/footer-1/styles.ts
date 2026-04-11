@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import styled from "styled-components";
+import { Link } from "i18n/navigation";
 
 // STYLED COMPONENTS
 export const StyledLink = styled(Link)`

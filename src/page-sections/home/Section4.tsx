@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Box from "@component/Box";
 import Card from "@component/Card";
 import Grid from "@component/grid/Grid";
@@ -6,10 +5,13 @@ import Container from "@component/Container";
 import ProductCard4 from "@component/product-cards/ProductCard4";
 import ProductCard5 from "@component/product-cards/ProductCard5";
 import CategorySectionHeader from "@component/CategorySectionHeader";
+import { getTranslations } from "next-intl/server";
+import { Link } from "i18n/navigation";
 // API FUNCTIONS
 import api from "@utils/__api__/market-1";
 
 export default async function Section4() {
+  const t = await getTranslations("home");
   const [topRatedList, topRatedBrands] = await Promise.all([
     api.getTopRatedProduct(),
     api.getTopRatedBrand()
@@ -20,7 +22,7 @@ export default async function Section4() {
       <Container>
         <Grid container spacing={6}>
           <Grid item lg={6} xs={12}>
-            <CategorySectionHeader iconName="ranking-1" title="Top Ratings" seeMoreLink="#" />
+            <CategorySectionHeader iconName="ranking-1" title={t("topRatings")} seeMoreLink="#" />
 
             <Card p="1rem" borderRadius={8}>
               <Grid container spacing={4}>
@@ -42,7 +44,7 @@ export default async function Section4() {
           </Grid>
 
           <Grid item md={6} xs={12}>
-            <CategorySectionHeader iconName="Group" title="Featured Brands" seeMoreLink="#" />
+            <CategorySectionHeader iconName="Group" title={t("featuredBrands")} seeMoreLink="#" />
 
             <Card p="1rem" borderRadius={8}>
               <Grid container spacing={4}>

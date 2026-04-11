@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import Box from "@component/Box";
 import Hidden from "@component/hidden";
@@ -28,6 +29,7 @@ interface Props {
 // ======================================================
 
 export default function Section7({ shops, brands, title, productList }: Props) {
+  const t = useTranslations("home");
   const [list, setList] = useState<any[]>([]);
   const [selected, setSelected] = useState("");
   const [type, setType] = useState<"brands" | "shops">("brands");
@@ -60,7 +62,7 @@ export default function Section7({ shops, brands, title, productList }: Props) {
                 style={{ cursor: "pointer" }}
                 color={type === "brands" ? "gray.900" : "gray.600"}
                 onClick={handleChangeType("brands")}>
-                Brands
+                {t("brands")}
               </Typography>
 
               <Typography
@@ -79,7 +81,7 @@ export default function Section7({ shops, brands, title, productList }: Props) {
                 style={{ cursor: "pointer" }}
                 onClick={handleChangeType("shops")}
                 color={type === "shops" ? "gray.900" : "gray.600"}>
-                Shops
+                {t("shops")}
               </Typography>
             </FlexBox>
 
@@ -110,7 +112,9 @@ export default function Section7({ shops, brands, title, productList }: Props) {
               onClick={handleCategoryClick(`all-${type}`)}
               shadow={selected.match(`all-${type}`) ? 4 : null}
               bg={selected.match(`all-${type}`) ? "white" : "gray.100"}>
-              <span className="product-category-title show-all">View All {type}</span>
+              <span className="product-category-title show-all">
+                {type === "brands" ? t("viewAllBrands") : t("viewAllShops")}
+              </span>
             </StyledProductCategory>
           </Box>
         </Hidden>

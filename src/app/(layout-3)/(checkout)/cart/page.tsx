@@ -1,6 +1,6 @@
 "use client";
-import Link from "next/link";
 import { Fragment } from "react";
+import { useTranslations } from "next-intl";
 // GLOBAL CUSTOM COMPONENTS
 import Box from "@component/Box";
 import Select from "@component/Select";
@@ -17,11 +17,13 @@ import { ProductCard7 } from "@component/product-cards";
 import useCart from "@hook/useCart";
 // CUSTOM DATA
 import countryList from "@data/countryList";
+import { Link } from "i18n/navigation";
 // UTILS
 import { currency } from "@utils/utils";
 
 export default function Cart() {
   const { state } = useCart();
+  const t = useTranslations("checkout.cart");
 
   const getTotalPrice = () => {
     return state.cart.reduce((accumulator, item) => accumulator + item.price * item.qty, 0) || 0;
@@ -48,7 +50,7 @@ export default function Cart() {
         <Grid item lg={4} md={4} xs={12}>
           <Card1>
             <FlexBox justifyContent="space-between" alignItems="center" mb="1rem">
-              <Typography color="gray.600">Total:</Typography>
+              <Typography color="gray.600">{t("total")}</Typography>
 
               <Typography fontSize="18px" fontWeight="600" lineHeight="1">
                 {currency(getTotalPrice())}
@@ -59,12 +61,12 @@ export default function Cart() {
 
             <FlexBox alignItems="center" mb="1rem">
               <Typography fontWeight="600" mr="10px">
-                Additional Comments
+                {t("additionalComments")}
               </Typography>
 
               <Box p="3px 10px" bg="primary.light" borderRadius="3px">
                 <Typography fontSize="12px" color="primary.main">
-                  Note
+                  {t("note")}
                 </Typography>
               </Box>
             </FlexBox>
@@ -73,44 +75,44 @@ export default function Cart() {
 
             <Divider mb="1rem" />
 
-            <TextField placeholder="Voucher" fullWidth />
+            <TextField placeholder={t("voucher")} fullWidth />
 
             <Button variant="outlined" color="primary" mt="1rem" mb="30px" fullWidth>
-              Apply Voucher
+              {t("applyVoucher")}
             </Button>
 
             <Divider mb="1.5rem" />
 
             <Typography fontWeight="600" mb="1rem">
-              Shipping Estimates
+              {t("shippingEstimates")}
             </Typography>
 
             <Select
               mb="1rem"
-              label="Country"
+              label={t("country")}
               options={countryList}
-              placeholder="Select Country"
+              placeholder={t("selectCountry")}
               onChange={(e) => console.log(e)}
             />
 
             <Select
-              label="State"
+              label={t("state")}
               options={stateList}
-              placeholder="Select State"
+              placeholder={t("selectState")}
               onChange={(e) => console.log(e)}
             />
 
             <Box mt="1rem">
-              <TextField label="Zip Code" placeholder="3100" fullWidth />
+              <TextField label={t("zipCode")} placeholder="3100" fullWidth />
             </Box>
 
             <Button variant="outlined" color="primary" my="1rem" fullWidth>
-              Calculate Shipping
+              {t("calculateShipping")}
             </Button>
 
             <Link href="/checkout">
               <Button variant="contained" color="primary" fullWidth>
-                Checkout Now
+                {t("checkoutNow")}
               </Button>
             </Link>
           </Card1>

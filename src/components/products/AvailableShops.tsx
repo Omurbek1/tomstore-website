@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import Box from "@component/Box";
 import Card from "@component/Card";
 import Avatar from "@component/avatar";
@@ -7,15 +5,19 @@ import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import { H3, H4 } from "@component/Typography";
 import Shop from "@models/shop.model";
+import { useTranslations } from "next-intl";
+import { Link } from "i18n/navigation";
 
 // ============================================================
 type Props = { shops: Shop[] };
 // ============================================================
 
 export default function AvailableShops({ shops }: Props) {
+  const t = useTranslations("product");
+
   return (
     <Box mb="3.75rem">
-      <H3 mb="1.5rem">Also Available at</H3>
+      <H3 mb="1.5rem">{t("availableAt")}</H3>
 
       <Grid container spacing={8}>
         {shops.map((item) => (

@@ -2,6 +2,7 @@
 
 import { Fragment } from "react";
 import { IconHeartFilled } from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
 // CUSTOM DATA
 import db from "@data/db";
 // GLOBAL CUSTOM COMPONENTS
@@ -13,13 +14,15 @@ import ProductCard1 from "@component/product-cards/ProductCard1";
 import DashboardPageHeader from "@component/DashboardPageHeader";
 
 export default function WishList() {
+  const t = useTranslations("dashboard");
+
   return (
     <Fragment>
       {/* PAGE TITLE AREA */}
       <DashboardPageHeader
-        title="My Wish List"
+        title={t("headers.myWishList")}
         Icon={<IconHeartFilled size={27} />}
-        button={<Button color="primary">Add All to Cart</Button>}
+        button={<Button color="primary">{t("buttons.addAllToCart")}</Button>}
       />
 
       {/* PRODUCT LIST AREA */}

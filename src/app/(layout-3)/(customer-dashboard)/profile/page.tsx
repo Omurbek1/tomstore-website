@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { Fragment } from "react";
 import { format } from "date-fns/format";
 import { IconUserFilled } from "@tabler/icons-react";
+import { getTranslations } from "next-intl/server";
 // API FUNCTIONS
 import api from "@utils/__api__/users";
 // GLOBAL CUSTOM COMPONENTS
@@ -14,28 +14,28 @@ import TableRow from "@component/TableRow";
 import { Button } from "@component/buttons";
 import Typography, { H3, H5, Small } from "@component/Typography";
 import DashboardPageHeader from "@component/DashboardPageHeader";
-
-const infoList = [
-  { title: "16", subtitle: "All Orders" },
-  { title: "02", subtitle: "Awaiting Payments" },
-  { title: "00", subtitle: "Awaiting Shipment" },
-  { title: "01", subtitle: "Awaiting Delivery" }
-];
-
-const HEADER_LINK = (
-  <Link href="/profile/edit">
-    <Button color="primary">Edit Profile</Button>
-  </Link>
-);
+import { Link } from "i18n/navigation";
 
 export default async function Profile() {
   const user = await api.getUser();
+  const t = await getTranslations("dashboard");
+  const infoList = [
+    { title: "16", subtitle: t("profile.allOrders") },
+    { title: "02", subtitle: t("profile.awaitingPayments") },
+    { title: "00", subtitle: t("profile.awaitingShipment") },
+    { title: "01", subtitle: t("profile.awaitingDelivery") }
+  ];
+  const headerLink = (
+    <Link href="/profile/edit">
+      <Button color="primary">{t("buttons.editProfile")}</Button>
+    </Link>
+  );
 
   return (
     <Fragment>
       <DashboardPageHeader
-        title="My Profile"
-        button={HEADER_LINK}
+        title={t("headers.myProfile")}
+        button={headerLink}
         Icon={<IconUserFilled size={27} />}
       />
 
@@ -62,7 +62,7 @@ export default async function Profile() {
 
                     <FlexBox alignItems="center">
                       <Typography fontSize="14px" color="text.hint">
-                        Balance:
+                        {t("profile.balance")}
                       </Typography>
 
                       <Typography ml="4px" fontSize="14px" color="primary.main">
@@ -72,7 +72,7 @@ export default async function Profile() {
                   </div>
 
                   <Typography fontSize="14px" color="text.hint" letterSpacing="0.2em">
-                    SILVER USER
+                    {t("profile.silverUser")}
                   </Typography>
                 </FlexBox>
               </Box>
@@ -119,7 +119,7 @@ export default async function Profile() {
         borderColor="gray.200">
         <FlexBox flexDirection="column" p="0.5rem">
           <Small color="text.muted" mb="4px">
-            First Name
+            {t("profile.firstName")}
           </Small>
 
           <span>{user.name.firstName}</span>
@@ -127,7 +127,7 @@ export default async function Profile() {
 
         <FlexBox flexDirection="column" p="0.5rem">
           <Small color="text.muted" mb="4px">
-            Last Name
+            {t("profile.lastName")}
           </Small>
 
           <span>{user.name.lastName}</span>
@@ -135,7 +135,7 @@ export default async function Profile() {
 
         <FlexBox flexDirection="column" p="0.5rem">
           <Small color="text.muted" mb="4px">
-            Email
+            {t("profile.email")}
           </Small>
 
           <span>{user.email}</span>
@@ -143,7 +143,7 @@ export default async function Profile() {
 
         <FlexBox flexDirection="column" p="0.5rem">
           <Small color="text.muted" mb="4px" textAlign="left">
-            Phone
+            {t("profile.phone")}
           </Small>
 
           <span>{user.phone}</span>
@@ -151,7 +151,7 @@ export default async function Profile() {
 
         <FlexBox flexDirection="column" p="0.5rem">
           <Small color="text.muted" mb="4px">
-            Birth date
+            {t("profile.birthDate")}
           </Small>
 
           <span className="pre">{format(new Date(user.dateOfBirth), "dd MMM, yyyy")}</span>

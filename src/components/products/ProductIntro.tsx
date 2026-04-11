@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { IconMinus, IconPlus } from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
 
 import Box from "@component/Box";
 import Image from "@component/Image";
@@ -15,6 +15,7 @@ import { Button } from "@component/buttons";
 import { H1, H2, H3, H6, SemiSpan } from "@component/Typography";
 import useCart from "@hook/useCart";
 import { currency } from "@utils/utils";
+import { Link } from "i18n/navigation";
 
 // ========================================
 interface Props {
@@ -27,6 +28,7 @@ interface Props {
 
 export default function ProductIntro({ images, title, price, id }: Props) {
   const param = useParams();
+  const t = useTranslations("product");
   const { state, dispatch } = useCart();
   const [selectedImage, setSelectedImage] = useState(0);
 
@@ -93,12 +95,12 @@ export default function ProductIntro({ images, title, price, id }: Props) {
           <H1 mb="1rem">{title}</H1>
 
           <FlexBox alignItems="center" mb="1rem">
-            <SemiSpan>Brand:</SemiSpan>
+            <SemiSpan>{t("brand")}:</SemiSpan>
             <H6 ml="8px">Ziaomi</H6>
           </FlexBox>
 
           <FlexBox alignItems="center" mb="1rem">
-            <SemiSpan>Rated:</SemiSpan>
+            <SemiSpan>{t("rated")}:</SemiSpan>
             <Box ml="8px" mr="8px">
               <Rating color="warn" value={4} outof={5} />
             </Box>
@@ -110,7 +112,7 @@ export default function ProductIntro({ images, title, price, id }: Props) {
               {currency(price)}
             </H2>
 
-            <SemiSpan color="inherit">Stock Available</SemiSpan>
+            <SemiSpan color="inherit">{t("stockAvailable")}</SemiSpan>
           </Box>
 
           {!cartItem?.qty ? (
@@ -120,7 +122,7 @@ export default function ProductIntro({ images, title, price, id }: Props) {
               color="primary"
               variant="contained"
               onClick={handleCartAmountChange(1)}>
-              Add to Cart
+              {t("addToCart")}
             </Button>
           ) : (
             <FlexBox alignItems="center" mb="36px">
@@ -149,7 +151,7 @@ export default function ProductIntro({ images, title, price, id }: Props) {
           )}
 
           <FlexBox alignItems="center" mb="1rem">
-            <SemiSpan>Sold By:</SemiSpan>
+            <SemiSpan>{t("soldBy")}:</SemiSpan>
             <Link href="/shops/scarlett-beauty">
               <H6 lineHeight="1" ml="8px">
                 Mobile Store

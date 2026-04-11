@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Box from "@component/Box";
 import Card from "@component/Card";
 import FlexBox from "@component/FlexBox";
@@ -8,6 +7,8 @@ import NextImage from "@component/NextImage";
 import { Carousel } from "@component/carousel";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import { calculateDiscount, currency } from "@utils/utils";
+import { getTranslations } from "next-intl/server";
+import { Link } from "i18n/navigation";
 // API FUNCTIONS
 import api from "@utils/__api__/market-1";
 
@@ -20,9 +21,10 @@ const responsive = [
 
 export default async function Section13() {
   const bigDiscountList = await api.getBigDiscountList();
+  const t = await getTranslations("home");
 
   return (
-    <CategorySectionCreator iconName="gift" title="Big Discounts" seeMoreLink="#">
+    <CategorySectionCreator iconName="gift" title={t("bigDiscounts")} seeMoreLink="#">
       <Box my="-0.25rem">
         <Carousel dots slidesToShow={6} responsive={responsive}>
           {bigDiscountList.map((item) => (

@@ -1,6 +1,6 @@
 {
   "LocaleLayout": {
-    "title": "TomStore — Ноутбуки, принтеры, ПК и электроника в Бишкеке",
+    "title": "TomStore - Ноутбуки, принтеры, ПК и электроника в Бишкеке",
     "description": "Магазин электроники. В наличии, гарантия, рассрочка, доставка."
   },
   "nav": {
@@ -112,6 +112,325 @@
     "languages": {
       "ru": "Русский",
       "en": "English"
+    }
+  },
+  "common": {
+    "viewAll": "Смотреть все",
+    "productsShown": "{count, plural, one {Показан # товар} few {Показано # товара} many {Показано # товаров} other {Показано # товара}}",
+    "shopsShown": "{count, plural, one {Показан # магазин} few {Показано # магазина} many {Показано # магазинов} other {Показано # магазина}}"
+  },
+  "metadata": {
+    "login": {
+      "title": "Вход | TomStore",
+      "description": "Войдите в аккаунт TomStore."
+    },
+    "signup": {
+      "title": "Регистрация | TomStore",
+      "description": "Создайте новый аккаунт TomStore."
+    }
+  },
+  "auth": {
+    "divider": "или",
+    "social": {
+      "facebook": "Продолжить через Facebook",
+      "google": "Продолжить через Google"
+    },
+    "validation": {
+      "invalidEmail": "Некорректный email",
+      "emailRequired": "Email обязателен",
+      "passwordRequired": "Пароль обязателен",
+      "fullNameRequired": "Введите полное имя",
+      "confirmPasswordRequired": "Повторите пароль",
+      "passwordsMustMatch": "Пароли должны совпадать",
+      "agreementRequired": "Нужно согласиться с условиями"
+    },
+    "login": {
+      "title": "Добро пожаловать в TomStore",
+      "subtitle": "Войдите по email и паролю",
+      "emailLabel": "Email или номер телефона",
+      "emailPlaceholder": "example@mail.com",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "*********",
+      "submit": "Войти",
+      "noAccount": "Нет аккаунта?",
+      "signUp": "Регистрация",
+      "forgotPassword": "Забыли пароль?",
+      "reset": "Сбросить"
+    },
+    "signup": {
+      "title": "Создайте аккаунт",
+      "subtitle": "Заполните все поля, чтобы продолжить",
+      "fullNameLabel": "Полное имя",
+      "fullNamePlaceholder": "Ральф Эдвардс",
+      "emailLabel": "Email или номер телефона",
+      "emailPlaceholder": "example@mail.com",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "*********",
+      "confirmPasswordLabel": "Подтвердите пароль",
+      "confirmPasswordPlaceholder": "*********",
+      "agreementPrefix": "Регистрируясь, вы соглашаетесь с",
+      "agreementLink": "Условиями и положениями",
+      "submit": "Создать аккаунт",
+      "alreadyHaveAccount": "Уже есть аккаунт?",
+      "login": "Войти"
+    }
+  },
+  "appStore": {
+    "googlePlay": {
+      "subtitle": "Доступно в",
+      "title": "Google Play"
+    },
+    "appleStore": {
+      "subtitle": "Скачать в",
+      "title": "App Store"
+    }
+  },
+  "footer": {
+    "description": "TomStore помогает подобрать ноутбуки, принтеры, ПК и аксессуары для дома, офиса и учебы.",
+    "aboutUs": "О нас",
+    "customerCare": "Поддержка клиентов",
+    "contactUs": "Связаться с нами",
+    "address": "70 Washington Square South, New York, NY 10012, United States",
+    "emailLabel": "Email",
+    "emailValue": "uilib.help@gmail.com",
+    "phoneLabel": "Телефон",
+    "phoneValue": "+1 1123 456 780",
+    "aboutLinks": {
+      "careers": "Карьера",
+      "ourStores": "Наши магазины",
+      "ourStory": "О компании",
+      "terms": "Условия и положения",
+      "privacy": "Политика конфиденциальности"
+    },
+    "customerCareLinks": {
+      "helpCenter": "Центр помощи",
+      "howToBuy": "Как купить",
+      "trackOrder": "Отследить заказ",
+      "corporatePurchasing": "Корпоративные и оптовые заказы",
+      "returns": "Возвраты и возврат средств"
+    }
+  },
+  "mobileNav": {
+    "home": "Главная",
+    "category": "Категории",
+    "cart": "Корзина",
+    "account": "Аккаунт"
+  },
+  "home": {
+    "flashDeals": "Горячие скидки",
+    "topCategories": "Популярные категории",
+    "topRatings": "Топ по рейтингу",
+    "featuredBrands": "Избранные бренды",
+    "newArrivals": "Новые поступления",
+    "bigDiscounts": "Большие скидки",
+    "cars": "Авто",
+    "categories": "Категории",
+    "moreForYou": "Еще для вас",
+    "mobilePhones": "Мобильные телефоны",
+    "opticsWatch": "Оптика / Часы",
+    "brands": "Бренды",
+    "shops": "Магазины",
+    "viewAllBrands": "Смотреть все бренды",
+    "viewAllShops": "Смотреть все магазины"
+  },
+  "shops": {
+    "title": "Все магазины",
+    "summary": "{count, plural, one {Показан # магазин} few {Показано # магазина} many {Показано # магазинов} other {Показано # магазина}}"
+  },
+  "search": {
+    "placeholder": "Введите запрос и нажмите Enter...",
+    "searchButton": "Поиск",
+    "searchingFor": "Поиск по запросу \"{query}\"",
+    "resultsFound": "{count, plural, one {Найден # результат} few {Найдено # результата} many {Найдено # результатов} other {Найдено # результата}}",
+    "sortBy": "Сортировать:",
+    "sortPlaceholder": "Сортировать",
+    "view": "Вид:",
+    "sortOptions": {
+      "relevance": "По релевантности",
+      "date": "По дате",
+      "priceLowToHigh": "Цена по возрастанию",
+      "priceHighToLow": "Цена по убыванию"
+    },
+    "categories": {
+      "all": "Все категории",
+      "car": "Авто",
+      "clothes": "Одежда",
+      "electronics": "Электроника",
+      "laptop": "Ноутбуки",
+      "desktop": "ПК",
+      "camera": "Камеры",
+      "toys": "Игрушки"
+    },
+    "results": {
+      "macbookAir13": "Macbook Air 13",
+      "asusK555la": "Asus K555LA",
+      "acerAspireX453": "Acer Aspire X453",
+      "ipadMini3": "iPad Mini 3"
+    }
+  },
+  "product": {
+    "saleOff": "-{percent}%",
+    "brand": "Бренд",
+    "rated": "Оценка",
+    "stockAvailable": "В наличии",
+    "addToCart": "В корзину",
+    "soldBy": "Продавец",
+    "relatedProducts": "Похожие товары",
+    "availableAt": "Также доступно в",
+    "descriptionTab": "Описание",
+    "reviewTab": "Отзывы ({count})",
+    "specification": "Характеристики:",
+    "specLines": {
+      "brand": "Бренд: Beats",
+      "model": "Модель: S450",
+      "wireless": "Беспроводная Bluetooth-гарнитура",
+      "frequency": "FM-диапазон: 87.5 - 108 MHz",
+      "features": "Особенности: FM-радио, поддержка карт памяти (Micro SD / TF)",
+      "origin": "Сделано в Китае"
+    },
+    "frequentlyBought": "Часто покупают вместе",
+    "saveAmount": "Экономия {amount}",
+    "addToList": "В список",
+    "writeReview": "Оставьте отзыв об этом товаре",
+    "yourRating": "Ваша оценка",
+    "yourReview": "Ваш отзыв",
+    "reviewPlaceholder": "Напишите отзыв...",
+    "submitReview": "Отправить",
+    "validation": {
+      "ratingRequired": "Оценка обязательна",
+      "commentRequired": "Комментарий обязателен",
+      "dateRequired": "Дата обязательна"
+    },
+    "filters": {
+      "categories": "Категории",
+      "priceRange": "Диапазон цен",
+      "brands": "Бренды",
+      "ratings": "Рейтинг",
+      "colors": "Цвета",
+      "otherOptions": {
+        "onSale": "Со скидкой",
+        "inStock": "В наличии",
+        "featured": "Рекомендуемые"
+      },
+      "categoryItems": {
+        "bathPreparations": "Средства для ванны",
+        "bubbleBath": "Пена для ванны",
+        "bathCapsules": "Капсулы для ванны",
+        "others": "Другое",
+        "eyeMakeupPreparations": "Средства для макияжа глаз",
+        "fragrance": "Парфюмерия",
+        "hairPreparations": "Средства для волос"
+      }
+    }
+  },
+  "checkout": {
+    "steps": {
+      "cart": "Корзина",
+      "details": "Детали",
+      "payment": "Оплата",
+      "review": "Проверка"
+    },
+    "cart": {
+      "total": "Итого:",
+      "additionalComments": "Дополнительные комментарии",
+      "note": "Заметка",
+      "voucher": "Промокод",
+      "applyVoucher": "Применить промокод",
+      "shippingEstimates": "Расчет доставки",
+      "country": "Страна",
+      "selectCountry": "Выберите страну",
+      "state": "Регион",
+      "selectState": "Выберите регион",
+      "zipCode": "Почтовый индекс",
+      "calculateShipping": "Рассчитать доставку",
+      "checkoutNow": "Перейти к оформлению"
+    },
+    "form": {
+      "shippingAddress": "Адрес доставки",
+      "billingAddress": "Платежный адрес",
+      "sameAsShipping": "Совпадает с адресом доставки",
+      "fullName": "Полное имя",
+      "phoneNumber": "Номер телефона",
+      "zipCode": "Почтовый индекс",
+      "address1": "Адрес 1",
+      "address2": "Адрес 2",
+      "emailAddress": "Email",
+      "company": "Компания",
+      "country": "Страна",
+      "backToCart": "Назад в корзину",
+      "proceedToPayment": "Перейти к оплате"
+    },
+    "summary": {
+      "subtotal": "Подытог:",
+      "shipping": "Доставка:",
+      "tax": "Налог:",
+      "discount": "Скидка:",
+      "total": "Итого:",
+      "voucher": "Промокод",
+      "applyVoucher": "Применить промокод"
+    }
+  },
+  "dashboard": {
+    "groups": {
+      "dashboard": "КАБИНЕТ",
+      "accountSettings": "НАСТРОЙКИ АККАУНТА"
+    },
+    "nav": {
+      "orders": "Заказы",
+      "wishlist": "Избранное",
+      "supportTickets": "Тикеты поддержки",
+      "profileInfo": "Профиль",
+      "addresses": "Адреса",
+      "paymentMethods": "Способы оплаты"
+    },
+    "vendorNav": {
+      "dashboard": "Панель",
+      "products": "Товары",
+      "addNewProduct": "Добавить товар",
+      "orders": "Заказы",
+      "accountSettings": "Настройки аккаунта"
+    },
+    "headers": {
+      "myOrders": "Мои заказы",
+      "myWishList": "Мой список желаний",
+      "supportTicket": "Тикет поддержки",
+      "myProfile": "Мой профиль",
+      "myAddresses": "Мои адреса",
+      "paymentMethods": "Способы оплаты",
+      "dashboard": "Панель",
+      "orders": "Заказы",
+      "products": "Товары",
+      "addProduct": "Добавить товар",
+      "editProduct": "Редактировать товар"
+    },
+    "buttons": {
+      "addAllToCart": "Добавить все в корзину",
+      "editProfile": "Редактировать профиль",
+      "addNewAddress": "Добавить адрес",
+      "addNew": "Добавить",
+      "back": "Назад"
+    },
+    "profile": {
+      "balance": "Баланс:",
+      "silverUser": "SILVER USER",
+      "allOrders": "Все заказы",
+      "awaitingPayments": "Ожидают оплаты",
+      "awaitingShipment": "Ожидают отправки",
+      "awaitingDelivery": "Ожидают доставки",
+      "firstName": "Имя",
+      "lastName": "Фамилия",
+      "email": "Email",
+      "phone": "Телефон",
+      "birthDate": "Дата рождения"
+    },
+    "tables": {
+      "orderNumber": "Заказ #",
+      "status": "Статус",
+      "datePurchased": "Дата покупки",
+      "total": "Итого",
+      "name": "Название",
+      "regularPrice": "Обычная цена",
+      "salePrice": "Цена со скидкой"
     }
   }
 }

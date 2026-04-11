@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { IconArrowNarrowRight, IconMapPin, IconPhone } from "@tabler/icons-react";
 
 import Box from "@component/Box";
@@ -10,6 +9,7 @@ import FlexBox from "@component/FlexBox";
 import { IconButton } from "@component/buttons";
 import { H3, SemiSpan } from "@component/Typography";
 import { ShopCard1Wrapper } from "./styles";
+import { Link } from "i18n/navigation";
 
 // =====================================================
 interface ShopCard1Props {
