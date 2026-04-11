@@ -4,13 +4,15 @@ import { Public_Sans } from "next/font/google";
 import { notFound } from "next/navigation";
 import { Locale, NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
-
+import dayjs from "dayjs";
+import isToday from "dayjs/plugin/isToday";
+import relativeTime from "dayjs/plugin/relativeTime";
 import StyledComponentsRegistry from "@lib/registry";
 import CartProvider from "@context/CartContext";
 import { ThemeProvider } from "theme";
 import NProgressBar from "@component/NProgress";
 import { routing } from "i18n/routing";
-
+import { Provider } from "@lib/Provider";
 // @ts-ignore
 import "slick-carousel/slick/slick.css";
 // @ts-ignore
@@ -49,6 +51,10 @@ export async function generateMetadata({
   };
 }
 
+
+dayjs.extend(relativeTime);
+dayjs.extend(isToday);
+
 export default async function LocaleLayout({
   children,
   params,
@@ -65,12 +71,14 @@ export default async function LocaleLayout({
     <div className={publicSans.className}>
       <NextIntlClientProvider locale={locale} messages={messages}>
         <StyledComponentsRegistry>
-          <CartProvider>
-            <ThemeProvider>
-              {children}
-              <NProgressBar />
-            </ThemeProvider>
-          </CartProvider>
+          <Provider>
+            <CartProvider>
+              <ThemeProvider>
+                {children}
+                <NProgressBar />
+              </ThemeProvider>
+            </CartProvider>
+          </Provider>
         </StyledComponentsRegistry>
       </NextIntlClientProvider>
     </div>
