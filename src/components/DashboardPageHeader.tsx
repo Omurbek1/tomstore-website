@@ -38,7 +38,7 @@ export default function DashboardPageHeader({
       <FlexBox justifyContent="space-between" alignItems="center" mt="1rem">
         <FlexBox alignItems="center">
           {Icon && (
-            <Span color={theme.colors.primary.main} display="flex">
+            <Span color={theme.colors.primary.main || theme.colors.primary[500]} display="flex">
               {Icon}
             </Span>
           )}

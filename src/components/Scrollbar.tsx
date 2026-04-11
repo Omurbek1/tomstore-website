@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import SimpleBar, { Props } from "simplebar-react";
 import styled, { CSSProperties } from "styled-components";
 
+// @ts-ignore
 import "simplebar-react/dist/simplebar.min.css";
 
 // STYLED COMPONENT
@@ -9,11 +10,11 @@ const StyledScrollBar = styled(SimpleBar)(({ theme }) => ({
   maxHeight: "100%",
   "& .simplebar-scrollbar": {
     "&.simplebar-visible:before": { opacity: 1 },
-    "&:before": { backgroundColor: theme.colors.gray[400] }
+    "&:before": { backgroundColor: theme.colors.gray[400] },
   },
   "& .simplebar-track.simplebar-vertical": { width: 9 },
   "& .simplebar-track.simplebar-horizontal .simplebar-scrollbar": { height: 6 },
-  "& .simplebar-mask": { zIndex: "inherit" }
+  "& .simplebar-mask": { zIndex: "inherit" },
 }));
 
 // ===========================================
