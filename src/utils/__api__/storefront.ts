@@ -89,7 +89,7 @@ type StorefrontCatalogResponse = {
   };
 };
 
-type StorefrontHomeResponse = {
+export type StorefrontHomeResponse = {
   hero: StorefrontHeroSlide & {
     slides?: StorefrontHeroSlide[];
   };
