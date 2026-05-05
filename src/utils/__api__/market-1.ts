@@ -1,110 +1,151 @@
-import axios from "@lib/axios";
 import Shop from "@models/shop.model";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
 import Service from "@models/service.model";
 import Category from "@models/category.model";
 import MainCarouselItem from "@models/market-1.model";
+import {
+  getBrands as getStorefrontBrands,
+  getCategories as getStorefrontCategories,
+  getStorefrontHome,
+  mapStorefrontCategory,
+  mapStorefrontProduct,
+} from "./storefront";
 
 const getTopRatedProduct = async (): Promise<Product[]> => {
-  const response = await axios.get("/api/market-1/toprated-product");
-  return response.data;
+  const home = await getStorefrontHome();
+  return home.popularProducts.slice(0, 4).map(mapStorefrontProduct);
 };
 
-const getTopRatedBrand = async () => {
-  const response = await axios.get("/api/market-1/toprated-brand");
-  return response.data;
+const getPopularProducts = async (): Promise<Product[]> => {
+  const home = await getStorefrontHome();
+  return home.popularProducts.map(mapStorefrontProduct);
+};
+
+const getRecommendedProducts = async (): Promise<Product[]> => {
+  const home = await getStorefrontHome();
+  const source = home.recommendedProducts.length
+    ? home.recommendedProducts
+    : home.popularProducts;
+  return source.map(mapStorefrontProduct);
+};
+
+const getHitProducts = async (): Promise<Product[]> => {
+  const home = await getStorefrontHome();
+  const source = home.hitProducts.length ? home.hitProducts : home.popularProducts;
+  return source.map(mapStorefrontProduct);
+};
+
+const getSaleProducts = async (): Promise<Product[]> => {
+  const home = await getStorefrontHome();
+  const source = home.saleProducts.length ? home.saleProducts : home.popularProducts;
+  return source.map(mapStorefrontProduct);
+};
+
+const getTopRatedBrand = async (): Promise<Brand[]> => {
+  return getStorefrontBrands();
 };
 
 const getNewArrivalList = async (): Promise<Product[]> => {
-  const response = await axios.get("/api/market-1/new-arrivals");
-  return response.data;
+  const home = await getStorefrontHome();
+  const source = home.newProducts.length ? home.newProducts : home.popularProducts;
+  return source.slice(0, 12).map(mapStorefrontProduct);
 };
 
 const getCarBrands = async (): Promise<Brand[]> => {
-  const response = await axios.get("/api/market-1/car-brand-list");
-  return response.data;
+  return getStorefrontBrands();
 };
 
 const getCarList = async (): Promise<Product[]> => {
-  const response = await axios.get("/api/market-1/car-list");
-  return response.data;
+  const home = await getStorefrontHome();
+  return home.popularProducts.slice(0, 9).map(mapStorefrontProduct);
 };
 
 const getMobileBrands = async (): Promise<Brand[]> => {
-  const response = await axios.get("/api/market-1/mobile-brand-list");
-  return response.data;
+  return getStorefrontBrands();
 };
 
 const getMobileShops = async (): Promise<Shop[]> => {
-  const response = await axios.get("/api/market-1/mobile-shop-list");
-  return response.data;
+  return [];
 };
 
 const getMobileList = async (): Promise<Product[]> => {
-  const response = await axios.get("/api/market-1/mobile-list");
-  return response.data;
+  const home = await getStorefrontHome();
+  const source = home.newProducts.length ? home.newProducts : home.popularProducts;
+  return source.slice(0, 9).map(mapStorefrontProduct);
 };
 
 const getOpticsBrands = async (): Promise<Brand[]> => {
-  const response = await axios.get("/api/market-1/optics/watch-brands");
-  return response.data;
+  return getStorefrontBrands();
 };
 
 const getOpticsShops = async (): Promise<Shop[]> => {
-  const response = await axios.get("/api/market-1/optics/watch-shops");
-  return response.data;
+  return [];
 };
 
 const getOpticsList = async (): Promise<Product[]> => {
-  const response = await axios.get("/api/market-1/optics-list");
-  return response.data;
+  const home = await getStorefrontHome();
+  const source = home.recommendedProducts.length
+    ? home.recommendedProducts
+    : home.popularProducts;
+  return source.slice(0, 9).map(mapStorefrontProduct);
 };
 
 const getCategories = async (): Promise<Category[]> => {
-  const response = await axios.get("/api/market-1/bottom-categories");
-  return response.data;
+  return getStorefrontCategories();
 };
 
 const getMoreItems = async (): Promise<Product[]> => {
-  const response = await axios.get("/api/market-1/get-more-items");
-  return response.data;
+  const home = await getStorefrontHome();
+  const source = home.recommendedProducts.length
+    ? home.recommendedProducts
+    : home.popularProducts;
+  return source.slice(0, 12).map(mapStorefrontProduct);
 };
 
 const getServiceList = async (): Promise<Service[]> => {
-  const response = await axios.get("/api/market-1/get-service-list");
-  return response.data;
+  return [];
 };
 
 const getMainCarousel = async (): Promise<[MainCarouselItem]> => {
-  const response = await axios.get("/api/market-1/main-carousel");
-  return response.data;
+  return [
+    {
+      id: 1,
+      title: "TOMSTORE",
+      imgUrl: "/assets/images/products/iphone-xi.png",
+      buttonText: "Смотреть каталог",
+      buttonLink: "/sale-page-1",
+      description: "Актуальные товары из CRM",
+    } as MainCarouselItem,
+  ];
 };
 
 const getFlashDeals = async (): Promise<Product[]> => {
-  const response = await axios.get("/api/market-1/flash-deals");
-  return response.data;
+  return getSaleProducts().then((products) => products.slice(0, 12));
 };
 
 const getTopCategories = async (): Promise<Category[]> => {
-  const response = await axios.get("/api/market-1/top-categories");
-  return response.data;
+  const home = await getStorefrontHome();
+  return home.categories.map(mapStorefrontCategory);
 };
 
 const getBigDiscountList = async (): Promise<Product[]> => {
-  const response = await axios.get("/api/market-1/big-discounts");
-  return response.data;
+  return getSaleProducts().then((products) => products.slice(0, 12));
 };
 
 export default {
   getCarList,
   getCarBrands,
   getMoreItems,
+  getHitProducts,
   getFlashDeals,
+  getSaleProducts,
   getMobileList,
   getCategories,
   getOpticsList,
   getServiceList,
+  getPopularProducts,
+  getRecommendedProducts,
   getMobileShops,
   getOpticsShops,
   getMainCarousel,

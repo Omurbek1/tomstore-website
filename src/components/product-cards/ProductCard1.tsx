@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Fragment, useCallback, useState } from "react";
 import styled, { useTheme } from "styled-components";
 import { IconEye, IconHeart, IconPlus, IconMinus } from "@tabler/icons-react";
@@ -20,6 +21,7 @@ import ProductQuickView from "@component/products/ProductQuickView";
 import { calculateDiscount, currency } from "@utils/utils";
 import { deviceSize } from "@utils/constants";
 import { useLocale, useTranslations } from "next-intl";
+import { usePrefetchStorefrontProduct } from "@hook/useStorefrontCatalog";
 
 // STYLED COMPONENT
 const Wrapper = styled(Card)`
@@ -135,9 +137,12 @@ export default function ProductCard1({
   const theme = useTheme();
   const locale = useLocale();
   const t = useTranslations("product");
+  const router = useRouter();
+  const prefetchProductQuery = usePrefetchStorefrontProduct();
   const { state, dispatch } = useCart();
   const [open, setOpen] = useState(false);
   const cartItem = state.cart.find((item) => item.id === id);
+  const productHref = `/${locale}/product/${slug}`;
 
   const toggleDialog = useCallback(() => {
     setOpen((open) => !open);
@@ -159,6 +164,11 @@ export default function ProductCard1({
     },
     [],
   );
+
+  const prefetchProduct = useCallback(() => {
+    router.prefetch(productHref);
+    prefetchProductQuery(slug);
+  }, [prefetchProductQuery, productHref, router, slug]);
 
   return (
     <Fragment>
@@ -197,15 +207,30 @@ export default function ProductCard1({
             </IconButton>
           </FlexBox>
 
-          <Link href={`/${locale}/product/${slug}`}>
-            <NextImage alt={title} width={277} src={imgUrl} height={270} />
+          <Link
+            href={productHref}
+            onFocus={prefetchProduct}
+            onMouseEnter={prefetchProduct}
+          >
+            <NextImage
+              alt={title}
+              width={277}
+              src={imgUrl}
+              height={270}
+              sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 277px"
+              style={{ objectFit: "contain" }}
+            />
           </Link>
         </div>
 
         <div className="details">
           <FlexBox>
             <Box flex="1 1 0" minWidth="0px" mr="0.5rem">
-              <Link href={`/${locale}/product/${slug}`}>
+              <Link
+                href={productHref}
+                onFocus={prefetchProduct}
+                onMouseEnter={prefetchProduct}
+              >
                 <H3
                   mb="10px"
                   title={title}

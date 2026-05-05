@@ -1,12 +1,13 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Fragment, useCallback, useState } from "react";
 import styled from "styled-components";
 
 import Box from "../Box";
 import Card from "../Card";
 import Chip from "../Chip";
-import Image from "../Image";
+import NextImage from "@component/NextImage";
 import Hidden from "../hidden";
 import Rating from "../rating";
 import Grid from "../grid/Grid";
@@ -19,6 +20,7 @@ import ProductQuickView from "@component/products/ProductQuickView";
 import useCart from "@hook/useCart";
 import { calculateDiscount, currency } from "@utils/utils";
 import { useLocale, useTranslations } from "next-intl";
+import { usePrefetchStorefrontProduct } from "@hook/useStorefrontCatalog";
 
 // STYLED COMPONENT
 const Wrapper = styled(Card)`
@@ -124,11 +126,18 @@ export default function ProductCard9({
 }: ProductCard9Props) {
   const locale = useLocale();
   const t = useTranslations("product");
+  const router = useRouter();
+  const prefetchProductQuery = usePrefetchStorefrontProduct();
   const [open, setOpen] = useState(false);
   const { state, dispatch } = useCart();
   const cartItem = state.cart.find((item) => item.id === id);
+  const productHref = `/${locale}/product/${slug}`;
 
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
+  const prefetchProduct = useCallback(() => {
+    router.prefetch(productHref);
+    prefetchProductQuery(slug);
+  }, [prefetchProductQuery, productHref, router, slug]);
 
   const handleCartAmountChange = (qty: number) => () => {
     dispatch({
@@ -162,7 +171,21 @@ export default function ProductCard9({
               </Icon>
             </span>
 
-            <Image src={imgUrl} alt={title} width="100%" borderRadius="0.5rem" />
+            <Link
+              href={productHref}
+              onFocus={prefetchProduct}
+              onMouseEnter={prefetchProduct}
+            >
+              <NextImage
+                src={imgUrl}
+                alt={title}
+                width={260}
+                height={260}
+                borderRadius="0.5rem"
+                sizes="(max-width: 600px) 100vw, (max-width: 960px) 33vw, 260px"
+                style={{ objectFit: "contain" }}
+              />
+            </Link>
           </Box>
         </Grid>
 
@@ -178,7 +201,11 @@ export default function ProductCard9({
               </div>
             )}
 
-            <Link href={`/${locale}/product/${slug}`}>
+            <Link
+              href={productHref}
+              onFocus={prefetchProduct}
+              onMouseEnter={prefetchProduct}
+            >
               <H5 fontWeight="600" my="0.5rem">
                 {title}
               </H5>

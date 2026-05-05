@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import ProductView from "@component/products/ProductView";
 import ProductIntro from "@component/products/ProductIntro";
 import api from "@utils/__api__/products";
+import { getProductBySlug } from "@utils/__api__/storefront";
 
 // ==============================================================
 interface Props {
@@ -12,14 +13,13 @@ interface Props {
 export default async function ProductDetails({ params }: Props) {
   const { slug } = await params;
 
-  const [product, shops, relatedProducts, frequentlyBought] = await Promise.all(
-    [
-      api.getProduct(slug),
-      api.getAvailableShop(),
-      api.getRelatedProducts(),
-      api.getFrequentlyBought(),
-    ],
-  );
+  const [productPayload, shops, frequentlyBought] = await Promise.all([
+    getProductBySlug(slug),
+    api.getAvailableShop(),
+    api.getFrequentlyBought(),
+  ]);
+  const product = productPayload.product;
+  const relatedProducts = productPayload.relatedProducts;
 
   return (
     <Fragment>
@@ -28,12 +28,21 @@ export default async function ProductDetails({ params }: Props) {
         price={product.price}
         title={product.title}
         images={product.images || []}
+        brand={product.brand}
+        oldPrice={product.oldPrice}
+        availabilityLabel={product.availabilityLabel}
+        labels={product.labels}
       />
 
       <ProductView
+        product={product}
         shops={shops}
         relatedProducts={relatedProducts}
-        frequentlyBought={frequentlyBought}
+        frequentlyBought={
+          productPayload.recommendedProducts.length
+            ? productPayload.recommendedProducts
+            : frequentlyBought
+        }
       />
     </Fragment>
   );

@@ -19,6 +19,13 @@ interface Product {
   categories: any[];
   reviews?: Review[];
   published?: boolean;
+  oldPrice?: number | null;
+  shortDescription?: string;
+  fullDescription?: string;
+  availabilityLabel?: string;
+  isInStock?: boolean;
+  labels?: string[];
+  attributes?: Array<{ name: string; value: string }>;
 }
 
 export default Product;

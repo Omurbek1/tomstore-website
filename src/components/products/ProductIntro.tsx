@@ -23,10 +23,23 @@ interface Props {
   title: string;
   images: string[];
   id: string | number;
+  brand?: string;
+  oldPrice?: number | null;
+  availabilityLabel?: string;
+  labels?: string[];
 }
 // ========================================
 
-export default function ProductIntro({ images, title, price, id }: Props) {
+export default function ProductIntro({
+  images,
+  title,
+  price,
+  id,
+  brand,
+  oldPrice,
+  availabilityLabel,
+  labels = [],
+}: Props) {
   const param = useParams();
   const t = useTranslations("product");
   const { state, dispatch } = useCart();
@@ -96,7 +109,7 @@ export default function ProductIntro({ images, title, price, id }: Props) {
 
           <FlexBox alignItems="center" mb="1rem">
             <SemiSpan>{t("brand")}:</SemiSpan>
-            <H6 ml="8px">Ziaomi</H6>
+            <H6 ml="8px">{brand || "TOMSTORE"}</H6>
           </FlexBox>
 
           <FlexBox alignItems="center" mb="1rem">
@@ -111,8 +124,30 @@ export default function ProductIntro({ images, title, price, id }: Props) {
             <H2 color="primary.main" mb="4px" lineHeight="1">
               {currency(price)}
             </H2>
+            {oldPrice && oldPrice > price ? (
+              <SemiSpan color="text.muted">
+                <del>{currency(oldPrice)}</del>
+              </SemiSpan>
+            ) : null}
 
-            <SemiSpan color="inherit">{t("stockAvailable")}</SemiSpan>
+            <SemiSpan color="inherit">
+              {availabilityLabel || t("stockAvailable")}
+            </SemiSpan>
+            {labels.length ? (
+              <SemiSpan display="block" color="primary.main" mt="0.5rem">
+                {labels
+                  .map((label) =>
+                    label === "sale"
+                      ? "Распродажа"
+                      : label === "hit"
+                        ? "Хит"
+                        : label === "new"
+                          ? "Новинка"
+                          : label,
+                  )
+                  .join(" / ")}
+              </SemiSpan>
+            ) : null}
           </Box>
 
           {!cartItem?.qty ? (

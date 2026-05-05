@@ -15,19 +15,25 @@ import Product from "@models/product.model";
 
 // ==============================================================
 type Props = {
+  product: Product;
   shops: Shop[];
   relatedProducts: Product[];
   frequentlyBought: Product[];
 };
 // ==============================================================
 
-export default function ProductView({ shops, relatedProducts, frequentlyBought }: Props) {
+export default function ProductView({
+  product,
+  shops,
+  relatedProducts,
+  frequentlyBought,
+}: Props) {
   const t = useTranslations("product");
   const tabItems = [
     {
       key: "description",
       label: t("descriptionTab"),
-      children: <ProductDescription />
+      children: <ProductDescription product={product} />
     },
     {
       key: "review",
@@ -48,13 +54,17 @@ export default function ProductView({ shops, relatedProducts, frequentlyBought }
       </Box>
 
       {/* FREQUENTLY BOUGHT TOGETHER PRODUCTS */}
-      {frequentlyBought && <FrequentlyBought products={frequentlyBought} />}
+      {frequentlyBought.length > 0 ? (
+        <FrequentlyBought products={frequentlyBought} />
+      ) : null}
 
       {/* AVAILABLE SHOPS */}
-      {shops && <AvailableShops shops={shops} />}
+      {shops.length > 0 ? <AvailableShops shops={shops} /> : null}
 
       {/* RELATED PRODUCTS */}
-      {relatedProducts && <RelatedProducts products={relatedProducts} />}
+      {relatedProducts.length > 0 ? (
+        <RelatedProducts products={relatedProducts} />
+      ) : null}
     </Fragment>
   );
 }

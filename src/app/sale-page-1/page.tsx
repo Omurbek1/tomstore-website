@@ -1,4 +1,3 @@
-import axios from "@lib/axios";
 // GLOBAL CUSTOM COMPONENTS
 import FlexBox from "@component/FlexBox";
 import { H1 } from "@component/Typography";
@@ -9,6 +8,7 @@ import SaleCategory from "@sections/sale-page-1/SaleCategory";
 import SaleProducts from "@sections/sale-page-1/SaleProducts";
 
 import { SearchParams } from "interfaces";
+import { getProductPage } from "@utils/__api__/storefront";
 
 const SALE_CATEGORY_LIST = [
   { icon: "women-dress", title: "Women" },
@@ -24,12 +24,7 @@ export default async function SalePage({ searchParams }: SearchParams) {
 
   const PAGE = page ? Number(page) : 1;
 
-  const { data } = await axios.get("/api/products", {
-    params: {
-      page: PAGE,
-      pageSize: PAGE_SIZE
-    }
-  });
+  const data = await getProductPage(PAGE, PAGE_SIZE);
 
   return (
     <Container mt="2rem">

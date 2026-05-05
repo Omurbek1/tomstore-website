@@ -12,7 +12,9 @@ export const Provider: FC<PropsWithChildren> = ({ children }) => {
         defaultOptions: {
           queries: {
             retry: false,
-            staleTime: 20 * 1000,
+            staleTime: 60 * 1000,
+            gcTime: 5 * 60 * 1000,
+            refetchOnWindowFocus: false,
             experimental_prefetchInRender: true,
           },
         },
@@ -54,7 +56,9 @@ export const Provider: FC<PropsWithChildren> = ({ children }) => {
       <AntdApp>
         <QueryClientProvider client={queryClient}>
           {children}
-          <ReactQueryDevtools />
+          {process.env.NODE_ENV === "development" ? (
+            <ReactQueryDevtools />
+          ) : null}
         </QueryClientProvider>
       </AntdApp>
     </ConfigProvider>

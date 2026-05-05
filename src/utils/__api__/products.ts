@@ -1,32 +1,32 @@
-import axios from "@lib/axios";
 import Product from "@models/product.model";
 import Shop from "@models/shop.model";
+import {
+  getProductBySlug,
+  getProductSlugs,
+  getProducts,
+} from "./storefront";
 
 // get all product slug
 const getSlugs = async (): Promise<{ slug: string }[]> => {
-  const response = await axios.get("/api/products/slug-list");
-  return response.data;
+  return getProductSlugs();
 };
 
 // get product based on slug
 const getProduct = async (slug: string): Promise<Product> => {
-  const response = await axios.get("/api/products/slug", { params: { slug } });
-  return response.data;
+  const { product } = await getProductBySlug(slug);
+  return product;
 };
 
 const getFrequentlyBought = async (): Promise<Product[]> => {
-  const response = await axios.get("/api/frequently-bought-products");
-  return response.data;
+  return getProducts({ sort: "popular", pageSize: 3 });
 };
 
 const getRelatedProducts = async (): Promise<Product[]> => {
-  const response = await axios.get("/api/related-products");
-  return response.data;
+  return getProducts({ sort: "popular", pageSize: 4 });
 };
 
 const getAvailableShop = async (): Promise<Shop[]> => {
-  const response = await axios.get("/api/product/shops");
-  return response.data;
+  return [];
 };
 
 export default { getSlugs, getProduct, getFrequentlyBought, getRelatedProducts, getAvailableShop };
