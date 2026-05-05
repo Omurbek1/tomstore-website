@@ -2,7 +2,8 @@ import { getTranslations } from "next-intl/server";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
 import {
-  getStorefrontHome,
+  getSafeStorefrontHome,
+  type StorefrontHomeResponse,
   mapStorefrontCategory,
   mapStorefrontHeroCarousel,
   mapStorefrontProduct,
@@ -42,11 +43,37 @@ const buildHomeBrands = (
     };
   });
 
+const asArray = <T,>(value: T[] | undefined | null): T[] =>
+  Array.isArray(value) ? value : [];
+
+const normalizeHomeData = (
+  home: StorefrontHomeResponse,
+): StorefrontHomeResponse => ({
+  ...home,
+  hero: home.hero || {
+    title: "",
+    subtitle: "",
+    primaryCtaLabel: "",
+    primaryCtaHref: "/catalog",
+    secondaryCtaLabel: "",
+    secondaryCtaHref: "/contacts",
+    slides: [],
+  },
+  categories: asArray(home.categories),
+  popularProducts: asArray(home.popularProducts),
+  recommendedProducts: asArray(home.recommendedProducts),
+  hitProducts: asArray(home.hitProducts),
+  saleProducts: asArray(home.saleProducts),
+  newProducts: asArray(home.newProducts),
+  brands: asArray(home.brands),
+});
+
 export default async function HomePage() {
-  const [home, t] = await Promise.all([
-    getStorefrontHome(),
+  const [rawHome, t] = await Promise.all([
+    getSafeStorefrontHome(),
     getTranslations("home"),
   ]);
+  const home = normalizeHomeData(rawHome);
 
   const heroSlides = mapStorefrontHeroCarousel(home);
   const categories = home.categories.slice(0, 8).map(mapStorefrontCategory);

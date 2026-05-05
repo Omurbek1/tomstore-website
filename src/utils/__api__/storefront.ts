@@ -127,6 +127,25 @@ export type StorefrontProductPayload = {
   recommendedProducts: Product[];
 };
 
+export const EMPTY_STOREFRONT_HOME: StorefrontHomeResponse = {
+  hero: {
+    title: "",
+    subtitle: "",
+    primaryCtaLabel: "",
+    primaryCtaHref: "/catalog",
+    secondaryCtaLabel: "",
+    secondaryCtaHref: "/contacts",
+    slides: [],
+  },
+  categories: [],
+  popularProducts: [],
+  recommendedProducts: [],
+  hitProducts: [],
+  saleProducts: [],
+  newProducts: [],
+  brands: [],
+};
+
 const PLACEHOLDER_IMAGE = "/assets/images/products/iphone-xi.png";
 const DEFAULT_BACKEND_URL = "http://127.0.0.1:3000";
 const REVALIDATE_SECONDS = 60;
@@ -476,6 +495,15 @@ export const getSearchSuggestions = async (q: string): Promise<SearchSuggestion[
 
 export const getStorefrontHome = () =>
   getServerQueryClient().fetchQuery(storefrontHomeQueryOptions());
+
+export const getSafeStorefrontHome = async (): Promise<StorefrontHomeResponse> => {
+  try {
+    return await getStorefrontHome();
+  } catch (error) {
+    console.error("[storefront] Failed to load home data", error);
+    return EMPTY_STOREFRONT_HOME;
+  }
+};
 
 export const getStorefrontCatalog = (
   params: StorefrontCatalogParams = {},
