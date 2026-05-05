@@ -151,12 +151,17 @@ export default function ProductShareButton({ title, text, slug }: Props) {
       if (!buttonRect) return;
 
       const menuWidth = 220;
+      const menuHeight = 184;
       const viewportPadding = 12;
       const nextLeft = Math.min(
         Math.max(buttonRect.left, viewportPadding),
         window.innerWidth - menuWidth - viewportPadding,
       );
-      const nextTop = buttonRect.bottom + 8;
+      const preferredTop = buttonRect.bottom + 8;
+      const nextTop =
+        preferredTop + menuHeight > window.innerHeight - viewportPadding
+          ? Math.max(buttonRect.top - menuHeight - 8, viewportPadding)
+          : preferredTop;
 
       setMenuPosition({ top: nextTop, left: nextLeft });
     };
@@ -238,55 +243,67 @@ export default function ProductShareButton({ title, text, slug }: Props) {
 
       {isOpen && menuPosition
         ? createPortal(
-        <ShareMenu ref={menuRef} role="menu" $top={menuPosition.top} $left={menuPosition.left}>
-          <ShareMenuItem type="button" role="menuitem" disabled={!shareUrl} onClick={handleNativeShare}>
-            <IconShare2 size={18} />
-            {t("share")}
-          </ShareMenuItem>
+            <ShareMenu
+              ref={menuRef}
+              role="menu"
+              $top={menuPosition.top}
+              $left={menuPosition.left}>
+              <ShareMenuItem
+                type="button"
+                role="menuitem"
+                disabled={!shareUrl}
+                onClick={handleNativeShare}>
+                <IconShare2 size={18} />
+                {t("share")}
+              </ShareMenuItem>
 
-          <ShareMenuLink
-            role="menuitem"
-            href={shareUrl ? whatsappHref : undefined}
-            target="_blank"
-            rel="noreferrer"
-            aria-disabled={!shareUrl}
-            onClick={(event) => {
-              if (!shareUrl) {
-                event.preventDefault();
-                return;
-              }
+              <ShareMenuLink
+                role="menuitem"
+                href={shareUrl ? whatsappHref : undefined}
+                target="_blank"
+                rel="noreferrer"
+                aria-disabled={!shareUrl}
+                onClick={(event) => {
+                  if (!shareUrl) {
+                    event.preventDefault();
+                    return;
+                  }
 
-              setIsOpen(false);
-            }}>
-            <IconBrandWhatsapp size={18} />
-            WhatsApp
-          </ShareMenuLink>
+                  setIsOpen(false);
+                }}>
+                <IconBrandWhatsapp size={18} />
+                WhatsApp
+              </ShareMenuLink>
 
-          <ShareMenuLink
-            role="menuitem"
-            href={shareUrl ? telegramHref : undefined}
-            target="_blank"
-            rel="noreferrer"
-            aria-disabled={!shareUrl}
-            onClick={(event) => {
-              if (!shareUrl) {
-                event.preventDefault();
-                return;
-              }
+              <ShareMenuLink
+                role="menuitem"
+                href={shareUrl ? telegramHref : undefined}
+                target="_blank"
+                rel="noreferrer"
+                aria-disabled={!shareUrl}
+                onClick={(event) => {
+                  if (!shareUrl) {
+                    event.preventDefault();
+                    return;
+                  }
 
-              setIsOpen(false);
-            }}>
-            <IconBrandTelegram size={18} />
-            Telegram
-          </ShareMenuLink>
+                  setIsOpen(false);
+                }}>
+                <IconBrandTelegram size={18} />
+                Telegram
+              </ShareMenuLink>
 
-          <ShareMenuItem type="button" role="menuitem" disabled={!shareUrl} onClick={handleCopyLink}>
-            <IconCopy size={18} />
-            {t("copyLink")}
-          </ShareMenuItem>
-        </ShareMenu>,
-        document.body,
-      )
+              <ShareMenuItem
+                type="button"
+                role="menuitem"
+                disabled={!shareUrl}
+                onClick={handleCopyLink}>
+                <IconCopy size={18} />
+                {t("copyLink")}
+              </ShareMenuItem>
+            </ShareMenu>,
+            document.body,
+          )
         : null}
     </ShareWrapper>
   );
