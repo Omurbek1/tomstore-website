@@ -9,6 +9,7 @@ import {
   IconShare2,
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
+import { createPortal } from "react-dom";
 import styled, { css } from "styled-components";
 
 import { Button } from "@component/buttons";
@@ -19,16 +20,21 @@ interface Props {
   slug?: string;
 }
 
+type MenuPosition = {
+  top: number;
+  left: number;
+};
+
 const ShareWrapper = styled.div`
   position: relative;
   display: inline-flex;
 `;
 
-const ShareMenu = styled.div`
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  z-index: 30;
+const ShareMenu = styled.div<{ $top: number; $left: number }>`
+  position: fixed;
+  top: ${({ $top }) => `${$top}px`};
+  left: ${({ $left }) => `${$left}px`};
+  z-index: 9999;
   width: 220px;
   max-width: calc(100vw - 32px);
   padding: 8px;
@@ -117,9 +123,11 @@ async function copyToClipboard(value: string) {
 export default function ProductShareButton({ title, text, slug }: Props) {
   const t = useTranslations("product");
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [shareUrl, setShareUrl] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [menuPosition, setMenuPosition] = useState<MenuPosition | null>(null);
 
   const shareText = text || title;
   const whatsappHref = useMemo(
@@ -136,10 +144,29 @@ export default function ProductShareButton({ title, text, slug }: Props) {
   }, [slug]);
 
   useEffect(() => {
-    if (!isOpen || typeof document === "undefined") return;
+    if (!isOpen || typeof document === "undefined" || typeof window === "undefined") return;
+
+    const updateMenuPosition = () => {
+      const buttonRect = wrapperRef.current?.getBoundingClientRect();
+      if (!buttonRect) return;
+
+      const menuWidth = 220;
+      const viewportPadding = 12;
+      const nextLeft = Math.min(
+        Math.max(buttonRect.left, viewportPadding),
+        window.innerWidth - menuWidth - viewportPadding,
+      );
+      const nextTop = buttonRect.bottom + 8;
+
+      setMenuPosition({ top: nextTop, left: nextLeft });
+    };
 
     const handlePointerDown = (event: MouseEvent) => {
-      if (!wrapperRef.current?.contains(event.target as Node)) {
+      const target = event.target as Node;
+      if (
+        !wrapperRef.current?.contains(target) &&
+        !menuRef.current?.contains(target)
+      ) {
         setIsOpen(false);
       }
     };
@@ -150,12 +177,18 @@ export default function ProductShareButton({ title, text, slug }: Props) {
       }
     };
 
+    updateMenuPosition();
+
     document.addEventListener("mousedown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("resize", updateMenuPosition);
+    window.addEventListener("scroll", updateMenuPosition, true);
 
     return () => {
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("resize", updateMenuPosition);
+      window.removeEventListener("scroll", updateMenuPosition, true);
     };
   }, [isOpen]);
 
@@ -203,8 +236,9 @@ export default function ProductShareButton({ title, text, slug }: Props) {
         <span style={{ marginLeft: 8 }}>{isCopied ? t("linkCopied") : t("share")}</span>
       </Button>
 
-      {isOpen ? (
-        <ShareMenu role="menu">
+      {isOpen && menuPosition
+        ? createPortal(
+        <ShareMenu ref={menuRef} role="menu" $top={menuPosition.top} $left={menuPosition.left}>
           <ShareMenuItem type="button" role="menuitem" disabled={!shareUrl} onClick={handleNativeShare}>
             <IconShare2 size={18} />
             {t("share")}
@@ -250,8 +284,10 @@ export default function ProductShareButton({ title, text, slug }: Props) {
             <IconCopy size={18} />
             {t("copyLink")}
           </ShareMenuItem>
-        </ShareMenu>
-      ) : null}
+        </ShareMenu>,
+        document.body,
+      )
+        : null}
     </ShareWrapper>
   );
 }
