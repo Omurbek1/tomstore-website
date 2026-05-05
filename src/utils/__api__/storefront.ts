@@ -107,6 +107,15 @@ export type ProductPage = {
   result: Product[];
 };
 
+export type StorefrontHeroCarouselItem = {
+  id: string;
+  title?: string;
+  imgUrl?: string;
+  buttonText?: string;
+  buttonLink?: string;
+  description?: string;
+};
+
 export type StorefrontCatalogParams = Record<
   string,
   string | number | undefined
@@ -136,9 +145,9 @@ const getBackendUrl = () =>
 const buildStorefrontUrl = (path: string) =>
   `${getBackendUrl()}${path.startsWith("/") ? path : `/${path}`}`;
 
-export const buildStorefrontImageUrl = (value?: string | null) => {
+export const resolveStorefrontMediaUrl = (value?: string | null) => {
   const url = String(value || "").trim();
-  if (!url) return PLACEHOLDER_IMAGE;
+  if (!url) return undefined;
   if (
     url.startsWith("http://") ||
     url.startsWith("https://") ||
@@ -149,6 +158,9 @@ export const buildStorefrontImageUrl = (value?: string | null) => {
   if (url.startsWith("/assets/")) return url;
   return `${getBackendUrl()}${url.startsWith("/") ? url : `/${url}`}`;
 };
+
+export const buildStorefrontImageUrl = (value?: string | null) =>
+  resolveStorefrontMediaUrl(value) || PLACEHOLDER_IMAGE;
 
 export const storefrontQueryKeys = {
   all: ["storefront"] as const,
@@ -381,6 +393,61 @@ export const storefrontSlugsQueryOptions = () =>
       return catalog.items.map((product) => ({ slug: product.slug || product.id }));
     },
   });
+
+const getHeroSlides = (
+  home: StorefrontHomeResponse,
+): StorefrontHeroSlide[] => {
+  const slides = Array.isArray(home.hero?.slides) && home.hero.slides.length
+    ? home.hero.slides
+    : home.hero
+      ? [home.hero]
+      : [];
+  const seen = new Set<string>();
+
+  return slides
+    .filter((slide) =>
+      Boolean(
+        String(slide.title || "").trim() ||
+          String(slide.subtitle || "").trim() ||
+          String(slide.backgroundImageUrl || "").trim(),
+      ),
+    )
+    .filter((slide) => {
+      const key = [
+        slide.title,
+        slide.subtitle,
+        slide.primaryCtaLabel,
+        slide.primaryCtaHref,
+        slide.backgroundImageUrl,
+      ]
+        .map((value) => String(value || "").trim())
+        .join("|");
+
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+};
+
+export const mapStorefrontHeroCarousel = (
+  home: StorefrontHomeResponse,
+): StorefrontHeroCarouselItem[] =>
+  getHeroSlides(home).map((slide, index) => ({
+    id: [
+      slide.title,
+      slide.primaryCtaHref,
+      slide.backgroundImageUrl,
+      index,
+    ]
+      .map((value) => String(value || "").trim())
+      .filter(Boolean)
+      .join("-"),
+    title: slide.title,
+    imgUrl: resolveStorefrontMediaUrl(slide.backgroundImageUrl),
+    buttonText: slide.primaryCtaLabel,
+    buttonLink: slide.primaryCtaHref,
+    description: slide.subtitle,
+  }));
 
 export type SearchSuggestion = {
   id: string;

@@ -10,34 +10,45 @@ export default async function Section1() {
 
   if (!carouselData.length) return null;
   const hasMultipleSlides = carouselData.length > 1;
+  const [singleSlide] = carouselData;
 
   return (
     <Box bg="gray.white" mb="3.75rem">
       <Container pb="3rem">
-        <Carousel
-          dots={hasMultipleSlides}
-          autoplay={hasMultipleSlides}
-          infinite={hasMultipleSlides}
-          swipe={hasMultipleSlides}
-          draggable={hasMultipleSlides}
-          swipeToSlide={hasMultipleSlides}
-          arrows={false}
-          slidesToShow={1}
-          autoplaySpeed={4500}
-          speed={500}
-          pauseOnHover
-        >
-          {carouselData.map((item, index) => (
-            <CarouselCard1
-              key={index}
-              title={item.title}
-              image={item.imgUrl}
-              buttonText={item.buttonText}
-              buttonLink={item.buttonLink}
-              description={item.description}
-            />
-          ))}
-        </Carousel>
+        {hasMultipleSlides ? (
+          <Carousel
+            dots
+            autoplay
+            infinite
+            swipe
+            draggable
+            swipeToSlide
+            arrows={false}
+            slidesToShow={1}
+            autoplaySpeed={4500}
+            speed={500}
+            pauseOnHover
+          >
+            {carouselData.map((item) => (
+              <CarouselCard1
+                key={item.id}
+                title={item.title}
+                image={item.imgUrl}
+                buttonText={item.buttonText}
+                buttonLink={item.buttonLink}
+                description={item.description}
+              />
+            ))}
+          </Carousel>
+        ) : (
+          <CarouselCard1
+            title={singleSlide.title}
+            image={singleSlide.imgUrl}
+            buttonText={singleSlide.buttonText}
+            buttonLink={singleSlide.buttonLink}
+            description={singleSlide.description}
+          />
+        )}
       </Container>
     </Box>
   );

@@ -1,7 +1,5 @@
 import styled from "styled-components";
 import Link from "next/link";
-// GLOBAL CUSTOM COMPONENTS
-import { Button } from "@component/buttons";
 import Typography from "@component/Typography";
 import { JSX } from "react/jsx-runtime";
 
@@ -9,10 +7,12 @@ import { JSX } from "react/jsx-runtime";
 const StyledCarouselCard1 = styled.div`
   display: flex;
   text-align: left;
-  margin-left: 280px;
+    margin-left: 300px;
+  min-height: 360px;
   align-items: center;
-  padding: 1rem 0 1rem 2rem;
+  padding: 2rem 0;
   justify-content: space-between;
+  gap: 2rem;
 
   .content {
     max-width: 500px;
@@ -26,15 +26,17 @@ const StyledCarouselCard1 = styled.div`
 
   .image-holder {
     position: relative;
-    max-width: 300px;
+    flex: 0 0 min(38%, 380px);
     img {
       width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
     }
   }
 
   @media only screen and (max-width: 900px) {
-    margin-left: 0px;
-    padding-left: 0px;
+    min-height: 300px;
 
     .title {
       font-size: 32px;
@@ -55,6 +57,26 @@ const StyledCarouselCard1 = styled.div`
   }
 `;
 
+const buttonStyles = ({ theme }: any) => ({
+  width: "fit-content",
+  height: 40,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: "1rem 1.5rem",
+  borderRadius: "0.5rem",
+  color: theme.colors?.primary?.text || "#FFFFFF",
+  backgroundColor: theme.colors?.primary?.main || "#E94560",
+  fontSize: 14,
+  fontWeight: 600,
+  lineHeight: 1,
+  textDecoration: "none",
+  transition: "all 150ms ease-in-out",
+});
+
+const InternalButtonLink = styled(Link)(buttonStyles);
+const ExternalButtonLink = styled.a(buttonStyles);
+
 // ===============================================
 interface Props {
   title: string | undefined;
@@ -64,6 +86,8 @@ interface Props {
   description: string | string[] | JSX.Element | undefined;
 }
 // ===============================================
+
+const isExternalUrl = (href?: string) => /^https?:\/\//.test(String(href || ""));
 
 export default function CarouselCard1({
   title,
@@ -80,17 +104,21 @@ export default function CarouselCard1({
           {description}
         </Typography>
 
-        {buttonLink ? (
-          <Link href={buttonLink}>
-            <Button className="button-link" variant="contained" color="primary" p="1rem 1.5rem">
+        {buttonLink && buttonText ? (
+          isExternalUrl(buttonLink) ? (
+            <ExternalButtonLink
+              className="button-link"
+              href={buttonLink}
+              rel="noreferrer"
+              target="_blank">
               {buttonText}
-            </Button>
-          </Link>
-        ) : (
-          <Button className="button-link" variant="contained" color="primary" p="1rem 1.5rem">
-            {buttonText}
-          </Button>
-        )}
+            </ExternalButtonLink>
+          ) : (
+            <InternalButtonLink className="button-link" href={buttonLink}>
+              {buttonText}
+            </InternalButtonLink>
+          )
+        ) : null}
       </div>
 
       {image ? (
