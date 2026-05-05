@@ -26,11 +26,11 @@ export const useStorefrontCatalog = (params: StorefrontCatalogParams = {}) =>
 
 export const useStorefrontProducts = (
   params: StorefrontCatalogParams = {},
-  initialData?: Product[],
+  placeholderData?: Product[],
 ) =>
   useQuery({
     ...storefrontProductsQueryOptions(params),
-    initialData,
+    placeholderData,
   });
 
 export const useStorefrontProduct = (

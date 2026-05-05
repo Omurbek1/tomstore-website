@@ -9,37 +9,40 @@ import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
 import CheckBox from "@component/CheckBox";
 import TextField from "@component/text-field";
-import { Accordion, AccordionHeader } from "@component/accordion";
 import { H5, H6, Paragraph, SemiSpan } from "@component/Typography";
 import { useStorefrontCatalog } from "@hook/useStorefrontCatalog";
-
-const CATEGORIES = [
-  { titleKey: "bathPreparations", childKeys: ["bubbleBath", "bathCapsules", "others"] },
-  { titleKey: "eyeMakeupPreparations" },
-  { titleKey: "fragrance" },
-  { titleKey: "hairPreparations" }
-];
+import type { StorefrontCatalogParams } from "@utils/__api__/storefront";
 
 const OTHER_OPTIONS = ["onSale", "inStock", "featured"] as const;
 const COLORS = ["#1C1C1C", "#FF7A7A", "#FFC672", "#84FFB5", "#70F6FF", "#6B7AFF"];
 
 type ProductFilterCardProps = {
+  catalogParams?: StorefrontCatalogParams;
+  selectedCategory?: string;
   selectedBrand?: string;
   selectedMinPrice?: number;
   selectedMaxPrice?: number;
+  onCategoryChange?: (category?: string) => void;
   onBrandChange?: (brand?: string) => void;
   onPriceChange?: (range: { minPrice?: number; maxPrice?: number }) => void;
 };
 
 export default function ProductFilterCard({
+  catalogParams,
+  selectedCategory,
   selectedBrand,
   selectedMinPrice,
   selectedMaxPrice,
+  onCategoryChange,
   onBrandChange,
   onPriceChange,
 }: ProductFilterCardProps) {
   const t = useTranslations("product.filters");
-  const { data: catalog } = useStorefrontCatalog({ pageSize: 1 });
+  const { data: catalog } = useStorefrontCatalog({
+    ...catalogParams,
+    pageSize: 1,
+  });
+  const categories = catalog?.filters.categories || [];
   const brands = catalog?.filters.brands || [];
   const [minPrice, setMinPrice] = useState(selectedMinPrice?.toString() || "");
   const [maxPrice, setMaxPrice] = useState(selectedMaxPrice?.toString() || "");
@@ -73,45 +76,33 @@ export default function ProductFilterCard({
     [onBrandChange],
   );
 
-  const render = (items: string[]) =>
-    items.map((name) => (
-      <Paragraph
-        py="6px"
-        pl="22px"
-        key={name}
-        fontSize="14px"
-        color="text.muted"
-        className="cursor-pointer">
-        {t(`categoryItems.${name}`)}
-      </Paragraph>
-    ));
+  const handleCategoryChange = useCallback(
+    (category: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      onCategoryChange?.(event.target.checked ? category : undefined);
+    },
+    [onCategoryChange],
+  );
 
   return (
     <Card p="18px 27px" elevation={5} borderRadius={12}>
       <H6 mb="10px">{t("categories")}</H6>
 
-      {CATEGORIES.map((item) =>
-        item.childKeys ? (
-          <Accordion key={item.titleKey} expanded>
-            <AccordionHeader px="0px" py="6px" color="text.muted">
-              <SemiSpan className="cursor-pointer" mr="9px">
-                {t(`categoryItems.${item.titleKey}`)}
-              </SemiSpan>
-            </AccordionHeader>
-
-            {render(item.childKeys)}
-          </Accordion>
-        ) : (
-          <Paragraph
-            py="6px"
-            fontSize="14px"
-            key={item.titleKey}
-            color="text.muted"
-            className="cursor-pointer">
-            {t(`categoryItems.${item.titleKey}`)}
-          </Paragraph>
-        )
-      )}
+      {categories.map((item) => (
+        <CheckBox
+          my="10px"
+          key={item.slug}
+          name="category"
+          value={item.slug}
+          checked={selectedCategory === item.slug}
+          color="secondary"
+          label={
+            <SemiSpan color="inherit">
+              {item.name} ({item.totalProducts})
+            </SemiSpan>
+          }
+          onChange={handleCategoryChange(item.slug)}
+        />
+      ))}
 
       <Divider mt="18px" mb="24px" />
 

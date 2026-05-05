@@ -47,20 +47,28 @@ export default function SearchResult({
   const width = useWindowSize();
   const t = useTranslations("search");
   const filtersT = useTranslations("product.filters");
+  const query = decodeURIComponent(rawQuery || "");
 
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<"grid" | "list">("grid");
   const [sortKey, setSortKey] = useState("relevance");
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
+    typeof catalogParams?.category === "string"
+      ? catalogParams.category
+      : searchType === "category"
+        ? query
+        : undefined,
+  );
   const [selectedBrand, setSelectedBrand] = useState<string | undefined>();
   const [selectedMinPrice, setSelectedMinPrice] = useState<number | undefined>();
   const [selectedMaxPrice, setSelectedMaxPrice] = useState<number | undefined>();
 
-  const query = decodeURIComponent(rawQuery || "");
   const backendSort = SORT_MAP[sortKey] ?? "popular";
 
   const liveCatalogParams = {
     ...(catalogParams ??
       (searchType === "category" ? { category: query } : { q: query })),
+    category: selectedCategory,
     brand: selectedBrand,
     minPrice: selectedMinPrice,
     maxPrice: selectedMaxPrice,
@@ -83,6 +91,9 @@ export default function SearchResult({
 
   const handleOpenSidenav = useCallback(() => setOpen(true), []);
   const handleCloseSidenav = useCallback(() => setOpen(false), []);
+  const handleCategoryChange = useCallback((category?: string) => {
+    setSelectedCategory(category);
+  }, []);
   const handleBrandChange = useCallback((brand?: string) => {
     setSelectedBrand(brand);
   }, []);
@@ -169,9 +180,12 @@ export default function SearchResult({
                 styles={{ body: { padding: 16, background: theme.colors.body.paper } }}
               >
                 <ProductFilterCard
+                  catalogParams={liveCatalogParams}
+                  selectedCategory={selectedCategory}
                   selectedBrand={selectedBrand}
                   selectedMinPrice={selectedMinPrice}
                   selectedMaxPrice={selectedMaxPrice}
+                  onCategoryChange={handleCategoryChange}
                   onBrandChange={handleBrandChange}
                   onPriceChange={handlePriceChange}
                 />
@@ -185,9 +199,12 @@ export default function SearchResult({
         {showDesktopFilters && (
           <Grid item lg={3} xs={12}>
             <ProductFilterCard
+              catalogParams={liveCatalogParams}
+              selectedCategory={selectedCategory}
               selectedBrand={selectedBrand}
               selectedMinPrice={selectedMinPrice}
               selectedMaxPrice={selectedMaxPrice}
+              onCategoryChange={handleCategoryChange}
               onBrandChange={handleBrandChange}
               onPriceChange={handlePriceChange}
             />
