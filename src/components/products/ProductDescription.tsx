@@ -14,6 +14,29 @@ type StructuredRows = {
   highlights: string[];
 };
 
+const USE_CASE_CHIP_STYLES = [
+  {
+    bg: "success.light",
+    borderColor: "success.main",
+    color: "success.main",
+  },
+  {
+    bg: "blue.100",
+    borderColor: "blue.300",
+    color: "blue.700",
+  },
+  {
+    bg: "paste.100",
+    borderColor: "paste.main",
+    color: "paste.main",
+  },
+  {
+    bg: "gray.100",
+    borderColor: "gray.300",
+    color: "text.secondary",
+  },
+];
+
 const GENERIC_ATTRIBUTE_NAMES = new Set([
   "характеристика",
   "характеристики",
@@ -228,22 +251,26 @@ export default function ProductDescription({ product }: Props) {
                 Лучше всего подходит
               </H4>
               <FlexBox flexWrap="wrap" m="-0.25rem">
-                {structuredRows.useCases.map((item) => (
-                  <Box
-                    key={item}
-                    m="0.25rem"
-                    px="0.875rem"
-                    py="0.55rem"
-                    border="1px solid"
-                    borderColor="primary.light"
-                    borderRadius="999px"
-                    bg="primary.light"
-                  >
-                    <Typography fontSize="14px" fontWeight={600} color="primary.main">
-                      {toSentenceCaseStart(item)}
-                    </Typography>
-                  </Box>
-                ))}
+                {structuredRows.useCases.map((item, index) => {
+                  const chipStyle = USE_CASE_CHIP_STYLES[index % USE_CASE_CHIP_STYLES.length];
+
+                  return (
+                    <Box
+                      key={item}
+                      m="0.25rem"
+                      px="0.875rem"
+                      py="0.55rem"
+                      border="1px solid"
+                      borderColor={chipStyle.borderColor}
+                      borderRadius="999px"
+                      bg={chipStyle.bg}
+                    >
+                      <Typography fontSize="14px" fontWeight={700} color={chipStyle.color}>
+                        {toSentenceCaseStart(item)}
+                      </Typography>
+                    </Box>
+                  );
+                })}
               </FlexBox>
             </Box>
           ) : null}
