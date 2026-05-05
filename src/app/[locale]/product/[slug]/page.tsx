@@ -32,6 +32,7 @@ export default async function ProductDetails({ params }: Props) {
         oldPrice={product.oldPrice}
         availabilityLabel={product.availabilityLabel}
         labels={product.labels}
+        slug={product.slug || slug}
       />
 
       <ProductView

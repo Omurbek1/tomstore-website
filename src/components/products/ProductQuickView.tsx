@@ -36,6 +36,7 @@ export default function ProductQuickView({ open, onClose, product }: Props) {
           title={product.title}
           price={product.price}
           images={product.images}
+          slug={product.slug}
         />
       </Card>
     </Modal>

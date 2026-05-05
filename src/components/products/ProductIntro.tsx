@@ -16,6 +16,7 @@ import { H1, H2, H3, H6, SemiSpan } from "@component/Typography";
 import { useCartItemByIdOrSlug, useChangeCartAmount } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
 import { Link } from "i18n/navigation";
+import ProductShareButton from "./ProductShareButton";
 
 // ========================================
 interface Props {
@@ -27,6 +28,7 @@ interface Props {
   oldPrice?: number | null;
   availabilityLabel?: string;
   labels?: string[];
+  slug?: string;
 }
 // ========================================
 
@@ -39,6 +41,7 @@ export default function ProductIntro({
   oldPrice,
   availabilityLabel,
   labels = [],
+  slug,
 }: Props) {
   const param = useParams();
   const t = useTranslations("product");
@@ -48,6 +51,8 @@ export default function ProductIntro({
 
   const routerId = param.slug as string;
   const cartItem = useCartItemByIdOrSlug(id, routerId);
+  const shareSlug = slug || routerId;
+  const shareText = `${title}. ${formatCurrency(price)}`;
 
   const handleImageClick = useCallback((ind: number) => () => setSelectedImage(ind), []);
 
@@ -148,40 +153,43 @@ export default function ProductIntro({
             ) : null}
           </Box>
 
-          {!cartItem?.qty ? (
-            <Button
-              mb="36px"
-              size="small"
-              color="primary"
-              variant="contained"
-              onClick={handleCartAmountChange(1)}>
-              {t("addToCart")}
-            </Button>
-          ) : (
-            <FlexBox alignItems="center" mb="36px">
+          <FlexBox alignItems="center" flexWrap="wrap" mb="36px" style={{ gap: 12 }}>
+            {!cartItem?.qty ? (
               <Button
-                p="9px"
                 size="small"
                 color="primary"
-                variant="outlined"
-                onClick={handleCartAmountChange(cartItem?.qty - 1)}>
-                <IconMinus size={22} />
+                variant="contained"
+                onClick={handleCartAmountChange(1)}>
+                {t("addToCart")}
               </Button>
+            ) : (
+              <FlexBox alignItems="center">
+                <Button
+                  p="9px"
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                  onClick={handleCartAmountChange(cartItem?.qty - 1)}>
+                  <IconMinus size={22} />
+                </Button>
 
-              <H3 fontWeight="600" mx="20px">
-                {cartItem?.qty.toString().padStart(2, "0")}
-              </H3>
+                <H3 fontWeight="600" mx="20px">
+                  {cartItem?.qty.toString().padStart(2, "0")}
+                </H3>
 
-              <Button
-                p="9px"
-                size="small"
-                color="primary"
-                variant="outlined"
-                onClick={handleCartAmountChange(cartItem?.qty + 1)}>
-                <IconPlus size={22} />
-              </Button>
-            </FlexBox>
-          )}
+                <Button
+                  p="9px"
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                  onClick={handleCartAmountChange(cartItem?.qty + 1)}>
+                  <IconPlus size={22} />
+                </Button>
+              </FlexBox>
+            )}
+
+            <ProductShareButton title={title} text={shareText} slug={shareSlug} />
+          </FlexBox>
 
           <FlexBox alignItems="center" mb="1rem">
             <SemiSpan>{t("soldBy")}:</SemiSpan>
