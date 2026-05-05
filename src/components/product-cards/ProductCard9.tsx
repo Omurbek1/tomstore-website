@@ -18,7 +18,8 @@ import { Button } from "../buttons";
 import { H5, SemiSpan } from "../Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
 import useCart from "@hook/useCart";
-import { calculateDiscount, currency } from "@utils/utils";
+import { calculateDiscount } from "@utils/utils";
+import useCurrency from "@hook/useCurrency";
 import { useLocale, useTranslations } from "next-intl";
 import { usePrefetchStorefrontProduct } from "@hook/useStorefrontCatalog";
 
@@ -125,6 +126,7 @@ export default function ProductCard9({
   ...props
 }: ProductCard9Props) {
   const locale = useLocale();
+  const formatCurrency = useCurrency();
   const t = useTranslations("product");
   const router = useRouter();
   const prefetchProductQuery = usePrefetchStorefrontProduct();
@@ -215,12 +217,12 @@ export default function ProductCard9({
 
             <FlexBox mt="0.5rem" mb="1rem" alignItems="center">
               <H5 fontWeight={600} color="primary.main" mr="0.5rem">
-                {calculateDiscount(price, off ?? 0)}
+                {calculateDiscount(price, off ?? 0, locale)}
               </H5>
 
               {(off ?? 0) > 0 && (
                 <SemiSpan fontWeight="600">
-                  <del>{currency(price)}</del>
+                  <del>{formatCurrency(price)}</del>
                 </SemiSpan>
               )}
             </FlexBox>

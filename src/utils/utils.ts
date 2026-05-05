@@ -61,24 +61,34 @@ export const renderProductCount = (
  * @returns - RETURN NEW PRICE
  */
 
-export function calculateDiscount(price: number, discount: number) {
+export function calculateDiscount(price: number, discount: number, locale?: string) {
   const afterDiscount = Number((price - price * (discount / 100)).toFixed(2));
-  return currency(afterDiscount);
+  return currency(afterDiscount, 2, locale);
+}
+
+const LOCALE_CURRENCY_MAP: Record<string, { currency: string; locale: string }> = {
+  en: { currency: "USD", locale: "en-US" },
+  ru: { currency: "KGS", locale: "ru-KG" },
+  ky: { currency: "KGS", locale: "ky-KG" }
+};
+
+export function getCurrencyConfig(locale: string) {
+  return LOCALE_CURRENCY_MAP[locale] ?? LOCALE_CURRENCY_MAP.ru;
 }
 
 /**
  * CHANGE THE CURRENCY FORMAT
  * @param  price - PRODUCT PRICE
  * @param  fraction - HOW MANY FRACTION WANT TO SHOW
+ * @param  locale - APP LOCALE (en, ru, ky)
  * @returns - RETURN PRICE WITH CURRENCY
  */
 
-export function currency(price: number, fraction: number = 2) {
-  // const { publicRuntimeConfig } = getConfig();
-  // currency: publicRuntimeConfig.currency,
+export function currency(price: number, fraction: number = 2, locale?: string) {
+  const config = locale ? getCurrencyConfig(locale) : { currency: "KGS", locale: "ru-KG" };
 
-  const formatCurrency = new Intl.NumberFormat(undefined, {
-    currency: "USD",
+  const formatCurrency = new Intl.NumberFormat(config.locale, {
+    currency: config.currency,
     style: "currency",
     maximumFractionDigits: fraction,
     minimumFractionDigits: fraction

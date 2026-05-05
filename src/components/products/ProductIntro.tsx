@@ -14,7 +14,7 @@ import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 import { H1, H2, H3, H6, SemiSpan } from "@component/Typography";
 import useCart from "@hook/useCart";
-import { currency } from "@utils/utils";
+import useCurrency from "@hook/useCurrency";
 import { Link } from "i18n/navigation";
 
 // ========================================
@@ -43,6 +43,7 @@ export default function ProductIntro({
   const param = useParams();
   const t = useTranslations("product");
   const { state, dispatch } = useCart();
+  const formatCurrency = useCurrency();
   const [selectedImage, setSelectedImage] = useState(0);
 
   const routerId = param.slug as string;
@@ -122,11 +123,11 @@ export default function ProductIntro({
 
           <Box mb="24px">
             <H2 color="primary.main" mb="4px" lineHeight="1">
-              {currency(price)}
+              {formatCurrency(price)}
             </H2>
             {oldPrice && oldPrice > price ? (
               <SemiSpan color="text.muted">
-                <del>{currency(oldPrice)}</del>
+                <del>{formatCurrency(oldPrice)}</del>
               </SemiSpan>
             ) : null}
 

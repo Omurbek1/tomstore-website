@@ -9,7 +9,7 @@ import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 import Typography, { H5, Paragraph, Tiny } from "@component/Typography";
 import useCart from "@hook/useCart";
-import { currency } from "@utils/utils";
+import useCurrency from "@hook/useCurrency";
 // STYLED COMPONENT
 import { StyledMiniCart } from "./styles";
 
@@ -19,6 +19,7 @@ type MiniCartProps = { toggleSidenav?: () => void };
 
 export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
   const { state, dispatch } = useCart();
+  const formatCurrency = useCurrency();
 
   const handleCartAmountChange = (amount: number, product: any) => () => {
     dispatch({
@@ -37,7 +38,7 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
         <FlexBox alignItems="center" m="0px 20px" height="74px">
           <Icon size="1.5rem">bag</Icon>
           <Typography fontWeight={600} fontSize="16px" ml="0.5rem">
-            {state.cart.length} item
+            {state.cart.length} {state.cart.length === 1 ? "item" : "items"}
           </Typography>
         </FlexBox>
 
@@ -105,11 +106,11 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
                 </Link>
 
                 <Tiny color="text.muted">
-                  {currency(item.price, 0)} x {item.qty}
+                  {formatCurrency(item.price, 0)} x {item.qty}
                 </Tiny>
 
                 <Typography fontWeight={600} fontSize="14px" color="primary.main" mt="4px">
-                  {currency(item.qty * item.price)}
+                  {formatCurrency(item.qty * item.price)}
                 </Typography>
               </div>
 
@@ -130,7 +131,7 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
         <div className="actions">
           <Link href="/checkout">
             <Button fullWidth color="primary" variant="contained" onClick={toggleSidenav}>
-              <Typography fontWeight={600}>Checkout Now ({currency(getTotalPrice())})</Typography>
+              <Typography fontWeight={600}>Checkout Now ({formatCurrency(getTotalPrice())})</Typography>
             </Button>
           </Link>
 

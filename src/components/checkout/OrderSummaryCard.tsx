@@ -35,10 +35,15 @@ export default function OrderSummaryCard({
   voucher
 }: Props) {
   const locale = useLocale();
-  const intlLocale = locale === "ru" ? "ru-RU" : "en-US";
+  const currencyMap: Record<string, { intlLocale: string; currency: string }> = {
+    en: { intlLocale: "en-US", currency: "USD" },
+    ru: { intlLocale: "ru-KG", currency: "KGS" },
+    ky: { intlLocale: "ky-KG", currency: "KGS" }
+  };
+  const { intlLocale, currency: currencyCode } = currencyMap[locale] ?? currencyMap.ru;
   const formatter = new Intl.NumberFormat(intlLocale, {
     style: "currency",
-    currency: "USD",
+    currency: currencyCode,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });

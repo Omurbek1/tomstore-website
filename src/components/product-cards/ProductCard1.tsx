@@ -18,7 +18,8 @@ import { H3, SemiSpan } from "@component/Typography";
 import { Button, IconButton } from "@component/buttons";
 import ProductQuickView from "@component/products/ProductQuickView";
 
-import { calculateDiscount, currency } from "@utils/utils";
+import { calculateDiscount } from "@utils/utils";
+import useCurrency from "@hook/useCurrency";
 import { deviceSize } from "@utils/constants";
 import { useLocale, useTranslations } from "next-intl";
 import { usePrefetchStorefrontProduct } from "@hook/useStorefrontCatalog";
@@ -136,6 +137,7 @@ export default function ProductCard1({
 }: ProductCard1Props) {
   const theme = useTheme();
   const locale = useLocale();
+  const formatCurrency = useCurrency();
   const t = useTranslations("product");
   const router = useRouter();
   const prefetchProductQuery = usePrefetchStorefrontProduct();
@@ -248,12 +250,12 @@ export default function ProductCard1({
 
               <FlexBox alignItems="center" mt="10px">
                 <SemiSpan pr="0.5rem" fontWeight="600" color="primary.main">
-                  {calculateDiscount(price, off as number)}
+                  {calculateDiscount(price, off as number, locale)}
                 </SemiSpan>
 
                 {!!off && (
                   <SemiSpan color="text.muted" fontWeight="600">
-                    <del>{currency(price)}</del>
+                    <del>{formatCurrency(price)}</del>
                   </SemiSpan>
                 )}
               </FlexBox>

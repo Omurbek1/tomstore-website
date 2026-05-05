@@ -1,0 +1,529 @@
+{
+  "LocaleLayout": {
+    "title": "TomStore - Ноутбуктар, принтерлер, ПК жана электроника Бишкекте",
+    "description": "Электроника дүкөнү. Сатыкта бар, кепилдик, бөлүп төлөө, жеткирүү."
+  },
+  "nav": {
+    "categories": "Категориялар",
+    "recommendedCategories": "Сунушталган категориялар",
+    "laptops": "Ноутбуктар",
+    "officeAndStudy": "Офис жана окуу үчүн",
+    "budgetLaptops": "Бюджеттик ноутбуктар",
+    "studyLaptops": "Окуу үчүн ноутбуктар",
+    "officeLaptops": "Офистик ноутбуктар",
+    "ssdLaptops": "SSD ноутбуктар",
+    "lightLaptops": "Жеңил ноутбуктар",
+    "touchLaptops": "Сенсордук ноутбуктар",
+    "gamingLaptops": "Оюн ноутбуктары",
+    "rtx3050": "RTX 3050",
+    "rtx4050": "RTX 4050",
+    "rtx4060": "RTX 4060",
+    "highRefresh": "Жогорку жаңыртуу ылдамдыгы",
+    "gamingCheap": "Бюджеттик оюн",
+    "gamingPro": "Профессионалдык оюн",
+    "byBrand": "Бренд боюнча",
+    "premium": "Премиум",
+    "ultrabook": "Ультрабуктар",
+    "business": "Бизнес-ноутбуктар",
+    "macLike": "MacBook альтернативасы",
+    "designWork": "Дизайн жана иш үчүн",
+    "printers": "Принтерлер",
+    "inkjet": "Сыя принтерлери",
+    "homePrinters": "Үй принтерлери",
+    "wifiPrinters": "Wi-Fi принтерлери",
+    "photoPrinters": "Фотопринтерлер",
+    "laser": "Лазердик принтерлер",
+    "monoLaser": "Монохромдук лазердик",
+    "colorLaser": "Түстүү лазердик",
+    "officePrinters": "Офистик принтерлер",
+    "fastPrinters": "Тез принтерлер",
+    "mfu": "МФУ",
+    "printScanCopy": "Басып / Скандоо / Көчүрүү",
+    "officeMfu": "Офистик МФУ",
+    "businessMfu": "Бизнес-МФУ",
+    "supplies": "Жабдуулар",
+    "inks": "Сыялар",
+    "cartridges": "Картриджder",
+    "toner": "Тонер",
+    "paper": "Кагаз",
+    "computers": "Компьютерлер",
+    "readyPc": "Даяр ПК",
+    "officePc": "Офистик ПК",
+    "homePc": "Үй ПК",
+    "gamingPc": "Оюн ПК",
+    "businessPc": "Бизнес-ПК",
+    "buildPc": "ПК жыйноо",
+    "customPc": "Жеке жыйноо",
+    "gamingBuild": "Оюн жыйноосу",
+    "workstation": "Жумуш станциялары",
+    "monitors": "Мониторлор",
+    "monitor24": "24 дюймдук мониторлор",
+    "monitor27": "27 дюймдук мониторлор",
+    "gamingMonitors": "Оюн мониторлору",
+    "curved": "Ийри мониторлор",
+    "components": "Комплекттөөчүлөр",
+    "coreParts": "Негизги комплекттөөчүлөр",
+    "cpu": "Процессорлор",
+    "motherboard": "Материнтке тактасы",
+    "ram": "Оперативдик эс",
+    "ssd": "SSD дисктер",
+    "graphics": "Графика жана кубаттуулук",
+    "gpu": "Видеокарталар",
+    "power": "Кубат булактары",
+    "cooling": "Муздатуу",
+    "case": "Кейстер",
+    "accessories": "Аксессуарлар",
+    "peripherals": "Перифериялар",
+    "mouse": "Чычкандар",
+    "keyboard": "Клавиатуралар",
+    "headphones": "Наушниктер",
+    "speakers": "Колонкалар",
+    "pcAccessories": "ПК аксессуарлары",
+    "bags": "Сумкалар",
+    "stands": "Тумбалар",
+    "webcams": "Веб-камералар",
+    "network": "Тармак",
+    "wifi": "Wi-Fi жана интернет",
+    "routers": "Роутерлер",
+    "mesh": "Mesh-системалар",
+    "adapters": "Адаптерлер",
+    "cables": "Кабелдер",
+    "hdmi": "HDMI",
+    "typec": "USB-C / Type-C",
+    "usb": "USB",
+    "sale": "Аукцион",
+    "installment": "Бөлүп төлөө",
+    "combo": "Комплекттер"
+  },
+  "brand": {
+    "hp": "HP",
+    "dell": "Dell",
+    "lenovo": "Lenovo",
+    "acer": "Acer",
+    "asus": "ASUS",
+    "msi": "MSI",
+    "epson": "Epson",
+    "canon": "Canon"
+  },
+  "topbar": {
+    "themeFaq": "FAQ",
+    "needHelp": "Жардам керекпи?",
+    "switchLanguage": "Тилди өзгөртүү",
+    "languages": {
+      "ru": "Русча",
+      "en": "English",
+      "ky": "Кыргызча"
+    }
+  },
+  "common": {
+    "viewAll": "Баарын көрүү",
+    "productsShown": "{count, plural, one {# товар көрсөтүлдү} other {# товар көрсөтүлдү}}",
+    "shopsShown": "{count, plural, one {# дүкөн көрсөтүлдү} other {# дүкөн көрсөтүлдү}}"
+  },
+  "metadata": {
+    "login": {
+      "title": "Кирүү | TomStore",
+      "description": "TomStore аккаунтуңузга кириңиз."
+    },
+    "signup": {
+      "title": "Катталуу | TomStore",
+      "description": "Жаңы TomStore аккаунту түзүңүз."
+    }
+  },
+  "auth": {
+    "divider": "же",
+    "social": {
+      "facebook": "Facebook аркылуу улантуу",
+      "google": "Google аркылуу улантуу"
+    },
+    "validation": {
+      "invalidEmail": "Туура эмес email",
+      "emailRequired": "Email керек",
+      "passwordRequired": "Сырсөз керек",
+      "fullNameRequired": "Толук ат керек",
+      "confirmPasswordRequired": "Сырсөздү кайра киргизиңиз",
+      "passwordsMustMatch": "Сырсөздөр дал келиши керек",
+      "agreementRequired": "Шарттарга макул болушуңуз керек"
+    },
+    "login": {
+      "title": "TomStore-го кош келиңиз",
+      "subtitle": "Email жана сырсөз менен кириңиз",
+      "emailLabel": "Email же телефон номери",
+      "emailPlaceholder": "example@mail.com",
+      "passwordLabel": "Сырсөз",
+      "passwordPlaceholder": "*********",
+      "submit": "Кирүү",
+      "noAccount": "Аккаунт жокпу?",
+      "signUp": "Катталуу",
+      "forgotPassword": "Сырсөздү унуттуңузбу?",
+      "reset": "Калыбына келтирүү"
+    },
+    "signup": {
+      "title": "Аккаунт түзүңүз",
+      "subtitle": "Улантуу үчүн бардык талааларды толтуруңуз",
+      "fullNameLabel": "Толук аты-жөнү",
+      "fullNamePlaceholder": "Ысмайыл Токтосунов",
+      "emailLabel": "Email же телефон номери",
+      "emailPlaceholder": "example@mail.com",
+      "passwordLabel": "Сырсөз",
+      "passwordPlaceholder": "*********",
+      "confirmPasswordLabel": "Сырсөздү тастыктаңыз",
+      "confirmPasswordPlaceholder": "*********",
+      "agreementPrefix": "Катталуу менен сиз",
+      "agreementLink": "Шарттар жана эрежелерге",
+      "submit": "Аккаунт түзүү",
+      "alreadyHaveAccount": "Аккаунт барбы?",
+      "login": "Кирүү"
+    }
+  },
+  "appStore": {
+    "googlePlay": {
+      "subtitle": "Жүктөп алуу",
+      "title": "Google Play"
+    },
+    "appleStore": {
+      "subtitle": "Жүктөп алуу",
+      "title": "App Store"
+    }
+  },
+  "footer": {
+    "description": "TomStore үй, офис жана окуу үчүн ноутбук, принтер, ПК жана аксессуарларды тандоого жардам берет.",
+    "aboutUs": "Биз жөнүндө",
+    "customerCare": "Кардарларга кызмат",
+    "contactUs": "Байланышуу",
+    "address": "Бишкек, Кыргызстан",
+    "emailLabel": "Email",
+    "emailValue": "uilib.help@gmail.com",
+    "phoneLabel": "Телефон",
+    "phoneValue": "+996 700 000 000",
+    "aboutLinks": {
+      "careers": "Карьера",
+      "ourStores": "Биздин дүкөндөр",
+      "ourStory": "Компания жөнүндө",
+      "terms": "Шарттар жана эрежелер",
+      "privacy": "Купуялык саясаты"
+    },
+    "customerCareLinks": {
+      "helpCenter": "Жардам борбору",
+      "howToBuy": "Кантип сатып алуу",
+      "trackOrder": "Буйрутманы көзөмөлдөө",
+      "corporatePurchasing": "Корпоративдик жана чоң жуп сатып алуулар",
+      "returns": "Кайтаруу жана акчаны кайтаруу"
+    }
+  },
+  "mobileNav": {
+    "home": "Башкы бет",
+    "category": "Категориялар",
+    "cart": "Себет",
+    "account": "Аккаунт"
+  },
+  "home": {
+    "flashDeals": "Ысык арзандатуулар",
+    "topCategories": "Популярдуу категориялар",
+    "topRatings": "Рейтинг боюнча топ",
+    "featuredBrands": "Сунушталган брендтер",
+    "newArrivals": "Жаңы келгендер",
+    "bigDiscounts": "Чоң арзандатуулар",
+    "cars": "Унаалар",
+    "categories": "Категориялар",
+    "moreForYou": "Сиз үчүн дагы",
+    "mobilePhones": "Мобилдик телефондор",
+    "opticsWatch": "Оптика / Саат",
+    "brands": "Брендтер",
+    "shops": "Дүкөндөр",
+    "viewAllBrands": "Бардык брендтерди көрүү",
+    "viewAllShops": "Бардык дүкөндөрдү көрүү"
+  },
+  "shops": {
+    "title": "Бардык дүкөндөр",
+    "summary": "{count, plural, one {# дүкөн көрсөтүлдү} other {# дүкөн көрсөтүлдү}}"
+  },
+  "search": {
+    "placeholder": "Издеп Enter басыңыз...",
+    "searchButton": "Издөө",
+    "searchingFor": "\"{query}\" боюнча издөө",
+    "resultsFound": "{count, plural, one {# натыйжа табылды} other {# натыйжа табылды}}",
+    "sortBy": "Сорттоо:",
+    "sortPlaceholder": "Сорттоо",
+    "view": "Көрүнүш:",
+    "sortOptions": {
+      "relevance": "Тиешелүүлүгү боюнча",
+      "date": "Дата боюнча",
+      "priceLowToHigh": "Баасы өсүү тартибинде",
+      "priceHighToLow": "Баасы азаюу тартибинде"
+    },
+    "categories": {
+      "all": "Бардык категориялар",
+      "car": "Унаа",
+      "clothes": "Кийим",
+      "electronics": "Электроника",
+      "laptop": "Ноутбуктар",
+      "desktop": "ПК",
+      "camera": "Камералар",
+      "toys": "Оюнчуктар"
+    },
+    "results": {
+      "macbookAir13": "Macbook Air 13",
+      "asusK555la": "Asus K555LA",
+      "acerAspireX453": "Acer Aspire X453",
+      "ipadMini3": "iPad Mini 3"
+    }
+  },
+  "product": {
+    "saleOff": "-{percent}%",
+    "brand": "Бренд",
+    "rated": "Баа",
+    "stockAvailable": "Сатыкта бар",
+    "addToCart": "Себетке кошуу",
+    "soldBy": "Сатуучу",
+    "relatedProducts": "Окшош товарлар",
+    "availableAt": "Дагы бар",
+    "descriptionTab": "Сүрөттөмө",
+    "reviewTab": "Пикирлер ({count})",
+    "specification": "Мүнөздөмөлөр:",
+    "specLines": {
+      "brand": "Бренд: Beats",
+      "model": "Модель: S450",
+      "wireless": "Зымсыз Bluetooth гарнитура",
+      "frequency": "FM диапазону: 87.5 - 108 MHz",
+      "features": "Өзгөчөлүктөрү: FM-радио, эс картасы колдоосу (Micro SD / TF)",
+      "origin": "Кытайда жасалган"
+    },
+    "frequentlyBought": "Чаще покупают вместе",
+    "saveAmount": "Үнөмдөө {amount}",
+    "addToList": "Тизмеге кошуу",
+    "writeReview": "Бул товар жөнүндө пикир жазыңыз",
+    "yourRating": "Сиздин баа",
+    "yourReview": "Сиздин пикир",
+    "reviewPlaceholder": "Пикир жазыңыз...",
+    "submitReview": "Жөнөтүү",
+    "validation": {
+      "ratingRequired": "Баа коюу зарыл",
+      "commentRequired": "Комментарий зарыл",
+      "dateRequired": "Дата зарыл"
+    },
+    "filters": {
+      "title": "Чыпкалар",
+      "categories": "Категориялар",
+      "priceRange": "Баа диапазону",
+      "brands": "Брендтер",
+      "ratings": "Рейтинг",
+      "colors": "Түстөр",
+      "otherOptions": {
+        "onSale": "Арзандатуулар",
+        "inStock": "Сатыкта бар",
+        "featured": "Сунушталган"
+      },
+      "categoryItems": {
+        "bathPreparations": "Ваннага арналган каражаттар",
+        "bubbleBath": "Ванна көбүгү",
+        "bathCapsules": "Ванна капсулалары",
+        "others": "Башкалар",
+        "eyeMakeupPreparations": "Көздүн макияжы",
+        "fragrance": "Парфюмерия",
+        "hairPreparations": "Чачка арналган каражаттар"
+      }
+    }
+  },
+  "checkout": {
+    "steps": {
+      "cart": "Себет",
+      "details": "Маалыматтар",
+      "payment": "Төлөм",
+      "review": "Текшерүү"
+    },
+    "cart": {
+      "total": "Жыйынтык:",
+      "additionalComments": "Кошумча комментарийлер",
+      "note": "Эскертме",
+      "voucher": "Промокод",
+      "applyVoucher": "Промокодду колдонуу",
+      "shippingEstimates": "Жеткирүүнү эсептөө",
+      "country": "Өлкө",
+      "selectCountry": "Өлкөнү тандаңыз",
+      "state": "Аймак",
+      "selectState": "Аймакты тандаңыз",
+      "zipCode": "Почта индекси",
+      "calculateShipping": "Жеткирүүнү эсептөө",
+      "checkoutNow": "Тариздөөгө өтүү"
+    },
+    "form": {
+      "shippingAddress": "Жеткирүү дареги",
+      "billingAddress": "Төлөм дареги",
+      "sameAsShipping": "Жеткирүү дареги менен бирдей",
+      "fullName": "Толук аты-жөнү",
+      "phoneNumber": "Телефон номери",
+      "zipCode": "Почта индекси",
+      "address1": "Дарек 1",
+      "address2": "Дарек 2",
+      "emailAddress": "Email дареги",
+      "company": "Компания",
+      "country": "Өлкө",
+      "backToCart": "Себетке кайтуу",
+      "proceedToPayment": "Төлөмгө өтүү",
+      "validation": {
+        "required": "Бул талаа зарыл",
+        "invalidEmail": "Туура email киргизиңиз"
+      }
+    },
+    "paymentForm": {
+      "methods": {
+        "creditCard": "Карта менен төлөө",
+        "paypal": "PayPal менен төлөө",
+        "cod": "Жеткиргенде төлөө"
+      },
+      "fields": {
+        "cardNumber": "Карта номери",
+        "expDate": "Колдонуу мөөнөтү",
+        "nameOnCard": "Картадагы аты",
+        "cvc": "CVC",
+        "paypalEmail": "PayPal Email"
+      },
+      "buttons": {
+        "backToCheckout": "Тариздөөгө кайтуу",
+        "review": "Текшерүү"
+      },
+      "validation": {
+        "required": "Бул талаа зарыл",
+        "invalidEmail": "Туура email киргизиңиз"
+      }
+    },
+    "alternative": {
+      "title": "Сиздин буйрутма",
+      "sections": {
+        "deliveryDetails": "Жеткирүү маалыматтары",
+        "deliveryAddress": "Жеткирүү дареги",
+        "personalDetails": "Жеке маалыматтар",
+        "contactInformation": "Байланыш маалыматы",
+        "paymentDetails": "Төлөм маалыматтары",
+        "savedPaymentMethods": "Сакталган төлөм ыкмалары"
+      },
+      "fields": {
+        "deliveryDate": "Жеткирүү датасы",
+        "deliveryTime": "Жеткирүү убактысы",
+        "voucherPlaceholder": "Промокодду киргизиңиз"
+      },
+      "buttons": {
+        "haveVoucher": "Менде промокод бар.",
+        "applyVoucher": "Колдонуу",
+        "placeOrder": "Буйрутма берүү"
+      },
+      "addressTypes": {
+        "home": "Үй",
+        "office": "Офис",
+        "office2": "Офис 2"
+      },
+      "contactTypes": {
+        "primary": "Негизги",
+        "secondary": "Кошумча"
+      },
+      "timeSlots": {
+        "morning": "9:00 - 11:00",
+        "midday": "11:00 - 13:00",
+        "afternoon": "15:00 - 17:00",
+        "evening": "17:00 - 19:00"
+      },
+      "validation": {
+        "required": "Бул талаа зарыл"
+      }
+    },
+    "summary": {
+      "title": "Буйрутманын жыйынтыгы",
+      "subtotal": "Аралык жыйынтык:",
+      "shipping": "Жеткирүү:",
+      "tax": "Салык:",
+      "discount": "Арзандатуу:",
+      "total": "Жыйынтык:",
+      "voucher": "Промокод",
+      "applyVoucher": "Промокодду колдонуу"
+    }
+  },
+  "dashboard": {
+    "groups": {
+      "dashboard": "КАБИНЕТ",
+      "accountSettings": "АККАУНТ ЖӨНДӨӨЛӨРҮ"
+    },
+    "nav": {
+      "orders": "Буйрутмалар",
+      "wishlist": "Каалаган нерселер",
+      "supportTickets": "Колдоо тикеттери",
+      "profileInfo": "Профиль",
+      "addresses": "Даректер",
+      "paymentMethods": "Төлөм ыкмалары"
+    },
+    "vendorNav": {
+      "dashboard": "Башкаруу панели",
+      "products": "Товарлар",
+      "addNewProduct": "Товар кошуу",
+      "orders": "Буйрутмалар",
+      "accountSettings": "Аккаунт жөндөөлөрү"
+    },
+    "headers": {
+      "myOrders": "Менин буйрутмаларым",
+      "myWishList": "Каалаган нерселер тизмеси",
+      "supportTicket": "Колдоо тикети",
+      "myProfile": "Менин профилим",
+      "myAddresses": "Менин даректерим",
+      "paymentMethods": "Төлөм ыкмалары",
+      "dashboard": "Башкаруу панели",
+      "orders": "Буйрутмалар",
+      "products": "Товарлар",
+      "addProduct": "Товар кошуу",
+      "editProduct": "Товарды өзгөртүү",
+      "editProfile": "Профилди өзгөртүү",
+      "addAddress": "Дарек кошуу",
+      "editAddress": "Даректи өзгөртүү"
+    },
+    "buttons": {
+      "addAllToCart": "Баарын себетке кошуу",
+      "editProfile": "Профилди өзгөртүү",
+      "addNewAddress": "Дарек кошуу",
+      "addNew": "Кошуу",
+      "back": "Артка",
+      "viewDetails": "Майлоолорду көрүү",
+      "saveChanges": "Өзгөртүүлөрдү сактоо",
+      "changePhoto": "Сүрөттү өзгөртүү"
+    },
+    "orderStatus": {
+      "pending": "Күтүүдө",
+      "processing": "Иштетилүүдө",
+      "delivered": "Жеткирилди",
+      "cancelled": "Жокко чыгарылды"
+    },
+    "validation": {
+      "required": "Бул талаа зарыл",
+      "invalidEmail": "Туура email киргизиңиз",
+      "invalidDate": "Туура датаны тандаңыз"
+    },
+    "forms": {
+      "addressTitle": "Дарек аты",
+      "street": "Көчө",
+      "city": "Шаар",
+      "country": "Өлкө"
+    },
+    "profile": {
+      "balance": "Баланс:",
+      "silverUser": "SILVER USER",
+      "allOrders": "Бардык буйрутмалар",
+      "awaitingPayments": "Төлөмдү күтүүдө",
+      "awaitingShipment": "Жөнөтүүнү күтүүдө",
+      "awaitingDelivery": "Жеткирүүнү күтүүдө",
+      "firstName": "Аты",
+      "lastName": "Фамилиясы",
+      "email": "Email",
+      "phone": "Телефон",
+      "birthDate": "Туулган датасы"
+    },
+    "tables": {
+      "orderNumber": "Буйрутма #",
+      "status": "Статус",
+      "datePurchased": "Сатып алынган дата",
+      "total": "Жыйынтык",
+      "action": "Аракет",
+      "noOrders": "Буйрутмалар жок",
+      "name": "Аты",
+      "regularPrice": "Кадимки баа",
+      "salePrice": "Арзандатылган баа"
+    }
+  }
+}

@@ -1,5 +1,6 @@
 "use client";
 import { Fragment } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 // GLOBAL CUSTOM COMPONENTS
 import Box from "@component/Box";
@@ -11,23 +12,48 @@ import FlexBox from "@component/FlexBox";
 import TextArea from "@component/textarea";
 import { Button } from "@component/buttons";
 import TextField from "@component/text-field";
-import Typography from "@component/Typography";
+import Typography, { Paragraph } from "@component/Typography";
 import { ProductCard7 } from "@component/product-cards";
 // CUSTOM HOOK
 import useCart from "@hook/useCart";
+import useCurrency from "@hook/useCurrency";
 // CUSTOM DATA
 import countryList from "@data/countryList";
 import { Link } from "i18n/navigation";
-// UTILS
-import { currency } from "@utils/utils";
 
 export default function Cart() {
   const { state } = useCart();
   const t = useTranslations("checkout.cart");
+  const formatCurrency = useCurrency();
 
   const getTotalPrice = () => {
     return state.cart.reduce((accumulator, item) => accumulator + item.price * item.qty, 0) || 0;
   };
+
+  if (state.cart.length === 0) {
+    return (
+      <FlexBox
+        alignItems="center"
+        flexDirection="column"
+        justifyContent="center"
+        py="4rem">
+        <Image
+          src="/assets/images/logos/shopping-bag.svg"
+          width={120}
+          height={120}
+          alt="empty cart"
+        />
+        <Paragraph mt="1.5rem" color="text.muted" textAlign="center" maxWidth="280px" fontSize="16px">
+          Your cart is empty. Add some products to continue shopping.
+        </Paragraph>
+        <Link href="/">
+          <Button variant="contained" color="primary" mt="1.5rem">
+            Continue Shopping
+          </Button>
+        </Link>
+      </FlexBox>
+    );
+  }
 
   return (
     <Fragment>
@@ -53,7 +79,7 @@ export default function Cart() {
               <Typography color="gray.600">{t("total")}</Typography>
 
               <Typography fontSize="18px" fontWeight="600" lineHeight="1">
-                {currency(getTotalPrice())}
+                {formatCurrency(getTotalPrice())}
               </Typography>
             </FlexBox>
 

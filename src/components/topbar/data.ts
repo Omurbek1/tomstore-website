@@ -11,6 +11,7 @@ export type LanguageOption = {
 export const LANGUAGES: LanguageOption[] = [
   { id: "ru", title: "RU", flagCode: "RU" },
   { id: "en", title: "EN", flagCode: "US" },
+  { id: "ky", title: "KG", flagCode: "KG" },
 ];
 
 export const CURRENCIES = [

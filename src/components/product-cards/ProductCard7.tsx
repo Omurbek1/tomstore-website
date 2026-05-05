@@ -6,6 +6,7 @@ import { space, SpaceProps } from "styled-system";
 import { IconMinus, IconPlus, IconX } from "@tabler/icons-react";
 
 import useCart from "@hook/useCart";
+import useCurrency from "@hook/useCurrency";
 import Box from "@component/Box";
 import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
@@ -13,7 +14,7 @@ import LazyImage from "@component/LazyImage";
 import Typography from "@component/Typography";
 import { IconButton } from "@component/buttons";
 
-import { currency, isValidProp } from "@utils/utils";
+import { isValidProp } from "@utils/utils";
 import { useLocale } from "next-intl";
 
 // STYLED COMPONENTS
@@ -68,6 +69,7 @@ export default function ProductCard7({
 }: ProductCard7Props) {
   const { dispatch } = useCart();
   const locale = useLocale();
+  const formatCurrency = useCurrency();
 
   const handleCartAmountChange = (amount: number) => () => {
     dispatch({
@@ -106,11 +108,11 @@ export default function ProductCard7({
         <FlexBox justifyContent="space-between" alignItems="flex-end">
           <FlexBox flexWrap="wrap" alignItems="center">
             <Typography color="gray.600" mr="0.5rem">
-              {currency(price)} x {qty}
+              {formatCurrency(price)} x {qty}
             </Typography>
 
             <Typography fontWeight={600} color="primary.main" mr="1rem">
-              = {currency(price * qty)}
+              = {formatCurrency(price * qty)}
             </Typography>
           </FlexBox>
 

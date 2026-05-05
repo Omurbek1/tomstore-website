@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useReducer, createContext, PropsWithChildren } from "react";
-import { INITIAL_CART } from "@data/cart";
+import { useMemo, useReducer, createContext, PropsWithChildren, useEffect } from "react";
 
 // ==============================================================
 interface CartItem {
@@ -28,7 +27,19 @@ interface ContextProps {
 }
 // ==============================================================
 
-const INITIAL_STATE = { cart: INITIAL_CART };
+const CART_STORAGE_KEY = "tomstore_cart";
+
+const loadCartFromStorage = (): CartItem[] => {
+  if (typeof window === "undefined") return [];
+  try {
+    const stored = localStorage.getItem(CART_STORAGE_KEY);
+    return stored ? (JSON.parse(stored) as CartItem[]) : [];
+  } catch {
+    return [];
+  }
+};
+
+const INITIAL_STATE: InitialState = { cart: [] };
 
 export const CartContext = createContext<ContextProps>({
   state: INITIAL_STATE,
@@ -37,7 +48,7 @@ export const CartContext = createContext<ContextProps>({
 
 const reducer = (state: InitialState, action: CartAction) => {
   switch (action.type) {
-    case "CHANGE_CART_AMOUNT":
+    case "CHANGE_CART_AMOUNT": {
       const currentCart = state.cart;
       const updatedItem = action.payload;
       const itemExists = currentCart.find((item) => item.id === updatedItem.id);
@@ -50,17 +61,14 @@ const reducer = (state: InitialState, action: CartAction) => {
       }
 
       if (itemExists) {
-        const updatedCart = currentCart.map((item) => {
-          return item.id === updatedItem.id ? { ...item, qty: updatedItem.qty } : item;
-        });
-
+        const updatedCart = currentCart.map((item) =>
+          item.id === updatedItem.id ? { ...item, qty: updatedItem.qty } : item
+        );
         return { ...state, cart: updatedCart };
       }
 
-      return {
-        ...state,
-        cart: [...currentCart, updatedItem]
-      };
+      return { ...state, cart: [...currentCart, updatedItem] };
+    }
 
     default:
       return state;
@@ -68,7 +76,18 @@ const reducer = (state: InitialState, action: CartAction) => {
 };
 
 export default function CartProvider({ children }: PropsWithChildren) {
-  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE, () => ({
+    cart: loadCartFromStorage()
+  }));
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state.cart));
+    } catch {
+      // ignore storage errors
+    }
+  }, [state.cart]);
+
   const contextValue = useMemo(() => ({ state, dispatch }), [state, dispatch]);
 
   return <CartContext value={contextValue}>{children}</CartContext>;

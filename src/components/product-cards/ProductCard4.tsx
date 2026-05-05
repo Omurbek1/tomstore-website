@@ -1,9 +1,10 @@
+"use client";
 import Rating from "@component/rating";
 import FlexBox from "@component/FlexBox";
 import HoverBox from "@component/HoverBox";
 import NextImage from "@component/NextImage";
 import { H4, Small } from "@component/Typography";
-import { currency } from "@utils/utils";
+import useCurrency from "@hook/useCurrency";
 
 // =======================================================
 type ProductCard4Props = {
@@ -17,6 +18,7 @@ type ProductCard4Props = {
 
 export default function ProductCard4(props: ProductCard4Props) {
   const { imgUrl, rating, title, price, reviewCount } = props;
+  const formatCurrency = useCurrency();
 
   return (
     <div>
@@ -37,7 +39,7 @@ export default function ProductCard4(props: ProductCard4Props) {
       </H4>
 
       <H4 fontWeight="600" fontSize="14px" textAlign="center" color="primary.main">
-        {currency(price)}
+        {formatCurrency(price)}
       </H4>
     </div>
   );

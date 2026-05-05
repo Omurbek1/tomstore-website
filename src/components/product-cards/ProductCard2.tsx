@@ -2,7 +2,7 @@ import Link from "next/link";
 import HoverBox from "@component/HoverBox";
 import { H4 } from "@component/Typography";
 import NextImage from "@component/NextImage";
-import { currency } from "@utils/utils";
+import useCurrency from "@hook/useCurrency";
 import { useLocale } from "next-intl";
 
 // ========================================================
@@ -15,7 +15,8 @@ interface ProductCard2Props {
 // ========================================================
 
 export default function ProductCard2({ imgUrl, title, price, slug }: ProductCard2Props) {
-    const locale = useLocale();
+  const locale = useLocale();
+  const formatCurrency = useCurrency();
   return (
     <Link href={`/${locale}/product/${slug}`}>
       <HoverBox borderRadius={8} mb="0.5rem" display="flex">
@@ -27,7 +28,7 @@ export default function ProductCard2({ imgUrl, title, price, slug }: ProductCard
       </H4>
 
       <H4 fontWeight="600" fontSize="14px" color="primary.main">
-        {currency(price)}
+        {formatCurrency(price)}
       </H4>
     </Link>
   );
