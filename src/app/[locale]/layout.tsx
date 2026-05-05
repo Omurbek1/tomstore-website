@@ -21,6 +21,7 @@ import "slick-carousel/slick/slick-theme.css";
 const publicSans = Public_Sans({
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 type LocaleLayoutProps = PropsWithChildren<{
