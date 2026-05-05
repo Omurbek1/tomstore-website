@@ -292,7 +292,12 @@
       "features": "Өзгөчөлүктөрү: FM-радио, эс картасы колдоосу (Micro SD / TF)",
       "origin": "Кытайда жасалган"
     },
-    "frequentlyBought": "Чаще покупают вместе",
+    "frequentlyBought": "Көп учурда чогуу сатып алышат",
+    "bundleHint": "Ылайыктуу товарлардан даяр комплект, пайдалуу баада.",
+    "bundleOffer": "Пайдалуу комплект",
+    "bundleItemsCount": "{count} товар комплектте",
+    "bundleTotal": "Комплекттин жалпы баасы",
+    "addBundleToCart": "Комплектти себетке кошуу",
     "saveAmount": "Үнөмдөө {amount}",
     "addToList": "Тизмеге кошуу",
     "writeReview": "Бул товар жөнүндө пикир жазыңыз",

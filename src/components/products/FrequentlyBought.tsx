@@ -1,103 +1,281 @@
-import { Fragment } from "react";
-import styled from "styled-components";
-import { useTranslations } from "next-intl";
+"use client";
 
+import { useMemo } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
+import styled from "styled-components";
+
+import Box from "@component/Box";
 import FlexBox from "@component/FlexBox";
+import NextImage from "@component/NextImage";
 import { Button } from "@component/buttons";
-import { ProductCard8 } from "@component/product-cards";
-import { H2, H3, SemiSpan } from "@component/Typography";
+import Typography, { H3, H6, SemiSpan } from "@component/Typography";
+import { useChangeCartAmount } from "@hook/useCart";
+import useCurrency from "@hook/useCurrency";
 import Product from "@models/product.model";
 
-// STYLED COMPONENT
-const FrequentlyBoughtWrapper = styled("div")`
-  margin-bottom: 3.75rem;
-  @media only screen and (max-width: 425px) {
-    .card-holder {
-      margin: 0px;
-      position: relative;
-      align-items: center;
-      flex-direction: column;
-      justify-content: center;
-    }
+const MAX_BUNDLE_ITEMS = 4;
 
-    .gray-box {
-      width: 100%;
-      min-width: 0px;
-      margin-left: 0px;
-      margin-right: 0px;
-    }
+const FrequentlyBoughtWrapper = styled("section")`
+  margin-bottom: 3.75rem;
+`;
+
+const BundleLayout = styled("div")`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 18px;
+  align-items: stretch;
+
+  @media only screen and (max-width: 900px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-// ============================================================
+const BundleItemsGrid = styled("div")`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+`;
+
+const BundleCard = styled(Link)`
+  position: relative;
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 12px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid ${({ theme }) => theme.colors.gray[300]};
+  border-radius: 8px;
+  background: ${({ theme }) => theme.colors.body.paper};
+  color: inherit;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.success.main};
+    box-shadow: 0 16px 40px -30px rgba(15, 23, 42, 0.45);
+    transform: translateY(-1px);
+  }
+`;
+
+const ProductImageBox = styled("div")`
+  width: 76px;
+  height: 76px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: ${({ theme }) => theme.colors.gray[100]};
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+`;
+
+const ProductTitle = styled("div")`
+  display: -webkit-box;
+  min-width: 0;
+  overflow: hidden;
+  color: ${({ theme }) => theme.colors.text.primary};
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+`;
+
+const PlusBadge = styled("span")`
+  position: absolute;
+  top: 50%;
+  right: -18px;
+  z-index: 2;
+  display: flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid ${({ theme }) => theme.colors.gray[300]};
+  border-radius: 999px;
+  background: ${({ theme }) => theme.colors.body.paper};
+  color: ${({ theme }) => theme.colors.success.main};
+  font-weight: 800;
+  transform: translateY(-50%);
+
+  @media only screen and (max-width: 900px) {
+    display: none;
+  }
+`;
+
+const SummaryCard = styled("div")`
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  padding: 18px;
+  border: 1px solid ${({ theme }) => theme.colors.success.main};
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(51, 208, 103, 0.12), rgba(255, 255, 255, 0.96));
+`;
+
+const SummaryDivider = styled("div")`
+  height: 1px;
+  margin: 14px 0;
+  background: ${({ theme }) => theme.colors.gray[300]};
+`;
+
+type BundleProduct = Product & {
+  effectivePrice: number;
+  compareAtPrice: number;
+  savings: number;
+};
+
 type Props = { products: Product[] };
-// ============================================================
+
+function getEffectivePrice(product: Product) {
+  const discount = Number(product.discount || 0);
+  const price = Number(product.price || 0);
+
+  if (discount <= 0) return price;
+  return Number((price - price * (discount / 100)).toFixed(2));
+}
+
+function toBundleProduct(product: Product): BundleProduct {
+  const effectivePrice = getEffectivePrice(product);
+  const compareAtPrice =
+    product.oldPrice && product.oldPrice > effectivePrice
+      ? product.oldPrice
+      : Number(product.price || 0);
+
+  return {
+    ...product,
+    effectivePrice,
+    compareAtPrice,
+    savings: Math.max(compareAtPrice - effectivePrice, 0),
+  };
+}
 
 export default function FrequentlyBought({ products }: Props) {
   const t = useTranslations("product");
+  const locale = useLocale();
+  const formatCurrency = useCurrency();
+  const changeCartAmount = useChangeCartAmount();
+
+  const bundleProducts = useMemo(
+    () =>
+      products
+        .filter((product) => product?.id && product?.slug && product?.title)
+        .slice(0, MAX_BUNDLE_ITEMS)
+        .map(toBundleProduct),
+    [products],
+  );
+
+  const totals = useMemo(
+    () =>
+      bundleProducts.reduce(
+        (acc, product) => ({
+          price: acc.price + product.effectivePrice,
+          compareAtPrice: acc.compareAtPrice + product.compareAtPrice,
+          savings: acc.savings + product.savings,
+        }),
+        { price: 0, compareAtPrice: 0, savings: 0 },
+      ),
+    [bundleProducts],
+  );
+
+  if (bundleProducts.length === 0) return null;
+
+  const handleAddBundleToCart = () => {
+    bundleProducts.forEach((product) => {
+      changeCartAmount({
+        id: product.id,
+        price: product.effectivePrice,
+        qty: 1,
+        name: product.title,
+        imgUrl: product.thumbnail,
+      });
+    });
+  };
 
   return (
     <FrequentlyBoughtWrapper>
-      <H3 mb="24px">{t("frequentlyBought")}</H3>
-
-      <FlexBox className="card-holder" flexWrap="wrap" m="-0.5rem">
-        {products.map((item, ind) => (
-          <Fragment key={item.id}>
-            <ProductCard8
-              m="0.5rem"
-              flex="1 1 0"
-              width="100%"
-              maxWidth="220px"
-              minWidth="160px"
-              id={item.id}
-              slug={item.slug}
-              price={item.price}
-              title={item.title}
-              off={item.discount}
-              imgUrl={item.thumbnail}
-            />
-
-            {ind < products.length - 1 && (
-              <FlexBox justifyContent="center" alignItems="center">
-                <H2 color="text.muted" mx="0.5rem">
-                  +
-                </H2>
-              </FlexBox>
-            )}
-          </Fragment>
-        ))}
-
-        <FlexBox justifyContent="center" alignItems="center">
-          <H2 color="text.muted" mx="1.5rem">
-            =
-          </H2>
-        </FlexBox>
-
-        <FlexBox
-          m="0.5rem"
-          minWidth={300}
-          minHeight={200}
-          borderRadius={12}
-          border="1px solid"
-          alignItems="center"
-          className="gray-box"
-          flexDirection="column"
-          borderColor="gray.400"
-          justifyContent="center">
-          <H3 color="primary.main">$2500</H3>
-          <SemiSpan mb="1rem">{t("saveAmount", { amount: "$500" })}</SemiSpan>
-
-          <FlexBox>
-            <Button variant="contained" color="primary" size="small" mr="1rem">
-              {t("addToCart")}
-            </Button>
-
-            <Button variant="outlined" color="primary" size="small">
-              {t("addToList")}
-            </Button>
-          </FlexBox>
-        </FlexBox>
+      <FlexBox
+        alignItems="center"
+        justifyContent="space-between"
+        flexWrap="wrap"
+        mb="18px"
+        style={{ gap: 10 }}
+      >
+        <Box>
+          <H3 mb="4px">{t("frequentlyBought")}</H3>
+          <SemiSpan color="text.muted">{t("bundleHint")}</SemiSpan>
+        </Box>
       </FlexBox>
+
+      <BundleLayout>
+        <BundleItemsGrid>
+          {bundleProducts.map((item, index) => (
+            <BundleCard key={item.id} href={`/${locale}/product/${item.slug}`}>
+              <ProductImageBox>
+                <NextImage
+                  src={item.thumbnail || "/assets/images/products/Rectangle 116.png"}
+                  width={160}
+                  height={160}
+                  alt={item.title}
+                />
+              </ProductImageBox>
+
+              <Box minWidth={0}>
+                <ProductTitle title={item.title}>{item.title}</ProductTitle>
+
+                <FlexBox alignItems="baseline" flexWrap="wrap" mt="8px" style={{ gap: 6 }}>
+                  <H6 color="success.main">{formatCurrency(item.effectivePrice)}</H6>
+                  {item.savings > 0 ? (
+                    <SemiSpan color="text.muted">
+                      <del>{formatCurrency(item.compareAtPrice)}</del>
+                    </SemiSpan>
+                  ) : null}
+                </FlexBox>
+              </Box>
+
+              {index < bundleProducts.length - 1 ? <PlusBadge>+</PlusBadge> : null}
+            </BundleCard>
+          ))}
+        </BundleItemsGrid>
+
+        <SummaryCard>
+          <SemiSpan fontWeight={700} color="success.main">
+            {t("bundleOffer")}
+          </SemiSpan>
+
+          <Typography mt="8px" color="text.muted" fontSize="14px" lineHeight="1.5">
+            {t("bundleItemsCount", { count: bundleProducts.length })}
+          </Typography>
+
+          <SummaryDivider />
+
+          <SemiSpan color="text.muted">{t("bundleTotal")}</SemiSpan>
+          <H3 color="text.primary" mt="4px">
+            {formatCurrency(totals.price)}
+          </H3>
+
+          {totals.savings > 0 ? (
+            <SemiSpan mt="6px" color="success.main" fontWeight={700}>
+              {t("saveAmount", { amount: formatCurrency(totals.savings) })}
+            </SemiSpan>
+          ) : null}
+
+          <Button
+            fullWidth
+            mt="18px"
+            size="small"
+            color="primary"
+            variant="contained"
+            onClick={handleAddBundleToCart}
+          >
+            {t("addBundleToCart")}
+          </Button>
+        </SummaryCard>
+      </BundleLayout>
     </FrequentlyBoughtWrapper>
   );
 }

@@ -293,6 +293,11 @@
       "origin": "Made in China"
     },
     "frequentlyBought": "Frequently Bought Together",
+    "bundleHint": "A ready bundle of compatible products at a better price.",
+    "bundleOffer": "Bundle deal",
+    "bundleItemsCount": "{count, plural, one {# item in the bundle} other {# items in the bundle}}",
+    "bundleTotal": "Bundle total",
+    "addBundleToCart": "Add bundle to cart",
     "saveAmount": "Save {amount}",
     "addToList": "Add to List",
     "writeReview": "Write a Review for this product",
