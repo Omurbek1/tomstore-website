@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import Card from "@component/Card";
-import Avatar from "@component/avatar";
 import Rating from "@component/rating";
 import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
@@ -17,7 +16,6 @@ import type {
 } from "@utils/__api__/storefront";
 
 const OTHER_OPTIONS = ["onSale", "inStock", "featured"] as const;
-const COLORS = ["#1C1C1C", "#FF7A7A", "#FFC672", "#84FFB5", "#70F6FF", "#6B7AFF"];
 
 type ProductFilterCardProps = {
   catalogParams?: StorefrontCatalogParams;
@@ -189,15 +187,6 @@ export default function ProductFilterCard({
         />
       ))}
 
-      <Divider my="24px" />
-
-      {/* COLORS FILTER */}
-      <H6 mb="16px">{t("colors")}</H6>
-      <FlexBox mb="1rem">
-        {COLORS.map((item, ind) => (
-          <Avatar key={ind} bg={item} size={25} mr="10px" style={{ cursor: "pointer" }} />
-        ))}
-      </FlexBox>
     </Card>
   );
 }
