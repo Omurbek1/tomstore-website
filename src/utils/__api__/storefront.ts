@@ -89,6 +89,8 @@ type StorefrontCatalogResponse = {
   };
 };
 
+export type StorefrontCatalogFilters = StorefrontCatalogResponse["filters"];
+
 export type StorefrontHomeResponse = {
   hero: StorefrontHeroSlide & {
     slides?: StorefrontHeroSlide[];
@@ -521,6 +523,17 @@ export const getSafeStorefrontHome = async (): Promise<StorefrontHomeResponse> =
 export const getStorefrontCatalog = (
   params: StorefrontCatalogParams = {},
 ) => getServerQueryClient().fetchQuery(storefrontCatalogQueryOptions(params));
+
+export const getSafeStorefrontCatalog = async (
+  params: StorefrontCatalogParams = {},
+): Promise<StorefrontCatalogResponse | null> => {
+  try {
+    return await getStorefrontCatalog(params);
+  } catch (error) {
+    console.error("[storefront] Failed to load catalog", { params, error });
+    return null;
+  }
+};
 
 export const getProductPage = async (
   page = 1,

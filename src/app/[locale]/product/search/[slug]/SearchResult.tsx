@@ -20,7 +20,10 @@ import ProductFilterCard from "@component/products/ProductFilterCard";
 import useWindowSize from "@hook/useWindowSize";
 import Product from "@models/product.model";
 import { useStorefrontProducts } from "@hook/useStorefrontCatalog";
-import type { StorefrontCatalogParams } from "@utils/__api__/storefront";
+import type {
+  StorefrontCatalogFilters,
+  StorefrontCatalogParams,
+} from "@utils/__api__/storefront";
 
 // Maps frontend option values to backend sort parameter values
 const SORT_MAP: Record<string, string> = {
@@ -39,6 +42,7 @@ type Props = {
   query: string;
   searchType?: "text" | "category";
   catalogParams?: StorefrontCatalogParams;
+  initialFilters?: StorefrontCatalogFilters;
 };
 
 export default function SearchResult({
@@ -46,6 +50,7 @@ export default function SearchResult({
   query: rawQuery,
   searchType = "text",
   catalogParams,
+  initialFilters,
 }: Props) {
   const theme = useTheme();
   const width = useWindowSize();
@@ -84,7 +89,10 @@ export default function SearchResult({
     sort: backendSort,
   };
 
-  const { data: liveProducts = products } = useStorefrontProducts(liveCatalogParams, products);
+  const { data: liveProducts = products } = useStorefrontProducts(
+    liveCatalogParams,
+    products,
+  );
 
   const sortOptions = [
     { label: t("sortOptions.relevance"), value: "relevance" },
@@ -193,6 +201,7 @@ export default function SearchResult({
                   selectedBrand={selectedBrand}
                   selectedMinPrice={selectedMinPrice}
                   selectedMaxPrice={selectedMaxPrice}
+                  initialFilters={initialFilters}
                   onCategoryChange={handleCategoryChange}
                   onBrandChange={handleBrandChange}
                   onPriceChange={handlePriceChange}
@@ -212,6 +221,7 @@ export default function SearchResult({
               selectedBrand={selectedBrand}
               selectedMinPrice={selectedMinPrice}
               selectedMaxPrice={selectedMaxPrice}
+              initialFilters={initialFilters}
               onCategoryChange={handleCategoryChange}
               onBrandChange={handleBrandChange}
               onPriceChange={handlePriceChange}

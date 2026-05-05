@@ -11,7 +11,10 @@ import CheckBox from "@component/CheckBox";
 import TextField from "@component/text-field";
 import { H5, H6, Paragraph, SemiSpan } from "@component/Typography";
 import { useStorefrontCatalog } from "@hook/useStorefrontCatalog";
-import type { StorefrontCatalogParams } from "@utils/__api__/storefront";
+import type {
+  StorefrontCatalogFilters,
+  StorefrontCatalogParams,
+} from "@utils/__api__/storefront";
 
 const OTHER_OPTIONS = ["onSale", "inStock", "featured"] as const;
 const COLORS = ["#1C1C1C", "#FF7A7A", "#FFC672", "#84FFB5", "#70F6FF", "#6B7AFF"];
@@ -22,6 +25,7 @@ type ProductFilterCardProps = {
   selectedBrand?: string;
   selectedMinPrice?: number;
   selectedMaxPrice?: number;
+  initialFilters?: StorefrontCatalogFilters;
   onCategoryChange?: (category?: string) => void;
   onBrandChange?: (brand?: string) => void;
   onPriceChange?: (range: { minPrice?: number; maxPrice?: number }) => void;
@@ -33,6 +37,7 @@ export default function ProductFilterCard({
   selectedBrand,
   selectedMinPrice,
   selectedMaxPrice,
+  initialFilters,
   onCategoryChange,
   onBrandChange,
   onPriceChange,
@@ -42,8 +47,9 @@ export default function ProductFilterCard({
     ...catalogParams,
     pageSize: 1,
   });
-  const categories = catalog?.filters.categories || [];
-  const brands = catalog?.filters.brands || [];
+  const filters = catalog?.filters || initialFilters;
+  const categories = filters?.categories || [];
+  const brands = filters?.brands || [];
   const [minPrice, setMinPrice] = useState(selectedMinPrice?.toString() || "");
   const [maxPrice, setMaxPrice] = useState(selectedMaxPrice?.toString() || "");
 
@@ -110,7 +116,7 @@ export default function ProductFilterCard({
       <H6 mb="16px">{t("priceRange")}</H6>
       <FlexBox justifyContent="space-between" alignItems="center">
         <TextField
-          placeholder={catalog?.filters.minPrice ? String(catalog.filters.minPrice) : "0"}
+          placeholder={filters?.minPrice ? String(filters.minPrice) : "0"}
           type="number"
           min={0}
           value={minPrice}
@@ -123,7 +129,7 @@ export default function ProductFilterCard({
         </H5>
 
         <TextField
-          placeholder={catalog?.filters.maxPrice ? String(catalog.filters.maxPrice) : "250"}
+          placeholder={filters?.maxPrice ? String(filters.maxPrice) : "250"}
           type="number"
           min={0}
           value={maxPrice}

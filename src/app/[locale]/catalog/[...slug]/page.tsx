@@ -3,9 +3,12 @@ import Box from "@component/Box";
 import SearchResult from "../../product/search/[slug]/SearchResult";
 import navigations from "@data/navigations";
 import localizeNavigations from "@utils/localizeNavigations";
-import { getSafeProducts, type StorefrontCatalogParams } from "@utils/__api__/storefront";
+import {
+  getSafeStorefrontCatalog,
+  mapStorefrontProduct,
+  type StorefrontCatalogParams,
+} from "@utils/__api__/storefront";
 import { getTranslations } from "next-intl/server";
-import { routing } from "i18n/routing";
 
 type CatalogPageProps = {
   params: Promise<{ locale: string; slug: string[] }>;
@@ -21,17 +24,12 @@ type CatalogPageProps = {
   }>;
 };
 
-const SUPPORTED_LOCALES = routing.locales;
-
 const normalizeCatalogSegment = (segment: string) =>
   decodeURIComponent(segment)
     .replace(/[-_]+/g, " ")
     .trim();
 
 const normalizeCatalogPath = (segments: string[]) => `/catalog/${segments.join("/")}`;
-
-const uniqueStrings = (items: Array<string | undefined>) =>
-  Array.from(new Set(items.filter((item): item is string => Boolean(item))));
 
 const flattenLocalizedCatalogLinks = (
   items: ReturnType<typeof localizeNavigations>,
@@ -66,37 +64,11 @@ const resolveCatalogQuery = async (locale: string, segments: string[]) => {
   const lastSegment = segments.at(-1) || "";
   const segmentQuery = normalizeCatalogSegment(lastSegment);
   const currentLocaleTitle = await getLocalizedCatalogTitle(locale, path);
-  const localizedTitles = await Promise.all(
-    SUPPORTED_LOCALES.map((supportedLocale) => getLocalizedCatalogTitle(supportedLocale, path)),
-  );
 
   return {
     displayQuery: currentLocaleTitle || segmentQuery,
-    candidates: uniqueStrings([currentLocaleTitle, ...localizedTitles, segmentQuery]),
+    candidates: [currentLocaleTitle || segmentQuery],
     categorySlug: decodeURIComponent(lastSegment).trim(),
-  };
-};
-
-const findCatalogProducts = async (
-  candidates: string[],
-  categorySlug: string,
-) => {
-  const requests: StorefrontCatalogParams[] = [
-    { category: categorySlug },
-    ...candidates.map((query) => ({ q: query })),
-  ];
-
-  for (const params of requests) {
-    const products = await getSafeProducts({ ...params, pageSize: 48, sort: "popular" });
-
-    if (products.length > 0) {
-      return { products, catalogParams: params };
-    }
-  }
-
-  return {
-    products: [],
-    catalogParams: candidates[0] ? { q: candidates[0] } : { category: categorySlug },
   };
 };
 
@@ -172,18 +144,19 @@ export default async function CatalogPage({ params, searchParams }: CatalogPageP
         categorySlug: "",
       }
     : await resolveCatalogQuery(locale, slug);
-  const { products, catalogParams } = useDirectCatalog
-    ? {
-        products: await getSafeProducts({
-          ...directCatalogParams,
-          pageSize: 48,
-          sort: directCatalogParams.sort || "popular",
-        }),
-        catalogParams: directCatalogParams,
-      }
+  const catalogParams = useDirectCatalog
+    ? directCatalogParams
     : categorySlug
-      ? await findCatalogProducts(candidates, categorySlug)
-      : { products: [], catalogParams: { q: fallbackQuery } };
+      ? { category: categorySlug }
+      : candidates[0]
+        ? { q: candidates[0] }
+        : { q: fallbackQuery };
+  const catalog = await getSafeStorefrontCatalog({
+    ...catalogParams,
+    pageSize: 48,
+    sort: catalogParams.sort || "popular",
+  });
+  const products = catalog?.items.map(mapStorefrontProduct) || [];
 
   return (
     <AppLayout>
@@ -193,6 +166,7 @@ export default async function CatalogPage({ params, searchParams }: CatalogPageP
           query={displayQuery || fallbackQuery}
           searchType="text"
           catalogParams={catalogParams}
+          initialFilters={catalog?.filters}
         />
       </Box>
     </AppLayout>
