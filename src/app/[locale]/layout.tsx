@@ -8,7 +8,6 @@ import dayjs from "dayjs";
 import isToday from "dayjs/plugin/isToday";
 import relativeTime from "dayjs/plugin/relativeTime";
 import StyledComponentsRegistry from "@lib/registry";
-import CartProvider from "@context/CartContext";
 import { ThemeProvider } from "theme";
 import NProgressBar from "@component/NProgress";
 import { routing } from "i18n/routing";
@@ -73,12 +72,10 @@ export default async function LocaleLayout({
       <NextIntlClientProvider locale={locale} messages={messages}>
         <StyledComponentsRegistry>
           <Provider>
-            <CartProvider>
-              <ThemeProvider>
-                {children}
-                <NProgressBar />
-              </ThemeProvider>
-            </CartProvider>
+            <ThemeProvider>
+              {children}
+              <NProgressBar />
+            </ThemeProvider>
           </Provider>
         </StyledComponentsRegistry>
       </NextIntlClientProvider>

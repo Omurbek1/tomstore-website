@@ -6,7 +6,7 @@ import { Fragment, useCallback, useState } from "react";
 import styled, { useTheme } from "styled-components";
 import { IconEye, IconHeart, IconPlus, IconMinus } from "@tabler/icons-react";
 
-import useCart from "@hook/useCart";
+import { useCartItemById, useChangeCartAmount } from "@hook/useCart";
 
 import Box from "@component/Box";
 import Rating from "@component/rating";
@@ -141,9 +141,9 @@ export default function ProductCard1({
   const t = useTranslations("product");
   const router = useRouter();
   const prefetchProductQuery = usePrefetchStorefrontProduct();
-  const { state, dispatch } = useCart();
+  const changeCartAmount = useChangeCartAmount();
   const [open, setOpen] = useState(false);
-  const cartItem = state.cart.find((item) => item.id === id);
+  const cartItem = useCartItemById(id);
   const productHref = `/${locale}/product/${slug}`;
 
   const toggleDialog = useCallback(() => {
@@ -152,19 +152,16 @@ export default function ProductCard1({
 
   const handleCartAmountChange = useCallback(
     (amount: number) => () => {
-      dispatch({
-        type: "CHANGE_CART_AMOUNT",
-        payload: {
-          id,
-          slug,
-          price,
-          imgUrl,
-          name: title,
-          qty: amount,
-        },
+      changeCartAmount({
+        id,
+        slug,
+        price,
+        imgUrl,
+        name: title,
+        qty: amount,
       });
     },
-    [],
+    [changeCartAmount, id, imgUrl, price, slug, title],
   );
 
   const prefetchProduct = useCallback(() => {

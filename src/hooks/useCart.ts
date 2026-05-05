@@ -1,12 +1,33 @@
-import { use } from "react";
-import { CartContext } from "@context/CartContext";
+import { useCartStore } from "../store/cart.store";
 
-export default function useCart() {
-  const context = use(CartContext);
+export function useCartItems() {
+  return useCartStore((state) => state.cart);
+}
 
-  if (!context) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
+export function useCartCount() {
+  return useCartStore((state) => state.cart.length);
+}
 
-  return context;
+export function useCartTotal() {
+  return useCartStore((state) =>
+    state.cart.reduce((total, item) => total + item.price * item.qty, 0),
+  );
+}
+
+export function useCartItemById(id: string | number) {
+  return useCartStore((state) => state.cart.find((item) => item.id === id));
+}
+
+export function useCartItemBySlug(slug: string) {
+  return useCartStore((state) => state.cart.find((item) => item.slug === slug));
+}
+
+export function useCartItemByIdOrSlug(id: string | number, slug: string) {
+  return useCartStore((state) =>
+    state.cart.find((item) => item.id === id || item.id === slug),
+  );
+}
+
+export function useChangeCartAmount() {
+  return useCartStore((state) => state.changeCartAmount);
 }

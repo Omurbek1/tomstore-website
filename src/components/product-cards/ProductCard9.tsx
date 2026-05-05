@@ -17,7 +17,7 @@ import NavLink from "../nav-link";
 import { Button } from "../buttons";
 import { H5, SemiSpan } from "../Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
-import useCart from "@hook/useCart";
+import { useCartItemById, useChangeCartAmount } from "@hook/useCart";
 import { calculateDiscount } from "@utils/utils";
 import useCurrency from "@hook/useCurrency";
 import { useLocale, useTranslations } from "next-intl";
@@ -131,8 +131,8 @@ export default function ProductCard9({
   const router = useRouter();
   const prefetchProductQuery = usePrefetchStorefrontProduct();
   const [open, setOpen] = useState(false);
-  const { state, dispatch } = useCart();
-  const cartItem = state.cart.find((item) => item.id === id);
+  const changeCartAmount = useChangeCartAmount();
+  const cartItem = useCartItemById(id);
   const productHref = `/${locale}/product/${slug}`;
 
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
@@ -142,10 +142,7 @@ export default function ProductCard9({
   }, [prefetchProductQuery, productHref, router, slug]);
 
   const handleCartAmountChange = (qty: number) => () => {
-    dispatch({
-      type: "CHANGE_CART_AMOUNT",
-      payload: { price, imgUrl, id, qty, slug, name: title }
-    });
+    changeCartAmount({ price, imgUrl, id, qty, slug, name: title });
   };
 
   return (

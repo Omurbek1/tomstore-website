@@ -12,7 +12,7 @@ import LazyImage from "@component/LazyImage";
 import { H3, Paragraph, Span } from "@component/Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
 import { calculateDiscount, currency } from "@utils/utils";
-import useCart from "@hook/useCart";
+import { useCartItemBySlug, useChangeCartAmount } from "@hook/useCart";
 import { useLocale } from "next-intl";
 
 // STYLED COMPONENTS
@@ -114,9 +114,9 @@ export default function ProductCard15({
 }: Props) {
     const locale = useLocale();
   const [open, setOpen] = useState(false);
-  const { state, dispatch } = useCart();
+  const changeCartAmount = useChangeCartAmount();
 
-  const cartItem = state.cart.find((item) => item.slug === slug);
+  const cartItem = useCartItemBySlug(slug);
 
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
 
@@ -130,8 +130,8 @@ export default function ProductCard15({
       qty: (cartItem?.qty || 0) + 1
     };
 
-    dispatch({ type: "CHANGE_CART_AMOUNT", payload });
-  }, [dispatch, id, imgUrl, price, slug, cartItem?.qty, title]);
+    changeCartAmount(payload);
+  }, [changeCartAmount, id, imgUrl, price, slug, cartItem?.qty, title]);
 
   return (
     <StyledCard>

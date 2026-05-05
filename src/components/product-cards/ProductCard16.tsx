@@ -15,7 +15,7 @@ import { Button } from "@component/buttons";
 import LazyImage from "@component/LazyImage";
 import { H3, Paragraph, Span } from "@component/Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
-import useCart from "@hook/useCart";
+import { useCartItemById, useChangeCartAmount } from "@hook/useCart";
 import { calculateDiscount, currency } from "@utils/utils";
 import { useLocale } from "next-intl";
 
@@ -135,18 +135,15 @@ export default function ProductCard16(props: ProductCardProps) {
     const locale = useLocale();
   const { off, id, title, price, imgUrl, rating, hoverEffect, slug, images } = props;
 
-  const { state, dispatch } = useCart();
+  const changeCartAmount = useChangeCartAmount();
   const [openModal, setOpenModal] = useState(false);
 
-  const cartItem = state.cart.find((item) => item.id === id);
+  const cartItem = useCartItemById(id);
 
   const toggleDialog = useCallback(() => setOpenModal((open) => !open), []);
 
   const handleCartAmountChange = (qty: number) => () => {
-    dispatch({
-      type: "CHANGE_CART_AMOUNT",
-      payload: { price, imgUrl, id, qty, slug, name: title }
-    });
+    changeCartAmount({ price, imgUrl, id, qty, slug, name: title });
   };
 
   return (

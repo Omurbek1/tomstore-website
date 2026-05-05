@@ -13,7 +13,7 @@ import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 import { H1, H2, H3, H6, SemiSpan } from "@component/Typography";
-import useCart from "@hook/useCart";
+import { useCartItemByIdOrSlug, useChangeCartAmount } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
 import { Link } from "i18n/navigation";
 
@@ -42,29 +42,26 @@ export default function ProductIntro({
 }: Props) {
   const param = useParams();
   const t = useTranslations("product");
-  const { state, dispatch } = useCart();
+  const changeCartAmount = useChangeCartAmount();
   const formatCurrency = useCurrency();
   const [selectedImage, setSelectedImage] = useState(0);
 
   const routerId = param.slug as string;
-  const cartItem = state.cart.find((item) => item.id === id || item.id === routerId);
+  const cartItem = useCartItemByIdOrSlug(id, routerId);
 
   const handleImageClick = useCallback((ind: number) => () => setSelectedImage(ind), []);
 
   const handleCartAmountChange = useCallback(
     (amount: number) => () => {
-      dispatch({
-        type: "CHANGE_CART_AMOUNT",
-        payload: {
-          id,
-          price,
-          qty: amount,
-          name: title,
-          imgUrl: images[0]
-        }
+      changeCartAmount({
+        id,
+        price,
+        qty: amount,
+        name: title,
+        imgUrl: images[0],
       });
     },
-    [dispatch, id, images, price, title]
+    [changeCartAmount, id, images, price, title]
   );
 
   return (

@@ -17,7 +17,7 @@ import { IconButton } from "@component/buttons";
 import Sidenav from "@component/sidenav/Sidenav";
 import Categories from "@component/categories/Categories";
 import { SearchInputWithCategory } from "@component/search-box";
-import useCart from "@hook/useCart";
+import { useCartCount } from "@hook/useCart";
 import StyledHeader from "./styles";
 import Logo from "./Logo";
 
@@ -26,7 +26,7 @@ type HeaderProps = { isFixed?: boolean; className?: string };
 // =====================================================================
 
 export default function Header({ isFixed, className }: HeaderProps) {
-  const { state } = useCart();
+  const cartCount = useCartCount();
   const [open, setOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
 
@@ -41,7 +41,7 @@ export default function Header({ isFixed, className }: HeaderProps) {
         <IconShoppingCart size={16} stroke={1.5} />
       </IconButton>
 
-      {state.cart.length > 0 && (
+      {cartCount > 0 && (
         <FlexBox
           top={-5}
           right={-5}
@@ -53,7 +53,7 @@ export default function Header({ isFixed, className }: HeaderProps) {
           position="absolute"
           justifyContent="center">
           <Tiny color="white" fontWeight="600" lineHeight={1}>
-            {state.cart.length}
+            {cartCount}
           </Tiny>
         </FlexBox>
       )}

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { space, SpaceProps } from "styled-system";
 import { IconMinus, IconPlus, IconX } from "@tabler/icons-react";
 
-import useCart from "@hook/useCart";
+import { useChangeCartAmount } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
 import Box from "@component/Box";
 import FlexBox from "@component/FlexBox";
@@ -67,15 +67,12 @@ export default function ProductCard7({
   imgUrl,
   ...others
 }: ProductCard7Props) {
-  const { dispatch } = useCart();
+  const changeCartAmount = useChangeCartAmount();
   const locale = useLocale();
   const formatCurrency = useCurrency();
 
   const handleCartAmountChange = (amount: number) => () => {
-    dispatch({
-      type: "CHANGE_CART_AMOUNT",
-      payload: { qty: amount, name, price, imgUrl, id }
-    });
+    changeCartAmount({ qty: amount, name, price, imgUrl, id });
   };
 
   return (

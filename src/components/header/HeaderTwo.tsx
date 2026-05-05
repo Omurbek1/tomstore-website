@@ -14,7 +14,7 @@ import { Tiny } from "@component/Typography";
 import { IconButton } from "@component/buttons";
 import Sidenav from "@component/sidenav/Sidenav";
 import { SearchInput } from "@component/search-box";
-import useCart from "@hook/useCart";
+import { useCartCount } from "@hook/useCart";
 import StyledHeader from "./styles";
 import Logo from "./Logo";
 
@@ -23,7 +23,7 @@ type HeaderProps = { className?: string };
 // ========================================================================
 
 export default function HeaderTwo({ className }: HeaderProps) {
-  const { state } = useCart();
+  const cartCount = useCartCount();
   const [open, setOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
 
@@ -38,7 +38,7 @@ export default function HeaderTwo({ className }: HeaderProps) {
         <IconShoppingCart size={16} stroke={1.5} />
       </IconButton>
 
-      {state.cart.length > 0 && (
+      {cartCount > 0 && (
         <FlexBox
           px="5px"
           py="2px"
@@ -49,7 +49,7 @@ export default function HeaderTwo({ className }: HeaderProps) {
           borderRadius="300px"
           justifyContent="center">
           <Tiny color="white" fontWeight="600">
-            {state.cart.length}
+            {cartCount}
           </Tiny>
         </FlexBox>
       )}

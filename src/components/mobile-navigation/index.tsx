@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import Chip from "@component/Chip";
 import Icon from "@component/icon/Icon";
 import NavLink from "@component/nav-link";
-import useCart from "@hook/useCart";
+import { useCartCount } from "@hook/useCart";
 import useWindowSize from "@hook/useWindowSize";
 import { layoutConstant } from "@utils/constants";
 
@@ -45,7 +45,7 @@ const Wrapper = styled.div`
 `;
 
 export default function MobileNavigationBar() {
-  const { state } = useCart();
+  const cartCount = useCartCount();
   const width = useWindowSize();
   const t = useTranslations("mobileNav");
 
@@ -60,7 +60,7 @@ export default function MobileNavigationBar() {
 
             {t(item.translationKey)}
 
-            {item.translationKey === "cart" && !!state.cart.length && (
+            {item.translationKey === "cart" && cartCount > 0 && (
               <Chip
                 top="4px"
                 px="0.25rem"
@@ -69,7 +69,7 @@ export default function MobileNavigationBar() {
                 position="absolute"
                 color="primary.text"
                 left="calc(50% + 8px)">
-                {state.cart.length}
+                {cartCount}
               </Chip>
             )}
           </NavLink>

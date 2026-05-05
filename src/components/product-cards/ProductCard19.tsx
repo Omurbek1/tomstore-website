@@ -13,7 +13,7 @@ import NextImage from "@component/NextImage";
 import { IconButton } from "@component/buttons";
 import { H4, Paragraph, Small } from "@component/Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
-import useCart from "@hook/useCart";
+import { useCartItemBySlug, useChangeCartAmount } from "@hook/useCart";
 import { currency } from "@utils/utils";
 import { useLocale } from "next-intl";
 
@@ -78,11 +78,11 @@ export default function ProductCard19({
 }: ProductCard19Props) {
     const locale = useLocale();
   const theme = useTheme();
-  const { state, dispatch } = useCart();
+  const changeCartAmount = useChangeCartAmount();
   const [openDialog, setOpenDialog] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const cartItem = state.cart.find((item) => item.slug === slug);
+  const cartItem = useCartItemBySlug(slug);
 
   const handleFavorite = useCallback(() => setIsFavorite((fav) => !fav), []);
 
@@ -98,8 +98,8 @@ export default function ProductCard19({
       qty: (cartItem?.qty || 0) + 1
     };
 
-    dispatch({ type: "CHANGE_CART_AMOUNT", payload });
-  }, []);
+    changeCartAmount(payload);
+  }, [changeCartAmount, id, img, name, price, slug, cartItem?.qty]);
 
   return (
     <Fragment>

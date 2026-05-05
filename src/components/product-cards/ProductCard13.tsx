@@ -13,7 +13,7 @@ import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 import { H3, Paragraph, Span } from "@component/Typography";
 import { calculateDiscount, currency } from "@utils/utils";
-import useCart from "@hook/useCart";
+import { useCartItemBySlug, useChangeCartAmount } from "@hook/useCart";
 import { useLocale } from "next-intl";
 
 // STYLED COMPONENTS
@@ -134,17 +134,14 @@ export default function ProductCard13({
   productColors
 }: Props) {
     const locale = useLocale();
-  const { state, dispatch } = useCart();
-  const cartItem = state.cart.find((item) => item.slug === slug);
+  const changeCartAmount = useChangeCartAmount();
+  const cartItem = useCartItemBySlug(slug);
 
   const handleCartAmountChange = useCallback(
     (qty: number) => () => {
-      dispatch({
-        type: "CHANGE_CART_AMOUNT",
-        payload: { id, qty, slug, price, imgUrl, name: title }
-      });
+      changeCartAmount({ id, qty, slug, price, imgUrl, name: title });
     },
-    [dispatch, id, imgUrl, price, slug, title]
+    [changeCartAmount, id, imgUrl, price, slug, title]
   );
 
   return (

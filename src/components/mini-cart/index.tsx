@@ -8,7 +8,7 @@ import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 import Typography, { H5, Paragraph, Tiny } from "@component/Typography";
-import useCart from "@hook/useCart";
+import { useCartItems, useCartTotal, useChangeCartAmount } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
 // STYLED COMPONENT
 import { StyledMiniCart } from "./styles";
@@ -18,18 +18,13 @@ type MiniCartProps = { toggleSidenav?: () => void };
 // ==============================================================
 
 export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
-  const { state, dispatch } = useCart();
+  const cart = useCartItems();
+  const cartTotal = useCartTotal();
+  const changeCartAmount = useChangeCartAmount();
   const formatCurrency = useCurrency();
 
   const handleCartAmountChange = (amount: number, product: any) => () => {
-    dispatch({
-      type: "CHANGE_CART_AMOUNT",
-      payload: { ...product, qty: amount }
-    });
-  };
-
-  const getTotalPrice = () => {
-    return state.cart.reduce((accumulator, item) => accumulator + item.price * item.qty, 0) || 0;
+    changeCartAmount({ ...product, qty: amount });
   };
 
   return (
@@ -38,13 +33,13 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
         <FlexBox alignItems="center" m="0px 20px" height="74px">
           <Icon size="1.5rem">bag</Icon>
           <Typography fontWeight={600} fontSize="16px" ml="0.5rem">
-            {state.cart.length} {state.cart.length === 1 ? "item" : "items"}
+            {cart.length} {cart.length === 1 ? "item" : "items"}
           </Typography>
         </FlexBox>
 
         <Divider />
 
-        {state.cart.length === 0 && (
+        {cart.length === 0 && (
           <FlexBox
             alignItems="center"
             flexDirection="column"
@@ -57,7 +52,7 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
           </FlexBox>
         )}
 
-        {state.cart.map((item) => (
+        {cart.map((item) => (
           <Fragment key={item.id}>
             <div className="cart-item">
               <FlexBox alignItems="center" flexDirection="column">
@@ -127,11 +122,11 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
         ))}
       </div>
 
-      {state.cart.length > 0 && (
+      {cart.length > 0 && (
         <div className="actions">
           <Link href="/checkout">
             <Button fullWidth color="primary" variant="contained" onClick={toggleSidenav}>
-              <Typography fontWeight={600}>Checkout Now ({formatCurrency(getTotalPrice())})</Typography>
+              <Typography fontWeight={600}>Checkout Now ({formatCurrency(cartTotal)})</Typography>
             </Button>
           </Link>
 

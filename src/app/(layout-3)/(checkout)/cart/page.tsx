@@ -15,22 +15,19 @@ import TextField from "@component/text-field";
 import Typography, { Paragraph } from "@component/Typography";
 import { ProductCard7 } from "@component/product-cards";
 // CUSTOM HOOK
-import useCart from "@hook/useCart";
+import { useCartItems, useCartTotal } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
 // CUSTOM DATA
 import countryList from "@data/countryList";
 import { Link } from "i18n/navigation";
 
 export default function Cart() {
-  const { state } = useCart();
+  const cart = useCartItems();
+  const cartTotal = useCartTotal();
   const t = useTranslations("checkout.cart");
   const formatCurrency = useCurrency();
 
-  const getTotalPrice = () => {
-    return state.cart.reduce((accumulator, item) => accumulator + item.price * item.qty, 0) || 0;
-  };
-
-  if (state.cart.length === 0) {
+  if (cart.length === 0) {
     return (
       <FlexBox
         alignItems="center"
@@ -59,7 +56,7 @@ export default function Cart() {
     <Fragment>
       <Grid container spacing={6}>
         <Grid item lg={8} md={8} xs={12}>
-          {state.cart.map((item) => (
+          {cart.map((item) => (
             <ProductCard7
               mb="1.5rem"
               id={item.id}
@@ -79,7 +76,7 @@ export default function Cart() {
               <Typography color="gray.600">{t("total")}</Typography>
 
               <Typography fontSize="18px" fontWeight="600" lineHeight="1">
-                {formatCurrency(getTotalPrice())}
+                {formatCurrency(cartTotal)}
               </Typography>
             </FlexBox>
 

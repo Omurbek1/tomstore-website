@@ -5,7 +5,7 @@ import { useCallback, useState } from "react";
 import styled from "styled-components";
 import { IconEye, IconHeart, IconMinus, IconPlus, IconShoppingCart } from "@tabler/icons-react";
 
-import useCart from "@hook/useCart";
+import { useCartItemById, useChangeCartAmount } from "@hook/useCart";
 import Box from "@component/Box";
 import Chip from "@component/Chip";
 import Rating from "@component/rating";
@@ -125,27 +125,24 @@ export default function ProductCard12({
 }: ProductCard12Props) {
     const locale = useLocale();
   const [open, setOpen] = useState(false);
-  const { state, dispatch } = useCart();
+  const changeCartAmount = useChangeCartAmount();
 
-  const cartItem = state.cart.find((item) => item.id === id);
+  const cartItem = useCartItemById(id);
 
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
 
   const handleCartAmountChange = useCallback(
     (qty: number) => () => {
-      dispatch({
-        type: "CHANGE_CART_AMOUNT",
-        payload: {
-          id,
-          qty,
-          slug,
-          price,
-          imgUrl,
-          name: title
-        }
+      changeCartAmount({
+        id,
+        qty,
+        slug,
+        price,
+        imgUrl,
+        name: title,
       });
     },
-    [dispatch, id, imgUrl, price, slug, title]
+    [changeCartAmount, id, imgUrl, price, slug, title]
   );
 
   return (

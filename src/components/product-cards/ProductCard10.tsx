@@ -14,7 +14,7 @@ import { deviceSize } from "@utils/constants";
 import { H3, SemiSpan } from "@component/Typography";
 import { Button, IconButton } from "@component/buttons";
 import ProductQuickView from "@component/products/ProductQuickView";
-import useCart from "@hook/useCart";
+import { useCartItemById, useChangeCartAmount } from "@hook/useCart";
 import { calculateDiscount, currency } from "@utils/utils";
 import { useLocale } from "next-intl";
 
@@ -129,7 +129,7 @@ export default function ProductCard10({
   images
 }: ProductCard10Props) {
     const locale = useLocale();
-  const { state, dispatch } = useCart();
+  const changeCartAmount = useChangeCartAmount();
   const [open, setOpen] = useState(false);
   const [discountPrice, setDiscountPrice] = useState<string>("");
   const [discountAmount, setDiscountAmount] = useState<string>("");
@@ -139,18 +139,15 @@ export default function ProductCard10({
     setDiscountAmount(() => currency(off));
   }, []);
 
-  const cartItem = state.cart.find((item) => item.id === id);
+  const cartItem = useCartItemById(id);
 
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
 
   const handleCartAmountChange = useCallback(
     (qty: number) => () => {
-      dispatch({
-        type: "CHANGE_CART_AMOUNT",
-        payload: { price, imgUrl, id, qty, slug, name: title }
-      });
+      changeCartAmount({ price, imgUrl, id, qty, slug, name: title });
     },
-    [dispatch, id, imgUrl, price, slug, title]
+    [changeCartAmount, id, imgUrl, price, slug, title]
   );
 
   return (
