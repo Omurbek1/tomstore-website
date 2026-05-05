@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   storefrontCatalogQueryOptions,
   storefrontCategoriesQueryOptions,
@@ -15,10 +15,10 @@ import Product from "@models/product.model";
 
 export const useStorefrontHome = () => useQuery(storefrontHomeQueryOptions());
 
-export const useStorefrontCategories = (enabled = true) =>
+export const useStorefrontCategories = () =>
   useQuery({
     ...storefrontCategoriesQueryOptions(),
-    enabled,
+    placeholderData: keepPreviousData,
   });
 
 export const useStorefrontCatalog = (params: StorefrontCatalogParams = {}) =>

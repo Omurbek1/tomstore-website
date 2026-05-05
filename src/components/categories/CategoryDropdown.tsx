@@ -29,27 +29,17 @@ const CATEGORY_ICONS = [
 ];
 
 const toCategoryHref = (slug: string) =>
-  `/product/search/${encodeURIComponent(slug)}?type=category`;
+  `/catalog/${encodeURIComponent(slug)}`;
 
 const getCategoryIcon = (category: Category, index: number) =>
   category.icon || CATEGORY_ICONS[index % CATEGORY_ICONS.length];
 
 export default function CategoryDropdown({ open, position = "absolute" }: CategoryDropdownProps) {
   const t = useTranslations();
-  const { data: categories = [], isError, isLoading } = useStorefrontCategories(open);
+  const { data: categories = [], isError } = useStorefrontCategories();
 
   const fallbackNavigations = useMemo(() => localizeNavigations(navigations, t), [t]);
-  const shouldUseFallback = isError || (!isLoading && categories.length === 0);
-
-  if (open && isLoading && !categories.length) {
-    return (
-      <StyledCategoryDropdown open={open} position={position}>
-        <CategoryMenuItem href="#" icon="category" title="Loading..." caret={false}>
-          {null}
-        </CategoryMenuItem>
-      </StyledCategoryDropdown>
-    );
-  }
+  const shouldUseFallback = isError || categories.length === 0;
 
   return (
     <StyledCategoryDropdown open={open} position={position}>

@@ -150,6 +150,7 @@ const PLACEHOLDER_IMAGE = "/assets/images/products/iphone-xi.png";
 const DEFAULT_BACKEND_URL = "http://127.0.0.1:3000";
 const REVALIDATE_SECONDS = 60;
 const STALE_TIME_MS = REVALIDATE_SECONDS * 1000;
+const CATEGORY_STALE_TIME_MS = 10 * 60 * 1000;
 
 const trimTrailingSlashes = (value?: string | null) =>
   String(value || "").replace(/\/+$/, "");
@@ -378,7 +379,8 @@ export const storefrontProductPageQueryOptions = (
 export const storefrontCategoriesQueryOptions = () =>
   queryOptions({
     queryKey: storefrontQueryKeys.categories(),
-    staleTime: STALE_TIME_MS,
+    staleTime: CATEGORY_STALE_TIME_MS,
+    gcTime: 30 * 60 * 1000,
     queryFn: () =>
       storefrontFetch<StorefrontCategory[]>("/storefront/categories").then(
         (categories) => categories.map(mapStorefrontCategory),
