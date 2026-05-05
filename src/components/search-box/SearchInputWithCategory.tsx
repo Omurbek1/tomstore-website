@@ -40,9 +40,12 @@ export default function SearchInputWithCategory() {
   const router = useRouter();
   const allT = useTranslations();
   const t = useTranslations("search");
+
   const [resultList, setResultList] = useState<SearchSuggestion[]>([]);
   const [query, setQuery] = useState("");
   const [categoryPath, setCategoryPath] = useState<string[]>(["all"]);
+  // Human-readable label of the selected category (e.g. "Ноутбуки"), used as text query
+  const [categoryLabel, setCategoryLabel] = useState("");
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const categoryOptions = useMemo<CatalogOption[]>(() => {
@@ -67,71 +70,60 @@ export default function SearchInputWithCategory() {
     ];
   }, [allT, t]);
 
-  const selectedCategory = categoryPath[categoryPath.length - 1] || "all";
-
-  const goToTextSearch = useCallback(
+  // Navigate to search: always text-based so backend can match by name/category/characteristics
+  const goToSearch = useCallback(
     (text: string) => {
-      const searchValue = text.trim();
-      if (!searchValue) return;
+      const q = text.trim();
+      if (!q || q === t("categories.all")) return;
       setResultList([]);
-      router.push(`/product/search/${encodeURIComponent(searchValue)}?type=text` as any);
+      router.push(`/product/search/${encodeURIComponent(q)}?type=text` as any);
     },
-    [router],
+    [router, t],
   );
 
-  const goToCategorySearch = useCallback(
-    (category: string) => {
-      const searchValue = category.trim();
-      if (!searchValue || searchValue === "all") return;
+  const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target?.value ?? "";
+    setQuery(value);
+
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+
+    if (value.trim().length < 2) {
       setResultList([]);
-      router.push(`/product/search/${encodeURIComponent(searchValue)}?type=category` as any);
-    },
-    [router],
-  );
+      return;
+    }
 
-  const handleSearch = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target?.value || "";
-      setQuery(value);
-
-      if (debounceTimer.current) clearTimeout(debounceTimer.current);
-
-      if (!value.trim() || value.trim().length < 2) {
-        setResultList([]);
-        return;
-      }
-
-      debounceTimer.current = setTimeout(async () => {
-        const suggestions = await getSearchSuggestions(value.trim());
-        setResultList(suggestions);
-      }, 300);
-    },
-    [],
-  );
+    debounceTimer.current = setTimeout(async () => {
+      const suggestions = await getSearchSuggestions(value.trim());
+      setResultList(suggestions);
+    }, 300);
+  }, []);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLInputElement>) => {
       if (event.key !== "Enter") return;
-      if (query.trim()) {
-        goToTextSearch(query);
-      } else if (selectedCategory && selectedCategory !== "all") {
-        goToCategorySearch(selectedCategory);
-      }
+      // Text query takes priority; fall back to selected category label
+      goToSearch(query || categoryLabel);
     },
-    [goToTextSearch, goToCategorySearch, query, selectedCategory],
+    [goToSearch, query, categoryLabel],
   );
 
   const handleCategoryChange = useCallback(
-    (value: (string | number)[]) => {
-      const nextValue = value.map(String);
-      setCategoryPath(nextValue.length ? nextValue : ["all"]);
+    (value: (string | number)[], selectedOptions?: CatalogOption[]) => {
+      const nextPath = value.map(String);
+      setCategoryPath(nextPath.length ? nextPath : ["all"]);
 
-      const nextCategory = nextValue[nextValue.length - 1];
-      if (!query.trim() && nextCategory && nextCategory !== "all") {
-        goToCategorySearch(nextCategory);
+      const label = selectedOptions?.[selectedOptions.length - 1]?.label ?? "";
+      const nextValue = nextPath[nextPath.length - 1] ?? "all";
+
+      // Save label for potential Enter-key navigation
+      setCategoryLabel(nextValue !== "all" ? label : "");
+
+      // Navigate immediately if no text is typed
+      if (!query.trim() && nextValue !== "all") {
+        goToSearch(label || nextValue);
       }
     },
-    [query, goToCategorySearch],
+    [query, goToSearch],
   );
 
   const handleDocumentClick = useCallback(() => setResultList([]), []);
@@ -142,9 +134,7 @@ export default function SearchInputWithCategory() {
   }, [handleDocumentClick]);
 
   useEffect(() => {
-    return () => {
-      if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    };
+    return () => { if (debounceTimer.current) clearTimeout(debounceTimer.current); };
   }, []);
 
   return (
@@ -178,14 +168,11 @@ export default function SearchInputWithCategory() {
             showSearch={{ filter: filterCatalogOptions }}
             suffixIcon={<IconChevronDown size={18} stroke={1.5} />}
             displayRender={(labels) => labels[labels.length - 1]}
-            classNames={{
-              popup: { root: "tomstore-category-cascader-popup" },
-            }}
+            classNames={{ popup: { root: "tomstore-category-cascader-popup" } }}
           />
         </div>
       </StyledSearchBox>
 
-      {/* SEARCH SUGGESTIONS */}
       <AnimatePresence>
         {resultList.length > 0 && (
           <motion.div
@@ -203,15 +190,11 @@ export default function SearchInputWithCategory() {
                       <Span fontSize="14px" fontWeight={500}>
                         {item.name}
                       </Span>
-                      {item.matchedAttribute ? (
+                      {(item.matchedAttribute || item.category) && (
                         <Span fontSize="12px" color="text.muted" mt="1px">
-                          {item.matchedAttribute}
+                          {item.matchedAttribute ?? item.category}
                         </Span>
-                      ) : item.category ? (
-                        <Span fontSize="12px" color="text.muted" mt="1px">
-                          {item.category}
-                        </Span>
-                      ) : null}
+                      )}
                     </FlexBox>
                   </MenuItem>
                 </Link>
@@ -224,9 +207,8 @@ export default function SearchInputWithCategory() {
   );
 }
 
-const normalizeCatalogValue = (href: string) => href.replace(/^\/catalog\/?/, "") || "all";
+const normalizeCatalogValue = (href: string) =>
+  href.replace(/^\/catalog\/?/, "") || "all";
 
-const filterCatalogOptions = (inputValue: string, path: CatalogOption[]): boolean => {
-  const normalizedInput = inputValue.toLowerCase();
-  return path.some((option) => String(option.label).toLowerCase().includes(normalizedInput));
-};
+const filterCatalogOptions = (inputValue: string, path: CatalogOption[]): boolean =>
+  path.some((opt) => opt.label.toLowerCase().includes(inputValue.toLowerCase()));

@@ -8,23 +8,22 @@ interface Props {
 }
 
 export default async function ProductSearchResult({ params, searchParams }: Props) {
-  const { slug } = await params;
-  const { type } = await searchParams;
-  const decoded = decodeURIComponent(slug);
+  const [{ slug }, { type }] = await Promise.all([params, searchParams]);
+  const query = decodeURIComponent(slug);
 
-  const queryParam = type === "category"
-    ? { category: decoded }
-    : { q: decoded };
+  // Both text and category navigation now arrive as text queries.
+  // "category" type is kept for potential future direct category URLs.
+  const catalogParam = type === "category" ? { category: query } : { q: query };
 
-  const products = await getProducts({
-    ...queryParam,
-    pageSize: 48,
-    sort: "popular",
-  });
+  const products = await getProducts({ ...catalogParam, pageSize: 48, sort: "popular" });
 
   return (
     <Box pt="20px">
-      <SearchResult products={products} query={slug} searchType={type === "category" ? "category" : "text"} />
+      <SearchResult
+        products={products}
+        query={slug}
+        searchType={type === "category" ? "category" : "text"}
+      />
     </Box>
   );
 }
