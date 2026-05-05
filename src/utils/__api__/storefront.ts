@@ -162,8 +162,19 @@ const getBackendUrl = () =>
       DEFAULT_BACKEND_URL,
   );
 
-const buildStorefrontUrl = (path: string) =>
-  `${getBackendUrl()}${path.startsWith("/") ? path : `/${path}`}`;
+const buildStorefrontUrl = (path: string) => {
+  const backendUrl = getBackendUrl();
+  if (
+    process.env.NODE_ENV === "production" &&
+    backendUrl === DEFAULT_BACKEND_URL
+  ) {
+    console.warn(
+      "[storefront] BACKEND_URL is not configured; using localhost in production",
+    );
+  }
+
+  return `${backendUrl}${path.startsWith("/") ? path : `/${path}`}`;
+};
 
 export const resolveStorefrontMediaUrl = (value?: string | null) => {
   const url = String(value || "").trim();
@@ -526,6 +537,20 @@ export const getProducts = async (
   return getServerQueryClient().fetchQuery(
     storefrontProductsQueryOptions(params),
   );
+};
+
+export const getSafeProducts = async (
+  params: StorefrontCatalogParams = {},
+): Promise<Product[]> => {
+  try {
+    return await getProducts(params);
+  } catch (error) {
+    console.error("[storefront] Failed to load catalog products", {
+      params,
+      error,
+    });
+    return [];
+  }
 };
 
 export const getCategories = async () => {

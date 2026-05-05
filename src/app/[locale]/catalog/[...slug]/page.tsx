@@ -3,7 +3,7 @@ import Box from "@component/Box";
 import SearchResult from "../../product/search/[slug]/SearchResult";
 import navigations from "@data/navigations";
 import localizeNavigations from "@utils/localizeNavigations";
-import { getProducts, type StorefrontCatalogParams } from "@utils/__api__/storefront";
+import { getSafeProducts, type StorefrontCatalogParams } from "@utils/__api__/storefront";
 import { getTranslations } from "next-intl/server";
 import { routing } from "i18n/routing";
 
@@ -87,7 +87,7 @@ const findCatalogProducts = async (
   ];
 
   for (const params of requests) {
-    const products = await getProducts({ ...params, pageSize: 48, sort: "popular" });
+    const products = await getSafeProducts({ ...params, pageSize: 48, sort: "popular" });
 
     if (products.length > 0) {
       return { products, catalogParams: params };
@@ -174,7 +174,7 @@ export default async function CatalogPage({ params, searchParams }: CatalogPageP
     : await resolveCatalogQuery(locale, slug);
   const { products, catalogParams } = useDirectCatalog
     ? {
-        products: await getProducts({
+        products: await getSafeProducts({
           ...directCatalogParams,
           pageSize: 48,
           sort: directCatalogParams.sort || "popular",
