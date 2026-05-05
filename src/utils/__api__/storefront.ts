@@ -56,6 +56,17 @@ export type StorefrontBrand = {
   totalProducts: number;
 };
 
+export type StorefrontHeroSlide = {
+  eyebrow?: string;
+  title: string;
+  subtitle: string;
+  primaryCtaLabel: string;
+  primaryCtaHref: string;
+  secondaryCtaLabel: string;
+  secondaryCtaHref: string;
+  backgroundImageUrl?: string;
+};
+
 type StorefrontCatalogResponse = {
   items: StorefrontProductCard[];
   total: number;
@@ -79,6 +90,9 @@ type StorefrontCatalogResponse = {
 };
 
 type StorefrontHomeResponse = {
+  hero: StorefrontHeroSlide & {
+    slides?: StorefrontHeroSlide[];
+  };
   categories: StorefrontCategory[];
   popularProducts: StorefrontProductCard[];
   recommendedProducts: StorefrontProductCard[];
@@ -122,7 +136,7 @@ const getBackendUrl = () =>
 const buildStorefrontUrl = (path: string) =>
   `${getBackendUrl()}${path.startsWith("/") ? path : `/${path}`}`;
 
-const buildImageUrl = (value?: string | null) => {
+export const buildStorefrontImageUrl = (value?: string | null) => {
   const url = String(value || "").trim();
   if (!url) return PLACEHOLDER_IMAGE;
   if (
@@ -193,7 +207,7 @@ export const mapStorefrontProduct = (
     product.mainImage,
     ...(Array.isArray(product.gallery) ? product.gallery : []),
   ]
-    .map(buildImageUrl)
+    .map(buildStorefrontImageUrl)
     .filter(Boolean);
   const images = Array.from(new Set(gallery));
 
@@ -235,7 +249,7 @@ export const mapStorefrontCategory = (
   id: category.slug || category.name,
   name: category.name,
   slug: category.slug || category.name,
-  image: buildImageUrl(category.image),
+  image: buildStorefrontImageUrl(category.image),
   parent: [],
   description: `${category.totalProducts} товаров`,
 });

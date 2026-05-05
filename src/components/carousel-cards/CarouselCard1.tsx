@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Link from "next/link";
 // GLOBAL CUSTOM COMPONENTS
 import { Button } from "@component/buttons";
 import Typography from "@component/Typography";
@@ -58,12 +59,19 @@ const StyledCarouselCard1 = styled.div`
 interface Props {
   title: string | undefined;
   image: string | undefined;
+  buttonLink?: string;
   buttonText: string | string[] | JSX.Element | undefined;
   description: string | string[] | JSX.Element | undefined;
 }
 // ===============================================
 
-export default function CarouselCard1({ title, image, buttonText, description }: Props) {
+export default function CarouselCard1({
+  title,
+  image,
+  buttonLink,
+  buttonText,
+  description,
+}: Props) {
   return (
     <StyledCarouselCard1>
       <div className="content">
@@ -72,14 +80,24 @@ export default function CarouselCard1({ title, image, buttonText, description }:
           {description}
         </Typography>
 
-        <Button className="button-link" variant="contained" color="primary" p="1rem 1.5rem">
-          {buttonText}
-        </Button>
+        {buttonLink ? (
+          <Link href={buttonLink}>
+            <Button className="button-link" variant="contained" color="primary" p="1rem 1.5rem">
+              {buttonText}
+            </Button>
+          </Link>
+        ) : (
+          <Button className="button-link" variant="contained" color="primary" p="1rem 1.5rem">
+            {buttonText}
+          </Button>
+        )}
       </div>
 
-      <div className="image-holder">
-        <img src={image} alt="apple-watch-1" />
-      </div>
+      {image ? (
+        <div className="image-holder">
+          <img src={image} alt={title || "banner"} />
+        </div>
+      ) : null}
     </StyledCarouselCard1>
   );
 }

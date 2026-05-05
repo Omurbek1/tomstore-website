@@ -8,6 +8,7 @@ import {
   getBrands as getStorefrontBrands,
   getCategories as getStorefrontCategories,
   getStorefrontHome,
+  buildStorefrontImageUrl,
   mapStorefrontCategory,
   mapStorefrontProduct,
 } from "./storefront";
@@ -107,17 +108,19 @@ const getServiceList = async (): Promise<Service[]> => {
   return [];
 };
 
-const getMainCarousel = async (): Promise<[MainCarouselItem]> => {
-  return [
-    {
-      id: 1,
-      title: "TOMSTORE",
-      imgUrl: "/assets/images/products/iphone-xi.png",
-      buttonText: "Смотреть каталог",
-      buttonLink: "/sale-page-1",
-      description: "Актуальные товары из CRM",
-    } as MainCarouselItem,
-  ];
+const getMainCarousel = async (): Promise<MainCarouselItem[]> => {
+  const home = await getStorefrontHome();
+  const slides = home.hero.slides?.length ? home.hero.slides : [home.hero];
+
+  return slides.map((slide) => ({
+    title: slide.title,
+    imgUrl: slide.backgroundImageUrl
+      ? buildStorefrontImageUrl(slide.backgroundImageUrl)
+      : undefined,
+    buttonText: slide.primaryCtaLabel,
+    buttonLink: slide.primaryCtaHref,
+    description: slide.subtitle,
+  }));
 };
 
 const getFlashDeals = async (): Promise<Product[]> => {

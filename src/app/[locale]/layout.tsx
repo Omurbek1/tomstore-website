@@ -12,10 +12,6 @@ import { ThemeProvider } from "theme";
 import NProgressBar from "@component/NProgress";
 import { routing } from "i18n/routing";
 import { Provider } from "@lib/Provider";
-// @ts-ignore
-import "slick-carousel/slick/slick.css";
-// @ts-ignore
-import "slick-carousel/slick/slick-theme.css";
 
 const publicSans = Public_Sans({
   subsets: ["latin"],

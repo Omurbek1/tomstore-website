@@ -10,8 +10,11 @@ export const COMMON_DOT_STYLES = {
 export const RootStyle = styled.div.withConfig({
   shouldForwardProp: (prop: string) => prop !== "space"
 })<{ space: number }>(({ space }) => ({
+  overflow: "hidden",
   ".slick-list": { marginInline: -space },
+  ".slick-track": { display: "flex" },
   ".slick-slide": { paddingInline: space },
+  ".slick-slide > div": { height: "100%" },
   ":hover .slick-arrow": {
     opacity: 1,
     borderRadius: 8,
