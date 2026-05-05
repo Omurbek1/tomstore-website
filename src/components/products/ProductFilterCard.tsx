@@ -49,7 +49,7 @@ export default function ProductFilterCard({
   });
   const filters = catalog?.filters || initialFilters;
   const categories = filters?.categories || [];
-  const brands = filters?.brands || [];
+  const brands = dedupeBrands(filters?.brands || []);
   const [minPrice, setMinPrice] = useState(selectedMinPrice?.toString() || "");
   const [maxPrice, setMaxPrice] = useState(selectedMaxPrice?.toString() || "");
 
@@ -206,4 +206,55 @@ function toPriceFilter(value: string) {
   const price = Number(value);
   if (!value.trim() || !Number.isFinite(price) || price < 0) return undefined;
   return price;
+}
+
+function dedupeBrands<T extends { name: string; slug: string; totalProducts: number }>(
+  brands: T[],
+) {
+  const grouped = new Map<string, T>();
+
+  for (const brand of brands) {
+    const key = normalizeBrandKey(brand.slug || brand.name);
+    const current = grouped.get(key);
+
+    if (!current) {
+      grouped.set(key, brand);
+      continue;
+    }
+
+    grouped.set(key, {
+      ...current,
+      name: pickBrandDisplayName(current.name, brand.name),
+      totalProducts: current.totalProducts + brand.totalProducts,
+    });
+  }
+
+  return Array.from(grouped.values()).sort(
+    (left, right) =>
+      right.totalProducts - left.totalProducts ||
+      left.name.localeCompare(right.name, "ru"),
+  );
+}
+
+function normalizeBrandKey(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function pickBrandDisplayName(current: string, candidate: string) {
+  const currentScore = getBrandDisplayScore(current);
+  const candidateScore = getBrandDisplayScore(candidate);
+  if (candidateScore !== currentScore) {
+    return candidateScore > currentScore ? candidate : current;
+  }
+  return candidate.length < current.length ? candidate : current;
+}
+
+function getBrandDisplayScore(value: string) {
+  const letters = value.replace(/[^A-Za-zА-Яа-яЁё]/g, "");
+  if (!letters) return 0;
+  const upper = letters.replace(/[^A-ZА-ЯЁ]/g, "").length;
+  const lower = letters.replace(/[^a-zа-яё]/g, "").length;
+  if (upper > 1 && lower === 0) return 3;
+  if (upper === 1 && lower > 0) return 2;
+  return 1;
 }
