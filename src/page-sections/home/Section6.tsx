@@ -14,6 +14,7 @@ import CategorySectionHeader from "@component/CategorySectionHeader";
 import StyledProductCategory from "./styled";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
+import { Link } from "i18n/navigation";
 
 // ==============================================================
 type Props = { carList: Product[]; carBrands: Brand[] };
@@ -53,24 +54,26 @@ export default function Section6({ carList, carBrands }: Props) {
               </StyledProductCategory>
             ))}
 
-            <StyledProductCategory
-              id="all"
-              mt="4rem"
-              shadow={selected.match("all") ? 4 : null}
-              bg={selected.match("all") ? "white" : "gray.100"}>
-              <span id="all" className="product-category-title show-all">
-                {t("viewAllBrands")}
-              </span>
-            </StyledProductCategory>
+            <Link href="/catalog/all?sort=popular">
+              <StyledProductCategory
+                id="all"
+                mt="4rem"
+                shadow={selected.match("all") ? 4 : null}
+                bg={selected.match("all") ? "white" : "gray.100"}>
+                <span id="all" className="product-category-title show-all">
+                  {t("viewAllBrands")}
+                </span>
+              </StyledProductCategory>
+            </Link>
           </Box>
         </Hidden>
 
         <Box flex="1 1 0" minWidth="0px">
-          <CategorySectionHeader title={t("cars")} seeMoreLink="#" />
+          <CategorySectionHeader title={t("cars")} seeMoreLink="/catalog/all?sort=popular" />
 
           <Grid container spacing={6}>
-            {carList.map((item, ind) => (
-              <Grid item lg={4} sm={6} xs={12} key={ind}>
+            {carList.map((item) => (
+              <Grid item lg={4} sm={6} xs={12} key={item.id}>
                 <ProductCard1
                   hoverEffect
                   id={item.id}

@@ -23,8 +23,13 @@ export default async function Section13() {
   const bigDiscountList = await api.getBigDiscountList();
   const t = await getTranslations("home");
 
+  if (!bigDiscountList.length) return null;
+
   return (
-    <CategorySectionCreator iconName="gift" title={t("bigDiscounts")} seeMoreLink="#">
+    <CategorySectionCreator
+      iconName="gift"
+      title={t("bigDiscounts")}
+      seeMoreLink="/catalog/all?label=sale&sort=popular">
       <Box my="-0.25rem">
         <Carousel dots slidesToShow={6} responsive={responsive}>
           {bigDiscountList.map((item) => (

@@ -17,53 +17,63 @@ export default async function Section4() {
     api.getTopRatedBrand()
   ]);
   const featuredBrands = topRatedBrands.slice(0, 2);
+  const hasTopRatedProducts = topRatedList.length > 0;
+  const hasFeaturedBrands = featuredBrands.length > 0;
+
+  if (!hasTopRatedProducts && !hasFeaturedBrands) return null;
 
   return (
     <Box mb="3.75rem">
       <Container>
         <Grid container spacing={6}>
-          <Grid item lg={6} xs={12}>
-            <CategorySectionHeader iconName="ranking-1" title={t("topRatings")} seeMoreLink="#" />
+          {hasTopRatedProducts && (
+            <Grid item lg={hasFeaturedBrands ? 6 : 12} xs={12}>
+              <CategorySectionHeader
+                iconName="ranking-1"
+                title={t("topRatings")}
+                seeMoreLink="/catalog/all?sort=popular"
+              />
 
-            <Card p="1rem" borderRadius={8}>
-              <Grid container spacing={4}>
-                {topRatedList.map((item) => (
-                  <Grid item md={3} sm={6} xs={6} key={item.title}>
-                    <Link href={`/product/search/${item.slug}`}>
-                      <ProductCard4
-                        title={item.title}
-                        price={item.price}
-                        imgUrl={item.thumbnail}
-                        rating={item.rating || 4}
-                        reviewCount={item.reviews?.length || 12}
-                      />
-                    </Link>
-                  </Grid>
-                ))}
-              </Grid>
-            </Card>
-          </Grid>
+              <Card p="1rem" borderRadius={8}>
+                <Grid container spacing={4}>
+                  {topRatedList.map((item) => (
+                    <Grid item md={3} sm={6} xs={6} key={item.id}>
+                      <Link href={`/product/${item.slug}`}>
+                        <ProductCard4
+                          title={item.title}
+                          price={item.price}
+                          imgUrl={item.thumbnail}
+                          rating={item.rating || 4}
+                          reviewCount={item.reviews?.length || 12}
+                        />
+                      </Link>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Card>
+            </Grid>
+          )}
 
-          {featuredBrands.length > 0 && (
-          <Grid item md={6} xs={12}>
-            <CategorySectionHeader
-              iconName="Group"
-              title={t("featuredBrands")}
-              seeMoreLink="/catalog/all?sort=popular"
-            />
+          {hasFeaturedBrands && (
+            <Grid item md={hasTopRatedProducts ? 6 : 12} xs={12}>
+              <CategorySectionHeader
+                iconName="Group"
+                title={t("featuredBrands")}
+                seeMoreLink="/catalog/all?sort=popular"
+              />
 
-            <Card p="1rem" borderRadius={8}>
-              <Grid container spacing={4}>
-                {featuredBrands.map((item) => (
-                  <Grid item sm={6} xs={12} key={item.id}>
-                    <Link href={`/product/search/${item.slug}`}>
-                      <ProductCard5 title={item.name} imgUrl={item.image} />
-                    </Link>
-                  </Grid>
-                ))}
-              </Grid>
-            </Card>
-          </Grid>
+              <Card p="1rem" borderRadius={8}>
+                <Grid container spacing={4}>
+                  {featuredBrands.map((item) => (
+                    <Grid item sm={6} xs={12} key={item.id}>
+                      <Link href={`/catalog/all?brand=${item.slug}&sort=popular`}>
+                        <ProductCard5 title={item.name} imgUrl={item.image} />
+                      </Link>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Card>
+            </Grid>
           )}
         </Grid>
       </Container>

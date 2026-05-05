@@ -18,6 +18,7 @@ import StyledProductCategory from "./styled";
 import Shop from "@models/shop.model";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
+import { Link } from "i18n/navigation";
 
 // ======================================================
 interface Props {
@@ -86,45 +87,54 @@ export default function Section7({ shops, brands, title, productList }: Props) {
             </FlexBox>
 
             {list.map((brand, i) => (
-              <StyledProductCategory
-                key={i}
-                mb="0.75rem"
-                onClick={handleCategoryClick(brand.slug)}
-                shadow={selected.match(brand.slug) ? 4 : null}
-                bg={selected.match(brand.slug) ? "white" : "gray.100"}>
-                <Box width={20} height={20}>
-                  <NextImage
-                    width={20}
-                    height={20}
-                    alt="apple"
-                    src={
-                      type === "shops" ? `/assets/images/shops/${brand.thumbnail}.png` : brand.image
-                    }
-                  />
-                </Box>
+              <Link
+                key={brand.id || brand.slug || i}
+                href={
+                  type === "brands"
+                    ? `/catalog/all?brand=${brand.slug}&sort=popular`
+                    : "/catalog/all?sort=popular"
+                }>
+                <StyledProductCategory
+                  mb="0.75rem"
+                  onClick={handleCategoryClick(brand.slug)}
+                  shadow={selected.match(brand.slug) ? 4 : null}
+                  bg={selected.match(brand.slug) ? "white" : "gray.100"}>
+                  <Box width={20} height={20}>
+                    <NextImage
+                      width={20}
+                      height={20}
+                      alt="apple"
+                      src={
+                        type === "shops" ? `/assets/images/shops/${brand.thumbnail}.png` : brand.image
+                      }
+                    />
+                  </Box>
 
-                <span className="product-category-title">{brand.name}</span>
-              </StyledProductCategory>
+                  <span className="product-category-title">{brand.name}</span>
+                </StyledProductCategory>
+              </Link>
             ))}
 
-            <StyledProductCategory
-              mt="4rem"
-              onClick={handleCategoryClick(`all-${type}`)}
-              shadow={selected.match(`all-${type}`) ? 4 : null}
-              bg={selected.match(`all-${type}`) ? "white" : "gray.100"}>
-              <span className="product-category-title show-all">
-                {type === "brands" ? t("viewAllBrands") : t("viewAllShops")}
-              </span>
-            </StyledProductCategory>
+            <Link href="/catalog/all?sort=popular">
+              <StyledProductCategory
+                mt="4rem"
+                onClick={handleCategoryClick(`all-${type}`)}
+                shadow={selected.match(`all-${type}`) ? 4 : null}
+                bg={selected.match(`all-${type}`) ? "white" : "gray.100"}>
+                <span className="product-category-title show-all">
+                  {type === "brands" ? t("viewAllBrands") : t("viewAllShops")}
+                </span>
+              </StyledProductCategory>
+            </Link>
           </Box>
         </Hidden>
 
         <Box flex="1 1 0" minWidth="0px">
-          <CategorySectionHeader title={title} seeMoreLink="#" />
+          <CategorySectionHeader title={title} seeMoreLink="/catalog/all?sort=popular" />
 
           <Grid container spacing={6}>
-            {productList.map((item, ind) => (
-              <Grid item lg={4} sm={6} xs={12} key={ind}>
+            {productList.map((item) => (
+              <Grid item lg={4} sm={6} xs={12} key={item.id}>
                 <ProductCard1
                   hoverEffect
                   id={item.id}

@@ -14,18 +14,20 @@ export default async function Section10() {
   const categories = await api.getCategories();
   const t = await getTranslations("home");
 
+  if (!categories.length) return null;
+
   return (
     <Container mb="70px">
       <CategorySectionHeader
         title={t("categories")}
         iconName="categories"
-        seeMoreLink="#"
+        seeMoreLink="/catalog/all?sort=popular"
       />
 
       <Grid container spacing={6}>
         {categories.map((item) => (
           <Grid item lg={2} md={3} sm={4} xs={12} key={item.id}>
-            <Link href="/">
+            <Link href={`/catalog/${item.slug}`}>
               <Card
                 hoverEffect
                 p="0.75rem"

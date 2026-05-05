@@ -10,13 +10,15 @@ export default async function Section11() {
   const moreItems = await api.getMoreItems();
   const t = await getTranslations("home");
 
+  if (!moreItems.length) return null;
+
   return (
     <Container mb="70px">
-      <CategorySectionHeader title={t("moreForYou")} seeMoreLink="#" />
+      <CategorySectionHeader title={t("moreForYou")} seeMoreLink="/catalog/all?sort=popular" />
 
       <Grid container spacing={6}>
-        {moreItems.map((item, ind) => (
-          <Grid item lg={3} md={4} sm={6} xs={12} key={ind}>
+        {moreItems.map((item) => (
+          <Grid item lg={3} md={4} sm={6} xs={12} key={item.id}>
             <ProductCard1
               hoverEffect
               id={item.id}
