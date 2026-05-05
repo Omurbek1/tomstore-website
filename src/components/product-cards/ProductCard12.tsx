@@ -208,7 +208,7 @@ export default function ProductCard12({
       </ImageWrapper>
 
       <ContentWrapper>
-        <Link href="#">
+        <Link href={`/${locale}/product/${slug}`}>
           <H3
             mb={1}
             title={title}

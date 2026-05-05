@@ -44,7 +44,7 @@ export default function ProductCard18({ image, title, price, slug, rating }: Pro
       </Link>
 
       <div>
-        <NavLink href="#">
+        <NavLink href={`/${locale}/product/${slug}`}>
           <Paragraph fontSize={16}>{title}</Paragraph>
         </NavLink>
 
