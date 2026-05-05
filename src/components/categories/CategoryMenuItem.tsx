@@ -10,6 +10,7 @@ interface CategoryMenuItemProps {
   icon?: string;
   title: string;
   caret?: boolean;
+  onPrefetch?: () => void;
   children: ReactNode;
 }
 // ===============================================================
@@ -19,11 +20,12 @@ export default function CategoryMenuItem({
   icon,
   title,
   children,
+  onPrefetch,
   caret = true
 }: CategoryMenuItemProps) {
   return (
     <StyledCategoryMenuItem>
-      <Link href={href}>
+      <Link href={href} onFocus={onPrefetch} onMouseEnter={onPrefetch}>
         <div className="category-dropdown-link">
           {icon && <Icon variant="small">{icon}</Icon>}
           <span className="title">{title}</span>

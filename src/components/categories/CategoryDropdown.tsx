@@ -4,7 +4,10 @@ import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import navigations from "@data/navigations";
 import type Category from "@models/category.model";
-import { useStorefrontCategories } from "@hook/useStorefrontCatalog";
+import {
+  usePrefetchStorefrontCatalog,
+  useStorefrontCategories,
+} from "@hook/useStorefrontCatalog";
 import localizeNavigations from "@utils/localizeNavigations";
 import MegaMenu1 from "./mega-menu/MegaMenu1";
 import CategoryMenuItem from "./CategoryMenuItem";
@@ -37,6 +40,7 @@ const getCategoryIcon = (category: Category, index: number) =>
 export default function CategoryDropdown({ open, position = "absolute" }: CategoryDropdownProps) {
   const t = useTranslations();
   const { data: categories = [], isError } = useStorefrontCategories();
+  const prefetchCatalog = usePrefetchStorefrontCatalog();
 
   const fallbackNavigations = useMemo(() => localizeNavigations(navigations, t), [t]);
   const shouldUseFallback = isError || categories.length === 0;
@@ -50,6 +54,7 @@ export default function CategoryDropdown({ open, position = "absolute" }: Catego
             href={toCategoryHref(category.slug)}
             icon={getCategoryIcon(category, index)}
             title={category.name}
+            onPrefetch={() => prefetchCatalog({ category: category.slug })}
             caret={false}>
             {null}
           </CategoryMenuItem>

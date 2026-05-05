@@ -54,3 +54,16 @@ export const usePrefetchStorefrontProduct = () => {
     [queryClient],
   );
 };
+
+export const usePrefetchStorefrontCatalog = () => {
+  const queryClient = useQueryClient();
+
+  return useCallback(
+    (params: StorefrontCatalogParams = {}) => {
+      queryClient.prefetchQuery(
+        storefrontProductsQueryOptions({ pageSize: 48, sort: "popular", ...params }),
+      );
+    },
+    [queryClient],
+  );
+};
