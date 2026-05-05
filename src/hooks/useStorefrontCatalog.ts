@@ -15,8 +15,11 @@ import Product from "@models/product.model";
 
 export const useStorefrontHome = () => useQuery(storefrontHomeQueryOptions());
 
-export const useStorefrontCategories = () =>
-  useQuery(storefrontCategoriesQueryOptions());
+export const useStorefrontCategories = (enabled = true) =>
+  useQuery({
+    ...storefrontCategoriesQueryOptions(),
+    enabled,
+  });
 
 export const useStorefrontCatalog = (params: StorefrontCatalogParams = {}) =>
   useQuery(storefrontCatalogQueryOptions(params));

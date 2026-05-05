@@ -20,6 +20,7 @@ import ProductFilterCard from "@component/products/ProductFilterCard";
 import useWindowSize from "@hook/useWindowSize";
 import Product from "@models/product.model";
 import { useStorefrontProducts } from "@hook/useStorefrontCatalog";
+import type { StorefrontCatalogParams } from "@utils/__api__/storefront";
 
 // Maps frontend option values to backend sort parameter values
 const SORT_MAP: Record<string, string> = {
@@ -33,9 +34,15 @@ type Props = {
   products: Product[];
   query: string;
   searchType?: "text" | "category";
+  catalogParams?: StorefrontCatalogParams;
 };
 
-export default function SearchResult({ products, query: rawQuery, searchType = "text" }: Props) {
+export default function SearchResult({
+  products,
+  query: rawQuery,
+  searchType = "text",
+  catalogParams,
+}: Props) {
   const theme = useTheme();
   const width = useWindowSize();
   const t = useTranslations("search");
@@ -44,16 +51,24 @@ export default function SearchResult({ products, query: rawQuery, searchType = "
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<"grid" | "list">("grid");
   const [sortKey, setSortKey] = useState("relevance");
+  const [selectedBrand, setSelectedBrand] = useState<string | undefined>();
+  const [selectedMinPrice, setSelectedMinPrice] = useState<number | undefined>();
+  const [selectedMaxPrice, setSelectedMaxPrice] = useState<number | undefined>();
 
   const query = decodeURIComponent(rawQuery || "");
   const backendSort = SORT_MAP[sortKey] ?? "popular";
 
-  const catalogParams =
-    searchType === "category"
-      ? { category: query, pageSize: 48, sort: backendSort }
-      : { q: query, pageSize: 48, sort: backendSort };
+  const liveCatalogParams = {
+    ...(catalogParams ??
+      (searchType === "category" ? { category: query } : { q: query })),
+    brand: selectedBrand,
+    minPrice: selectedMinPrice,
+    maxPrice: selectedMaxPrice,
+    pageSize: 48,
+    sort: backendSort,
+  };
 
-  const { data: liveProducts = products } = useStorefrontProducts(catalogParams, products);
+  const { data: liveProducts = products } = useStorefrontProducts(liveCatalogParams, products);
 
   const sortOptions = [
     { label: t("sortOptions.relevance"), value: "relevance" },
@@ -68,6 +83,16 @@ export default function SearchResult({ products, query: rawQuery, searchType = "
 
   const handleOpenSidenav = useCallback(() => setOpen(true), []);
   const handleCloseSidenav = useCallback(() => setOpen(false), []);
+  const handleBrandChange = useCallback((brand?: string) => {
+    setSelectedBrand(brand);
+  }, []);
+  const handlePriceChange = useCallback(
+    ({ minPrice, maxPrice }: { minPrice?: number; maxPrice?: number }) => {
+      setSelectedMinPrice(minPrice);
+      setSelectedMaxPrice(maxPrice);
+    },
+    [],
+  );
 
   const isTablet = width ? width < 1025 : false;
   const showDesktopFilters = !isTablet;
@@ -143,7 +168,13 @@ export default function SearchResult({ products, query: rawQuery, searchType = "
                 destroyOnHidden
                 styles={{ body: { padding: 16, background: theme.colors.body.paper } }}
               >
-                <ProductFilterCard />
+                <ProductFilterCard
+                  selectedBrand={selectedBrand}
+                  selectedMinPrice={selectedMinPrice}
+                  selectedMaxPrice={selectedMaxPrice}
+                  onBrandChange={handleBrandChange}
+                  onPriceChange={handlePriceChange}
+                />
               </Drawer>
             </Fragment>
           )}
@@ -153,7 +184,13 @@ export default function SearchResult({ products, query: rawQuery, searchType = "
       <Grid container spacing={6}>
         {showDesktopFilters && (
           <Grid item lg={3} xs={12}>
-            <ProductFilterCard />
+            <ProductFilterCard
+              selectedBrand={selectedBrand}
+              selectedMinPrice={selectedMinPrice}
+              selectedMaxPrice={selectedMaxPrice}
+              onBrandChange={handleBrandChange}
+              onPriceChange={handlePriceChange}
+            />
           </Grid>
         )}
 

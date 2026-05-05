@@ -50,7 +50,7 @@ type StorefrontCategory = {
   image?: string;
 };
 
-type StorefrontBrand = {
+export type StorefrontBrand = {
   name: string;
   slug: string;
   totalProducts: number;
@@ -65,6 +65,16 @@ type StorefrontCatalogResponse = {
   filters: {
     categories: StorefrontCategory[];
     brands: StorefrontBrand[];
+    minPrice: number;
+    maxPrice: number;
+    selectedCategory?: string;
+    selectedBrand?: string;
+    selectedAvailability?: string;
+    selectedLabel?: string;
+    selectedSort?: string;
+    selectedMinPrice?: number;
+    selectedMaxPrice?: number;
+    query?: string;
   };
 };
 
