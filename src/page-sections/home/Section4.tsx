@@ -16,6 +16,7 @@ export default async function Section4() {
     api.getTopRatedProduct(),
     api.getTopRatedBrand()
   ]);
+  const featuredBrands = topRatedBrands.slice(0, 2);
 
   return (
     <Box mb="3.75rem">
@@ -43,12 +44,17 @@ export default async function Section4() {
             </Card>
           </Grid>
 
+          {featuredBrands.length > 0 && (
           <Grid item md={6} xs={12}>
-            <CategorySectionHeader iconName="Group" title={t("featuredBrands")} seeMoreLink="#" />
+            <CategorySectionHeader
+              iconName="Group"
+              title={t("featuredBrands")}
+              seeMoreLink="/catalog/all?sort=popular"
+            />
 
             <Card p="1rem" borderRadius={8}>
               <Grid container spacing={4}>
-                {topRatedBrands.map((item) => (
+                {featuredBrands.map((item) => (
                   <Grid item sm={6} xs={12} key={item.id}>
                     <Link href={`/product/search/${item.slug}`}>
                       <ProductCard5 title={item.name} imgUrl={item.image} />
@@ -58,6 +64,7 @@ export default async function Section4() {
               </Grid>
             </Card>
           </Grid>
+          )}
         </Grid>
       </Container>
     </Box>
