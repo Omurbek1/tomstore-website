@@ -17,14 +17,18 @@ export default async function Section2() {
   const products = await api.getFlashDeals();
   const t = await getTranslations("home");
 
+  if (!products.length) return null;
+
   return (
-    <CategorySectionCreator iconName="light" title={t("flashDeals")} seeMoreLink="#">
+    <CategorySectionCreator
+      iconName="light"
+      title={t("flashDeals")}
+      seeMoreLink="/catalog/all?label=sale&sort=popular">
       <Box mt="-0.25rem" mb="-0.25rem">
         <Carousel slidesToShow={4} responsive={responsive}>
           {products.map((item, ind) => (
-            <Box py="0.25rem" key={ind}>
+            <Box py="0.25rem" key={item.id}>
               <ProductCard1
-                key={ind}
                 id={item.id}
                 slug={item.slug}
                 price={item.price}

@@ -9,6 +9,16 @@ import { routing } from "i18n/routing";
 
 type CatalogPageProps = {
   params: Promise<{ locale: string; slug: string[] }>;
+  searchParams: Promise<{
+    q?: string;
+    category?: string;
+    brand?: string;
+    availability?: string;
+    label?: string;
+    sort?: string;
+    minPrice?: string;
+    maxPrice?: string;
+  }>;
 };
 
 const SUPPORTED_LOCALES = routing.locales;
@@ -97,13 +107,83 @@ const normalizeCatalogQuery = (segments: string[]) => {
     .trim();
 };
 
-export default async function CatalogPage({ params }: CatalogPageProps) {
-  const { locale, slug } = await params;
+const toNumberParam = (value?: string) => {
+  const numberValue = Number(value);
+  return Number.isFinite(numberValue) ? numberValue : undefined;
+};
+
+const getCatalogParamsFromSearch = (
+  searchParams: Awaited<CatalogPageProps["searchParams"]>,
+): StorefrontCatalogParams => {
+  const params: StorefrontCatalogParams = {
+    q: searchParams.q,
+    category: searchParams.category,
+    brand: searchParams.brand,
+    availability: searchParams.availability,
+    label: searchParams.label,
+    sort: searchParams.sort,
+    minPrice: toNumberParam(searchParams.minPrice),
+    maxPrice: toNumberParam(searchParams.maxPrice),
+  };
+
+  return Object.fromEntries(
+    Object.entries(params).filter(([, value]) => value !== undefined && value !== ""),
+  );
+};
+
+const hasDirectCatalogParams = (params: StorefrontCatalogParams) =>
+  Object.keys(params).length > 0;
+
+const getDirectCatalogTitle = async (
+  locale: string,
+  fallbackQuery: string,
+  params: StorefrontCatalogParams,
+) => {
+  const homeT = await getTranslations({ locale, namespace: "home" });
+
+  if (params.label === "sale") return homeT("flashDeals");
+  if (params.label === "new") return homeT("newArrivals");
+  if (params.category && typeof params.category === "string") return params.category;
+  if (params.q && typeof params.q === "string") return params.q;
+  if (fallbackQuery.toLowerCase() === "all") {
+    if (locale === "en") return "Catalog";
+    if (locale === "ky") return "Каталог";
+    return "Каталог";
+  }
+  return fallbackQuery;
+};
+
+export default async function CatalogPage({ params, searchParams }: CatalogPageProps) {
+  const [{ locale, slug }, resolvedSearchParams] = await Promise.all([
+    params,
+    searchParams,
+  ]);
   const fallbackQuery = normalizeCatalogQuery(slug);
-  const { displayQuery, candidates, categorySlug } = await resolveCatalogQuery(locale, slug);
-  const { products, catalogParams } = categorySlug
-    ? await findCatalogProducts(candidates, categorySlug)
-    : { products: [], catalogParams: { q: fallbackQuery } };
+  const directCatalogParams = getCatalogParamsFromSearch(resolvedSearchParams);
+  const useDirectCatalog = hasDirectCatalogParams(directCatalogParams);
+  const { displayQuery, candidates, categorySlug } = useDirectCatalog
+    ? {
+        displayQuery: await getDirectCatalogTitle(
+          locale,
+          fallbackQuery,
+          directCatalogParams,
+        ),
+        candidates: [],
+        categorySlug: "",
+      }
+    : await resolveCatalogQuery(locale, slug);
+  const { products, catalogParams } = useDirectCatalog
+    ? {
+        products: await getProducts({
+          ...directCatalogParams,
+          pageSize: 48,
+          sort: directCatalogParams.sort || "popular",
+        }),
+        catalogParams: directCatalogParams,
+      }
+    : categorySlug
+      ? await findCatalogProducts(candidates, categorySlug)
+      : { products: [], catalogParams: { q: fallbackQuery } };
 
   return (
     <AppLayout>

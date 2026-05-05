@@ -30,6 +30,10 @@ const SORT_MAP: Record<string, string> = {
   priceHighToLow: "price_desc",
 };
 
+const SORT_KEY_BY_BACKEND_VALUE: Record<string, string> = Object.fromEntries(
+  Object.entries(SORT_MAP).map(([key, value]) => [value, key]),
+);
+
 type Props = {
   products: Product[];
   query: string;
@@ -51,7 +55,11 @@ export default function SearchResult({
 
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<"grid" | "list">("grid");
-  const [sortKey, setSortKey] = useState("relevance");
+  const [sortKey, setSortKey] = useState(
+    typeof catalogParams?.sort === "string"
+      ? SORT_KEY_BY_BACKEND_VALUE[catalogParams.sort] || "relevance"
+      : "relevance",
+  );
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
     typeof catalogParams?.category === "string"
       ? catalogParams.category

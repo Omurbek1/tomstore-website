@@ -15,11 +15,16 @@ export default async function Section3() {
   const categoryList = await api.getTopCategories();
   const t = await getTranslations("home");
 
+  if (!categoryList.length) return null;
+
   return (
-    <CategorySectionCreator iconName="categories" title={t("topCategories")} seeMoreLink="#">
+    <CategorySectionCreator
+      iconName="categories"
+      title={t("topCategories")}
+      seeMoreLink="/catalog/all?sort=popular">
       <Carousel slidesToShow={3} responsive={responsive}>
-        {categoryList.map((item, ind) => (
-          <Link href={`/product/search/${item.slug}`} key={ind}>
+        {categoryList.map((item) => (
+          <Link href={`/catalog/${item.slug}`} key={item.slug}>
             <ProductCard6 title={item.name} imgUrl={item.image ?? ''} subtitle={item.description ?? ''} />
           </Link>
         ))}
