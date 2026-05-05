@@ -15,7 +15,6 @@ import { Button } from "@component/buttons";
 import { H1, H2, H3, H6, SemiSpan } from "@component/Typography";
 import { useCartItemByIdOrSlug, useChangeCartAmount } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
-import { Link } from "i18n/navigation";
 import ProductShareButton from "./ProductShareButton";
 
 // ========================================
@@ -189,15 +188,6 @@ export default function ProductIntro({
             )}
 
             <ProductShareButton title={title} text={shareText} slug={shareSlug} />
-          </FlexBox>
-
-          <FlexBox alignItems="center" mb="1rem">
-            <SemiSpan>{t("soldBy")}:</SemiSpan>
-            <Link href="/shops/scarlett-beauty">
-              <H6 lineHeight="1" ml="8px">
-                Mobile Store
-              </H6>
-            </Link>
           </FlexBox>
         </Grid>
       </Grid>
