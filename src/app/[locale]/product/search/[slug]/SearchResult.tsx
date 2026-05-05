@@ -21,6 +21,14 @@ import useWindowSize from "@hook/useWindowSize";
 import Product from "@models/product.model";
 import { useStorefrontProducts } from "@hook/useStorefrontCatalog";
 
+// Maps frontend option values to backend sort parameter values
+const SORT_MAP: Record<string, string> = {
+  relevance: "popular",
+  date: "newest",
+  priceLowToHigh: "price_asc",
+  priceHighToLow: "price_desc",
+};
+
 type Props = {
   products: Product[];
   query: string;
@@ -35,27 +43,35 @@ export default function SearchResult({ products, query: rawQuery, searchType = "
 
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<"grid" | "list">("grid");
-  const query = decodeURIComponent(rawQuery || "");
+  const [sortKey, setSortKey] = useState("relevance");
 
-  const catalogParams = searchType === "category"
-    ? { category: query, pageSize: 48, sort: "popular" }
-    : { q: query, pageSize: 48, sort: "popular" };
+  const query = decodeURIComponent(rawQuery || "");
+  const backendSort = SORT_MAP[sortKey] ?? "popular";
+
+  const catalogParams =
+    searchType === "category"
+      ? { category: query, pageSize: 48, sort: backendSort }
+      : { q: query, pageSize: 48, sort: backendSort };
 
   const { data: liveProducts = products } = useStorefrontProducts(catalogParams, products);
-  const resultCount = liveProducts.length;
+
   const sortOptions = [
     { label: t("sortOptions.relevance"), value: "relevance" },
     { label: t("sortOptions.date"), value: "date" },
     { label: t("sortOptions.priceLowToHigh"), value: "priceLowToHigh" },
-    { label: t("sortOptions.priceHighToLow"), value: "priceHighToLow" }
+    { label: t("sortOptions.priceHighToLow"), value: "priceHighToLow" },
   ];
+
+  const handleSortChange = useCallback((option: { value: string } | null) => {
+    if (option) setSortKey(option.value);
+  }, []);
 
   const handleOpenSidenav = useCallback(() => setOpen(true), []);
   const handleCloseSidenav = useCallback(() => setOpen(false), []);
 
   const isTablet = width ? width < 1025 : false;
   const showDesktopFilters = !isTablet;
-  const toggleView = useCallback((v: any) => () => setView(v), []);
+  const toggleView = useCallback((v: "grid" | "list") => () => setView(v), []);
 
   return (
     <Fragment>
@@ -71,7 +87,9 @@ export default function SearchResult({ products, query: rawQuery, searchType = "
       >
         <div>
           <H5>{t("searchingFor", { query })}</H5>
-          <Paragraph color="text.muted">{t("resultsFound", { count: resultCount })}</Paragraph>
+          <Paragraph color="text.muted">
+            {t("resultsFound", { count: liveProducts.length })}
+          </Paragraph>
         </div>
 
         <FlexBox alignItems="center" flexWrap="wrap">
@@ -82,8 +100,9 @@ export default function SearchResult({ products, query: rawQuery, searchType = "
           <Box flex="1 1 0" mr="1.75rem" minWidth="150px">
             <Select
               placeholder={t("sortPlaceholder")}
-              defaultValue={sortOptions[0]}
+              value={sortOptions.find((o) => o.value === sortKey)}
               options={sortOptions}
+              onChange={handleSortChange}
             />
           </Box>
 
@@ -94,18 +113,14 @@ export default function SearchResult({ products, query: rawQuery, searchType = "
           <IconButton onClick={toggleView("grid")}>
             <IconLayoutGrid
               size={22}
-              color={
-                view === "grid" ? theme.colors.primary.main : "currentColor"
-              }
+              color={view === "grid" ? theme.colors.primary.main : "currentColor"}
             />
           </IconButton>
 
           <IconButton onClick={toggleView("list")}>
             <IconList
               size={22}
-              color={
-                view === "list" ? theme.colors.primary.main : "currentColor"
-              }
+              color={view === "list" ? theme.colors.primary.main : "currentColor"}
             />
           </IconButton>
 
@@ -114,7 +129,8 @@ export default function SearchResult({ products, query: rawQuery, searchType = "
               <IconButton
                 onClick={handleOpenSidenav}
                 aria-label={filtersT("title")}
-                title={filtersT("title")}>
+                title={filtersT("title")}
+              >
                 <Icon>options</Icon>
               </IconButton>
 
@@ -125,7 +141,8 @@ export default function SearchResult({ products, query: rawQuery, searchType = "
                 title={filtersT("title")}
                 onClose={handleCloseSidenav}
                 destroyOnHidden
-                styles={{ body: { padding: 16, background: theme.colors.body.paper } }}>
+                styles={{ body: { padding: 16, background: theme.colors.body.paper } }}
+              >
                 <ProductFilterCard />
               </Drawer>
             </Fragment>

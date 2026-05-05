@@ -363,16 +363,19 @@ export type SearchSuggestion = {
   slug: string;
   name: string;
   price: number;
+  category?: string;
+  brand?: string;
   image?: string;
+  matchedAttribute?: string | null;
 };
 
 export const getSearchSuggestions = async (q: string): Promise<SearchSuggestion[]> => {
   if (!q || q.trim().length < 2) return [];
   try {
-    const response = await fetch(
-      buildStorefrontUrl(`/storefront/search/suggestions?q=${encodeURIComponent(q.trim())}`),
-      { next: { revalidate: 0 } },
+    const url = buildStorefrontUrl(
+      `/storefront/search/suggestions?q=${encodeURIComponent(q.trim())}`,
     );
+    const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) return [];
     return response.json();
   } catch {

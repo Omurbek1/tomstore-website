@@ -11,6 +11,7 @@ import Box from "@component/Box";
 import Card from "@component/Card";
 import MenuItem from "@component/MenuItem";
 import { Span } from "@component/Typography";
+import FlexBox from "@component/FlexBox";
 import TextField from "@component/text-field";
 import localizeNavigations from "@utils/localizeNavigations";
 import { getSearchSuggestions, type SearchSuggestion } from "@utils/__api__/storefront";
@@ -198,7 +199,20 @@ export default function SearchInputWithCategory() {
               {resultList.map((item) => (
                 <Link href={`/product/${item.slug}`} key={item.id}>
                   <MenuItem>
-                    <Span fontSize="14px">{item.name}</Span>
+                    <FlexBox flexDirection="column" py="2px">
+                      <Span fontSize="14px" fontWeight={500}>
+                        {item.name}
+                      </Span>
+                      {item.matchedAttribute ? (
+                        <Span fontSize="12px" color="text.muted" mt="1px">
+                          {item.matchedAttribute}
+                        </Span>
+                      ) : item.category ? (
+                        <Span fontSize="12px" color="text.muted" mt="1px">
+                          {item.category}
+                        </Span>
+                      ) : null}
+                    </FlexBox>
                   </MenuItem>
                 </Link>
               ))}
