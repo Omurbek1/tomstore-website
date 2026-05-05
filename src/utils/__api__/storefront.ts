@@ -358,6 +358,28 @@ export const storefrontSlugsQueryOptions = () =>
     },
   });
 
+export type SearchSuggestion = {
+  id: string;
+  slug: string;
+  name: string;
+  price: number;
+  image?: string;
+};
+
+export const getSearchSuggestions = async (q: string): Promise<SearchSuggestion[]> => {
+  if (!q || q.trim().length < 2) return [];
+  try {
+    const response = await fetch(
+      buildStorefrontUrl(`/storefront/search/suggestions?q=${encodeURIComponent(q.trim())}`),
+      { next: { revalidate: 0 } },
+    );
+    if (!response.ok) return [];
+    return response.json();
+  } catch {
+    return [];
+  }
+};
+
 export const getStorefrontHome = () =>
   getServerQueryClient().fetchQuery(storefrontHomeQueryOptions());
 

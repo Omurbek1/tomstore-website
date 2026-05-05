@@ -15,7 +15,7 @@ const StyledSearchBox = styled.div`
   .search-field {
     flex: 1 1 0;
     padding-left: 3rem;
-    padding-right: 11.5rem;
+    padding-right: 13.75rem;
     height: 44px;
     border-radius: 8px;
   }
@@ -27,11 +27,45 @@ const StyledSearchBox = styled.div`
     padding-left: 55px;
     padding-right: 55px;
   }
-  .category-dropdown {
+  .category-dropdown,
+  .category-cascader {
     position: absolute;
     right: 0px;
     color: ${({ theme }) => theme.colors.text.hint};
   }
+
+  .category-cascader {
+    width: 208px;
+
+    .ant-select {
+      width: 100%;
+      height: 44px;
+    }
+
+    .ant-select-selector {
+      height: 44px !important;
+      padding-left: 1.25rem !important;
+      padding-right: 2.25rem !important;
+      border: 0 !important;
+      border-left: 1px solid ${({ theme }) => theme.colors.text.disabled} !important;
+      border-radius: 0 8px 8px 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    .ant-select-selection-item {
+      color: ${({ theme }) => theme.colors.text.hint};
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 42px !important;
+    }
+
+    .ant-select-arrow {
+      right: 1rem;
+      color: ${({ theme }) => theme.colors.text.hint};
+    }
+  }
+
   .dropdown-handler {
     height: 40px;
     cursor: pointer;
@@ -47,7 +81,8 @@ const StyledSearchBox = styled.div`
     display: none;
   }
   @media only screen and (max-width: 900px) {
-    .category-dropdown {
+    .category-dropdown,
+    .category-cascader {
       display: none;
     }
     .search-icon {

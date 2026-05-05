@@ -24,9 +24,10 @@ import { useStorefrontProducts } from "@hook/useStorefrontCatalog";
 type Props = {
   products: Product[];
   query: string;
+  searchType?: "text" | "category";
 };
 
-export default function SearchResult({ products, query: rawQuery }: Props) {
+export default function SearchResult({ products, query: rawQuery, searchType = "text" }: Props) {
   const theme = useTheme();
   const width = useWindowSize();
   const t = useTranslations("search");
@@ -35,14 +36,12 @@ export default function SearchResult({ products, query: rawQuery }: Props) {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<"grid" | "list">("grid");
   const query = decodeURIComponent(rawQuery || "");
-  const { data: liveProducts = products } = useStorefrontProducts(
-    {
-      category: rawQuery,
-      pageSize: 48,
-      sort: "popular",
-    },
-    products,
-  );
+
+  const catalogParams = searchType === "category"
+    ? { category: query, pageSize: 48, sort: "popular" }
+    : { q: query, pageSize: 48, sort: "popular" };
+
+  const { data: liveProducts = products } = useStorefrontProducts(catalogParams, products);
   const resultCount = liveProducts.length;
   const sortOptions = [
     { label: t("sortOptions.relevance"), value: "relevance" },
