@@ -165,6 +165,13 @@ const getBackendUrl = () =>
   );
 
 const buildStorefrontUrl = (path: string) => {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
+  // On the client, proxy through /api to avoid CORS issues
+  if (typeof window !== "undefined") {
+    return `/api${normalizedPath}`;
+  }
+
   const backendUrl = getBackendUrl();
   if (
     process.env.NODE_ENV === "production" &&
@@ -175,7 +182,7 @@ const buildStorefrontUrl = (path: string) => {
     );
   }
 
-  return `${backendUrl}${path.startsWith("/") ? path : `/${path}`}`;
+  return `${backendUrl}${normalizedPath}`;
 };
 
 export const resolveStorefrontMediaUrl = (value?: string | null) => {
@@ -360,15 +367,17 @@ export const storefrontCatalogQueryOptions = (
 
 export const storefrontProductsQueryOptions = (
   params: StorefrontCatalogParams = {},
-) =>
-  queryOptions({
-    queryKey: [...storefrontQueryKeys.catalog(params), "products"] as const,
+) => {
+  const normalizedParams = normalizeQueryParams({ pageSize: 48, ...params });
+  return queryOptions({
+    queryKey: [...storefrontQueryKeys.catalog(normalizedParams), "products"] as const,
     staleTime: STALE_TIME_MS,
     queryFn: () =>
-      getStorefrontCatalog({ pageSize: 12, ...params }).then((catalog) =>
-        catalog.items.map(mapStorefrontProduct),
-      ),
+      storefrontFetch<StorefrontCatalogResponse>(
+        buildCatalogPath(normalizedParams),
+      ).then((catalog) => catalog.items.map(mapStorefrontProduct)),
   });
+};
 
 export const storefrontProductPageQueryOptions = (
   page = 1,
