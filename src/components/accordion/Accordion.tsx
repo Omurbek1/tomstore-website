@@ -6,6 +6,7 @@ import {
   useState,
   useEffect,
   cloneElement,
+  isValidElement,
   ReactElement,
   useMemo,
   useCallback
@@ -47,9 +48,12 @@ export default function Accordion({ expanded = false, children }: AccordionProps
   }, []);
 
   const modifiedChildren = useMemo(() => {
-    return Children.map(children, (child, ind) =>
-      ind === 0 ? cloneElement(child, { open, onClick: toggle }) : child
-    );
+    return Children.map(children, (child, ind) => {
+      if (ind === 0 && isValidElement(child)) {
+        return cloneElement(child, { open, onClick: toggle });
+      }
+      return child;
+    });
   }, [children, open]);
 
   return (
