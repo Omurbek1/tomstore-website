@@ -52,4 +52,62 @@ export const productApiEndpoints = (Mock: MockAdapter) => {
       return [500, { message: "Internal server error" }];
     }
   });
+
+  Mock.onPost("/api/products").reply(async (config) => {
+    try {
+      const product = normalizeProductPayload(JSON.parse(config.data || "{}"));
+      uniqueProudcts.unshift(product);
+      slugs.unshift({ params: { slug: product.slug } });
+
+      return [201, product];
+    } catch (err) {
+      console.error(err);
+      return [500, { message: "Internal server error" }];
+    }
+  });
+
+  Mock.onPut("/api/products").reply(async (config) => {
+    try {
+      const product = normalizeProductPayload(JSON.parse(config.data || "{}"));
+      const index = uniqueProudcts.findIndex(
+        (item) => item.id === product.id || item.slug === product.slug,
+      );
+
+      if (index >= 0) {
+        uniqueProudcts[index] = { ...uniqueProudcts[index], ...product };
+      } else {
+        uniqueProudcts.unshift(product);
+        slugs.unshift({ params: { slug: product.slug } });
+      }
+
+      return [200, index >= 0 ? uniqueProudcts[index] : product];
+    } catch (err) {
+      console.error(err);
+      return [500, { message: "Internal server error" }];
+    }
+  });
 };
+
+function normalizeProductPayload(payload: any) {
+  const slug = String(payload.slug || payload.name || payload.title || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9а-яё\s-]/gi, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+
+  return {
+    ...payload,
+    id: payload.id || `product-${Date.now()}`,
+    slug,
+    title: payload.title || payload.name,
+    price: Number(payload.price || 0),
+    oldPrice: payload.oldPrice || null,
+    discount: payload.discount || 0,
+    rating: payload.rating || 4,
+    thumbnail: payload.thumbnail || payload.images?.[0] || "/assets/images/products/iphone-xi.png",
+    images: Array.isArray(payload.images) ? payload.images : [],
+    categories: Array.isArray(payload.categories) ? payload.categories : [],
+    published: payload.published ?? true,
+  };
+}

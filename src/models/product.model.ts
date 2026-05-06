@@ -1,9 +1,27 @@
 import Shop from "./shop.model";
 import Review from "./Review.model";
 
+export type ProductVariant = {
+  id: string;
+  title: string;
+  cpu: string;
+  ram: number;
+  storage: string;
+  color: string;
+  price: number;
+  oldPrice?: number;
+  warehouse?: string;
+  inStock: boolean;
+  description?: string | null;
+  attributes?: Array<{ name: string; value: string }>;
+  images: string[];
+};
+
 interface Product {
   unit?: any;
   slug: string;
+  name?: string;
+  description?: string;
   price: number;
   title: string;
   rating: number;
@@ -26,6 +44,7 @@ interface Product {
   isInStock?: boolean;
   labels?: string[];
   attributes?: Array<{ name: string; value: string }>;
+  variants?: ProductVariant[];
 }
 
 export default Product;

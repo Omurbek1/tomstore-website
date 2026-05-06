@@ -11,7 +11,7 @@ import AvailableShops from "@component/products/AvailableShops";
 import RelatedProducts from "@component/products/RelatedProducts";
 import FrequentlyBought from "@component/products/FrequentlyBought";
 import ProductDescription from "@component/products/ProductDescription";
-import Product from "@models/product.model";
+import Product, { ProductVariant } from "@models/product.model";
 
 // ==============================================================
 type Props = {
@@ -19,6 +19,7 @@ type Props = {
   shops: Shop[];
   relatedProducts: Product[];
   frequentlyBought: Product[];
+  selectedVariant?: ProductVariant;
 };
 // ==============================================================
 
@@ -27,13 +28,14 @@ export default function ProductView({
   shops,
   relatedProducts,
   frequentlyBought,
+  selectedVariant,
 }: Props) {
   const t = useTranslations("product");
   const tabItems = [
     {
       key: "description",
       label: t("descriptionTab"),
-      children: <ProductDescription product={product} />
+      children: <ProductDescription product={product} selectedVariant={selectedVariant} />
     },
     {
       key: "review",

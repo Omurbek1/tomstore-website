@@ -2,7 +2,7 @@ import { cache } from "react";
 import { QueryClient, queryOptions } from "@tanstack/react-query";
 import Brand from "@models/Brand.model";
 import Category from "@models/category.model";
-import Product from "@models/product.model";
+import Product, { ProductVariant } from "@models/product.model";
 import { Meta } from "interfaces";
 
 type StorefrontAvailability = {
@@ -39,8 +39,31 @@ type StorefrontProductCard = {
 type StorefrontProductDetails = StorefrontProductCard & {
   fullDescription?: string;
   attributes?: Array<{ name: string; value: string }>;
+  variants?: StorefrontProductVariant[];
   relatedProducts?: StorefrontProductCard[];
   recommendedProducts?: StorefrontProductCard[];
+};
+
+type StorefrontProductVariant = {
+  id: string;
+  label?: string;
+  title?: string;
+  name?: string;
+  cpu?: string;
+  ram?: number | string;
+  storage?: string;
+  color?: string;
+  price?: number | string;
+  oldPrice?: number | string | null;
+  warehouse?: string | null;
+  inStock?: boolean;
+  stockQty?: number;
+  sku?: string | null;
+  description?: string | null;
+  attributes?: Array<{ name: string; value: string }>;
+  images?: string[];
+  gallery?: string[];
+  mainImage?: string;
 };
 
 type StorefrontCategory = {
@@ -291,9 +314,67 @@ const mapStorefrontProductDetails = (
   product: StorefrontProductDetails,
 ): Product => ({
   ...mapStorefrontProduct(product),
+  name: product.name,
+  description: product.fullDescription || product.shortDescription || "",
   fullDescription: product.fullDescription || product.shortDescription || "",
   attributes: product.attributes || [],
+  variants: mapStorefrontProductVariants(product),
 });
+
+const mapStorefrontProductVariants = (
+  product: StorefrontProductDetails,
+): ProductVariant[] => {
+  if (!Array.isArray(product.variants)) return [];
+
+  return product.variants
+    .map((variant): ProductVariant | null => {
+      const id = String(variant.id || "").trim();
+      const label = String(variant.label || variant.title || variant.name || "").trim();
+      if (!id || !label) return null;
+
+      const variantImages = [
+        variant.mainImage,
+        ...(Array.isArray(variant.images) ? variant.images : []),
+        ...(Array.isArray(variant.gallery) ? variant.gallery : []),
+      ]
+        .filter(Boolean)
+        .map((url) => buildStorefrontImageUrl(url as string));
+      const productImages = [
+        product.mainImage,
+        ...(Array.isArray(product.gallery) ? product.gallery : []),
+      ]
+        .filter(Boolean)
+        .map((url) => buildStorefrontImageUrl(url as string));
+
+      const images = Array.from(
+        new Set(variantImages.length ? variantImages : productImages),
+      );
+
+      const variantAttributes = Array.isArray(variant.attributes)
+        ? variant.attributes
+        : [];
+
+      return {
+        id,
+        title: label,
+        cpu: String(variant.cpu || "").trim(),
+        ram: Number(variant.ram || 0),
+        storage: String(variant.storage || "").trim(),
+        color: String(variant.color || "").trim(),
+        price: Number(variant.price || product.price || 0),
+        oldPrice:
+          variant.oldPrice === null || variant.oldPrice === undefined
+            ? undefined
+            : Number(variant.oldPrice),
+        warehouse: variant.warehouse || undefined,
+        inStock: variant.inStock ?? (Number(variant.stockQty || 0) > 0),
+        description: variant.description || null,
+        attributes: variantAttributes,
+        images: images.length ? images : [buildStorefrontImageUrl(product.mainImage)],
+      };
+    })
+    .filter((variant): variant is ProductVariant => Boolean(variant));
+};
 
 export const mapStorefrontCategory = (
   category: StorefrontCategory,

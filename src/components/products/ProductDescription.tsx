@@ -2,10 +2,11 @@ import { useTranslations } from "next-intl";
 import Box from "@component/Box";
 import FlexBox from "@component/FlexBox";
 import Typography, { H3, H4, SemiSpan } from "@component/Typography";
-import Product from "@models/product.model";
+import Product, { ProductVariant } from "@models/product.model";
 
 type Props = {
   product?: Product;
+  selectedVariant?: ProductVariant;
 };
 
 type StructuredRows = {
@@ -167,12 +168,29 @@ const structureRows = (product?: Product): StructuredRows => {
   return result;
 };
 
-export default function ProductDescription({ product }: Props) {
+export default function ProductDescription({ product, selectedVariant }: Props) {
   const t = useTranslations("product");
+
+  const variantHasContent =
+    selectedVariant &&
+    (String(selectedVariant.description || "").trim() ||
+      (Array.isArray(selectedVariant.attributes) && selectedVariant.attributes.length > 0));
+
+  const effectiveProduct: Product | undefined = variantHasContent
+    ? {
+        ...(product || ({} as Product)),
+        fullDescription: String(selectedVariant!.description || "").trim() || undefined,
+        shortDescription: String(selectedVariant!.description || "").trim() || undefined,
+        attributes: selectedVariant!.attributes?.length
+          ? selectedVariant!.attributes
+          : product?.attributes,
+      }
+    : product;
+
   const description = String(
-    product?.fullDescription || product?.shortDescription || "",
+    effectiveProduct?.fullDescription || effectiveProduct?.shortDescription || "",
   ).trim();
-  const structuredRows = structureRows(product);
+  const structuredRows = structureRows(effectiveProduct);
   const hasStructuredRows =
     structuredRows.specs.length > 0 ||
     structuredRows.useCases.length > 0 ||
@@ -181,6 +199,28 @@ export default function ProductDescription({ product }: Props) {
 
   return (
     <Box>
+      {variantHasContent && (
+        <Box
+          mb="1rem"
+          px="1rem"
+          py="0.5rem"
+          borderRadius="999px"
+          display="inline-flex"
+          alignItems="center"
+          style={{
+            background: "#F3E8FF",
+            border: "1px solid #DDD6FE",
+            gap: 8,
+          }}
+        >
+          <span style={{ fontSize: 13, fontWeight: 700, color: "#7C3AED" }}>
+            {selectedVariant!.title}
+          </span>
+          <SemiSpan style={{ fontSize: 12, color: "#8B5CF6" }}>
+            — описание и характеристики этого варианта
+          </SemiSpan>
+        </Box>
+      )}
       <Box bg="white" borderRadius="8px" shadow={1} p="1.5rem" mb="1.5rem">
         <H3 mb="1rem">{t("descriptionTab")}</H3>
         {description ? (

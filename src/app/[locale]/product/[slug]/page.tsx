@@ -1,8 +1,6 @@
-import { Fragment } from "react";
-import ProductView from "@component/products/ProductView";
-import ProductIntro from "@component/products/ProductIntro";
 import api from "@utils/__api__/products";
 import { getProductBySlug } from "@utils/__api__/storefront";
+import ProductPageClient from "@component/products/ProductPageClient";
 
 // ==============================================================
 interface Props {
@@ -18,33 +16,17 @@ export default async function ProductDetails({ params }: Props) {
     api.getAvailableShop(),
     api.getFrequentlyBought(),
   ]);
-  const product = productPayload.product;
-  const relatedProducts = productPayload.relatedProducts;
 
   return (
-    <Fragment>
-      <ProductIntro
-        id={product.id}
-        price={product.price}
-        title={product.title}
-        images={product.images || []}
-        brand={product.brand}
-        oldPrice={product.oldPrice}
-        availabilityLabel={product.availabilityLabel}
-        labels={product.labels}
-        slug={product.slug || slug}
-      />
-
-      <ProductView
-        product={product}
-        shops={shops}
-        relatedProducts={relatedProducts}
-        frequentlyBought={
-          productPayload.recommendedProducts.length
-            ? productPayload.recommendedProducts
-            : frequentlyBought
-        }
-      />
-    </Fragment>
+    <ProductPageClient
+      product={productPayload.product}
+      shops={shops}
+      relatedProducts={productPayload.relatedProducts}
+      frequentlyBought={
+        productPayload.recommendedProducts.length
+          ? productPayload.recommendedProducts
+          : frequentlyBought
+      }
+    />
   );
 }
