@@ -26,7 +26,7 @@ export default function Footer1() {
             <Grid container spacing={6}>
               <Grid item lg={4} md={6} sm={6} xs={12}>
                 <Link href="/">
-                  <Image alt="logo" mb="1rem" src="/assets/images/logo.svg" />
+                  <Image alt="TomStore" mb="1rem" src="/assets/images/logo-no-bg.svg" height="60px" />
                 </Link>
 
                 <Paragraph mb="1.25rem" color="gray.500" maxWidth="320px">

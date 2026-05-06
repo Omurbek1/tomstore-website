@@ -20,7 +20,7 @@ export default async function Footer2() {
     <footer>
       <Wrapper>
         <Link href="/">
-          <Image mb="1.5rem" src="/assets/images/logo.svg" alt="logo" />
+          <Image mb="1.5rem" src="/assets/images/logo-no-bg.svg" alt="TomStore" height="60px" />
         </Link>
 
         <Grid container spacing={6}>
