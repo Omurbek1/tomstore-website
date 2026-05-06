@@ -23,7 +23,7 @@ export default function HomeNewArrivalsSection({
       <Card p="1rem" borderRadius={8}>
         <Grid container spacing={6}>
           {products.map((product) => (
-            <Grid item lg={2} md={3} sm={4} xs={6} key={product.id}>
+            <Grid item lg={2} md={3} sm={4} xs={6} key={product.id} style={{ display: "flex" }}>
               <ProductTileCard
                 slug={product.slug}
                 title={product.title}

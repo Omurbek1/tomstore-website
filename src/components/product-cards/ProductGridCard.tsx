@@ -268,6 +268,13 @@ export default function ProductGridCard({
                   fontWeight="600"
                   className="title"
                   color="text.secondary"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    minHeight: "2.8em",
+                  }}
                 >
                   {title}
                 </H3>
