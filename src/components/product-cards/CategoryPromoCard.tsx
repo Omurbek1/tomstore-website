@@ -13,52 +13,68 @@ type CategoryPromoCardProps = {
 
 const CategoryPromoCard = ({ title, subtitle, imgUrl }: CategoryPromoCardProps) => {
   return (
-    <Card position="relative" padding="1rem" borderRadius={8} overflow="hidden">
-      <Box
-        zIndex={2}
-        top="1.5rem"
-        left="1.5rem"
-        right="1.5rem"
-        display="flex"
-        position="absolute"
-        flexDirection="column"
-        alignItems="flex-start"
-        style={{ gap: 6 }}>
-        <Chip
-          p="4px 10px"
-          color="white"
-          fontSize="10px"
-          fontWeight="600"
-          bg="secondary.main"
-          style={{
-            maxWidth: "100%",
-            overflow: "hidden",
-            whiteSpace: "nowrap",
-            textOverflow: "ellipsis",
-          }}>
-          {title}
-        </Chip>
+    <Card
+      position="relative"
+      padding="0"
+      borderRadius={8}
+      overflow="hidden"
+      height="100%"
+      style={{ minHeight: 160 }}
+    >
+      <Box position="relative" width="100%" style={{ height: "100%", minHeight: 160 }}>
+        <NextImage
+          src={imgUrl}
+          fill
+          alt={title}
+          style={{ objectFit: "cover" }}
+          sizes="(max-width: 650px) 100vw, (max-width: 959px) 50vw, 33vw"
+        />
 
-        {subtitle ? (
+        <Box
+          zIndex={2}
+          top="1rem"
+          left="1rem"
+          right="1rem"
+          display="flex"
+          position="absolute"
+          flexDirection="column"
+          alignItems="flex-start"
+          style={{ gap: 6 }}
+        >
           <Chip
             p="4px 10px"
-            bg="gray.300"
+            color="white"
             fontSize="10px"
-            color="gray.800"
             fontWeight="600"
+            bg="secondary.main"
             style={{
               maxWidth: "100%",
               overflow: "hidden",
               whiteSpace: "nowrap",
               textOverflow: "ellipsis",
-            }}>
-            {subtitle}
+            }}
+          >
+            {title}
           </Chip>
-        ) : null}
-      </Box>
 
-      <Box borderRadius={8} display="flex" overflow="hidden">
-        <NextImage src={imgUrl} width={345} height={120} alt={title} />
+          {subtitle ? (
+            <Chip
+              p="4px 10px"
+              bg="gray.300"
+              fontSize="10px"
+              color="gray.800"
+              fontWeight="600"
+              style={{
+                maxWidth: "100%",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {subtitle}
+            </Chip>
+          ) : null}
+        </Box>
       </Box>
     </Card>
   );

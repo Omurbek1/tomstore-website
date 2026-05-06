@@ -27,7 +27,11 @@ export default function HomePopularCategoriesSection({
       seeMoreLink="/catalog/all?sort=popular">
       <Carousel slidesToShow={3} responsive={responsive}>
         {categories.map((category) => (
-          <Link href={`/catalog/${category.slug}`} key={category.slug}>
+          <Link
+            href={`/catalog/${category.slug}`}
+            key={category.slug}
+            style={{ display: "block", height: "100%" }}
+          >
             <CategoryPromoCard
               title={category.name}
               imgUrl={category.image ?? ""}
