@@ -46,9 +46,9 @@ const StyledHeader = styled.header`
 
     .logo {
       margin-right: 0.5rem;
-      svg {
-        width: 64px;
-        height: auto;
+      img {
+        height: 36px;
+        width: auto;
       }
     }
 
