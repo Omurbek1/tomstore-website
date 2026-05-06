@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import AppLayout from "@component/layout/layout-3";
 import Box from "@component/Box";
 import SearchResult from "../../product/search/[slug]/SearchResult";
@@ -161,13 +162,15 @@ export default async function CatalogPage({ params, searchParams }: CatalogPageP
   return (
     <AppLayout>
       <Box pt="20px">
-        <SearchResult
-          products={products}
-          query={displayQuery || fallbackQuery}
-          searchType="text"
-          catalogParams={catalogParams}
-          initialFilters={catalog?.filters}
-        />
+        <Suspense>
+          <SearchResult
+            products={products}
+            query={displayQuery || fallbackQuery}
+            searchType="text"
+            catalogParams={catalogParams}
+            initialFilters={catalog?.filters}
+          />
+        </Suspense>
       </Box>
     </AppLayout>
   );

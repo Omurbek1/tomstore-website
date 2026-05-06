@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useCallback, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Drawer } from "antd";
 import { useTheme } from "styled-components";
 import { IconLayoutGrid, IconList } from "@tabler/icons-react";
@@ -20,12 +21,12 @@ import ProductFilterCard from "@component/products/ProductFilterCard";
 import useWindowSize from "@hook/useWindowSize";
 import Product from "@models/product.model";
 import { useStorefrontProducts } from "@hook/useStorefrontCatalog";
+import { useRouter, usePathname } from "next/navigation";
 import type {
   StorefrontCatalogFilters,
   StorefrontCatalogParams,
 } from "@utils/__api__/storefront";
 
-// Maps frontend option values to backend sort parameter values
 const SORT_MAP: Record<string, string> = {
   relevance: "popular",
   date: "newest",
@@ -58,23 +59,47 @@ export default function SearchResult({
   const filtersT = useTranslations("product.filters");
   const query = decodeURIComponent(rawQuery || "");
 
-  const [open, setOpen] = useState(false);
-  const [view, setView] = useState<"grid" | "list">("grid");
-  const [sortKey, setSortKey] = useState(
-    typeof catalogParams?.sort === "string"
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Read filter state from URL
+  const view = (searchParams.get("view") as "grid" | "list") || "grid";
+  const sortKey =
+    searchParams.get("filterSort") ||
+    (typeof catalogParams?.sort === "string"
       ? SORT_KEY_BY_BACKEND_VALUE[catalogParams.sort] || "relevance"
-      : "relevance",
+      : "relevance");
+  const selectedCategory =
+    searchParams.get("filterCategory") ||
+    (typeof catalogParams?.category === "string" ? catalogParams.category : undefined) ||
+    undefined;
+  const selectedBrand = searchParams.get("filterBrand") || undefined;
+  const selectedMinPrice = searchParams.get("filterMinPrice")
+    ? Number(searchParams.get("filterMinPrice"))
+    : undefined;
+  const selectedMaxPrice = searchParams.get("filterMaxPrice")
+    ? Number(searchParams.get("filterMaxPrice"))
+    : undefined;
+
+  const [open, setOpen] = useState(false);
+
+  // Helper: update URL params without full navigation
+  const updateUrl = useCallback(
+    (updates: Record<string, string | undefined>) => {
+      const params = new URLSearchParams(searchParams.toString());
+      for (const [key, value] of Object.entries(updates)) {
+        if (value === undefined || value === "") {
+          params.delete(key);
+        } else {
+          params.set(key, value);
+        }
+      }
+      const qs = params.toString();
+      router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
+    },
+    [router, pathname, searchParams],
   );
-  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
-    typeof catalogParams?.category === "string"
-      ? catalogParams.category
-      : searchType === "category"
-        ? query
-        : undefined,
-  );
-  const [selectedBrand, setSelectedBrand] = useState<string | undefined>();
-  const [selectedMinPrice, setSelectedMinPrice] = useState<number | undefined>();
-  const [selectedMaxPrice, setSelectedMaxPrice] = useState<number | undefined>();
 
   const backendSort = SORT_MAP[sortKey] ?? "popular";
 
@@ -101,29 +126,47 @@ export default function SearchResult({
     { label: t("sortOptions.priceHighToLow"), value: "priceHighToLow" },
   ];
 
-  const handleSortChange = useCallback((option: { value: string } | null) => {
-    if (option) setSortKey(option.value);
-  }, []);
+  const handleSortChange = useCallback(
+    (option: { value: string } | null) => {
+      if (option) updateUrl({ filterSort: option.value });
+    },
+    [updateUrl],
+  );
+
+  const handleCategoryChange = useCallback(
+    (category?: string) => {
+      updateUrl({ filterCategory: category });
+    },
+    [updateUrl],
+  );
+
+  const handleBrandChange = useCallback(
+    (brand?: string) => {
+      updateUrl({ filterBrand: brand });
+    },
+    [updateUrl],
+  );
+
+  const handlePriceChange = useCallback(
+    ({ minPrice, maxPrice }: { minPrice?: number; maxPrice?: number }) => {
+      updateUrl({
+        filterMinPrice: minPrice !== undefined ? String(minPrice) : undefined,
+        filterMaxPrice: maxPrice !== undefined ? String(maxPrice) : undefined,
+      });
+    },
+    [updateUrl],
+  );
+
+  const toggleView = useCallback(
+    (v: "grid" | "list") => () => updateUrl({ view: v }),
+    [updateUrl],
+  );
 
   const handleOpenSidenav = useCallback(() => setOpen(true), []);
   const handleCloseSidenav = useCallback(() => setOpen(false), []);
-  const handleCategoryChange = useCallback((category?: string) => {
-    setSelectedCategory(category);
-  }, []);
-  const handleBrandChange = useCallback((brand?: string) => {
-    setSelectedBrand(brand);
-  }, []);
-  const handlePriceChange = useCallback(
-    ({ minPrice, maxPrice }: { minPrice?: number; maxPrice?: number }) => {
-      setSelectedMinPrice(minPrice);
-      setSelectedMaxPrice(maxPrice);
-    },
-    [],
-  );
 
   const isTablet = width ? width < 1025 : false;
   const showDesktopFilters = !isTablet;
-  const toggleView = useCallback((v: "grid" | "list") => () => setView(v), []);
 
   return (
     <Fragment>
