@@ -7,7 +7,6 @@ import { JSX } from "react/jsx-runtime";
 const StyledCarouselCard1 = styled.div`
   display: flex;
   text-align: left;
-    margin-left: 300px;
   min-height: 360px;
   align-items: center;
   padding: 2rem 0;
