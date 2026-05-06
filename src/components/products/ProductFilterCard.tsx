@@ -16,6 +16,7 @@ import type {
 } from "@utils/__api__/storefront";
 
 const OTHER_OPTIONS = ["onSale", "inStock", "featured"] as const;
+type OtherOption = (typeof OTHER_OPTIONS)[number];
 
 type ProductFilterCardProps = {
   catalogParams?: StorefrontCatalogParams;
@@ -23,10 +24,16 @@ type ProductFilterCardProps = {
   selectedBrand?: string;
   selectedMinPrice?: number;
   selectedMaxPrice?: number;
+  selectedOnSale?: boolean;
+  selectedInStock?: boolean;
+  selectedFeatured?: boolean;
   initialFilters?: StorefrontCatalogFilters;
   onCategoryChange?: (category?: string) => void;
   onBrandChange?: (brand?: string) => void;
   onPriceChange?: (range: { minPrice?: number; maxPrice?: number }) => void;
+  onOnSaleChange?: (checked: boolean) => void;
+  onInStockChange?: (checked: boolean) => void;
+  onFeaturedChange?: (checked: boolean) => void;
 };
 
 export default function ProductFilterCard({
@@ -35,10 +42,16 @@ export default function ProductFilterCard({
   selectedBrand,
   selectedMinPrice,
   selectedMaxPrice,
+  selectedOnSale,
+  selectedInStock,
+  selectedFeatured,
   initialFilters,
   onCategoryChange,
   onBrandChange,
   onPriceChange,
+  onOnSaleChange,
+  onInStockChange,
+  onFeaturedChange,
 }: ProductFilterCardProps) {
   const t = useTranslations("product.filters");
   const { data: catalog } = useStorefrontCatalog({
@@ -166,9 +179,16 @@ export default function ProductFilterCard({
           key={item}
           name={item}
           value={item}
+          checked={getOtherOptionChecked(item, { selectedOnSale, selectedInStock, selectedFeatured })}
           color="secondary"
           label={<SemiSpan color="inherit">{t(`otherOptions.${item}`)}</SemiSpan>}
-          onChange={(e) => console.log(e.target.value, e.target.checked)}
+          onChange={(e) =>
+            handleOtherOptionChange(item, e.target.checked, {
+              onOnSaleChange,
+              onInStockChange,
+              onFeaturedChange,
+            })
+          }
         />
       ))}
 
@@ -189,6 +209,30 @@ export default function ProductFilterCard({
 
     </Card>
   );
+}
+
+function getOtherOptionChecked(
+  item: OtherOption,
+  state: { selectedOnSale?: boolean; selectedInStock?: boolean; selectedFeatured?: boolean },
+) {
+  if (item === "onSale") return !!state.selectedOnSale;
+  if (item === "inStock") return !!state.selectedInStock;
+  if (item === "featured") return !!state.selectedFeatured;
+  return false;
+}
+
+function handleOtherOptionChange(
+  item: OtherOption,
+  checked: boolean,
+  handlers: {
+    onOnSaleChange?: (checked: boolean) => void;
+    onInStockChange?: (checked: boolean) => void;
+    onFeaturedChange?: (checked: boolean) => void;
+  },
+) {
+  if (item === "onSale") handlers.onOnSaleChange?.(checked);
+  else if (item === "inStock") handlers.onInStockChange?.(checked);
+  else if (item === "featured") handlers.onFeaturedChange?.(checked);
 }
 
 function toPriceFilter(value: string) {

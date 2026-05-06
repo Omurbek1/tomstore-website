@@ -81,6 +81,9 @@ export default function SearchResult({
   const selectedMaxPrice = searchParams.get("filterMaxPrice")
     ? Number(searchParams.get("filterMaxPrice"))
     : undefined;
+  const selectedOnSale = searchParams.get("filterOnSale") === "1";
+  const selectedInStock = searchParams.get("filterInStock") === "1";
+  const selectedFeatured = searchParams.get("filterFeatured") === "1";
 
   const [open, setOpen] = useState(false);
 
@@ -110,6 +113,8 @@ export default function SearchResult({
     brand: selectedBrand,
     minPrice: selectedMinPrice,
     maxPrice: selectedMaxPrice,
+    ...(selectedOnSale ? { label: "sale" } : selectedFeatured ? { label: "hit" } : {}),
+    ...(selectedInStock ? { availability: "in_stock" } : {}),
     pageSize: 48,
     sort: backendSort,
   };
@@ -153,6 +158,35 @@ export default function SearchResult({
         filterMinPrice: minPrice !== undefined ? String(minPrice) : undefined,
         filterMaxPrice: maxPrice !== undefined ? String(maxPrice) : undefined,
       });
+    },
+    [updateUrl],
+  );
+
+  const handleOnSaleChange = useCallback(
+    (checked: boolean) => {
+      const updates: Record<string, string | undefined> = {
+        filterOnSale: checked ? "1" : undefined,
+      };
+      if (checked) updates.filterFeatured = undefined;
+      updateUrl(updates);
+    },
+    [updateUrl],
+  );
+
+  const handleInStockChange = useCallback(
+    (checked: boolean) => {
+      updateUrl({ filterInStock: checked ? "1" : undefined });
+    },
+    [updateUrl],
+  );
+
+  const handleFeaturedChange = useCallback(
+    (checked: boolean) => {
+      const updates: Record<string, string | undefined> = {
+        filterFeatured: checked ? "1" : undefined,
+      };
+      if (checked) updates.filterOnSale = undefined;
+      updateUrl(updates);
     },
     [updateUrl],
   );
@@ -244,10 +278,16 @@ export default function SearchResult({
                   selectedBrand={selectedBrand}
                   selectedMinPrice={selectedMinPrice}
                   selectedMaxPrice={selectedMaxPrice}
+                  selectedOnSale={selectedOnSale}
+                  selectedInStock={selectedInStock}
+                  selectedFeatured={selectedFeatured}
                   initialFilters={initialFilters}
                   onCategoryChange={handleCategoryChange}
                   onBrandChange={handleBrandChange}
                   onPriceChange={handlePriceChange}
+                  onOnSaleChange={handleOnSaleChange}
+                  onInStockChange={handleInStockChange}
+                  onFeaturedChange={handleFeaturedChange}
                 />
               </Drawer>
             </Fragment>
