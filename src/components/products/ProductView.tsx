@@ -55,7 +55,7 @@ export default function ProductView({
 
       {/* FREQUENTLY BOUGHT TOGETHER PRODUCTS */}
       {frequentlyBought.length > 0 ? (
-        <FrequentlyBought products={frequentlyBought} />
+        <FrequentlyBought baseProduct={product} products={frequentlyBought} />
       ) : null}
 
       {/* AVAILABLE SHOPS */}

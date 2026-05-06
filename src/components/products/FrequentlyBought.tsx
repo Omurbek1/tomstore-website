@@ -123,13 +123,37 @@ const SummaryDivider = styled("div")`
   background: ${({ theme }) => theme.colors.gray[300]};
 `;
 
+const GiftStrip = styled("div")`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+`;
+
+const GiftChip = styled("span")`
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  padding: 5px 10px;
+  border: 1px solid ${({ theme }) => theme.colors.success.main};
+  border-radius: 999px;
+  background: rgba(51, 208, 103, 0.1);
+  color: ${({ theme }) => theme.colors.success.main};
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+`;
+
 type BundleProduct = Product & {
   effectivePrice: number;
   compareAtPrice: number;
   savings: number;
 };
 
-type Props = { products: Product[] };
+type Props = {
+  baseProduct?: Product;
+  products: Product[];
+};
 
 function getEffectivePrice(product: Product) {
   const discount = Number(product.discount || 0);
@@ -154,7 +178,61 @@ function toBundleProduct(product: Product): BundleProduct {
   };
 }
 
-export default function FrequentlyBought({ products }: Props) {
+const normalizeText = (value?: string) =>
+  String(value || "")
+    .toLowerCase()
+    .replace(/ё/g, "е");
+
+function detectProductType(product?: Product) {
+  const text = normalizeText(
+    [
+      product?.title,
+      product?.brand,
+      product?.shortDescription,
+      product?.fullDescription,
+      ...(product?.categories || []),
+      ...(product?.attributes || []).map(
+        (item) => `${item.name} ${item.value}`,
+      ),
+    ].join(" "),
+  );
+
+  if (
+    /(ноутбук|laptop|ultrabook|macbook|thinkpad|ideapad|vivobook|aspire|nitro)/.test(
+      text,
+    )
+  ) {
+    return "laptop";
+  }
+  if (
+    /(принтер|мфу|printer|laserjet|inkjet|epson|canon|pantum|xerox)/.test(text)
+  ) {
+    return "printer";
+  }
+  if (/(системный блок|компьютер|desktop|mini pc|\bpc\b)/.test(text)) {
+    return "desktop";
+  }
+
+  return "default";
+}
+
+function getGiftSuggestions(product?: Product) {
+  const type = detectProductType(product);
+
+  if (type === "laptop") {
+    return ["giftWindowsSetup", "giftLaptopBag", "giftMouse", "giftMousepad"];
+  }
+  if (type === "printer") {
+    return ["giftPrinterInk", "giftPrinterCable", "giftPaper"];
+  }
+  if (type === "desktop") {
+    return ["giftWindowsSetup", "giftKeyboard", "giftMouse", "giftMousepad"];
+  }
+
+  return ["giftAccessory", "giftDeliverySetup"];
+}
+
+export default function FrequentlyBought({ baseProduct, products }: Props) {
   const t = useTranslations("product");
   const locale = useLocale();
   const formatCurrency = useCurrency();
@@ -180,6 +258,10 @@ export default function FrequentlyBought({ products }: Props) {
         { price: 0, compareAtPrice: 0, savings: 0 },
       ),
     [bundleProducts],
+  );
+  const giftSuggestions = useMemo(
+    () => getGiftSuggestions(baseProduct),
+    [baseProduct],
   );
 
   if (bundleProducts.length === 0) return null;
@@ -210,6 +292,13 @@ export default function FrequentlyBought({ products }: Props) {
           <SemiSpan color="text.muted">{t("bundleHint")}</SemiSpan>
         </Box>
       </FlexBox>
+
+      <GiftStrip aria-label={t("giftSuggestions")}>
+        <GiftChip>{t("giftSuggestions")}</GiftChip>
+        {giftSuggestions.map((item) => (
+          <GiftChip key={item}>{t(item)}</GiftChip>
+        ))}
+      </GiftStrip>
 
       <BundleLayout>
         <BundleItemsGrid>
