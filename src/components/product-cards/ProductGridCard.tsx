@@ -92,7 +92,6 @@ const Wrapper = styled(Card)`
     flex: 1 1 auto;
     padding: 1rem;
 
-    .title,
     .categories {
       overflow: hidden;
       white-space: nowrap;
