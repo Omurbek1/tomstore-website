@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Fragment } from "react";
+import { useTranslations } from "next-intl";
 
 import Avatar from "@component/avatar";
 import Icon from "@component/icon/Icon";
@@ -10,6 +13,7 @@ import { Button } from "@component/buttons";
 import Typography, { H5, Paragraph, Tiny } from "@component/Typography";
 import { useCartItems, useCartTotal, useChangeCartAmount } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
+import { buildCartWhatsAppOrderUrl } from "@utils/whatsappOrder";
 // STYLED COMPONENT
 import { StyledMiniCart } from "./styles";
 
@@ -22,6 +26,11 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
   const cartTotal = useCartTotal();
   const changeCartAmount = useChangeCartAmount();
   const formatCurrency = useCurrency();
+  const t = useTranslations("checkout.cart");
+  const whatsappOrderHref = buildCartWhatsAppOrderUrl({
+    items: cart,
+    totalLabel: formatCurrency(cartTotal),
+  });
 
   const handleCartAmountChange = (amount: number, product: any) => () => {
     changeCartAmount({ ...product, qty: amount });
@@ -124,11 +133,21 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
 
       {cart.length > 0 && (
         <div className="actions">
-          <Link href="/checkout">
-            <Button fullWidth color="primary" variant="contained" onClick={toggleSidenav}>
-              <Typography fontWeight={600}>Checkout Now ({formatCurrency(cartTotal)})</Typography>
-            </Button>
-          </Link>
+          <Button
+            as="a"
+            fullWidth
+            color="primary"
+            variant="contained"
+            onClick={toggleSidenav}
+            {...{
+              href: whatsappOrderHref,
+              target: "_blank",
+              rel: "noopener noreferrer",
+            }}>
+            <Typography fontWeight={600}>
+              {t("sendToWhatsApp")} ({formatCurrency(cartTotal)})
+            </Typography>
+          </Button>
 
           <Link href="/cart">
             <Button fullWidth color="primary" variant="outlined" mt="1rem" onClick={toggleSidenav}>

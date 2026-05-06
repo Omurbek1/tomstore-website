@@ -1,5 +1,5 @@
 "use client";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 // GLOBAL CUSTOM COMPONENTS
@@ -17,6 +17,7 @@ import { CartProductRow } from "@component/product-cards";
 // CUSTOM HOOK
 import { useCartItems, useCartTotal } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
+import { buildCartWhatsAppOrderUrl } from "@utils/whatsappOrder";
 // CUSTOM DATA
 import countryList from "@data/countryList";
 import { Link } from "@i18n/navigation";
@@ -26,6 +27,12 @@ export default function Cart() {
   const cartTotal = useCartTotal();
   const t = useTranslations("checkout.cart");
   const formatCurrency = useCurrency();
+  const [comment, setComment] = useState("");
+  const whatsappOrderHref = buildCartWhatsAppOrderUrl({
+    items: cart,
+    totalLabel: formatCurrency(cartTotal),
+    comment,
+  });
 
   if (cart.length === 0) {
     return (
@@ -94,7 +101,13 @@ export default function Cart() {
               </Box>
             </FlexBox>
 
-            <TextArea rows={6} fullWidth mb="1rem" />
+            <TextArea
+              rows={6}
+              fullWidth
+              mb="1rem"
+              value={comment}
+              onChange={(event) => setComment(event.target.value)}
+            />
 
             <Divider mb="1rem" />
 
@@ -133,11 +146,18 @@ export default function Cart() {
               {t("calculateShipping")}
             </Button>
 
-            <Link href="/checkout">
-              <Button variant="contained" color="primary" fullWidth>
-                {t("checkoutNow")}
-              </Button>
-            </Link>
+            <Button
+              as="a"
+              variant="contained"
+              color="primary"
+              fullWidth
+              {...{
+                href: whatsappOrderHref,
+                target: "_blank",
+                rel: "noopener noreferrer",
+              }}>
+              {t("sendToWhatsApp")}
+            </Button>
           </Card1>
         </Grid>
       </Grid>

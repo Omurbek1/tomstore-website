@@ -72,7 +72,7 @@ export default function CartProductRow({
   const formatCurrency = useCurrency();
 
   const handleCartAmountChange = (amount: number) => () => {
-    changeCartAmount({ qty: amount, name, price, imgUrl, id });
+    changeCartAmount({ qty: amount, name, price, imgUrl, id, slug });
   };
 
   return (

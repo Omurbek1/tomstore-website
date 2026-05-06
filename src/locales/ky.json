@@ -275,6 +275,7 @@
     "rated": "Баа",
     "stockAvailable": "Сатыкта бар",
     "addToCart": "Себетке кошуу",
+    "buyViaWhatsApp": "WhatsApp аркылуу сатып алуу",
     "shareTitle": "Товарды бөлүшүү",
     "share": "Бөлүшүү",
     "copyLink": "Шилтемени көчүрүү",
@@ -363,7 +364,8 @@
       "selectState": "Аймакты тандаңыз",
       "zipCode": "Почта индекси",
       "calculateShipping": "Жеткирүүнү эсептөө",
-      "checkoutNow": "Тариздөөгө өтүү"
+      "checkoutNow": "Тариздөөгө өтүү",
+      "sendToWhatsApp": "WhatsApp'ка жөнөтүү"
     },
     "form": {
       "shippingAddress": "Жеткирүү дареги",

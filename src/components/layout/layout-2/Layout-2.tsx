@@ -3,7 +3,6 @@
 import { ReactNode } from "react";
 import Sticky from "@component/sticky";
 import { HeaderTwo } from "@component/header";
-import Navbar2 from "@component/navbar/Navbar2";
 import MobileNavigationBar from "@component/mobile-navigation";
 // STYLED COMPONENT
 import { StyledRoot } from "./styles";
@@ -24,14 +23,7 @@ export default function ShopLayout({ children, showNavbar = true }: Props) {
         <HeaderTwo />
       </Sticky>
 
-      {/* CONDITIONALLY RENDER NAVBAR AREA */}
-      {showNavbar && (
-        <div className="section-after-sticky">
-          <Navbar2 />
-        </div>
-      )}
-
-      {children}
+  
 
       {/* SMALLER DEVICE NAVIGATION AREA */}
       <MobileNavigationBar />

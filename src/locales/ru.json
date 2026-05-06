@@ -275,6 +275,7 @@
     "rated": "Оценка",
     "stockAvailable": "В наличии",
     "addToCart": "В корзину",
+    "buyViaWhatsApp": "Купить через WhatsApp",
     "shareTitle": "Поделиться товаром",
     "share": "Поделиться",
     "copyLink": "Копировать ссылку",
@@ -363,7 +364,8 @@
       "selectState": "Выберите регион",
       "zipCode": "Почтовый индекс",
       "calculateShipping": "Рассчитать доставку",
-      "checkoutNow": "Перейти к оформлению"
+      "checkoutNow": "Перейти к оформлению",
+      "sendToWhatsApp": "Отправить в WhatsApp"
     },
     "form": {
       "shippingAddress": "Адрес доставки",

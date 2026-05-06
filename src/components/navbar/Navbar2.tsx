@@ -94,7 +94,7 @@ export default function Navbar2(props: NavbarProps) {
     <StyledNavbar>
       <Container display="flex" justifyContent="space-between" alignItems="center" height="100%">
         <div />
-        <FlexBox style={{ gap: 32 }}>{renderNestedNav(navbarNavigations, true)}</FlexBox>
+     
       </Container>
     </StyledNavbar>
   );

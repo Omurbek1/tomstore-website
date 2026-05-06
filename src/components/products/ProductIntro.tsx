@@ -15,6 +15,7 @@ import { Button } from "@component/buttons";
 import { H1, H2, H3, H6, SemiSpan } from "@component/Typography";
 import { useCartItemByIdOrSlug, useChangeCartAmount } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
+import { buildProductWhatsAppOrderUrl } from "@utils/whatsappOrder";
 import ProductShareButton from "./ProductShareButton";
 
 // ========================================
@@ -52,6 +53,12 @@ export default function ProductIntro({
   const cartItem = useCartItemByIdOrSlug(id, routerId);
   const shareSlug = slug || routerId;
   const shareText = `${title}. ${formatCurrency(price)}`;
+  const whatsappOrderHref = buildProductWhatsAppOrderUrl({
+    title,
+    qty: cartItem?.qty || 1,
+    priceLabel: formatCurrency(price),
+    slug: shareSlug,
+  });
 
   const handleImageClick = useCallback((ind: number) => () => setSelectedImage(ind), []);
 
@@ -63,9 +70,10 @@ export default function ProductIntro({
         qty: amount,
         name: title,
         imgUrl: images[0],
+        slug: shareSlug,
       });
     },
-    [changeCartAmount, id, images, price, title]
+    [changeCartAmount, id, images, price, shareSlug, title]
   );
 
   return (
@@ -186,6 +194,19 @@ export default function ProductIntro({
                 </Button>
               </FlexBox>
             )}
+
+            <Button
+              as="a"
+              size="small"
+              color="primary"
+              variant="outlined"
+              {...{
+                href: whatsappOrderHref,
+                target: "_blank",
+                rel: "noopener noreferrer",
+              }}>
+              {t("buyViaWhatsApp")}
+            </Button>
 
             <ProductShareButton title={title} text={shareText} slug={shareSlug} />
           </FlexBox>

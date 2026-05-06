@@ -275,6 +275,7 @@
     "rated": "Rated",
     "stockAvailable": "Stock Available",
     "addToCart": "Add to Cart",
+    "buyViaWhatsApp": "Buy via WhatsApp",
     "shareTitle": "Share this product",
     "share": "Share",
     "copyLink": "Copy link",
@@ -363,7 +364,8 @@
       "selectState": "Select State",
       "zipCode": "Zip Code",
       "calculateShipping": "Calculate Shipping",
-      "checkoutNow": "Checkout Now"
+      "checkoutNow": "Checkout Now",
+      "sendToWhatsApp": "Send to WhatsApp"
     },
     "form": {
       "shippingAddress": "Shipping Address",
