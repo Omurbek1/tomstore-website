@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useCallback, useState } from "react";
+import { Fragment, startTransition, useCallback, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Drawer } from "antd";
 import { useTheme } from "styled-components";
@@ -63,31 +63,37 @@ export default function SearchResult({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Read filter state from URL
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // ── Filter state from URL ───────────────────────────────────────────────
   const view = (searchParams.get("view") as "grid" | "list") || "grid";
+
   const sortKey =
     searchParams.get("filterSort") ||
     (typeof catalogParams?.sort === "string"
       ? SORT_KEY_BY_BACKEND_VALUE[catalogParams.sort] || "relevance"
       : "relevance");
+
   const selectedCategory =
     searchParams.get("filterCategory") ||
     (typeof catalogParams?.category === "string" ? catalogParams.category : undefined) ||
     undefined;
+
   const selectedBrand = searchParams.get("filterBrand") || undefined;
+
   const selectedMinPrice = searchParams.get("filterMinPrice")
     ? Number(searchParams.get("filterMinPrice"))
     : undefined;
+
   const selectedMaxPrice = searchParams.get("filterMaxPrice")
     ? Number(searchParams.get("filterMaxPrice"))
     : undefined;
+
   const selectedOnSale = searchParams.get("filterOnSale") === "1";
   const selectedInStock = searchParams.get("filterInStock") === "1";
   const selectedFeatured = searchParams.get("filterFeatured") === "1";
 
-  const [open, setOpen] = useState(false);
-
-  // Helper: update URL params without full navigation
+  // ── URL updater (startTransition keeps UI responsive during navigation) ─
   const updateUrl = useCallback(
     (updates: Record<string, string | undefined>) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -99,31 +105,43 @@ export default function SearchResult({
         }
       }
       const qs = params.toString();
-      router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
+      startTransition(() => {
+        router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
+      });
     },
     [router, pathname, searchParams],
   );
 
-  const backendSort = SORT_MAP[sortKey] ?? "popular";
+  // ── Live catalog params ─────────────────────────────────────────────────
+  // Base: page context (search query or category slug)
+  const baseParams: StorefrontCatalogParams =
+    catalogParams ?? (searchType === "category" ? { category: query } : { q: query });
 
-  const liveCatalogParams = {
-    ...(catalogParams ??
-      (searchType === "category" ? { category: query } : { q: query })),
-    category: selectedCategory,
-    brand: selectedBrand,
-    minPrice: selectedMinPrice,
-    maxPrice: selectedMaxPrice,
-    ...(selectedOnSale ? { label: "sale" } : selectedFeatured ? { label: "hit" } : {}),
+  // Apply user-selected filters on top of base context using conditional spreads
+  // so we never override base values with undefined
+  const liveCatalogParams: StorefrontCatalogParams = {
+    ...baseParams,
+    ...(selectedCategory !== undefined ? { category: selectedCategory } : {}),
+    ...(selectedBrand !== undefined ? { brand: selectedBrand } : {}),
+    ...(selectedMinPrice !== undefined ? { minPrice: selectedMinPrice } : {}),
+    ...(selectedMaxPrice !== undefined ? { maxPrice: selectedMaxPrice } : {}),
+    // onSale and featured both map to the "label" param — mutually exclusive
+    ...(selectedOnSale
+      ? { label: "sale" }
+      : selectedFeatured
+        ? { label: "hit" }
+        : {}),
     ...(selectedInStock ? { availability: "in_stock" } : {}),
     pageSize: 48,
-    sort: backendSort,
+    sort: SORT_MAP[sortKey] ?? "popular",
   };
 
-  const { data: liveProducts = products } = useStorefrontProducts(
+  const { data: liveProducts = products, isFetching } = useStorefrontProducts(
     liveCatalogParams,
     products,
   );
 
+  // ── Handlers ────────────────────────────────────────────────────────────
   const sortOptions = [
     { label: t("sortOptions.relevance"), value: "relevance" },
     { label: t("sortOptions.date"), value: "date" },
@@ -139,16 +157,12 @@ export default function SearchResult({
   );
 
   const handleCategoryChange = useCallback(
-    (category?: string) => {
-      updateUrl({ filterCategory: category });
-    },
+    (category?: string) => updateUrl({ filterCategory: category }),
     [updateUrl],
   );
 
   const handleBrandChange = useCallback(
-    (brand?: string) => {
-      updateUrl({ filterBrand: brand });
-    },
+    (brand?: string) => updateUrl({ filterBrand: brand }),
     [updateUrl],
   );
 
@@ -174,9 +188,7 @@ export default function SearchResult({
   );
 
   const handleInStockChange = useCallback(
-    (checked: boolean) => {
-      updateUrl({ filterInStock: checked ? "1" : undefined });
-    },
+    (checked: boolean) => updateUrl({ filterInStock: checked ? "1" : undefined }),
     [updateUrl],
   );
 
@@ -191,19 +203,31 @@ export default function SearchResult({
     [updateUrl],
   );
 
-  const toggleView = useCallback(
-    (v: "grid" | "list") => () => updateUrl({ view: v }),
-    [updateUrl],
-  );
-
-  const handleOpenSidenav = useCallback(() => setOpen(true), []);
-  const handleCloseSidenav = useCallback(() => setOpen(false), []);
+  // ── Shared filter card props (used for both desktop sidebar and mobile drawer) ─
+  const filterCardProps = {
+    catalogParams: liveCatalogParams,
+    selectedCategory,
+    selectedBrand,
+    selectedMinPrice,
+    selectedMaxPrice,
+    selectedOnSale,
+    selectedInStock,
+    selectedFeatured,
+    initialFilters,
+    onCategoryChange: handleCategoryChange,
+    onBrandChange: handleBrandChange,
+    onPriceChange: handlePriceChange,
+    onOnSaleChange: handleOnSaleChange,
+    onInStockChange: handleInStockChange,
+    onFeaturedChange: handleFeaturedChange,
+  };
 
   const isTablet = width ? width < 1025 : false;
   const showDesktopFilters = !isTablet;
 
   return (
     <Fragment>
+      {/* ── Toolbar: title + sort + view toggle ── */}
       <FlexBox
         as={Card}
         mb="55px"
@@ -217,16 +241,16 @@ export default function SearchResult({
         <div>
           <H5>{t("searchingFor", { query })}</H5>
           <Paragraph color="text.muted">
-            {t("resultsFound", { count: liveProducts.length })}
+            {isFetching
+              ? "…"
+              : t("resultsFound", { count: liveProducts.length })}
           </Paragraph>
         </div>
 
-        <FlexBox alignItems="center" flexWrap="wrap">
-          <Paragraph color="text.muted" mr="1rem">
-            {t("sortBy")}
-          </Paragraph>
+        <FlexBox alignItems="center" flexWrap="wrap" style={{ gap: "0.5rem" }}>
+          <Paragraph color="text.muted">{t("sortBy")}</Paragraph>
 
-          <Box flex="1 1 0" mr="1.75rem" minWidth="150px">
+          <Box minWidth="160px">
             <Select
               placeholder={t("sortPlaceholder")}
               value={sortOptions.find((o) => o.value === sortKey)}
@@ -235,18 +259,16 @@ export default function SearchResult({
             />
           </Box>
 
-          <Paragraph color="text.muted" mr="0.5rem">
-            {t("view")}
-          </Paragraph>
+          <Paragraph color="text.muted">{t("view")}</Paragraph>
 
-          <IconButton onClick={toggleView("grid")}>
+          <IconButton onClick={toggleView("grid", updateUrl)}>
             <IconLayoutGrid
               size={22}
               color={view === "grid" ? theme.colors.primary.main : "currentColor"}
             />
           </IconButton>
 
-          <IconButton onClick={toggleView("list")}>
+          <IconButton onClick={toggleView("list", updateUrl)}>
             <IconList
               size={22}
               color={view === "list" ? theme.colors.primary.main : "currentColor"}
@@ -256,7 +278,7 @@ export default function SearchResult({
           {isTablet && (
             <Fragment>
               <IconButton
-                onClick={handleOpenSidenav}
+                onClick={() => setDrawerOpen(true)}
                 aria-label={filtersT("title")}
                 title={filtersT("title")}
               >
@@ -265,61 +287,46 @@ export default function SearchResult({
 
               <Drawer
                 placement="left"
-                size={320}
-                open={open}
+                width={320}
+                open={drawerOpen}
                 title={filtersT("title")}
-                onClose={handleCloseSidenav}
+                onClose={() => setDrawerOpen(false)}
                 destroyOnHidden
                 styles={{ body: { padding: 16, background: theme.colors.body.paper } }}
               >
-                <ProductFilterCard
-                  catalogParams={liveCatalogParams}
-                  selectedCategory={selectedCategory}
-                  selectedBrand={selectedBrand}
-                  selectedMinPrice={selectedMinPrice}
-                  selectedMaxPrice={selectedMaxPrice}
-                  selectedOnSale={selectedOnSale}
-                  selectedInStock={selectedInStock}
-                  selectedFeatured={selectedFeatured}
-                  initialFilters={initialFilters}
-                  onCategoryChange={handleCategoryChange}
-                  onBrandChange={handleBrandChange}
-                  onPriceChange={handlePriceChange}
-                  onOnSaleChange={handleOnSaleChange}
-                  onInStockChange={handleInStockChange}
-                  onFeaturedChange={handleFeaturedChange}
-                />
+                <ProductFilterCard {...filterCardProps} />
               </Drawer>
             </Fragment>
           )}
         </FlexBox>
       </FlexBox>
 
+      {/* ── Content: sidebar + product list ── */}
       <Grid container spacing={6}>
         {showDesktopFilters && (
           <Grid item lg={3} xs={12}>
-            <ProductFilterCard
-              catalogParams={liveCatalogParams}
-              selectedCategory={selectedCategory}
-              selectedBrand={selectedBrand}
-              selectedMinPrice={selectedMinPrice}
-              selectedMaxPrice={selectedMaxPrice}
-              initialFilters={initialFilters}
-              onCategoryChange={handleCategoryChange}
-              onBrandChange={handleBrandChange}
-              onPriceChange={handlePriceChange}
-            />
+            <ProductFilterCard {...filterCardProps} />
           </Grid>
         )}
 
         <Grid item lg={showDesktopFilters ? 9 : 12} xs={12}>
-          {view === "grid" ? (
-            <ProductGridView products={liveProducts} />
-          ) : (
-            <ProductListView products={liveProducts} />
-          )}
+          {/* Subtle opacity fade while fetching new results */}
+          <div style={{ opacity: isFetching ? 0.55 : 1, transition: "opacity 0.25s ease" }}>
+            {view === "grid" ? (
+              <ProductGridView products={liveProducts} />
+            ) : (
+              <ProductListView products={liveProducts} />
+            )}
+          </div>
         </Grid>
       </Grid>
     </Fragment>
   );
+}
+
+function toggleView(
+  v: "grid" | "list",
+  updateUrl: (u: Record<string, string | undefined>) => void,
+) {
+  return () => updateUrl({ view: v });
 }

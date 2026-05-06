@@ -1,14 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import Card from "@component/Card";
-import Rating from "@component/rating";
 import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
 import CheckBox from "@component/CheckBox";
 import TextField from "@component/text-field";
-import { H5, H6, Paragraph, SemiSpan } from "@component/Typography";
+import { H5, H6, SemiSpan } from "@component/Typography";
 import { useStorefrontCatalog } from "@hook/useStorefrontCatalog";
 import type {
   StorefrontCatalogFilters,
@@ -54,188 +53,173 @@ export default function ProductFilterCard({
   onFeaturedChange,
 }: ProductFilterCardProps) {
   const t = useTranslations("product.filters");
+
+  // Fetch live filter options (pageSize:1 = metadata only, no product list needed)
   const { data: catalog } = useStorefrontCatalog({
     ...catalogParams,
     pageSize: 1,
   });
-  const filters = catalog?.filters || initialFilters;
-  const categories = filters?.categories || [];
-  const brands = dedupeBrands(filters?.brands || []);
-  const [minPrice, setMinPrice] = useState(selectedMinPrice?.toString() || "");
-  const [maxPrice, setMaxPrice] = useState(selectedMaxPrice?.toString() || "");
 
+  const filters = catalog?.filters ?? initialFilters;
+  const categories = filters?.categories ?? [];
+  const brands = dedupeBrands(filters?.brands ?? []);
+
+  // ── Price range local state (debounced) ─────────────────────────────────
+  const [minPrice, setMinPrice] = useState(selectedMinPrice?.toString() ?? "");
+  const [maxPrice, setMaxPrice] = useState(selectedMaxPrice?.toString() ?? "");
+  const priceChangeRef = useRef(onPriceChange);
+  priceChangeRef.current = onPriceChange;
+
+  // Sync controlled value when parent resets it
   useEffect(() => {
-    setMinPrice(selectedMinPrice?.toString() || "");
+    setMinPrice(selectedMinPrice?.toString() ?? "");
   }, [selectedMinPrice]);
 
   useEffect(() => {
-    setMaxPrice(selectedMaxPrice?.toString() || "");
+    setMaxPrice(selectedMaxPrice?.toString() ?? "");
   }, [selectedMaxPrice]);
 
+  // Debounce price updates (400ms)
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      const nextMinPrice = toPriceFilter(minPrice);
-      const nextMaxPrice = toPriceFilter(maxPrice);
-
-      onPriceChange?.({
-        minPrice: nextMinPrice,
-        maxPrice: nextMaxPrice,
+      priceChangeRef.current?.({
+        minPrice: toPriceFilter(minPrice),
+        maxPrice: toPriceFilter(maxPrice),
       });
     }, 400);
-
     return () => window.clearTimeout(timer);
-  }, [maxPrice, minPrice, onPriceChange]);
+  }, [minPrice, maxPrice]);
 
-  const handleBrandChange = useCallback(
-    (brand: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      onBrandChange?.(event.target.checked ? brand : undefined);
-    },
-    [onBrandChange],
-  );
-
+  // ── Handlers ────────────────────────────────────────────────────────────
   const handleCategoryChange = useCallback(
-    (category: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      onCategoryChange?.(event.target.checked ? category : undefined);
+    (slug: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      onCategoryChange?.(e.target.checked ? slug : undefined);
     },
     [onCategoryChange],
   );
 
+  const handleBrandChange = useCallback(
+    (slug: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      onBrandChange?.(e.target.checked ? slug : undefined);
+    },
+    [onBrandChange],
+  );
+
+  const handleOtherChange = useCallback(
+    (item: OtherOption) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const checked = e.target.checked;
+      if (item === "onSale") onOnSaleChange?.(checked);
+      else if (item === "inStock") onInStockChange?.(checked);
+      else if (item === "featured") onFeaturedChange?.(checked);
+    },
+    [onOnSaleChange, onInStockChange, onFeaturedChange],
+  );
+
+  const getOtherChecked = (item: OtherOption) => {
+    if (item === "onSale") return !!selectedOnSale;
+    if (item === "inStock") return !!selectedInStock;
+    if (item === "featured") return !!selectedFeatured;
+    return false;
+  };
+
   return (
     <Card p="18px 27px" elevation={5} borderRadius={12}>
+      {/* ── Categories ── */}
       <H6 mb="10px">{t("categories")}</H6>
 
-      {categories.map((item) => (
-        <CheckBox
-          my="10px"
-          key={item.slug}
-          name="category"
-          value={item.slug}
-          checked={selectedCategory === item.slug}
-          color="secondary"
-          label={
-            <SemiSpan color="inherit">
-              {item.name} ({item.totalProducts})
-            </SemiSpan>
-          }
-          onChange={handleCategoryChange(item.slug)}
-        />
-      ))}
+      {categories.length === 0 ? (
+        <SemiSpan color="text.muted" fontSize="0.8rem">—</SemiSpan>
+      ) : (
+        categories.map((item) => (
+          <CheckBox
+            my="10px"
+            key={item.slug}
+            name="category"
+            value={item.slug}
+            checked={selectedCategory === item.slug}
+            color="secondary"
+            label={
+              <SemiSpan color="inherit">
+                {item.name} ({item.totalProducts})
+              </SemiSpan>
+            }
+            onChange={handleCategoryChange(item.slug)}
+          />
+        ))
+      )}
 
       <Divider mt="18px" mb="24px" />
 
-      {/* PRICE RANGE FILTER */}
+      {/* ── Price range ── */}
       <H6 mb="16px">{t("priceRange")}</H6>
-      <FlexBox justifyContent="space-between" alignItems="center">
+      <FlexBox justifyContent="space-between" alignItems="center" style={{ gap: "0.5rem" }}>
         <TextField
           placeholder={filters?.minPrice ? String(filters.minPrice) : "0"}
           type="number"
           min={0}
           value={minPrice}
           fullWidth
-          onChange={(event) => setMinPrice(event.target.value)}
+          onChange={(e) => setMinPrice(e.target.value)}
         />
-
-        <H5 color="text.muted" px="0.5rem">
-          -
-        </H5>
-
+        <H5 color="text.muted" style={{ flexShrink: 0 }}>—</H5>
         <TextField
-          placeholder={filters?.maxPrice ? String(filters.maxPrice) : "250"}
+          placeholder={filters?.maxPrice ? String(filters.maxPrice) : "∞"}
           type="number"
           min={0}
           value={maxPrice}
           fullWidth
-          onChange={(event) => setMaxPrice(event.target.value)}
+          onChange={(e) => setMaxPrice(e.target.value)}
         />
       </FlexBox>
 
       <Divider my="24px" />
 
-      {/* BRANDS FILTER */}
+      {/* ── Brands ── */}
       <H6 mb="16px">{t("brands")}</H6>
-      {brands.map((item) => (
-        <CheckBox
-          my="10px"
-          key={item.slug}
-          name="brand"
-          value={item.slug}
-          checked={selectedBrand === item.slug}
-          color="secondary"
-          label={
-            <SemiSpan color="inherit">
-              {item.name} ({item.totalProducts})
-            </SemiSpan>
-          }
-          onChange={handleBrandChange(item.slug)}
-        />
-      ))}
+
+      {brands.length === 0 ? (
+        <SemiSpan color="text.muted" fontSize="0.8rem">—</SemiSpan>
+      ) : (
+        brands.map((item) => (
+          <CheckBox
+            my="10px"
+            key={item.slug}
+            name="brand"
+            value={item.slug}
+            checked={selectedBrand === item.slug}
+            color="secondary"
+            label={
+              <SemiSpan color="inherit">
+                {item.name} ({item.totalProducts})
+              </SemiSpan>
+            }
+            onChange={handleBrandChange(item.slug)}
+          />
+        ))
+      )}
 
       <Divider my="24px" />
 
-      {/* STOCK AND SALES FILTERS */}
+      {/* ── Quick filters: onSale / inStock / featured ── */}
       {OTHER_OPTIONS.map((item) => (
         <CheckBox
           my="10px"
           key={item}
           name={item}
           value={item}
-          checked={getOtherOptionChecked(item, { selectedOnSale, selectedInStock, selectedFeatured })}
+          checked={getOtherChecked(item)}
           color="secondary"
           label={<SemiSpan color="inherit">{t(`otherOptions.${item}`)}</SemiSpan>}
-          onChange={(e) =>
-            handleOtherOptionChange(item, e.target.checked, {
-              onOnSaleChange,
-              onInStockChange,
-              onFeaturedChange,
-            })
-          }
+          onChange={handleOtherChange(item)}
         />
       ))}
-
-      <Divider my="24px" />
-
-      {/* RATING FILTER */}
-      <H6 mb="16px">{t("ratings")}</H6>
-      {[5, 4, 3, 2, 1].map((item) => (
-        <CheckBox
-          my="10px"
-          key={item}
-          value={item}
-          color="secondary"
-          label={<Rating value={item} outof={5} color="warn" />}
-          onChange={(e) => console.log(e.target.value, e.target.checked)}
-        />
-      ))}
-
     </Card>
   );
 }
 
-function getOtherOptionChecked(
-  item: OtherOption,
-  state: { selectedOnSale?: boolean; selectedInStock?: boolean; selectedFeatured?: boolean },
-) {
-  if (item === "onSale") return !!state.selectedOnSale;
-  if (item === "inStock") return !!state.selectedInStock;
-  if (item === "featured") return !!state.selectedFeatured;
-  return false;
-}
+// ── Pure helpers ────────────────────────────────────────────────────────────
 
-function handleOtherOptionChange(
-  item: OtherOption,
-  checked: boolean,
-  handlers: {
-    onOnSaleChange?: (checked: boolean) => void;
-    onInStockChange?: (checked: boolean) => void;
-    onFeaturedChange?: (checked: boolean) => void;
-  },
-) {
-  if (item === "onSale") handlers.onOnSaleChange?.(checked);
-  else if (item === "inStock") handlers.onInStockChange?.(checked);
-  else if (item === "featured") handlers.onFeaturedChange?.(checked);
-}
-
-function toPriceFilter(value: string) {
+function toPriceFilter(value: string): number | undefined {
   const price = Number(value);
   if (!value.trim() || !Number.isFinite(price) || price < 0) return undefined;
   return price;
@@ -243,51 +227,42 @@ function toPriceFilter(value: string) {
 
 function dedupeBrands<T extends { name: string; slug: string; totalProducts: number }>(
   brands: T[],
-) {
+): T[] {
   const grouped = new Map<string, T>();
 
   for (const brand of brands) {
-    const key = normalizeBrandKey(brand.slug || brand.name);
+    const key = (brand.slug || brand.name).trim().toLowerCase();
     const current = grouped.get(key);
 
     if (!current) {
       grouped.set(key, brand);
-      continue;
+    } else {
+      grouped.set(key, {
+        ...current,
+        name: pickBrandDisplayName(current.name, brand.name),
+        totalProducts: current.totalProducts + brand.totalProducts,
+      });
     }
-
-    grouped.set(key, {
-      ...current,
-      name: pickBrandDisplayName(current.name, brand.name),
-      totalProducts: current.totalProducts + brand.totalProducts,
-    });
   }
 
   return Array.from(grouped.values()).sort(
-    (left, right) =>
-      right.totalProducts - left.totalProducts ||
-      left.name.localeCompare(right.name, "ru"),
+    (a, b) =>
+      b.totalProducts - a.totalProducts || a.name.localeCompare(b.name, "ru"),
   );
 }
 
-function normalizeBrandKey(value: string) {
-  return value.trim().toLowerCase();
-}
-
-function pickBrandDisplayName(current: string, candidate: string) {
-  const currentScore = getBrandDisplayScore(current);
-  const candidateScore = getBrandDisplayScore(candidate);
-  if (candidateScore !== currentScore) {
-    return candidateScore > currentScore ? candidate : current;
-  }
+function pickBrandDisplayName(current: string, candidate: string): string {
+  const score = (v: string) => {
+    const letters = v.replace(/[^A-Za-zА-Яа-яЁё]/g, "");
+    if (!letters) return 0;
+    const upper = letters.replace(/[^A-ZА-ЯЁ]/g, "").length;
+    const lower = letters.replace(/[^a-zа-яё]/g, "").length;
+    if (upper > 1 && lower === 0) return 3;
+    if (upper === 1 && lower > 0) return 2;
+    return 1;
+  };
+  const cs = score(current);
+  const cands = score(candidate);
+  if (cands !== cs) return cands > cs ? candidate : current;
   return candidate.length < current.length ? candidate : current;
-}
-
-function getBrandDisplayScore(value: string) {
-  const letters = value.replace(/[^A-Za-zА-Яа-яЁё]/g, "");
-  if (!letters) return 0;
-  const upper = letters.replace(/[^A-ZА-ЯЁ]/g, "").length;
-  const lower = letters.replace(/[^a-zа-яё]/g, "").length;
-  if (upper > 1 && lower === 0) return 3;
-  if (upper === 1 && lower > 0) return 2;
-  return 1;
 }

@@ -22,15 +22,20 @@ export const useStorefrontCategories = () =>
   });
 
 export const useStorefrontCatalog = (params: StorefrontCatalogParams = {}) =>
-  useQuery(storefrontCatalogQueryOptions(params));
+  useQuery({
+    ...storefrontCatalogQueryOptions(params),
+    placeholderData: keepPreviousData,
+  });
 
 export const useStorefrontProducts = (
   params: StorefrontCatalogParams = {},
-  placeholderData?: Product[],
+  fallbackData?: Product[],
 ) =>
   useQuery({
     ...storefrontProductsQueryOptions(params),
-    placeholderData,
+    // Show previous results while new query is fetching (prevents blank flash).
+    // Falls back to SSR data on the very first client render.
+    placeholderData: (prev: Product[] | undefined) => prev ?? fallbackData,
   });
 
 export const useStorefrontProduct = (
