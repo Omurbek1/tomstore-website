@@ -23,7 +23,7 @@ export default function MobileCategoryImageBox({ icon, title, imgUrl }: Props) {
   return (
     <FlexBox flexDirection="column" alignItems="center" justifyContent="center">
       {imgUrl ? (
-        <StyledImage src={imgUrl} width={69} height={60} alt="bonik" />
+        <StyledImage src={imgUrl} width={69} height={60} alt="tomstore" />
       ) : (
         icon && <Icon size="48px">{icon}</Icon>
       )}

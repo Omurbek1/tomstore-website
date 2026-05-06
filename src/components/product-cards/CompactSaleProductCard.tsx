@@ -39,7 +39,7 @@ export default function CompactSaleProductCard({
             src={imgUrl || "/assets/images/products/Rectangle 116.png"}
             width={500}
             height={500}
-            alt="bonik"
+            alt="tomstore"
           />
         </HoverBox>
 

@@ -143,7 +143,7 @@ export default function FashionProductCard({
             src={imgUrl}
             width={200}
             height={200}
-            alt="bonik"
+            alt="tomstore"
             style={{
               width: "100%",
               height: "auto",

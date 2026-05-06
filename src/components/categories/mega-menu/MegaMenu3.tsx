@@ -46,7 +46,7 @@ export default function MegaMenu3({
           {rightImage && (
             <Link href={rightImage.href}>
               <Box position="relative" width="153px" height="100%">
-                <NextImage src={rightImage.imgUrl} fill alt="bonik" />
+                <NextImage src={rightImage.imgUrl} fill alt="tomstore" />
               </Box>
             </Link>
           )}

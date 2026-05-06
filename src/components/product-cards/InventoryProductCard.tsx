@@ -34,7 +34,7 @@ export default function InventoryProductCard({ imgUrl, title, available }: Props
           width={256}
           height={166}
           style={{ width: "100%", objectFit: "contain" }}
-          alt="bonik"
+          alt="tomstore"
         />
       </ImgBox>
 
