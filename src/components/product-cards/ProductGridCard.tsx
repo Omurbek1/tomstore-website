@@ -83,7 +83,8 @@ const Wrapper = styled(Card)`
     }
 
     @media only screen and (max-width: ${deviceSize.sm}px) {
-      display: block;
+      height: 160px;
+      flex: 0 0 160px;
     }
   }
 
@@ -123,8 +124,19 @@ const Wrapper = styled(Card)`
 
   @media only screen and (max-width: 768px) {
     .details {
+      padding: 0.75rem;
       .add-cart {
         display: flex;
+      }
+    }
+  }
+
+  @media only screen and (max-width: ${deviceSize.sm}px) {
+    .details {
+      padding: 0.5rem;
+      .title {
+        font-size: 12px !important;
+        margin-bottom: 4px !important;
       }
     }
   }

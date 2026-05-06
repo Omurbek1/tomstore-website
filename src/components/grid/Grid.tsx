@@ -23,7 +23,8 @@ export default function Grid({
 
   if (props.container) {
     childList = Children.map(children, (child) => {
-      if (!isValidElement(child)) return child;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (!isValidElement<any>(child)) return child;
       return cloneElement(child, {
         spacing: spacing,
         vertical_spacing: vertical_spacing,

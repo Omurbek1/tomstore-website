@@ -44,12 +44,25 @@ const StyledHeader = styled.header`
   @media only screen and (max-width: 900px) {
     height: ${layoutConstant.mobileHeaderHeight};
 
-    .logo,
+    .logo {
+      margin-right: 0.5rem;
+      svg {
+        width: 64px;
+        height: auto;
+      }
+    }
+
     .icon-holder,
     .category-holder {
       display: none;
     }
+
     .header-right {
+      display: flex !important;
+      margin-left: 0.5rem;
+    }
+
+    .header-right .desktop-only {
       display: none !important;
     }
   }

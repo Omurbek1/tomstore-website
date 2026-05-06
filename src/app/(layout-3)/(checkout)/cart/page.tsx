@@ -1,6 +1,7 @@
 "use client";
 import { Fragment, useState } from "react";
 import Image from "next/image";
+import styled from "styled-components";
 import { useTranslations } from "next-intl";
 // GLOBAL CUSTOM COMPONENTS
 import Box from "@component/Box";
@@ -21,6 +22,21 @@ import { buildCartWhatsAppOrderUrl } from "@utils/whatsappOrder";
 // CUSTOM DATA
 import countryList from "@data/countryList";
 import { Link } from "@i18n/navigation";
+
+const MobileStickyBar = styled.div`
+  display: none;
+  @media (max-width: 900px) {
+    display: block;
+    position: fixed;
+    bottom: 64px;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    background: ${({ theme }) => theme.colors.body.paper};
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  }
+`;
 
 export default function Cart() {
   const cart = useCartItems();
@@ -61,6 +77,28 @@ export default function Cart() {
 
   return (
     <Fragment>
+      {/* Mobile sticky checkout bar */}
+      <MobileStickyBar>
+        <FlexBox justifyContent="space-between" alignItems="center" mb="0.5rem">
+          <Typography fontWeight="600">{t("total")}</Typography>
+          <Typography fontSize="18px" fontWeight="700" color="primary.main">
+            {formatCurrency(cartTotal)}
+          </Typography>
+        </FlexBox>
+        <Button
+          as="a"
+          variant="contained"
+          color="primary"
+          fullWidth
+          {...{
+            href: whatsappOrderHref,
+            target: "_blank",
+            rel: "noopener noreferrer",
+          }}>
+          {t("sendToWhatsApp")}
+        </Button>
+      </MobileStickyBar>
+
       <Grid container spacing={6}>
         <Grid item lg={8} md={8} xs={12}>
           {cart.map((item) => (

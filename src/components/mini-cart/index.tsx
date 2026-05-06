@@ -1,16 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { Fragment } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@i18n/navigation";
 
 import Avatar from "@component/avatar";
 import Icon from "@component/icon/Icon";
 import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
-import { Button } from "@component/buttons";
+import { Button, IconButton } from "@component/buttons";
 import Typography, { H5, Paragraph, Tiny } from "@component/Typography";
+import { IconX } from "@tabler/icons-react";
 import { useCartItems, useCartTotal, useChangeCartAmount } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
 import { buildCartWhatsAppOrderUrl } from "@utils/whatsappOrder";
@@ -39,11 +40,16 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
   return (
     <StyledMiniCart>
       <div className="cart-list">
-        <FlexBox alignItems="center" m="0px 20px" height="74px">
-          <Icon size="1.5rem">bag</Icon>
-          <Typography fontWeight={600} fontSize="16px" ml="0.5rem">
-            {cart.length} {cart.length === 1 ? "item" : "items"}
-          </Typography>
+        <FlexBox alignItems="center" justifyContent="space-between" m="0px 20px" height="74px">
+          <FlexBox alignItems="center">
+            <Icon size="1.5rem">bag</Icon>
+            <Typography fontWeight={600} fontSize="16px" ml="0.5rem">
+              {t("itemsCount", { count: cart.length })}
+            </Typography>
+          </FlexBox>
+          <IconButton color="gray.600" padding="4px" onClick={toggleSidenav}>
+            <IconX size={20} />
+          </IconButton>
         </FlexBox>
 
         <Divider />
@@ -54,9 +60,9 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
             flexDirection="column"
             justifyContent="center"
             height="calc(100% - 80px)">
-            <Image src="/assets/images/logos/shopping-bag.svg" width={90} height={90} alt="bonik" />
+            <Image src="/assets/images/logos/shopping-bag.svg" width={90} height={90} alt="empty cart" />
             <Paragraph mt="1rem" color="text.muted" textAlign="center" maxWidth="200px">
-              Your shopping bag is empty. Start shopping
+              {t("emptyCart")}
             </Paragraph>
           </FlexBox>
         )}
@@ -103,7 +109,7 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
               </Link>
 
               <div className="product-details">
-                <Link href={`/product/${item.id}`}>
+                <Link href={`/product/${item.slug}`}>
                   <H5 className="title" fontSize="14px">
                     {item.name}
                   </H5>
@@ -151,7 +157,7 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
 
           <Link href="/cart">
             <Button fullWidth color="primary" variant="outlined" mt="1rem" onClick={toggleSidenav}>
-              <Typography fontWeight={600}>View Cart</Typography>
+              <Typography fontWeight={600}>{t("viewCart")}</Typography>
             </Button>
           </Link>
         </div>

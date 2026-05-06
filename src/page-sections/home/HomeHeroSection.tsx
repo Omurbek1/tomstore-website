@@ -1,7 +1,7 @@
 import Box from "@component/Box";
 import Container from "@component/Container";
 import { Carousel } from "@component/carousel";
-import { CarouselCard1 } from "@component/carousel-cards";
+import { HeroBannerCard } from "@component/carousel-cards";
 import type { StorefrontHeroCarouselItem } from "@utils/__api__/storefront";
 
 type HomeHeroSectionProps = {
@@ -31,7 +31,7 @@ export default function HomeHeroSection({ slides }: HomeHeroSectionProps) {
             speed={500}
             pauseOnHover>
             {slides.map((slide) => (
-              <CarouselCard1
+              <HeroBannerCard
                 key={slide.id}
                 title={slide.title}
                 image={slide.imgUrl}
@@ -42,7 +42,7 @@ export default function HomeHeroSection({ slides }: HomeHeroSectionProps) {
             ))}
           </Carousel>
         ) : (
-          <CarouselCard1
+          <HeroBannerCard
             title={singleSlide.title}
             image={singleSlide.imgUrl}
             buttonText={singleSlide.buttonText}

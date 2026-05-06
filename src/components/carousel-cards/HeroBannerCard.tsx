@@ -4,7 +4,7 @@ import Typography from "@component/Typography";
 import { JSX } from "react/jsx-runtime";
 
 // STYLED COMPONENT
-const StyledCarouselCard1 = styled.div`
+const StyledHeroBannerCard = styled.div`
   display: flex;
   text-align: left;
   min-height: 360px;
@@ -35,23 +35,42 @@ const StyledCarouselCard1 = styled.div`
   }
 
   @media only screen and (max-width: 900px) {
-    min-height: 300px;
+    min-height: 260px;
 
-    .title {
-      font-size: 32px;
+    .content .title {
+      font-size: 30px;
     }
   }
 
-  @media only screen and (max-width: 425px) {
-    .title {
-      font-size: 16px;
+  @media only screen and (max-width: 600px) {
+    flex-direction: column-reverse;
+    gap: 1rem;
+    padding: 1.5rem 0;
+    min-height: unset;
+
+    .content {
+      max-width: 100%;
+      text-align: center;
+      .title {
+        font-size: 22px;
+        margin-bottom: 0.75rem;
+      }
+      p, span {
+        font-size: 13px;
+      }
     }
-    .title + * {
-      font-size: 13px;
+
+    .image-holder {
+      flex: 0 0 auto;
+      width: 60%;
+      max-width: 200px;
+      margin: 0 auto;
     }
+
     .button-link {
       font-size: 13px;
-      padding: 0.66rem 0.95rem;
+      padding: 0.6rem 1rem;
+      margin: 0 auto;
     }
   }
 `;
@@ -64,8 +83,8 @@ const buttonStyles = ({ theme }: any) => ({
   justifyContent: "center",
   padding: "1rem 1.5rem",
   borderRadius: "0.5rem",
-  color: theme.colors?.primary?.text || "#FFFFFF",
-  backgroundColor: theme.colors?.primary?.main || "#E94560",
+  color: theme?.colors?.primary?.text || "#FFFFFF",
+  backgroundColor: theme?.colors?.primary?.main || "#E94560",
   fontSize: 14,
   fontWeight: 600,
   lineHeight: 1,
@@ -88,7 +107,7 @@ interface Props {
 
 const isExternalUrl = (href?: string) => /^https?:\/\//.test(String(href || ""));
 
-export default function CarouselCard1({
+export default function HeroBannerCard({
   title,
   image,
   buttonLink,
@@ -96,7 +115,7 @@ export default function CarouselCard1({
   description,
 }: Props) {
   return (
-    <StyledCarouselCard1>
+    <StyledHeroBannerCard>
       <div className="content">
         <h1 className="title">{title}</h1>
         <Typography color="secondary.main" mb="1.35rem">
@@ -125,6 +144,6 @@ export default function CarouselCard1({
           <img src={image} alt={title || "banner"} />
         </div>
       ) : null}
-    </StyledCarouselCard1>
+    </StyledHeroBannerCard>
   );
 }

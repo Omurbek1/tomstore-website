@@ -43,10 +43,21 @@ export const StyledMiniCart = styled.div`
     .clear-icon {
       cursor: pointer;
       color: ${({ theme }) => theme.colors.gray[600]};
+      flex-shrink: 0;
     }
   }
 
   .actions {
     margin: 1rem 1rem 0.75rem;
+  }
+
+  @media (max-width: 600px) {
+    .cart-item {
+      padding: 0.75rem;
+    }
+
+    .actions {
+      padding-bottom: 0.5rem;
+    }
   }
 `;

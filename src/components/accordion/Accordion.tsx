@@ -49,7 +49,8 @@ export default function Accordion({ expanded = false, children }: AccordionProps
 
   const modifiedChildren = useMemo(() => {
     return Children.map(children, (child, ind) => {
-      if (ind === 0 && isValidElement(child)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (ind === 0 && isValidElement<any>(child)) {
         return cloneElement(child, { open, onClick: toggle });
       }
       return child;

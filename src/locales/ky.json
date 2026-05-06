@@ -365,7 +365,11 @@
       "zipCode": "Почта индекси",
       "calculateShipping": "Жеткирүүнү эсептөө",
       "checkoutNow": "Тариздөөгө өтүү",
-      "sendToWhatsApp": "WhatsApp'ка жөнөтүү"
+      "sendToWhatsApp": "WhatsApp'ка жөнөтүү",
+      "viewCart": "Себетти көрүү",
+      "itemsCount": "{count, plural, one {# товар} other {# товар}}",
+      "emptyCart": "Себет бош. Кары баштаңыз!",
+      "close": "Жабуу"
     },
     "form": {
       "shippingAddress": "Жеткирүү дареги",

@@ -21,7 +21,7 @@ export default function HomeRecommendedProductsSection({
 
       <Grid container spacing={6}>
         {products.map((product) => (
-          <Grid item lg={3} md={4} sm={6} xs={12} key={product.id}>
+          <Grid item lg={3} md={4} sm={6} xs={6} key={product.id}>
             <ProductGridCard
               hoverEffect
               id={product.id}

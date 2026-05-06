@@ -34,7 +34,7 @@ const styles = {
     top: 0,
     bottom: 0,
     [position]: 0,
-    width: `${width}px`,
+    width: `min(${width}px, 100vw)`,
     backgroundColor: "white",
     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
     zIndex: 1201,
@@ -118,8 +118,6 @@ export default function Sidenav({
     },
   };
 
-  if (!isMounted) return null;
-
   const sidenavContent = (
     <AnimatePresence>
       {open && (
@@ -149,7 +147,7 @@ export default function Sidenav({
 
   return (
     <Fragment>
-      {createPortal(sidenavContent, document.body)}
+      {isMounted && createPortal(sidenavContent, document.body)}
       {handle}
     </Fragment>
   );

@@ -365,7 +365,11 @@
       "zipCode": "Zip Code",
       "calculateShipping": "Calculate Shipping",
       "checkoutNow": "Checkout Now",
-      "sendToWhatsApp": "Send to WhatsApp"
+      "sendToWhatsApp": "Send to WhatsApp",
+      "viewCart": "View Cart",
+      "itemsCount": "{count, plural, one {# item} other {# items}}",
+      "emptyCart": "Your cart is empty. Start shopping!",
+      "close": "Close"
     },
     "form": {
       "shippingAddress": "Shipping Address",

@@ -63,7 +63,7 @@ export default function Header({ isFixed, className }: HeaderProps) {
   return (
     <StyledHeader className={className}>
       <Container className="container">
-        <FlexBox className="logo" alignItems="center" mr="1rem">
+        <FlexBox className="logo" alignItems="center" mr="1rem" flexShrink={0}>
           <Link href="/">
             <Logo />
           </Link>
@@ -87,7 +87,13 @@ export default function Header({ isFixed, className }: HeaderProps) {
         </FlexBox>
 
         <FlexBox className="header-right" alignItems="center">
-          <IconButton borderRadius={8} ml="1rem" bg="gray.200" p="12px" onClick={handleOpenLogin}>
+          <IconButton
+            borderRadius={8}
+            ml="1rem"
+            bg="gray.200"
+            p="12px"
+            onClick={handleOpenLogin}
+            className="desktop-only">
             <IconUser size={16} stroke={1.5} />
           </IconButton>
 

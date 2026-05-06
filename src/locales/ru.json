@@ -365,7 +365,11 @@
       "zipCode": "Почтовый индекс",
       "calculateShipping": "Рассчитать доставку",
       "checkoutNow": "Перейти к оформлению",
-      "sendToWhatsApp": "Отправить в WhatsApp"
+      "sendToWhatsApp": "Отправить в WhatsApp",
+      "viewCart": "Смотреть корзину",
+      "itemsCount": "{count, plural, one {# товар} few {# товара} many {# товаров} other {# товаров}}",
+      "emptyCart": "Корзина пуста. Начните покупки!",
+      "close": "Закрыть"
     },
     "form": {
       "shippingAddress": "Адрес доставки",
