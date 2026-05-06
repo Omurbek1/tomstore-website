@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@i18n/navigation";
 import { ReactNode } from "react";
 import { IconChevronRight } from "@tabler/icons-react";
 import Icon from "@component/icon/Icon";

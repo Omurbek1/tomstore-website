@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Link from "next/link";
+import { Link } from "@i18n/navigation";
 import Typography from "@component/Typography";
 import { JSX } from "react/jsx-runtime";
 

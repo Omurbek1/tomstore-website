@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@i18n/navigation";
 
 import Box from "@component/Box";
 import Card from "@component/Card";
