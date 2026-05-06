@@ -118,7 +118,7 @@ const ButtonBox = styled(FlexBox)(({ theme }) => ({
 }));
 
 // =============================================================
-type ProductCardProps = {
+type HoverActionProductCardProps = {
   off: number;
   slug: string;
   title: string;
@@ -131,7 +131,7 @@ type ProductCardProps = {
 };
 // =============================================================
 
-export default function ProductCard16(props: ProductCardProps) {
+export default function HoverActionProductCard(props: HoverActionProductCardProps) {
     const locale = useLocale();
   const { off, id, title, price, imgUrl, rating, hoverEffect, slug, images } = props;
 

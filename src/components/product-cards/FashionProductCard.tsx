@@ -102,7 +102,7 @@ interface Props {
 }
 // ============================================================
 
-export default function ProductCard15({
+export default function FashionProductCard({
   id,
   off,
   slug,

@@ -3,10 +3,10 @@ import { H4 } from "@component/Typography";
 import NextImage from "@component/NextImage";
 
 // ====================================================================
-type ProductCard5Props = { imgUrl: string; title: string };
+type BrandShowcaseCardProps = { imgUrl: string; title: string };
 // ====================================================================
 
-export default function ProductCard5({ imgUrl, title }: ProductCard5Props) {
+export default function BrandShowcaseCard({ imgUrl, title }: BrandShowcaseCardProps) {
   return (
     <div>
       <HoverBox borderRadius={5} mb="0.5rem" display="flex">

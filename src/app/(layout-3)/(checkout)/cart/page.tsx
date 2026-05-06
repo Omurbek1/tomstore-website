@@ -13,7 +13,7 @@ import TextArea from "@component/textarea";
 import { Button } from "@component/buttons";
 import TextField from "@component/text-field";
 import Typography, { Paragraph } from "@component/Typography";
-import { ProductCard7 } from "@component/product-cards";
+import { CartProductRow } from "@component/product-cards";
 // CUSTOM HOOK
 import { useCartItems, useCartTotal } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
@@ -57,7 +57,7 @@ export default function Cart() {
       <Grid container spacing={6}>
         <Grid item lg={8} md={8} xs={12}>
           {cart.map((item) => (
-            <ProductCard7
+            <CartProductRow
               mb="1.5rem"
               id={item.id}
               key={item.id}

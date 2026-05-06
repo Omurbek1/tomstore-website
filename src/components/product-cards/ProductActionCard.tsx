@@ -105,7 +105,7 @@ const Wrapper = styled(Card)`
 `;
 
 // ======================================================================
-interface ProductCard10Props {
+interface ProductActionCardProps {
   off: number;
   slug: string;
   unit: string;
@@ -118,7 +118,7 @@ interface ProductCard10Props {
 }
 // ======================================================================
 
-export default function ProductCard10({
+export default function ProductActionCard({
   id,
   off,
   unit,
@@ -127,7 +127,7 @@ export default function ProductCard10({
   price,
   imgUrl,
   images
-}: ProductCard10Props) {
+}: ProductActionCardProps) {
     const locale = useLocale();
   const changeCartAmount = useChangeCartAmount();
   const [open, setOpen] = useState(false);

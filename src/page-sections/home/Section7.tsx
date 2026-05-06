@@ -10,7 +10,7 @@ import FlexBox from "@component/FlexBox";
 import Container from "@component/Container";
 import NextImage from "@component/NextImage";
 import Typography from "@component/Typography";
-import { ProductCard1 } from "@component/product-cards";
+import { ProductGridCard } from "@component/product-cards";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 
 import StyledProductCategory from "./styled";
@@ -135,7 +135,7 @@ export default function Section7({ shops, brands, title, productList }: Props) {
           <Grid container spacing={6}>
             {productList.map((item) => (
               <Grid item lg={4} sm={6} xs={12} key={item.id}>
-                <ProductCard1
+                <ProductGridCard
                   hoverEffect
                   id={item.id}
                   slug={item.slug}

@@ -1,6 +1,6 @@
 import Box from "@component/Box";
 import { Carousel } from "@component/carousel";
-import ProductCard1 from "@component/product-cards/ProductCard1";
+import ProductGridCard from "@component/product-cards/ProductGridCard";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import { getTranslations } from "next-intl/server";
 // API FUNCTIONS
@@ -28,7 +28,7 @@ export default async function Section2() {
         <Carousel slidesToShow={4} responsive={responsive}>
           {products.map((item, ind) => (
             <Box py="0.25rem" key={item.id}>
-              <ProductCard1
+              <ProductGridCard
                 id={item.id}
                 slug={item.slug}
                 price={item.price}

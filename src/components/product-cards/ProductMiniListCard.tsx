@@ -36,7 +36,7 @@ const StyledProductCard = styled.div`
 `;
 
 // ===================================================
-type ProductCard11Props = {
+type ProductMiniListCardProps = {
   slug: string;
   off?: number;
   title: string;
@@ -46,7 +46,7 @@ type ProductCard11Props = {
 };
 // ===================================================
 
-export default function ProductCard11(props: ProductCard11Props) {
+export default function ProductMiniListCard(props: ProductMiniListCardProps) {
     const locale = useLocale();
   const { title, imgUrl, price, rating, slug, off = 0 } = props;
 

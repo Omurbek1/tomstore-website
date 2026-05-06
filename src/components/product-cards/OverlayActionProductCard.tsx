@@ -64,7 +64,7 @@ const QuickViewButton = styled(Button)(({ theme }) => ({
 }));
 
 // ==============================================================
-type ProductCard17Props = {
+type OverlayActionProductCardProps = {
   slug: string;
   title: string;
   price: number;
@@ -78,7 +78,7 @@ type ProductCard17Props = {
 
 // ==============================================================
 
-export default function ProductCard17({
+export default function OverlayActionProductCard({
   id,
   title,
   price,
@@ -87,7 +87,7 @@ export default function ProductCard17({
   reviews,
   slug,
   images
-}: ProductCard17Props) {
+}: OverlayActionProductCardProps) {
     const locale = useLocale();
   const changeCartAmount = useChangeCartAmount();
   const [openDialog, setOpenDialog] = useState(false);

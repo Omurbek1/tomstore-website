@@ -1,5 +1,5 @@
 import { Carousel } from "@component/carousel";
-import ProductCard6 from "@component/product-cards/ProductCard6";
+import CategoryPromoCard from "@component/product-cards/CategoryPromoCard";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import { getTranslations } from "next-intl/server";
 import { Link } from "i18n/navigation";
@@ -25,7 +25,7 @@ export default async function Section3() {
       <Carousel slidesToShow={3} responsive={responsive}>
         {categoryList.map((item) => (
           <Link href={`/catalog/${item.slug}`} key={item.slug}>
-            <ProductCard6 title={item.name} imgUrl={item.image ?? ''} subtitle={item.description ?? ''} />
+            <CategoryPromoCard title={item.name} imgUrl={item.image ?? ''} subtitle={item.description ?? ''} />
           </Link>
         ))}
       </Carousel>

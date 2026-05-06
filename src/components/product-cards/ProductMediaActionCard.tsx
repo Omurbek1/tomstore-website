@@ -56,7 +56,7 @@ const FavoriteButton = styled(IconButton)({
 });
 
 // ==============================================================
-type ProductCard19Props = {
+type ProductMediaActionCardProps = {
   img: string;
   name: string;
   slug: string;
@@ -67,7 +67,7 @@ type ProductCard19Props = {
 };
 // ==============================================================
 
-export default function ProductCard19({
+export default function ProductMediaActionCard({
   id,
   img,
   name,
@@ -75,7 +75,7 @@ export default function ProductCard19({
   price,
   images,
   reviews
-}: ProductCard19Props) {
+}: ProductMediaActionCardProps) {
     const locale = useLocale();
   const theme = useTheme();
   const changeCartAmount = useChangeCartAmount();

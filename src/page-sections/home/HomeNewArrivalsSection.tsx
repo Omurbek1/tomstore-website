@@ -1,6 +1,6 @@
 import Card from "@component/Card";
 import Grid from "@component/grid/Grid";
-import ProductCard2 from "@component/product-cards/ProductCard2";
+import ProductTileCard from "@component/product-cards/ProductTileCard";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import Product from "@models/product.model";
 
@@ -24,7 +24,7 @@ export default function HomeNewArrivalsSection({
         <Grid container spacing={6}>
           {products.map((product) => (
             <Grid item lg={2} md={3} sm={4} xs={6} key={product.id}>
-              <ProductCard2
+              <ProductTileCard
                 slug={product.slug}
                 title={product.title}
                 price={product.price}

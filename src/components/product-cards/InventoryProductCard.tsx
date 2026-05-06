@@ -25,7 +25,7 @@ type Props = {
 };
 // ===================================================
 
-export default function ProductCard14({ imgUrl, title, available }: Props) {
+export default function InventoryProductCard({ imgUrl, title, available }: Props) {
   return (
     <StyledCard>
       <ImgBox>

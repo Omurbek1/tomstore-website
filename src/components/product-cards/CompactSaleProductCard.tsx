@@ -9,7 +9,7 @@ import { calculateDiscount, currency } from "@utils/utils";
 import { useLocale } from "next-intl";
 
 // ==============================================================
-type ProductCard8Props = {
+type CompactSaleProductCardProps = {
   id: string;
   off: number;
   slug: string;
@@ -20,7 +20,7 @@ type ProductCard8Props = {
 };
 // ==============================================================
 
-export default function ProductCard8({
+export default function CompactSaleProductCard({
   id,
   off,
   slug,
@@ -28,7 +28,7 @@ export default function ProductCard8({
   title,
   imgUrl,
   ...props
-}: ProductCard8Props) {
+}: CompactSaleProductCardProps) {
     const locale = useLocale();
     
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import ProductGridView from "@component/products/ProductCard1List";
+import ProductGridView from "@component/products/ProductGrid";
 import Shop from "@models/shop.model";
 import Product from "@models/product.model";
 

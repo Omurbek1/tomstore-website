@@ -101,7 +101,7 @@ const ContentWrapper = styled("div")({
 });
 
 // =============================================================
-interface ProductCard12Props {
+interface HoverProductCardProps {
   id: string;
   off?: number;
   slug: string;
@@ -113,7 +113,7 @@ interface ProductCard12Props {
 }
 // =============================================================
 
-export default function ProductCard12({
+export default function HoverProductCard({
   id,
   off,
   slug,
@@ -122,7 +122,7 @@ export default function ProductCard12({
   imgUrl,
   rating,
   images
-}: ProductCard12Props) {
+}: HoverProductCardProps) {
     const locale = useLocale();
   const [open, setOpen] = useState(false);
   const changeCartAmount = useChangeCartAmount();

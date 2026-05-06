@@ -10,7 +10,7 @@ import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 import Pagination from "@component/pagination";
-import ProductCard1 from "@component/product-cards/ProductCard1";
+import ProductGridCard from "@component/product-cards/ProductGridCard";
 import DashboardPageHeader from "@component/DashboardPageHeader";
 
 export default function WishList() {
@@ -29,7 +29,7 @@ export default function WishList() {
       <Grid container spacing={6}>
         {db.slice(53, 59).map((item) => (
           <Grid item lg={4} sm={6} xs={12} key={item.id}>
-            <ProductCard1
+            <ProductGridCard
               id={item.id}
               slug={item.slug}
               price={item.price}

@@ -24,7 +24,7 @@ const StyledFlexBox = styled("div")({
 });
 
 // ===========================================
-type ProductCard18Props = {
+type HorizontalProductCardProps = {
   slug: string;
   image: string;
   title: string;
@@ -33,7 +33,7 @@ type ProductCard18Props = {
 };
 // ===========================================
 
-export default function ProductCard18({ image, title, price, slug, rating }: ProductCard18Props) {
+export default function HorizontalProductCard({ image, title, price, slug, rating }: HorizontalProductCardProps) {
     const locale = useLocale();
   return (
     <StyledFlexBox>

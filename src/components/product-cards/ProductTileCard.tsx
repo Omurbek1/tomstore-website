@@ -6,7 +6,7 @@ import useCurrency from "@hook/useCurrency";
 import { useLocale } from "next-intl";
 
 // ========================================================
-interface ProductCard2Props {
+interface ProductTileCardProps {
   slug: string;
   title: string;
   price: number;
@@ -14,7 +14,7 @@ interface ProductCard2Props {
 }
 // ========================================================
 
-export default function ProductCard2({ imgUrl, title, price, slug }: ProductCard2Props) {
+export default function ProductTileCard({ imgUrl, title, price, slug }: ProductTileCardProps) {
   const locale = useLocale();
   const formatCurrency = useCurrency();
   return (

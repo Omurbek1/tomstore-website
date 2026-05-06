@@ -1,6 +1,6 @@
 import Grid from "@component/grid/Grid";
 import Container from "@component/Container";
-import ProductCard1 from "@component/product-cards/ProductCard1";
+import ProductGridCard from "@component/product-cards/ProductGridCard";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import Product from "@models/product.model";
 
@@ -22,7 +22,7 @@ export default function HomeRecommendedProductsSection({
       <Grid container spacing={6}>
         {products.map((product) => (
           <Grid item lg={3} md={4} sm={6} xs={12} key={product.id}>
-            <ProductCard1
+            <ProductGridCard
               hoverEffect
               id={product.id}
               slug={product.slug}

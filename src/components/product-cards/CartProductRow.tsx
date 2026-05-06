@@ -48,7 +48,7 @@ const Wrapper = styled.div.withConfig({
 `;
 
 // =====================================================================
-interface ProductCard7Props extends SpaceProps {
+interface CartProductRowProps extends SpaceProps {
   qty: number;
   name: string;
   slug: string;
@@ -58,7 +58,7 @@ interface ProductCard7Props extends SpaceProps {
 }
 // =====================================================================
 
-export default function ProductCard7({
+export default function CartProductRow({
   id,
   qty,
   name,
@@ -66,7 +66,7 @@ export default function ProductCard7({
   price,
   imgUrl,
   ...others
-}: ProductCard7Props) {
+}: CartProductRowProps) {
   const changeCartAmount = useChangeCartAmount();
   const locale = useLocale();
   const formatCurrency = useCurrency();

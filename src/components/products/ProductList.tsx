@@ -3,7 +3,7 @@ import { Fragment } from "react";
 import FlexBox from "@component/FlexBox";
 import Pagination from "@component/pagination";
 import { SemiSpan } from "@component/Typography";
-import { ProductCard9 } from "@component/product-cards";
+import { ProductListCard } from "@component/product-cards";
 import Product from "@models/product.model";
 import { useTranslations } from "next-intl";
 
@@ -19,7 +19,7 @@ export default function ProductListView({ products }: Props) {
   return (
     <Fragment>
       {products.map((item) => (
-        <ProductCard9
+        <ProductListCard
           mb="1.25rem"
           id={item.id}
           key={item.id}

@@ -7,7 +7,7 @@ import { H4, Small } from "@component/Typography";
 import useCurrency from "@hook/useCurrency";
 
 // =======================================================
-type ProductCard4Props = {
+type TopRatedProductCardProps = {
   title: string;
   price: number;
   rating: number;
@@ -16,7 +16,7 @@ type ProductCard4Props = {
 };
 // =======================================================
 
-export default function ProductCard4(props: ProductCard4Props) {
+export default function TopRatedProductCard(props: TopRatedProductCardProps) {
   const { imgUrl, rating, title, price, reviewCount } = props;
   const formatCurrency = useCurrency();
 

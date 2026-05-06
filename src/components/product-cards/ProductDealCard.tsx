@@ -93,13 +93,13 @@ const Wrapper = styled.div`
 `;
 
 // ========================================================
-type ProductCard3Props = {
+type ProductDealCardProps = {
   className?: string;
   style?: CSSProperties;
 };
 // ========================================================
 
-export default function ProductCard3({ ...props }: ProductCard3Props) {
+export default function ProductDealCard({ ...props }: ProductDealCardProps) {
   return (
     <Wrapper {...props}>
       <div className="image-holder">

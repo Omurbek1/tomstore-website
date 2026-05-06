@@ -50,8 +50,26 @@ const Wrapper = styled(Card)`
   .image-holder {
     text-align: center;
     position: relative;
-    display: inline-block;
-    height: 100%;
+    display: flex;
+    height: 260px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 0.75rem 0;
+    flex: 0 0 260px;
+
+    a {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
 
     .extra-icons {
       z-index: 2;
@@ -70,6 +88,7 @@ const Wrapper = styled(Card)`
   }
 
   .details {
+    flex: 1 1 auto;
     padding: 1rem;
 
     .title,
@@ -112,7 +131,7 @@ const Wrapper = styled(Card)`
 `;
 
 // =======================================================================
-interface ProductCard1Props extends CardProps {
+interface ProductGridCardProps extends CardProps {
   off?: number;
   slug: string;
   title: string;
@@ -124,7 +143,7 @@ interface ProductCard1Props extends CardProps {
 }
 // =======================================================================
 
-export default function ProductCard1({
+export default function ProductGridCard({
   id,
   off,
   slug,
@@ -134,7 +153,7 @@ export default function ProductCard1({
   images,
   rating = 4,
   ...props
-}: ProductCard1Props) {
+}: ProductGridCardProps) {
   const theme = useTheme();
   const locale = useLocale();
   const formatCurrency = useCurrency();

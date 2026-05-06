@@ -4,14 +4,14 @@ import Chip from "@component/Chip";
 import NextImage from "@component/NextImage";
 
 // ===========================================================================
-type ProductCard6Props = {
+type CategoryPromoCardProps = {
   title: string;
   imgUrl: string;
   subtitle: string;
 };
 // ===========================================================================
 
-const ProductCard6 = ({ title, subtitle, imgUrl }: ProductCard6Props) => {
+const CategoryPromoCard = ({ title, subtitle, imgUrl }: CategoryPromoCardProps) => {
   return (
     <Card position="relative" padding="1rem" borderRadius={8}>
       <Chip
@@ -47,4 +47,4 @@ const ProductCard6 = ({ title, subtitle, imgUrl }: ProductCard6Props) => {
   );
 };
 
-export default ProductCard6;
+export default CategoryPromoCard;

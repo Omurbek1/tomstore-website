@@ -99,7 +99,7 @@ const Wrapper = styled(Card)`
 `;
 
 // ============================================================================
-type ProductCard9Props = {
+type ProductListCardProps = {
   off?: number;
   slug: string;
   title: string;
@@ -113,7 +113,7 @@ type ProductCard9Props = {
 };
 // ============================================================================
 
-export default function ProductCard9({
+export default function ProductListCard({
   id,
   off,
   slug,
@@ -124,7 +124,7 @@ export default function ProductCard9({
   images,
   categories,
   ...props
-}: ProductCard9Props) {
+}: ProductListCardProps) {
   const locale = useLocale();
   const formatCurrency = useCurrency();
   const t = useTranslations("product");

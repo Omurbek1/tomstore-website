@@ -122,7 +122,7 @@ interface Props {
 }
 // =====================================================================
 
-export default function ProductCard13({
+export default function ProductVariantCard({
   id,
   off,
   slug,

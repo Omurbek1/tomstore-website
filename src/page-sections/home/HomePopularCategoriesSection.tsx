@@ -1,6 +1,6 @@
 import { Link } from "i18n/navigation";
 import { Carousel } from "@component/carousel";
-import ProductCard6 from "@component/product-cards/ProductCard6";
+import CategoryPromoCard from "@component/product-cards/CategoryPromoCard";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import Category from "@models/category.model";
 
@@ -28,7 +28,7 @@ export default function HomePopularCategoriesSection({
       <Carousel slidesToShow={3} responsive={responsive}>
         {categories.map((category) => (
           <Link href={`/catalog/${category.slug}`} key={category.slug}>
-            <ProductCard6
+            <CategoryPromoCard
               title={category.name}
               imgUrl={category.image ?? ""}
               subtitle={category.description ?? ""}

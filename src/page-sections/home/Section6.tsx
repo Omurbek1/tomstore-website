@@ -9,7 +9,7 @@ import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import Container from "@component/Container";
 import NextImage from "@component/NextImage";
-import { ProductCard1 } from "@component/product-cards";
+import { ProductGridCard } from "@component/product-cards";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import StyledProductCategory from "./styled";
 import Brand from "@models/Brand.model";
@@ -74,7 +74,7 @@ export default function Section6({ carList, carBrands }: Props) {
           <Grid container spacing={6}>
             {carList.map((item) => (
               <Grid item lg={4} sm={6} xs={12} key={item.id}>
-                <ProductCard1
+                <ProductGridCard
                   hoverEffect
                   id={item.id}
                   slug={item.slug}

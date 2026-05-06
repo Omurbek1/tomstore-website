@@ -7,7 +7,7 @@ import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import Pagination from "@component/pagination";
 import { SemiSpan } from "@component/Typography";
-import { ProductCard1 } from "@component/product-cards";
+import { ProductGridCard } from "@component/product-cards";
 import { renderProductCount } from "@utils/utils";
 import Product from "@models/product.model";
 import { Meta } from "interfaces";
@@ -28,7 +28,7 @@ export default function SaleProducts({ products, meta }: Props) {
       <Grid container spacing={6}>
         {products.map((item: Product, ind: number) => (
           <Grid item lg={3} md={4} sm={6} xs={12} key={ind}>
-            <ProductCard1
+            <ProductGridCard
               id={item.id}
               slug={item.slug}
               price={item.price}
