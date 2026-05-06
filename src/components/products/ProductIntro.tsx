@@ -102,12 +102,6 @@ export default function ProductIntro({
   const displayOldPrice = selectedVariant?.oldPrice ?? oldPrice;
   const displayImages =
     selectedVariant?.images && selectedVariant.images.length ? selectedVariant.images : images;
-  const selectedInStock = selectedVariant ? selectedVariant.inStock : true;
-  const displayAvailability = selectedVariant
-    ? selectedInStock
-      ? selectedVariant.warehouse || availabilityLabel || t("stockAvailable")
-      : "Нет в наличии"
-    : availabilityLabel || t("stockAvailable");
   const cartId = selectedVariant?.id || id;
   const cartItem = useCartItemByIdOrSlug(cartId, routerId);
   const shareSlug = slug || routerId;
@@ -223,9 +217,6 @@ export default function ProductIntro({
               </SemiSpan>
             ) : null}
 
-            <SemiSpan color="inherit">
-              {displayAvailability}
-            </SemiSpan>
             {labels.length ? (
               <SemiSpan display="block" color="primary.main" mt="0.5rem">
                 {labels
@@ -257,8 +248,7 @@ export default function ProductIntro({
                 size="large"
                 color="primary"
                 variant="contained"
-                disabled={!selectedInStock}
-                style={selectedInStock ? { backgroundColor: "#D32F2F" } : undefined}
+                style={{ backgroundColor: "#D32F2F" }}
                 onClick={handleCartAmountChange(1)}>
                 В корзину
               </Button>
@@ -295,15 +285,12 @@ export default function ProductIntro({
               size="large"
               color="primary"
               variant="outlined"
-              disabled={!selectedInStock}
               style={{
                 borderColor: "#D32F2F",
                 color: "#D32F2F",
-                opacity: selectedInStock ? 1 : 0.55,
-                pointerEvents: selectedInStock ? "auto" : "none",
               }}
               {...{
-                href: selectedInStock ? whatsappOrderHref : undefined,
+                href: whatsappOrderHref,
                 target: "_blank",
                 rel: "noopener noreferrer",
               }}>

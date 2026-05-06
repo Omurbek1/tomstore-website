@@ -154,9 +154,6 @@ const structureRows = (product?: Product): StructuredRows => {
 
   if (result.specs.length === 0) {
     if (product?.brand) result.specs.push({ name: "Бренд", value: product.brand });
-    if (product?.availabilityLabel) {
-      result.specs.push({ name: "Наличие", value: product.availabilityLabel });
-    }
     if (product?.categories?.length) {
       result.specs.push({
         name: "Категория",

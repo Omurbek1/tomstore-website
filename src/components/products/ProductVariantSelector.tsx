@@ -66,8 +66,7 @@ export default function ProductVariantSelector({
                 key={variant.id}
                 type="button"
                 $selected={isSelected}
-                disabled={!variant.inStock}
-                onClick={() => variant.inStock && onSelectVariant(variant)}
+                onClick={() => onSelectVariant(variant)}
               >
                 <FlexBox justifyContent="space-between" alignItems="flex-start" style={{ gap: 12 }}>
                   <Box minWidth={0}>
@@ -102,12 +101,6 @@ export default function ProductVariantSelector({
               <H6 mb="10px">{filter.title}</H6>
               <ChipRow>
                 {options[filter.key].map((value) => {
-                  const disabled = !hasAvailableVariant(
-                    variants,
-                    selectedVariant,
-                    filter.key,
-                    value,
-                  );
                   const selected = selectedVariant[filter.key] === value;
 
                   return (
@@ -115,7 +108,6 @@ export default function ProductVariantSelector({
                       key={`${filter.key}-${value}`}
                       type="button"
                       $selected={selected}
-                      disabled={disabled}
                       onClick={() => selectByOption(filter.key, value)}
                     >
                       {filter.format(value)}
@@ -142,23 +134,6 @@ function uniqueValues(values: Array<string | number>) {
   });
 }
 
-function hasAvailableVariant(
-  variants: ProductVariant[],
-  selectedVariant: ProductVariant,
-  key: VariantKey,
-  value: string | number,
-) {
-  return variants.some(
-    (variant) =>
-      variant.inStock &&
-      FILTERS.every((filter) =>
-        filter.key === key
-          ? variant[filter.key] === value
-          : variant[filter.key] === selectedVariant[filter.key],
-      ),
-  );
-}
-
 function findVariantForOption(
   variants: ProductVariant[],
   selectedVariant: ProductVariant,
@@ -167,7 +142,6 @@ function findVariantForOption(
 ) {
   return variants.find(
     (variant) =>
-      variant.inStock &&
       FILTERS.every((filter) =>
         filter.key === key
           ? variant[filter.key] === value
