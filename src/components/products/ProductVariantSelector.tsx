@@ -187,8 +187,8 @@ function getVariantSpecs(variant: ProductVariant) {
     .join(" / ");
 }
 
-const PURPLE = "#7C3AED";
-const PURPLE_LIGHT = "#F3E8FF";
+const PURPLE = "#D32F2F";
+const PURPLE_LIGHT = "#FFEBEE";
 
 const VariantGrid = styled.div`
   display: grid;

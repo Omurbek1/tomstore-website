@@ -214,7 +214,7 @@ export default function ProductIntro({
           </FlexBox>
 
           <Box mb="24px">
-            <H2 color="#7C3AED" mb="4px" lineHeight="1">
+            <H2 color="#D32F2F" mb="4px" lineHeight="1">
               {formatCurrency(displayPrice)}
             </H2>
             {displayOldPrice && displayOldPrice > displayPrice ? (
@@ -258,7 +258,7 @@ export default function ProductIntro({
                 color="primary"
                 variant="contained"
                 disabled={!selectedInStock}
-                style={selectedInStock ? { backgroundColor: "#7C3AED" } : undefined}
+                style={selectedInStock ? { backgroundColor: "#D32F2F" } : undefined}
                 onClick={handleCartAmountChange(1)}>
                 В корзину
               </Button>
@@ -269,7 +269,7 @@ export default function ProductIntro({
                   size="large"
                   color="primary"
                   variant="outlined"
-                  style={{ borderColor: "#7C3AED", color: "#7C3AED" }}
+                  style={{ borderColor: "#D32F2F", color: "#D32F2F" }}
                   onClick={handleCartAmountChange(cartItem?.qty - 1)}>
                   <IconMinus size={22} />
                 </Button>
@@ -283,7 +283,7 @@ export default function ProductIntro({
                   size="large"
                   color="primary"
                   variant="outlined"
-                  style={{ borderColor: "#7C3AED", color: "#7C3AED" }}
+                  style={{ borderColor: "#D32F2F", color: "#D32F2F" }}
                   onClick={handleCartAmountChange(cartItem?.qty + 1)}>
                   <IconPlus size={22} />
                 </Button>
@@ -297,8 +297,8 @@ export default function ProductIntro({
               variant="outlined"
               disabled={!selectedInStock}
               style={{
-                borderColor: "#7C3AED",
-                color: "#7C3AED",
+                borderColor: "#D32F2F",
+                color: "#D32F2F",
                 opacity: selectedInStock ? 1 : 0.55,
                 pointerEvents: selectedInStock ? "auto" : "none",
               }}
