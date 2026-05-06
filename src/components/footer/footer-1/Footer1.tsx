@@ -9,7 +9,7 @@ import AppStore from "@component/AppStore";
 import Container from "@component/Container";
 import Typography, { Paragraph } from "@component/Typography";
 import { useTranslations } from "next-intl";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 // STYLED COMPONENTS
 import { StyledLink } from "./styles";
 // CUSTOM DATA

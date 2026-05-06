@@ -9,7 +9,7 @@ import FlexBox from "@component/FlexBox";
 import { IconButton } from "@component/buttons";
 import { H3, SemiSpan } from "@component/Typography";
 import { ShopCard1Wrapper } from "./styles";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 
 // =====================================================
 interface ShopCard1Props {

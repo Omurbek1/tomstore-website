@@ -19,7 +19,7 @@ import { useCartItems, useCartTotal } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
 // CUSTOM DATA
 import countryList from "@data/countryList";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 
 export default function Cart() {
   const cart = useCartItems();

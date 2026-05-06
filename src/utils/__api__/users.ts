@@ -1,5 +1,5 @@
 import axios from "@lib/axios";
-import User from "models/user.model";
+import User from "@models/user.model";
 
 export const getUser = async (): Promise<User> => {
   const response = await axios.get("/api/user-list/1");

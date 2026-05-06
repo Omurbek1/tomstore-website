@@ -1,4 +1,4 @@
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 import { Carousel } from "@component/carousel";
 import CategoryPromoCard from "@component/product-cards/CategoryPromoCard";
 import CategorySectionCreator from "@component/CategorySectionCreator";

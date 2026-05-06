@@ -10,7 +10,7 @@ import {
   IconShoppingBagCheck
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
-import { usePathname } from "i18n/navigation";
+import { usePathname } from "@i18n/navigation";
 
 import FlexBox from "@component/FlexBox";
 import Typography from "@component/Typography";

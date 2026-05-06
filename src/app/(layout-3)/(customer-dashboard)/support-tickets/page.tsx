@@ -14,7 +14,7 @@ import Typography, { Paragraph, SemiSpan, Small } from "@component/Typography";
 import DashboardPageHeader from "@component/DashboardPageHeader";
 // PAGE SECTION COMPONENTS
 import { SupportPagination } from "@sections/customer-dashboard/support-ticket";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 
 export default async function TicketList() {
   const ticketList = await api.getTicketList();

@@ -1,19 +1,41 @@
-import axios from "@lib/axios";
-import Address from "models/address.model";
+import Address from "@models/address.model";
+import User from "@models/user.model";
 
-const getAddressList = async (): Promise<Address[]> => {
-  const response = await axios.get("/api/address/user");
-  return response.data;
+const demoUser: User = {
+  id: "demo-user",
+  email: "customer@tomstore.kg",
+  phone: "+996 555 000 000",
+  avatar: "/assets/images/faces/ralph.png",
+  password: "",
+  dateOfBirth: new Date("1995-01-01"),
+  verified: true,
+  name: { firstName: "Tomstore", lastName: "Customer" },
 };
 
-const getIds = async (): Promise<{ id: string }[]> => {
-  const response = await axios.get("/api/address/address-ids");
-  return response.data;
-};
+const addressList: Address[] = [
+  {
+    id: "office",
+    user: demoUser,
+    title: "Office",
+    phone: "+996 555 000 000",
+    street: "Chuy Avenue 123",
+    city: "Bishkek",
+    country: "Kyrgyzstan",
+  },
+  {
+    id: "home",
+    user: demoUser,
+    title: "Home",
+    phone: "+996 555 111 111",
+    street: "Toktogul Street 45",
+    city: "Bishkek",
+    country: "Kyrgyzstan",
+  },
+];
 
-const getAddress = async (id: string): Promise<Address> => {
-  const response = await axios.get("/api/address/user/1", { params: { id } });
-  return response.data;
-};
+const getAddressList = async (): Promise<Address[]> => addressList;
 
-export default { getAddressList, getIds, getAddress };
+const getAddress = async (id: string): Promise<Address> =>
+  addressList.find((item) => item.id === id) || addressList[0];
+
+export default { getAddressList, getAddress };

@@ -6,7 +6,7 @@ import { Button } from "@component/buttons";
 import DashboardPageHeader from "@component/DashboardPageHeader";
 // PAGE SECTION COMPONENTS
 import { PaymentMethodList } from "@sections/customer-dashboard/payment-method";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 
 export default async function PaymentMethods() {
   const t = await getTranslations("dashboard");

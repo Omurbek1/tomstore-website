@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import Icon from "./icon/Icon";
 import FlexBox from "./FlexBox";
 import { H2, SemiSpan } from "./Typography";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 
 // ==============================================================
 interface Props {

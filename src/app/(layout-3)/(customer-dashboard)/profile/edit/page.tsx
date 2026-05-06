@@ -7,7 +7,7 @@ import api from "@utils/__api__/users";
 // GLOBAL CUSTOM COMPONENTS
 import { Card1 } from "@component/Card1";
 import DashboardPageHeader from "@component/DashboardPageHeader";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 // PAGE SECTION COMPONENTS
 import { ProfileEditForm } from "@sections/customer-dashboard/profile";
 

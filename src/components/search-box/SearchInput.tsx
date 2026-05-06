@@ -10,7 +10,7 @@ import MenuItem from "@component/MenuItem";
 import { Button } from "@component/buttons";
 import { Span } from "@component/Typography";
 import TextField from "@component/text-field";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 import SearchBoxStyle from "./styled";
 
 export default function SearchInput() {

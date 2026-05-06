@@ -15,7 +15,7 @@ import FlexBox from "@component/FlexBox";
 import TextField from "@component/text-field";
 import localizeNavigations from "@utils/localizeNavigations";
 import { getSearchSuggestions, type SearchSuggestion } from "@utils/__api__/storefront";
-import { Link, useRouter } from "i18n/navigation";
+import { Link, useRouter } from "@i18n/navigation";
 import StyledSearchBox from "./styled";
 
 type CatalogOption = {

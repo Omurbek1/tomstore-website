@@ -1,5 +1,5 @@
 import axios from "@lib/axios";
-import Ticket from "models/Ticket.model";
+import Ticket from "@models/Ticket.model";
 
 export const getTicketList = async (): Promise<Ticket[]> => {
   const response = await axios.get("/api/tickets");

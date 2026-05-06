@@ -6,7 +6,7 @@ import FlexBox from "@component/FlexBox";
 import { H3, H4 } from "@component/Typography";
 import Shop from "@models/shop.model";
 import { useTranslations } from "next-intl";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 
 // ============================================================
 type Props = { shops: Shop[] };

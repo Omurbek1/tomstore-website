@@ -1,7 +1,7 @@
 "use client";
 
 import styled from "styled-components";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 
 // STYLED COMPONENTS
 export const StyledLink = styled(Link)`

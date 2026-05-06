@@ -8,7 +8,7 @@ import { Button } from "@component/buttons";
 import DashboardPageHeader from "@component/DashboardPageHeader";
 // PAGE SECTION COMPONENTS
 import { AddressItem, AddressPagination } from "@sections/customer-dashboard/address";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 
 export default async function AddressList() {
   const addressList = await api.getAddressList();

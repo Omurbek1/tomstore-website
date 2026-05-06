@@ -14,7 +14,7 @@ import TableRow from "@component/TableRow";
 import { Button } from "@component/buttons";
 import Typography, { H3, H5, Small } from "@component/Typography";
 import DashboardPageHeader from "@component/DashboardPageHeader";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 
 export default async function Profile() {
   const user = await api.getUser();

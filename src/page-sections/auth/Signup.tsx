@@ -12,7 +12,7 @@ import CheckBox from "@component/CheckBox";
 import TextField from "@component/text-field";
 import { Button, IconButton } from "@component/buttons";
 import { H3, H5, H6, SemiSpan } from "@component/Typography";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 
 import Divide from "./components/Divide";
 import SocialLinks from "./components/SocialLinks";

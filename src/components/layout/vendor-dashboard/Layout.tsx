@@ -2,7 +2,7 @@
 
 import { PropsWithChildren } from "react";
 import { useTranslations } from "next-intl";
-import { usePathname } from "i18n/navigation";
+import { usePathname } from "@i18n/navigation";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 // STYLED COMPONENTS

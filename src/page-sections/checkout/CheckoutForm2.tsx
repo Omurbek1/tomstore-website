@@ -10,7 +10,7 @@ import Avatar from "@component/avatar";
 import FlexBox from "@component/FlexBox";
 import { Card1 } from "@component/Card1";
 import Typography, { H6, Paragraph } from "@component/Typography";
-import { useRouter } from "i18n/navigation";
+import { useRouter } from "@i18n/navigation";
 
 type CheckoutAlternativeValues = {
   address: string;

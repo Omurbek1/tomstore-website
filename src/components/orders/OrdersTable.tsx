@@ -6,7 +6,7 @@ import { IconArrowRight } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 
 import Card from "@component/Card";
-import { Link, useRouter } from "i18n/navigation";
+import { Link, useRouter } from "@i18n/navigation";
 import Order from "@models/order.model";
 
 type OrderBasePath = "/orders" | "/vendor/orders";

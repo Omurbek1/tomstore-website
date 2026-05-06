@@ -1,5 +1,5 @@
 import axios from "@lib/axios";
-import Shop from "models/shop.model";
+import Shop from "@models/shop.model";
 
 export const getShopList = async (): Promise<Shop[]> => {
   const response = await axios.get("/api/shops");

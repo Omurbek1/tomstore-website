@@ -31,9 +31,9 @@
       "@component/*": ["components/*"],
       "@sections/*": ["page-sections/*"],
       "@models/*": ["models/*"],
+      "@i18n/*": ["i18n/*"],
       "@types/*": ["types/*"],
       "@assets/*": ["assets/*"],
-      "i18n/*": ["i18n/*"],
       "@pages/*": ["pages/*"],
       "@layouts/*": ["layouts/*"],
       "@locales/*": ["locales/*"]

@@ -5,7 +5,7 @@ import Container from "@component/Container";
 import TopRatedProductCard from "@component/product-cards/TopRatedProductCard";
 import BrandShowcaseCard from "@component/product-cards/BrandShowcaseCard";
 import CategorySectionHeader from "@component/CategorySectionHeader";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
 

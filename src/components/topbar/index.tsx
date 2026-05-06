@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { IconChevronDown, IconMail, IconPhone } from "@tabler/icons-react";
 import {  KG, RU, US } from "country-flag-icons/react/3x2";
 
-import { usePathname, useRouter } from "../../i18n/navigation";
+import { usePathname, useRouter } from "@i18n/navigation";
 import FlexBox from "@component/FlexBox";
 import Menu from "../menu";
 import NavLink from "../nav-link";

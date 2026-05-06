@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { Card1 } from "@component/Card1";
 import countryList from "@data/countryList";
 import Typography from "@component/Typography";
-import { useRouter } from "i18n/navigation";
+import { useRouter } from "@i18n/navigation";
 
 type CheckoutFormValues = {
   shipping_name: string;

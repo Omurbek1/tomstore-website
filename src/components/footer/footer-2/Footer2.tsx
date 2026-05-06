@@ -6,7 +6,7 @@ import FlexBox from "@component/FlexBox";
 import AppStore from "@component/AppStore";
 import { Paragraph } from "@component/Typography";
 import { getTranslations } from "next-intl/server";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 // STYLED COMPONENTS
 import { StyledBox, StyledLink, Wrapper } from "./styles";
 // CUSTOM DATA

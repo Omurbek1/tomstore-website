@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server";
 // GLOBAL CUSTOM COMPONENTS
 import { Card1 } from "@component/Card1";
 import DashboardPageHeader from "@component/DashboardPageHeader";
-import { Link } from "i18n/navigation";
+import { Link } from "@i18n/navigation";
 // PAGE SECTION COMPONENTS
 import { AddressForm } from "@sections/customer-dashboard/address";
 

@@ -2,7 +2,7 @@
 
 import { Fragment, PropsWithChildren, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "i18n/navigation";
+import { usePathname, useRouter } from "@i18n/navigation";
 import Hidden from "@component/hidden";
 import Stepper from "@component/Stepper";
 

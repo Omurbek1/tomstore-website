@@ -13,7 +13,7 @@ import { Button, IconButton } from "@component/buttons";
 import { H3, H5, H6, SemiSpan } from "@component/Typography";
 import Divide from "./components/Divide";
 import SocialLinks from "./components/SocialLinks";
-import { Link, useRouter } from "i18n/navigation";
+import { Link, useRouter } from "@i18n/navigation";
 // STYLED COMPONENT
 import { StyledRoot } from "./styles";
 
