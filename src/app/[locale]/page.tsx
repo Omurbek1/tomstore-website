@@ -4,7 +4,7 @@ import HomePage from "@sections/home/HomePage";
 
 export default function Home() {
   return (
-    <AppLayout navbar={<Navbar navListOpen />}>
+    <AppLayout navbar={<Navbar />}>
       <HomePage />
     </AppLayout>
   );
