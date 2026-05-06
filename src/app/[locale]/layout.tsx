@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import type { PropsWithChildren } from "react";
-import { Public_Sans } from "next/font/google";
 import { notFound } from "next/navigation";
 import { Locale, NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
@@ -10,14 +9,8 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import StyledComponentsRegistry from "@lib/registry";
 import { ThemeProvider } from "theme";
 import NProgressBar from "@component/NProgress";
-import { routing } from "i18n/routing";
+import { routing } from "@i18n/routing";
 import { Provider } from "@lib/Provider";
-
-const publicSans = Public_Sans({
-  subsets: ["latin"],
-  display: "swap",
-  preload: false,
-});
 
 type LocaleLayoutProps = PropsWithChildren<{
   params: Promise<{ locale: string }>;
@@ -64,7 +57,7 @@ export default async function LocaleLayout({
   const messages = await getMessages({ locale: locale as Locale });
 
   return (
-    <div className={publicSans.className}>
+    <div>
       <NextIntlClientProvider locale={locale} messages={messages}>
         <StyledComponentsRegistry>
           <Provider>
