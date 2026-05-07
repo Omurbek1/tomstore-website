@@ -45,11 +45,17 @@ function getYouTubeEmbedUrl(url: string): string | null {
     const u = new URL(url);
     let videoId: string | null = null;
     if (u.hostname.includes("youtube.com")) {
-      videoId = u.searchParams.get("v");
+      // watch?v=ID  or  /shorts/ID  or  /embed/ID
+      videoId =
+        u.searchParams.get("v") ||
+        (u.pathname.startsWith("/shorts/") ? u.pathname.replace("/shorts/", "") : null) ||
+        (u.pathname.startsWith("/embed/") ? u.pathname.replace("/embed/", "") : null);
     } else if (u.hostname === "youtu.be") {
-      videoId = u.pathname.slice(1);
+      videoId = u.pathname.slice(1).split("?")[0];
     }
-    return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : null;
+    return videoId
+      ? `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`
+      : null;
   } catch {
     return null;
   }
@@ -197,7 +203,8 @@ export default function ProductIntro({
                 ) : (
                   <iframe
                     src={getYouTubeEmbedUrl(videoUrl) || videoUrl}
-                    allow="autoplay; encrypted-media; fullscreen"
+                    title="Product video"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                     style={{ width: "100%", aspectRatio: "16/9", border: "none", display: "block" }}
                   />
