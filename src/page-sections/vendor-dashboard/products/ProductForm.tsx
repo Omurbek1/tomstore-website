@@ -1,12 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import styled from "styled-components";
 import * as yup from "yup";
 import { FieldArray, Formik, FormikHelpers, getIn } from "formik";
 import { useRouter } from "next/navigation";
 import {
+  IconChevronDown,
+  IconChevronUp,
   IconCopy,
   IconPlus,
+  IconRefresh,
   IconTrash,
 } from "@tabler/icons-react";
 
@@ -31,6 +35,7 @@ type SelectOption = { label: string; value: string };
 type VariantFormValue = {
   id: string;
   title: string;
+  _autoTitle: boolean;
   cpu: string;
   ram: string;
   storage: string;
@@ -73,14 +78,10 @@ const validationSchema = yup.object().shape({
     .of(
       yup.object().shape({
         title: yup.string().trim().required("Название варианта обязательно"),
-        cpu: yup.string().trim().required("Процессор обязателен"),
-        ram: yup
-          .number()
-          .typeError("Укажите число")
-          .positive("Укажите значение больше 0")
-          .required("RAM обязательна"),
-        storage: yup.string().trim().required("Накопитель обязателен"),
-        color: yup.string().trim().required("Цвет обязателен"),
+        cpu: yup.string(),
+        ram: yup.string(),
+        storage: yup.string(),
+        color: yup.string(),
         price: yup
           .number()
           .typeError("Укажите цену")
@@ -93,6 +94,16 @@ const validationSchema = yup.object().shape({
 
 export default function ProductUpdateForm({ product, categories }: Props) {
   const router = useRouter();
+  const [expandedVariants, setExpandedVariants] = useState<Set<number>>(new Set());
+
+  const toggleAdvanced = (index: number) => {
+    setExpandedVariants((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  };
 
   const initialValues: ProductFormValues = {
     name: product?.name || product?.title || "",
@@ -145,13 +156,11 @@ export default function ProductUpdateForm({ product, categories }: Props) {
 
     try {
       helpers.setStatus(undefined);
-
       if (product?.id) {
         await axios.put("/api/products", payload);
       } else {
         await axios.post("/api/products", payload);
       }
-
       router.push("/vendor/products");
     } catch (error) {
       console.error(error);
@@ -177,417 +186,514 @@ export default function ProductUpdateForm({ product, categories }: Props) {
         isSubmitting,
         status,
         setFieldValue,
-      }) => (
-        <form onSubmit={handleSubmit}>
-          <FormStack>
-            <Card p="30px" borderRadius={16}>
-              <SectionHeader>
-                <div>
-                  <H4>Основная информация</H4>
-                  <Paragraph color="text.muted">
-                    Эти данные видны в каталоге и карточке товара.
-                  </Paragraph>
-                </div>
-              </SectionHeader>
+      }) => {
+        // When a spec field changes, auto-update title if in auto mode
+        const onSpecChange = (
+          e: React.ChangeEvent<HTMLInputElement>,
+          index: number,
+          specKey: keyof Pick<VariantFormValue, "cpu" | "ram" | "storage" | "color">,
+        ) => {
+          handleChange(e);
+          const variant = values.variants[index];
+          if (variant._autoTitle) {
+            const updated = { ...variant, [specKey]: e.target.value };
+            setFieldValue(`variants.${index}.title`, buildAutoTitle(updated, values.name));
+          }
+        };
 
-              <Grid container spacing={6}>
-                <Grid item sm={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    name="name"
-                    label="Название товара"
-                    placeholder="Например: Lenovo IdeaPad 15"
-                    value={values.name}
-                    onBlur={handleBlur}
-                    onChange={(event) => {
-                      handleChange(event);
-                      if (!values.slug) {
-                        setFieldValue("slug", toSlug(event.target.value));
-                      }
-                    }}
-                    errorText={fieldError(touched, errors, "name")}
-                  />
-                </Grid>
+        // Manual title edit disables auto mode
+        const onTitleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+          handleChange(e);
+          setFieldValue(`variants.${index}._autoTitle`, false);
+        };
 
-                <Grid item sm={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    name="brand"
-                    label="Бренд"
-                    placeholder="TOMSTORE"
-                    value={values.brand}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  />
-                </Grid>
+        // Reset title to auto-generated value
+        const resetAutoTitle = (index: number) => {
+          const autoTitle = buildAutoTitle(values.variants[index], values.name);
+          setFieldValue(`variants.${index}.title`, autoTitle);
+          setFieldValue(`variants.${index}._autoTitle`, true);
+        };
 
-                <Grid item sm={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    name="slug"
-                    label="Slug"
-                    placeholder="lenovo-ideapad-15"
-                    value={values.slug}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  />
-                </Grid>
+        return (
+          <form onSubmit={handleSubmit}>
+            <FormStack>
+              {/* ── Основная информация ── */}
+              <Card p="30px" borderRadius={16}>
+                <SectionHeader>
+                  <div>
+                    <H4>Основная информация</H4>
+                    <Paragraph color="text.muted">
+                      Эти данные видны в каталоге и карточке товара.
+                    </Paragraph>
+                  </div>
+                </SectionHeader>
 
-                <Grid item sm={6} xs={12}>
-                  <Select
-                    isMulti
-                    label="Категории"
-                    value={values.category}
-                    options={categories}
-                    placeholder="Выберите категории"
-                    onChange={(value) => setFieldValue("category", value || [])}
-                    errorText={fieldError(touched, errors, "category")}
-                  />
-                </Grid>
+                <Grid container spacing={6}>
+                  <Grid item sm={6} xs={12}>
+                    <TextField
+                      fullWidth
+                      name="name"
+                      label="Название товара"
+                      placeholder="Например: Lenovo IdeaPad 15"
+                      value={values.name}
+                      onBlur={handleBlur}
+                      onChange={(event) => {
+                        handleChange(event);
+                        if (!values.slug) {
+                          setFieldValue("slug", toSlug(event.target.value));
+                        }
+                      }}
+                      errorText={fieldError(touched, errors, "name")}
+                    />
+                  </Grid>
 
-                <Grid item xs={12}>
-                  <TextArea
-                    rows={5}
-                    fullWidth
-                    name="description"
-                    label="Описание"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Коротко опишите товар, состояние, гарантию и комплектацию"
-                    value={values.description}
-                    errorText={fieldError(touched, errors, "description")}
-                  />
-                </Grid>
+                  <Grid item sm={6} xs={12}>
+                    <TextField
+                      fullWidth
+                      name="brand"
+                      label="Бренд"
+                      placeholder="TOMSTORE"
+                      value={values.brand}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                    />
+                  </Grid>
 
-                <Grid item xs={12}>
-                  <DropZone onChange={(files) => console.log(files)} />
+                  <Grid item sm={6} xs={12}>
+                    <TextField
+                      fullWidth
+                      name="slug"
+                      label="Slug"
+                      placeholder="lenovo-ideapad-15"
+                      value={values.slug}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                    />
+                  </Grid>
 
-                  <TextArea
-                    mt="16px"
-                    rows={4}
-                    fullWidth
-                    name="imagesText"
-                    label="Изображения товара"
-                    placeholder="Вставьте URL изображений, каждый с новой строки"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.imagesText}
-                  />
+                  <Grid item sm={6} xs={12}>
+                    <Select
+                      isMulti
+                      label="Категории"
+                      value={values.category}
+                      options={categories}
+                      placeholder="Выберите категории"
+                      onChange={(value) => setFieldValue("category", value || [])}
+                      errorText={fieldError(touched, errors, "category")}
+                    />
+                  </Grid>
 
-                  <ImagePreviewList>
-                    {splitLines(values.imagesText).map((item) => (
-                      <UploadImageBox key={item}>
-                        <Image src={item} width="100%" />
-                      </UploadImageBox>
-                    ))}
-                  </ImagePreviewList>
-                </Grid>
+                  <Grid item xs={12}>
+                    <TextArea
+                      rows={5}
+                      fullWidth
+                      name="description"
+                      label="Описание"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      placeholder="Коротко опишите товар, состояние, гарантию и комплектацию"
+                      value={values.description}
+                      errorText={fieldError(touched, errors, "description")}
+                    />
+                  </Grid>
 
-                <Grid item sm={4} xs={12}>
-                  <TextField
-                    fullWidth
-                    name="price"
-                    type="number"
-                    label="Базовая цена"
-                    placeholder="Авто из первого варианта"
-                    value={values.price}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  />
-                </Grid>
-
-                <Grid item sm={4} xs={12}>
-                  <TextField
-                    fullWidth
-                    type="number"
-                    name="oldPrice"
-                    label="Старая / справочная цена"
-                    placeholder="Необязательно"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.oldPrice}
-                  />
-                </Grid>
-
-                <Grid item sm={4} xs={12}>
-                  <TextField
-                    fullWidth
-                    name="tags"
-                    label="Теги"
-                    placeholder="hit, sale, new"
-                    value={values.tags}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  />
-                </Grid>
-              </Grid>
-            </Card>
-
-            <Card p="30px" borderRadius={16}>
-              <FieldArray name="variants">
-                {({ push, remove }) => (
-                  <>
-                    <SectionHeader>
-                      <div>
-                        <H4>Варианты покупки</H4>
-                        <Paragraph color="text.muted">
-                          Добавьте конфигурации: процессор, память, накопитель, цвет, цену и склад.
-                        </Paragraph>
-                      </div>
-
-                      <Button
-                        type="button"
-                        color="primary"
-                        size="large"
-                        onClick={() => push(createEmptyVariant(values.name))}>
-                        <IconPlus size={18} />
-                        <span>Добавить вариант</span>
-                      </Button>
-                    </SectionHeader>
-
-                    <VariantList>
-                      {values.variants.map((variant, index) => (
-                        <VariantCard key={variant.id}>
-                          <VariantCardHeader>
-                            <div>
-                              <H5>Вариант {index + 1}</H5>
-                              <SemiSpan>{variant.title || "Новая конфигурация"}</SemiSpan>
-                            </div>
-
-                            <FlexBox style={{ gap: 8 }}>
-                              <Button
-                                type="button"
-                                variant="outlined"
-                                color="primary"
-                                onClick={() =>
-                                  push({
-                                    ...variant,
-                                    id: createVariantId(),
-                                    title: `${variant.title || values.name} copy`,
-                                  })
-                                }>
-                                <IconCopy size={16} />
-                              </Button>
-
-                              <Button
-                                type="button"
-                                variant="outlined"
-                                color="error"
-                                disabled={values.variants.length === 1}
-                                onClick={() => remove(index)}>
-                                <IconTrash size={16} />
-                              </Button>
-                            </FlexBox>
-                          </VariantCardHeader>
-
-                          <Grid container spacing={6}>
-                            <Grid item sm={6} xs={12}>
-                              <TextField
-                                fullWidth
-                                name={`variants.${index}.title`}
-                                label="Название модели"
-                                placeholder="Lenovo IdeaPad i5 / 8GB / 240GB"
-                                value={variant.title}
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                errorText={fieldError(touched, errors, `variants.${index}.title`)}
-                              />
-                            </Grid>
-
-                            <Grid item sm={6} xs={12}>
-                              <TextField
-                                fullWidth
-                                name={`variants.${index}.warehouse`}
-                                label="Склад"
-                                placeholder="Главный склад / Ош / Бишкек"
-                                value={variant.warehouse}
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                              />
-                            </Grid>
-
-                            <Grid item sm={3} xs={12}>
-                              <TextField
-                                fullWidth
-                                name={`variants.${index}.cpu`}
-                                label="Процессор"
-                                placeholder="Core i5-1335U"
-                                value={variant.cpu}
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                errorText={fieldError(touched, errors, `variants.${index}.cpu`)}
-                              />
-                            </Grid>
-
-                            <Grid item sm={3} xs={12}>
-                              <TextField
-                                fullWidth
-                                type="number"
-                                name={`variants.${index}.ram`}
-                                label="RAM, GB"
-                                placeholder="8"
-                                value={variant.ram}
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                errorText={fieldError(touched, errors, `variants.${index}.ram`)}
-                              />
-                            </Grid>
-
-                            <Grid item sm={3} xs={12}>
-                              <TextField
-                                fullWidth
-                                name={`variants.${index}.storage`}
-                                label="Накопитель"
-                                placeholder="240GB NVME"
-                                value={variant.storage}
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                errorText={fieldError(touched, errors, `variants.${index}.storage`)}
-                              />
-                            </Grid>
-
-                            <Grid item sm={3} xs={12}>
-                              <TextField
-                                fullWidth
-                                name={`variants.${index}.color`}
-                                label="Цвет"
-                                placeholder="Синий"
-                                value={variant.color}
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                errorText={fieldError(touched, errors, `variants.${index}.color`)}
-                              />
-                            </Grid>
-
-                            <Grid item sm={4} xs={12}>
-                              <TextField
-                                fullWidth
-                                type="number"
-                                name={`variants.${index}.price`}
-                                label="Цена"
-                                placeholder="45000"
-                                value={variant.price}
-                                onBlur={handleBlur}
-                                onChange={(event) => {
-                                  handleChange(event);
-                                  if (index === 0) setFieldValue("price", event.target.value);
-                                }}
-                                errorText={fieldError(touched, errors, `variants.${index}.price`)}
-                              />
-                            </Grid>
-
-                            <Grid item sm={4} xs={12}>
-                              <TextField
-                                fullWidth
-                                type="number"
-                                name={`variants.${index}.oldPrice`}
-                                label="Старая цена"
-                                placeholder="Необязательно"
-                                value={variant.oldPrice}
-                                onBlur={handleBlur}
-                                onChange={(event) => {
-                                  handleChange(event);
-                                  if (index === 0) setFieldValue("oldPrice", event.target.value);
-                                }}
-                              />
-                            </Grid>
-
-                            <Grid item sm={4} xs={12}>
-                              <TextField
-                                fullWidth
-                                type="number"
-                                name={`variants.${index}.stock`}
-                                label="Остаток"
-                                placeholder="1"
-                                value={variant.stock}
-                                onBlur={handleBlur}
-                                onChange={(event) => {
-                                  handleChange(event);
-                                  if (index === 0) setFieldValue("stock", event.target.value);
-                                }}
-                              />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                              <CheckBox
-                                color="primary"
-                                name={`variants.${index}.inStock`}
-                                checked={variant.inStock}
-                                label="В наличии"
-                                onChange={(event) =>
-                                  setFieldValue(`variants.${index}.inStock`, event.target.checked)
-                                }
-                              />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                              <TextArea
-                                rows={3}
-                                fullWidth
-                                name={`variants.${index}.description`}
-                                label="Описание варианта"
-                                placeholder="Особенности конкретной конфигурации"
-                                value={variant.description}
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                              />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                              <TextArea
-                                rows={3}
-                                fullWidth
-                                name={`variants.${index}.imagesText`}
-                                label="Изображения варианта"
-                                placeholder="URL изображений, каждый с новой строки. Если пусто, будут использованы изображения товара"
-                                value={variant.imagesText}
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                              />
-                            </Grid>
-                          </Grid>
-                        </VariantCard>
+                  <Grid item xs={12}>
+                    <DropZone onChange={(files) => console.log(files)} />
+                    <TextArea
+                      mt="16px"
+                      rows={4}
+                      fullWidth
+                      name="imagesText"
+                      label="Изображения товара"
+                      placeholder="Вставьте URL изображений, каждый с новой строки"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.imagesText}
+                    />
+                    <ImagePreviewList>
+                      {splitLines(values.imagesText).map((item) => (
+                        <UploadImageBox key={item}>
+                          <Image src={item} width="100%" />
+                        </UploadImageBox>
                       ))}
-                    </VariantList>
-                  </>
-                )}
-              </FieldArray>
-            </Card>
+                    </ImagePreviewList>
+                  </Grid>
 
-            <StickyActions>
-              <Box>
-                <H6>Готово к сохранению</H6>
-                <SemiSpan>
-                  {values.variants.length} вариантов, базовая цена{" "}
-                  {values.price || values.variants[0]?.price || "не указана"}
-                </SemiSpan>
-                {status ? (
-                  <SemiSpan display="block" color="error.main" mt="4px">
-                    {status}
+                  <Grid item sm={4} xs={12}>
+                    <TextField
+                      fullWidth
+                      name="price"
+                      type="number"
+                      label="Базовая цена"
+                      placeholder="Авто из первого варианта"
+                      value={values.price}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                    />
+                  </Grid>
+
+                  <Grid item sm={4} xs={12}>
+                    <TextField
+                      fullWidth
+                      type="number"
+                      name="oldPrice"
+                      label="Старая / справочная цена"
+                      placeholder="Необязательно"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.oldPrice}
+                    />
+                  </Grid>
+
+                  <Grid item sm={4} xs={12}>
+                    <TextField
+                      fullWidth
+                      name="tags"
+                      label="Теги"
+                      placeholder="hit, sale, new"
+                      value={values.tags}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                    />
+                  </Grid>
+                </Grid>
+              </Card>
+
+              {/* ── Варианты ── */}
+              <Card p="30px" borderRadius={16}>
+                <FieldArray name="variants">
+                  {({ push, remove }) => (
+                    <>
+                      <SectionHeader>
+                        <div>
+                          <H4>Варианты покупки</H4>
+                          <Paragraph color="text.muted">
+                            Только цена обязательна. Характеристики (CPU, RAM, накопитель, цвет) — опционально.
+                          </Paragraph>
+                        </div>
+
+                        <Button
+                          type="button"
+                          color="primary"
+                          size="large"
+                          onClick={() => push(createEmptyVariant(values.name))}>
+                          <IconPlus size={18} />
+                          <span>Добавить вариант</span>
+                        </Button>
+                      </SectionHeader>
+
+                      <VariantList>
+                        {values.variants.map((variant, index) => {
+                          const isExpanded = expandedVariants.has(index);
+                          const hasAdvanced = !!(variant.description || variant.imagesText);
+
+                          return (
+                            <VariantCard key={variant.id}>
+                              {/* Header */}
+                              <VariantCardHeader>
+                                <div>
+                                  <H5>Вариант {index + 1}</H5>
+                                  <SemiSpan color="text.muted">
+                                    {variant.price
+                                      ? `${Number(variant.price).toLocaleString("ru")} сом`
+                                      : "Цена не указана"}
+                                  </SemiSpan>
+                                </div>
+
+                                <FlexBox style={{ gap: 8 }}>
+                                  <Button
+                                    type="button"
+                                    variant="outlined"
+                                    color="primary"
+                                    title="Дублировать вариант"
+                                    onClick={() =>
+                                      push({
+                                        ...variant,
+                                        id: createVariantId(),
+                                        title: `${variant.title || values.name} (копия)`,
+                                        _autoTitle: false,
+                                      })
+                                    }>
+                                    <IconCopy size={16} />
+                                  </Button>
+
+                                  <Button
+                                    type="button"
+                                    variant="outlined"
+                                    color="error"
+                                    title="Удалить вариант"
+                                    disabled={values.variants.length === 1}
+                                    onClick={() => remove(index)}>
+                                    <IconTrash size={16} />
+                                  </Button>
+                                </FlexBox>
+                              </VariantCardHeader>
+
+                              <Grid container spacing={6}>
+                                {/* Title with auto badge */}
+                                <Grid item xs={12}>
+                                  <TitleFieldWrap>
+                                    <TextField
+                                      fullWidth
+                                      name={`variants.${index}.title`}
+                                      label="Название модели"
+                                      placeholder="Заполняется автоматически из характеристик"
+                                      value={variant.title}
+                                      onBlur={handleBlur}
+                                      onChange={(e) => onTitleChange(e as React.ChangeEvent<HTMLInputElement>, index)}
+                                      errorText={fieldError(touched, errors, `variants.${index}.title`)}
+                                    />
+                                    {variant._autoTitle ? (
+                                      <AutoBadge title="Название генерируется автоматически">Авто</AutoBadge>
+                                    ) : (
+                                      <AutoResetBtn
+                                        type="button"
+                                        title="Восстановить автоназвание из характеристик"
+                                        onClick={() => resetAutoTitle(index)}>
+                                        <IconRefresh size={13} />
+                                        Авто
+                                      </AutoResetBtn>
+                                    )}
+                                  </TitleFieldWrap>
+                                </Grid>
+
+                                {/* Specs section */}
+                                <Grid item xs={12}>
+                                  <SpecsLabel>
+                                    Характеристики <SpecsOptional>(необязательно)</SpecsOptional>
+                                  </SpecsLabel>
+                                </Grid>
+
+                                <Grid item sm={3} xs={6}>
+                                  <TextField
+                                    fullWidth
+                                    name={`variants.${index}.cpu`}
+                                    label="Процессор"
+                                    placeholder="Core i5-1335U"
+                                    value={variant.cpu}
+                                    onBlur={handleBlur}
+                                    onChange={(e) => onSpecChange(e as React.ChangeEvent<HTMLInputElement>, index, "cpu")}
+                                  />
+                                </Grid>
+
+                                <Grid item sm={3} xs={6}>
+                                  <TextField
+                                    fullWidth
+                                    type="number"
+                                    name={`variants.${index}.ram`}
+                                    label="RAM, GB"
+                                    placeholder="8"
+                                    value={variant.ram}
+                                    onBlur={handleBlur}
+                                    onChange={(e) => onSpecChange(e as React.ChangeEvent<HTMLInputElement>, index, "ram")}
+                                  />
+                                </Grid>
+
+                                <Grid item sm={3} xs={6}>
+                                  <TextField
+                                    fullWidth
+                                    name={`variants.${index}.storage`}
+                                    label="Накопитель"
+                                    placeholder="240GB SSD"
+                                    value={variant.storage}
+                                    onBlur={handleBlur}
+                                    onChange={(e) => onSpecChange(e as React.ChangeEvent<HTMLInputElement>, index, "storage")}
+                                  />
+                                </Grid>
+
+                                <Grid item sm={3} xs={6}>
+                                  <TextField
+                                    fullWidth
+                                    name={`variants.${index}.color`}
+                                    label="Цвет"
+                                    placeholder="Синий"
+                                    value={variant.color}
+                                    onBlur={handleBlur}
+                                    onChange={(e) => onSpecChange(e as React.ChangeEvent<HTMLInputElement>, index, "color")}
+                                  />
+                                </Grid>
+
+                                {/* Pricing & stock */}
+                                <Grid item sm={3} xs={6}>
+                                  <TextField
+                                    fullWidth
+                                    type="number"
+                                    name={`variants.${index}.price`}
+                                    label="Цена *"
+                                    placeholder="45000"
+                                    value={variant.price}
+                                    onBlur={handleBlur}
+                                    onChange={(event) => {
+                                      handleChange(event);
+                                      if (index === 0) setFieldValue("price", event.target.value);
+                                    }}
+                                    errorText={fieldError(touched, errors, `variants.${index}.price`)}
+                                  />
+                                </Grid>
+
+                                <Grid item sm={3} xs={6}>
+                                  <TextField
+                                    fullWidth
+                                    type="number"
+                                    name={`variants.${index}.oldPrice`}
+                                    label="Старая цена"
+                                    placeholder="Необязательно"
+                                    value={variant.oldPrice}
+                                    onBlur={handleBlur}
+                                    onChange={(event) => {
+                                      handleChange(event);
+                                      if (index === 0) setFieldValue("oldPrice", event.target.value);
+                                    }}
+                                  />
+                                </Grid>
+
+                                <Grid item sm={3} xs={6}>
+                                  <TextField
+                                    fullWidth
+                                    type="number"
+                                    name={`variants.${index}.stock`}
+                                    label="Остаток"
+                                    placeholder="1"
+                                    value={variant.stock}
+                                    onBlur={handleBlur}
+                                    onChange={(event) => {
+                                      handleChange(event);
+                                      if (index === 0) setFieldValue("stock", event.target.value);
+                                    }}
+                                  />
+                                </Grid>
+
+                                <Grid item sm={3} xs={12}>
+                                  <TextField
+                                    fullWidth
+                                    name={`variants.${index}.warehouse`}
+                                    label="Склад"
+                                    placeholder="Главный склад"
+                                    value={variant.warehouse}
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                  />
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                  <CheckBox
+                                    color="primary"
+                                    name={`variants.${index}.inStock`}
+                                    checked={variant.inStock}
+                                    label="В наличии"
+                                    onChange={(event) =>
+                                      setFieldValue(`variants.${index}.inStock`, event.target.checked)
+                                    }
+                                  />
+                                </Grid>
+
+                                {/* Collapsible advanced: description + images */}
+                                <Grid item xs={12}>
+                                  <AdvancedToggle
+                                    type="button"
+                                    onClick={() => toggleAdvanced(index)}>
+                                    {isExpanded ? (
+                                      <IconChevronUp size={15} />
+                                    ) : (
+                                      <IconChevronDown size={15} />
+                                    )}
+                                    {isExpanded
+                                      ? "Скрыть дополнительно"
+                                      : hasAdvanced
+                                        ? "Дополнительно (заполнено)"
+                                        : "Дополнительно: описание и фото варианта"}
+                                  </AdvancedToggle>
+                                </Grid>
+
+                                {isExpanded && (
+                                  <>
+                                    <Grid item xs={12}>
+                                      <TextArea
+                                        rows={3}
+                                        fullWidth
+                                        name={`variants.${index}.description`}
+                                        label="Описание варианта"
+                                        placeholder="Особенности конкретной конфигурации (необязательно)"
+                                        value={variant.description}
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                      />
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                      <TextArea
+                                        rows={3}
+                                        fullWidth
+                                        name={`variants.${index}.imagesText`}
+                                        label="Изображения варианта"
+                                        placeholder="URL изображений, каждый с новой строки. Если пусто — используются фото товара"
+                                        value={variant.imagesText}
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                      />
+                                    </Grid>
+                                  </>
+                                )}
+                              </Grid>
+                            </VariantCard>
+                          );
+                        })}
+                      </VariantList>
+                    </>
+                  )}
+                </FieldArray>
+              </Card>
+
+              <StickyActions>
+                <Box>
+                  <H6>Готово к сохранению</H6>
+                  <SemiSpan>
+                    {values.variants.length} вариантов, базовая цена{" "}
+                    {values.price || values.variants[0]?.price || "не указана"}
                   </SemiSpan>
-                ) : null}
-              </Box>
+                  {status ? (
+                    <SemiSpan display="block" color="error.main" mt="4px">
+                      {status}
+                    </SemiSpan>
+                  ) : null}
+                </Box>
 
-              <Button
-                type="submit"
-                size="large"
-                color="primary"
-                px="2rem"
-                disabled={isSubmitting}>
-                {isSubmitting ? "Сохранение..." : "Сохранить товар"}
-              </Button>
-            </StickyActions>
-          </FormStack>
-        </form>
-      )}
+                <Button
+                  type="submit"
+                  size="large"
+                  color="primary"
+                  px="2rem"
+                  disabled={isSubmitting}>
+                  {isSubmitting ? "Сохранение..." : "Сохранить товар"}
+                </Button>
+              </StickyActions>
+            </FormStack>
+          </form>
+        );
+      }}
     </Formik>
   );
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────────
+
+function buildAutoTitle(
+  v: Pick<VariantFormValue, "cpu" | "ram" | "storage" | "color">,
+  productName: string,
+): string {
+  const parts: string[] = [];
+  if (v.cpu?.trim()) parts.push(v.cpu.trim());
+  if (Number(v.ram) > 0) parts.push(`${v.ram}GB`);
+  if (v.storage?.trim()) parts.push(v.storage.trim());
+  if (v.color?.trim()) parts.push(v.color.trim());
+  return parts.length > 0 ? parts.join(" / ") : productName || "";
 }
 
 function createEmptyVariant(productTitle = ""): VariantFormValue {
   return {
     id: createVariantId(),
     title: productTitle,
+    _autoTitle: true,
     cpu: "",
     ram: "",
     storage: "",
@@ -604,7 +710,6 @@ function createEmptyVariant(productTitle = ""): VariantFormValue {
 
 function getInitialCategories(product: Product | undefined, categories: SelectOption[]) {
   const productCategories = product?.categories || [];
-
   return categories.filter((category) =>
     productCategories.some((item) => String(item).toLowerCase() === category.value.toLowerCase()),
   );
@@ -618,6 +723,7 @@ function toVariantFormValue(variant: ProductVariant): VariantFormValue {
   return {
     id: variant.id,
     title: variant.title,
+    _autoTitle: false,
     cpu: variant.cpu,
     ram: toInputValue(variant.ram),
     storage: variant.storage,
@@ -692,6 +798,8 @@ function toSlug(value: string) {
     .replace(/-+/g, "-");
 }
 
+// ── Styled components ──────────────────────────────────────────────────────────
+
 const FormStack = styled.div`
   display: grid;
   gap: 24px;
@@ -746,6 +854,79 @@ const VariantCardHeader = styled.div`
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 20px;
+`;
+
+const TitleFieldWrap = styled.div`
+  position: relative;
+`;
+
+const AutoBadge = styled.span`
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 11px;
+  font-weight: 700;
+  pointer-events: none;
+  margin-top: 10px;
+`;
+
+const AutoResetBtn = styled.button`
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border: 1px solid ${({ theme }) => theme.colors.gray[300]};
+  border-radius: 99px;
+  background: #fff;
+  color: ${({ theme }) => theme.colors.text.muted};
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.primary.main};
+    color: ${({ theme }) => theme.colors.primary.main};
+  }
+`;
+
+const SpecsLabel = styled.div`
+  font-size: 13px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  padding-bottom: 2px;
+  border-bottom: 1px dashed ${({ theme }) => theme.colors.gray[300]};
+`;
+
+const SpecsOptional = styled.span`
+  font-weight: 400;
+  color: ${({ theme }) => theme.colors.text.muted};
+`;
+
+const AdvancedToggle = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.colors.text.muted};
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary.main};
+  }
 `;
 
 const StickyActions = styled(Card)`

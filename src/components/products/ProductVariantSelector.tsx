@@ -12,32 +12,65 @@ import Product, { ProductVariant } from "@models/product.model";
 
 type VariantKey = "cpu" | "ram" | "storage" | "color";
 
+type FilterDef = {
+  key: VariantKey;
+  title: string;
+  format: (v: string | number) => string;
+  isEmpty: (v: string | number) => boolean;
+};
+
 type Props = {
   product: Product;
   selectedVariant: ProductVariant;
   onSelectVariant: (variant: ProductVariant) => void;
 };
 
-const FILTERS: Array<{ key: VariantKey; title: string; format: (value: string | number) => string }> = [
-  { key: "cpu", title: "Процессор", format: String },
-  { key: "ram", title: "Оперативная память", format: (value) => `${value}GB` },
-  { key: "storage", title: "Объём накопителя", format: String },
-  { key: "color", title: "Цвет", format: String },
+const FILTERS: FilterDef[] = [
+  {
+    key: "cpu",
+    title: "Процессор",
+    format: String,
+    isEmpty: (v) => !String(v).trim(),
+  },
+  {
+    key: "ram",
+    title: "Оперативная память",
+    format: (v) => `${v} GB`,
+    isEmpty: (v) => Number(v) <= 0,
+  },
+  {
+    key: "storage",
+    title: "Объём накопителя",
+    format: String,
+    isEmpty: (v) => !String(v).trim(),
+  },
+  {
+    key: "color",
+    title: "Цвет",
+    format: String,
+    isEmpty: (v) => !String(v).trim(),
+  },
 ];
 
-export default function ProductVariantSelector({
-  product,
-  selectedVariant,
-  onSelectVariant,
-}: Props) {
+export default function ProductVariantSelector({ product, selectedVariant, onSelectVariant }: Props) {
   const formatCurrency = useCurrency();
   const variants = product.variants?.filter(Boolean) ?? [];
 
+  // Unique non-empty values per key
   const options = useMemo(
     () =>
       FILTERS.reduce(
-        (acc, filter) => {
-          acc[filter.key] = uniqueValues(variants.map((variant) => variant[filter.key]));
+        (acc, f) => {
+          const seen = new Set<string>();
+          acc[f.key] = variants
+            .map((v) => v[f.key])
+            .filter((val) => {
+              if (f.isEmpty(val)) return false;
+              const key = String(val);
+              if (seen.has(key)) return false;
+              seen.add(key);
+              return true;
+            });
           return acc;
         },
         {} as Record<VariantKey, Array<string | number>>,
@@ -45,22 +78,54 @@ export default function ProductVariantSelector({
     [variants],
   );
 
+  // Dynamic attributes from variant.attributes[] (e.g. "Диагональ экрана", "Связь", ...)
+  const dynamicAttrs = useMemo(() => {
+    const map = new Map<string, Set<string>>();
+    variants.forEach((v) => {
+      v.attributes?.forEach(({ name, value }) => {
+        if (!name || !value) return;
+        if (!map.has(name)) map.set(name, new Set());
+        map.get(name)!.add(value);
+      });
+    });
+    // show only attrs that have 2+ distinct values
+    return Array.from(map.entries())
+      .filter(([, vals]) => vals.size >= 2)
+      .map(([name, vals]) => ({ name, values: Array.from(vals) }));
+  }, [variants]);
+
   if (variants.length === 0) return null;
 
-  const selectByOption = (key: VariantKey, value: string | number) => {
-    const nextVariant = findVariantForOption(variants, selectedVariant, key, value);
-    if (nextVariant) onSelectVariant(nextVariant);
+  // Visible fixed filters: only if 2+ distinct values
+  const visibleFilters = FILTERS.filter((f) => options[f.key].length >= 2);
+
+  const handleChipClick = (key: VariantKey, value: string | number) => {
+    const next = findBestVariant(variants, selectedVariant, key, value);
+    if (next) onSelectVariant(next);
   };
 
+  const handleAttrClick = (attrName: string, attrValue: string) => {
+    const next = findBestVariantByAttr(variants, selectedVariant, attrName, attrValue);
+    if (next) onSelectVariant(next);
+  };
+
+  // Is there any variant available for this chip combination?
+  const isChipCompatible = (key: VariantKey, value: string | number) =>
+    variants.some((v) => String(v[key]) === String(value));
+
+  const isAttrCompatible = (attrName: string, attrValue: string) =>
+    variants.some((v) => v.attributes?.some((a) => a.name === attrName && a.value === attrValue));
+
+  const showConfig = visibleFilters.length > 0 || dynamicAttrs.length > 0;
+
   return (
-    <VariantGrid>
+    <VariantGrid $single={!showConfig}>
+      {/* ── Варианты (cards) ── */}
       <Card p="20px" borderRadius="16px" boxShadow="small">
         <H5 mb="16px">Варианты покупки</H5>
-
         <VariantList>
           {variants.map((variant) => {
             const isSelected = variant.id === selectedVariant.id;
-
             return (
               <VariantCard
                 key={variant.id}
@@ -70,17 +135,18 @@ export default function ProductVariantSelector({
               >
                 <FlexBox justifyContent="space-between" alignItems="flex-start" style={{ gap: 12 }}>
                   <Box minWidth={0}>
-                    <H6 mb="8px">{variant.title}</H6>
+                    <H6 mb="6px">{variant.title}</H6>
                     <SemiSpan display="block" color="text.muted">
                       {getVariantSpecs(variant)}
                     </SemiSpan>
-                    <Small display="block" color="text.muted" mt="10px">
-                      {variant.warehouse || "Склад TOMSTORE"}
-                    </Small>
+                    {variant.warehouse && (
+                      <Small display="block" color="text.muted" mt="8px">
+                        {variant.warehouse}
+                      </Small>
+                    )}
                   </Box>
-
                   <Box textAlign="right" flexShrink={0}>
-                    <H6 color={PURPLE}>{formatCurrency(variant.price)}</H6>
+                    <H6 color={RED}>{formatCurrency(Number(variant.price))}</H6>
                     <ChooseBadge $selected={isSelected}>
                       {isSelected ? "Выбрано" : "Выбрать"}
                     </ChooseBadge>
@@ -92,81 +158,148 @@ export default function ProductVariantSelector({
         </VariantList>
       </Card>
 
-      <Card p="20px" borderRadius="16px" boxShadow="small">
-        <H5 mb="16px">Конфигурация</H5>
+      {/* ── Конфигурация (chips) ── */}
+      {showConfig && (
+        <Card p="20px" borderRadius="16px" boxShadow="small">
+          <H5 mb="16px">Конфигурация</H5>
+          <FilterList>
+            {visibleFilters.map((f) => {
+              const currentVal = selectedVariant[f.key];
+              return (
+                <Box key={f.key}>
+                  <H6 mb="10px">{f.title}</H6>
+                  <ChipRow>
+                    {options[f.key].map((val) => {
+                      const selected = String(currentVal) === String(val);
+                      const available = isChipCompatible(f.key, val);
+                      return (
+                        <Chip
+                          key={`${f.key}-${val}`}
+                          type="button"
+                          $selected={selected}
+                          $unavailable={!available}
+                          onClick={() => handleChipClick(f.key, val)}
+                          title={!available ? "Нет в наличии" : undefined}
+                        >
+                          {f.format(val)}
+                        </Chip>
+                      );
+                    })}
+                  </ChipRow>
+                </Box>
+              );
+            })}
 
-        <FilterList>
-          {FILTERS.map((filter) => (
-            <Box key={filter.key}>
-              <H6 mb="10px">{filter.title}</H6>
-              <ChipRow>
-                {options[filter.key].map((value) => {
-                  const selected = selectedVariant[filter.key] === value;
-
-                  return (
-                    <Chip
-                      key={`${filter.key}-${value}`}
-                      type="button"
-                      $selected={selected}
-                      onClick={() => selectByOption(filter.key, value)}
-                    >
-                      {filter.format(value)}
-                    </Chip>
-                  );
-                })}
-              </ChipRow>
-            </Box>
-          ))}
-        </FilterList>
-      </Card>
+            {dynamicAttrs.map(({ name, values }) => {
+              const currentAttrVal = selectedVariant.attributes?.find(
+                (a) => a.name === name,
+              )?.value;
+              return (
+                <Box key={name}>
+                  <H6 mb="10px">{name}</H6>
+                  <ChipRow>
+                    {values.map((val) => {
+                      const selected = currentAttrVal === val;
+                      const available = isAttrCompatible(name, val);
+                      return (
+                        <Chip
+                          key={`${name}-${val}`}
+                          type="button"
+                          $selected={selected}
+                          $unavailable={!available}
+                          onClick={() => handleAttrClick(name, val)}
+                          title={!available ? "Нет в наличии" : undefined}
+                        >
+                          {val}
+                        </Chip>
+                      );
+                    })}
+                  </ChipRow>
+                </Box>
+              );
+            })}
+          </FilterList>
+        </Card>
+      )}
     </VariantGrid>
   );
 }
 
-function uniqueValues(values: Array<string | number>) {
-  const seen = new Set<string>();
-
-  return values.filter((value) => {
-    const normalized = String(value).trim();
-    if (!normalized || seen.has(normalized)) return false;
-    seen.add(normalized);
-    return true;
-  });
-}
-
-function findVariantForOption(
-  variants: ProductVariant[],
-  selectedVariant: ProductVariant,
-  key: VariantKey,
-  value: string | number,
-) {
-  return variants.find(
-    (variant) =>
-      FILTERS.every((filter) =>
-        filter.key === key
-          ? variant[filter.key] === value
-          : variant[filter.key] === selectedVariant[filter.key],
-      ),
-  );
-}
+// ── Helpers ────────────────────────────────────────────────────────────────────
 
 function getVariantSpecs(variant: ProductVariant) {
-  return [
-    variant.cpu,
-    variant.ram ? `${variant.ram}GB` : "",
-    variant.storage,
-    variant.color,
-  ]
-    .filter(Boolean)
-    .join(" / ");
+  const parts: string[] = [];
+  if (variant.cpu) parts.push(variant.cpu);
+  if (Number(variant.ram) > 0) parts.push(`${variant.ram} GB`);
+  if (variant.storage) parts.push(variant.storage);
+  if (variant.color) parts.push(variant.color);
+  // add any extra attributes
+  variant.attributes?.forEach(({ name, value }) => {
+    if (name && value) parts.push(value);
+  });
+  return parts.join(" / ");
 }
 
-const PURPLE = "#D32F2F";
-const PURPLE_LIGHT = "#FFEBEE";
+/**
+ * Find the best matching variant when user clicks a chip.
+ * 1. Exact match (all other dimensions stay the same)
+ * 2. Partial match with highest score (most dimensions preserved)
+ */
+function findBestVariant(
+  variants: ProductVariant[],
+  current: ProductVariant,
+  key: VariantKey,
+  value: string | number,
+): ProductVariant | null {
+  // 1. exact match
+  const exact = variants.find((v) =>
+    String(v[key]) === String(value) &&
+    FILTERS.every((f) => f.key === key || String(v[f.key]) === String(current[f.key])),
+  );
+  if (exact) return exact;
 
-const VariantGrid = styled.div`
+  // 2. candidates with the chosen key=value, pick one with most matching other fields
+  const candidates = variants.filter((v) => String(v[key]) === String(value));
+  if (!candidates.length) return null;
+
+  const scored = candidates.map((v) => ({
+    v,
+    score: FILTERS.filter(
+      (f) => f.key !== key && String(v[f.key]) === String(current[f.key]),
+    ).length,
+  }));
+  scored.sort((a, b) => b.score - a.score);
+  return scored[0].v;
+}
+
+function findBestVariantByAttr(
+  variants: ProductVariant[],
+  current: ProductVariant,
+  attrName: string,
+  attrValue: string,
+): ProductVariant | null {
+  const candidates = variants.filter((v) =>
+    v.attributes?.some((a) => a.name === attrName && a.value === attrValue),
+  );
+  if (!candidates.length) return null;
+
+  // prefer variant that also keeps current fixed-field selections
+  const scored = candidates.map((v) => ({
+    v,
+    score: FILTERS.filter((f) => String(v[f.key]) === String(current[f.key])).length,
+  }));
+  scored.sort((a, b) => b.score - a.score);
+  return scored[0].v;
+}
+
+// ── Styled components ──────────────────────────────────────────────────────────
+
+const RED = "#D32F2F";
+const RED_LIGHT = "#FFEBEE";
+
+const VariantGrid = styled.div<{ $single?: boolean }>`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: ${({ $single }) => ($single ? "1fr" : "minmax(0,1fr) minmax(0,1fr)")};
   gap: 18px;
   margin-bottom: 28px;
 
@@ -183,33 +316,27 @@ const VariantList = styled.div`
 const VariantCard = styled.button<{ $selected: boolean }>`
   width: 100%;
   padding: 14px;
-  border: 2px solid ${({ $selected, theme }) => ($selected ? PURPLE : theme.colors.gray[300])};
+  border: 2px solid ${({ $selected, theme }) => ($selected ? RED : theme.colors.gray[300])};
   border-radius: 16px;
-  background: ${({ $selected }) => ($selected ? PURPLE_LIGHT : "#fff")};
+  background: ${({ $selected }) => ($selected ? RED_LIGHT : "#fff")};
   box-shadow: ${({ theme }) => theme.shadows.small};
   color: inherit;
   cursor: pointer;
   font-family: inherit;
   text-align: left;
-  transition: border-color 150ms ease, background-color 150ms ease, opacity 150ms ease;
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.55;
-    background: ${({ theme }) => theme.colors.gray[100]};
-  }
+  transition: border-color 150ms ease, background-color 150ms ease;
 `;
 
 const ChooseBadge = styled.span<{ $selected: boolean }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 30px;
-  margin-top: 10px;
+  min-height: 28px;
+  margin-top: 8px;
   padding: 0 12px;
   border-radius: 999px;
-  background: ${({ $selected }) => ($selected ? PURPLE : PURPLE_LIGHT)};
-  color: ${({ $selected }) => ($selected ? "#fff" : PURPLE)};
+  background: ${({ $selected }) => ($selected ? RED : RED_LIGHT)};
+  color: ${({ $selected }) => ($selected ? "#fff" : RED)};
   font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
@@ -223,26 +350,47 @@ const FilterList = styled.div`
 const ChipRow = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 `;
 
-const Chip = styled.button<{ $selected: boolean }>`
-  min-height: 42px;
-  padding: 0 16px;
-  border: 1px solid ${({ $selected, theme }) => ($selected ? PURPLE : theme.colors.gray[300])};
-  border-radius: 16px;
-  background: ${({ $selected }) => ($selected ? PURPLE : "#fff")};
-  color: ${({ $selected, theme }) => ($selected ? "#fff" : theme.colors.text.primary)};
-  cursor: pointer;
+const Chip = styled.button<{ $selected: boolean; $unavailable?: boolean }>`
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1.5px solid
+    ${({ $selected, $unavailable, theme }) =>
+      $unavailable
+        ? theme.colors.gray[200]
+        : $selected
+          ? RED
+          : theme.colors.gray[300]};
+  border-radius: 12px;
+  background: ${({ $selected, $unavailable, theme }) =>
+    $unavailable ? theme.colors.gray[100] : $selected ? RED : "#fff"};
+  color: ${({ $selected, $unavailable, theme }) =>
+    $unavailable
+      ? theme.colors.text.disabled
+      : $selected
+        ? "#fff"
+        : theme.colors.text.primary};
+  cursor: ${({ $unavailable }) => ($unavailable ? "not-allowed" : "pointer")};
   font-family: inherit;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: ${({ $unavailable }) => ($unavailable ? 0.55 : 1)};
   transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+  position: relative;
 
-  &:disabled {
-    border-color: ${({ theme }) => theme.colors.gray[300]};
-    background: ${({ theme }) => theme.colors.gray[100]};
-    color: ${({ theme }) => theme.colors.text.disabled};
-    cursor: not-allowed;
-  }
+  /* strikethrough line for unavailable */
+  ${({ $unavailable }) =>
+    $unavailable &&
+    `&::after {
+      content: "";
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      top: 50%;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.4;
+    }`}
 `;
