@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Fragment, useCallback, useState } from "react";
 import styled, { useTheme } from "styled-components";
@@ -16,7 +17,11 @@ import NextImage from "@component/NextImage";
 import Card, { CardProps } from "@component/Card";
 import { H3, SemiSpan } from "@component/Typography";
 import { Button, IconButton } from "@component/buttons";
-import ProductQuickView from "@component/products/ProductQuickView";
+
+// Only loaded when user clicks the quick-view icon
+const ProductQuickView = dynamic(() => import("@component/products/ProductQuickView"), {
+  ssr: false,
+});
 
 import { calculateDiscount } from "@utils/utils";
 import useCurrency from "@hook/useCurrency";

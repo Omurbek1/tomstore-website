@@ -1,16 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useCallback, useState } from "react";
 import { IconShoppingCart, IconUser } from "@tabler/icons-react";
-
-import Login from "@sections/auth/Login";
 
 import Box from "@component/Box";
 import Modal from "@component/modal";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
-import MiniCart from "@component/mini-cart";
 import Container from "@component/Container";
 import { Tiny } from "@component/Typography";
 import { IconButton } from "@component/buttons";
@@ -20,6 +18,10 @@ import { SearchInputWithCategory } from "@component/search-box";
 import { useCartCount } from "@hook/useCart";
 import StyledHeader from "./styles";
 import Logo from "./Logo";
+
+// Heavy components only needed on interaction — load on demand
+const MiniCart = dynamic(() => import("@component/mini-cart"), { ssr: false });
+const Login = dynamic(() => import("@sections/auth/Login"), { ssr: false });
 
 // ====================================================================
 type HeaderProps = { isFixed?: boolean; className?: string };
@@ -97,9 +99,11 @@ export default function Header({ isFixed, className }: HeaderProps) {
             <IconUser size={16} stroke={1.5} />
           </IconButton>
 
-          <Modal open={loginOpen} onClose={handleCloseLogin}>
-            <Login />
-          </Modal>
+          {loginOpen && (
+            <Modal open={loginOpen} onClose={handleCloseLogin}>
+              <Login />
+            </Modal>
+          )}
 
           <Sidenav
             open={open}
@@ -107,7 +111,7 @@ export default function Header({ isFixed, className }: HeaderProps) {
             position="right"
             handle={CART_HANDLE}
             onClose={handleCloseCart}>
-            <MiniCart />
+            {open && <MiniCart />}
           </Sidenav>
         </FlexBox>
       </Container>
