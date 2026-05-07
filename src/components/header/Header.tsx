@@ -82,7 +82,7 @@ export default function Header({ isFixed, className }: HeaderProps) {
           )}
         </FlexBox>
 
-        <FlexBox justifyContent="center" flex="1 1 0">
+        <FlexBox className="search-wrap" justifyContent="center" flex="1 1 0">
           <SearchInputWithCategory />
         </FlexBox>
 

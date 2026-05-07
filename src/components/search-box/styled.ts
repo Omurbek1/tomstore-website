@@ -86,13 +86,13 @@ const StyledSearchBox = styled.div`
       display: none;
     }
     .search-icon {
-      left: 1rem;
+      left: 0.875rem;
     }
     .search-field {
       height: 40px;
       border-radius: 300px;
-      padding-left: 2.75rem;
-      padding-right: 3.5rem;
+      padding-left: 2.5rem;
+      padding-right: 1rem;
     }
     .search-button {
       padding-left: 1.25rem;
@@ -100,6 +100,15 @@ const StyledSearchBox = styled.div`
     }
     .menu-button {
       display: unset;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    width: 100%;
+
+    .search-field {
+      height: 38px;
+      font-size: 14px;
     }
   }
 `;
