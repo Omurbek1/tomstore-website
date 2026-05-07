@@ -45,6 +45,7 @@ interface Product {
   labels?: string[];
   attributes?: Array<{ name: string; value: string }>;
   variants?: ProductVariant[];
+  videoUrl?: string | null;
 }
 
 export default Product;

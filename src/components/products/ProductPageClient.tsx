@@ -34,6 +34,7 @@ export default function ProductPageClient({
         availabilityLabel={product.availabilityLabel}
         labels={product.labels}
         slug={product.slug}
+        videoUrl={product.videoUrl}
         onVariantChange={setSelectedVariant}
       />
       <ProductView

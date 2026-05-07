@@ -42,6 +42,7 @@ type StorefrontProductDetails = StorefrontProductCard & {
   variants?: StorefrontProductVariant[];
   relatedProducts?: StorefrontProductCard[];
   recommendedProducts?: StorefrontProductCard[];
+  videoUrl?: string | null;
 };
 
 type StorefrontProductVariant = {
@@ -319,6 +320,7 @@ const mapStorefrontProductDetails = (
   fullDescription: product.fullDescription || product.shortDescription || "",
   attributes: product.attributes || [],
   variants: mapStorefrontProductVariants(product),
+  videoUrl: product.videoUrl || null,
 });
 
 const mapStorefrontProductVariants = (

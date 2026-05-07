@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import { IconMinus, IconPlus } from "@tabler/icons-react";
+import { IconMinus, IconPlus, IconPlayerPlay } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
 import Box from "@component/Box";
@@ -35,9 +35,29 @@ interface Props {
   labels?: string[];
   slug?: string;
   variants?: ProductVariant[];
+  videoUrl?: string | null;
   onVariantChange?: (variant: ProductVariant | undefined) => void;
 }
 // ========================================
+
+function getYouTubeEmbedUrl(url: string): string | null {
+  try {
+    const u = new URL(url);
+    let videoId: string | null = null;
+    if (u.hostname.includes("youtube.com")) {
+      videoId = u.searchParams.get("v");
+    } else if (u.hostname === "youtu.be") {
+      videoId = u.pathname.slice(1);
+    }
+    return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : null;
+  } catch {
+    return null;
+  }
+}
+
+function isDirectVideo(url: string) {
+  return /\.(mp4|webm|ogg)(\?|$)/i.test(url);
+}
 
 export default function ProductIntro({
   product,
@@ -51,6 +71,7 @@ export default function ProductIntro({
   labels = [],
   slug,
   variants: propVariants,
+  videoUrl,
   onVariantChange,
 }: Props) {
   const param = useParams();
@@ -58,6 +79,7 @@ export default function ProductIntro({
   const changeCartAmount = useChangeCartAmount();
   const formatCurrency = useCurrency();
   const [selectedImage, setSelectedImage] = useState(0);
+  const [showVideo, setShowVideo] = useState(false);
 
   const variants = product?.variants?.length
     ? product.variants
@@ -113,10 +135,14 @@ export default function ProductIntro({
     slug: shareSlug,
   });
 
-  const handleImageClick = useCallback((ind: number) => () => setSelectedImage(ind), []);
+  const handleImageClick = useCallback((ind: number) => () => {
+    setSelectedImage(ind);
+    setShowVideo(false);
+  }, []);
 
   useEffect(() => {
     setSelectedImage(0);
+    setShowVideo(false);
   }, [displayImages]);
 
   const handleCartAmountChange = useCallback(
@@ -158,13 +184,32 @@ export default function ProductIntro({
       <Grid container justifyContent="center" alignItems="center" spacing={16}>
         <Grid item md={6} xs={12} alignItems="center">
           <div>
-            <FlexBox mb="50px" overflow="hidden" borderRadius={16} justifyContent="center">
-              <Image
-                width={300}
-                height={300}
-                src={displayImages[selectedImage] || displayImages[0]}
-                style={{ display: "block", width: "100%", height: "auto" }}
-              />
+            <FlexBox mb="50px" overflow="hidden" borderRadius={16} justifyContent="center"
+              style={{ aspectRatio: showVideo ? "16/9" : undefined, background: showVideo ? "#000" : undefined }}>
+              {showVideo && videoUrl ? (
+                isDirectVideo(videoUrl) ? (
+                  <video
+                    src={videoUrl}
+                    controls
+                    autoPlay
+                    style={{ width: "100%", height: "100%", display: "block" }}
+                  />
+                ) : (
+                  <iframe
+                    src={getYouTubeEmbedUrl(videoUrl) || videoUrl}
+                    allow="autoplay; encrypted-media; fullscreen"
+                    allowFullScreen
+                    style={{ width: "100%", aspectRatio: "16/9", border: "none", display: "block" }}
+                  />
+                )
+              ) : (
+                <Image
+                  width={300}
+                  height={300}
+                  src={displayImages[selectedImage] || displayImages[0]}
+                  style={{ display: "block", width: "100%", height: "auto" }}
+                />
+              )}
             </FlexBox>
 
             <FlexBox overflow="auto">
@@ -181,12 +226,31 @@ export default function ProductIntro({
                   alignItems="center"
                   justifyContent="center"
                   ml={ind === 0 ? "auto" : ""}
-                  mr={ind === displayImages.length - 1 ? "auto" : "10px"}
-                  borderColor={selectedImage === ind ? "primary.main" : "gray.400"}
+                  mr="10px"
+                  borderColor={!showVideo && selectedImage === ind ? "primary.main" : "gray.400"}
                   onClick={handleImageClick(ind)}>
                   <Avatar src={url} borderRadius="10px" size={65} />
                 </Box>
               ))}
+
+              {videoUrl && (
+                <Box
+                  size={70}
+                  minWidth={70}
+                  display="flex"
+                  cursor="pointer"
+                  border="1px solid"
+                  borderRadius="10px"
+                  alignItems="center"
+                  justifyContent="center"
+                  ml={displayImages.length === 0 ? "auto" : ""}
+                  mr="auto"
+                  borderColor={showVideo ? "primary.main" : "gray.400"}
+                  style={{ background: showVideo ? "#FFEBEE" : "#f5f5f5", flexShrink: 0 }}
+                  onClick={() => setShowVideo(true)}>
+                  <IconPlayerPlay size={28} color="#D32F2F" />
+                </Box>
+              )}
             </FlexBox>
           </div>
         </Grid>
