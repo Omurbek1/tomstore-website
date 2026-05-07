@@ -1,6 +1,17 @@
 import api from "@utils/__api__/products";
-import { getProductBySlug } from "@utils/__api__/storefront";
+import { getProductBySlug, getProductSlugs } from "@utils/__api__/storefront";
 import ProductPageClient from "@component/products/ProductPageClient";
+
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  try {
+    const slugs = await getProductSlugs();
+    return slugs.map(({ slug }) => ({ slug }));
+  } catch {
+    return [];
+  }
+}
 
 // ==============================================================
 interface Props {

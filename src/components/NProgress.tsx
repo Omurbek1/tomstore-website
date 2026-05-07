@@ -11,35 +11,38 @@ type PushStateInput = [data: any, unused: string, url?: string | URL | null | un
 
 export default function NProgressBar() {
   useEffect(() => {
-    NProgress.configure({ showSpinner: false });
+    NProgress.configure({ showSpinner: false, speed: 300, minimum: 0.08 });
 
     const handleAnchorClick = (event: MouseEvent) => {
       const anchorElement = event.currentTarget as HTMLAnchorElement;
-
-      // Skip anchors with target attribute but different than _self
       if (anchorElement.target !== "_self" && anchorElement.target?.trim() !== "") return;
-
-      // Skip anchors with download attribute
       if (anchorElement.hasAttribute("download")) return;
-
       if (location.href !== anchorElement.href) NProgress.start();
     };
 
-    const handleMutation: MutationCallback = () => {
-      const anchorElements = document.querySelectorAll("a[href]");
-      anchorElements.forEach((anchor) => anchor.addEventListener("click", handleAnchorClick));
+    const attachListeners = () => {
+      document.querySelectorAll("a[href]").forEach((anchor) =>
+        anchor.addEventListener("click", handleAnchorClick),
+      );
     };
 
-    const mutationObserver = new MutationObserver(handleMutation);
+    attachListeners();
+
+    const mutationObserver = new MutationObserver(attachListeners);
     mutationObserver.observe(document, { childList: true, subtree: true });
 
-    window.history.pushState = new Proxy(window.history.pushState, {
+    const originalPushState = window.history.pushState.bind(window.history);
+    window.history.pushState = new Proxy(originalPushState, {
       apply: (target, thisArg, argArray: PushStateInput) => {
         NProgress.done();
         return target.apply(thisArg, argArray);
-      }
+      },
     });
-  });
+
+    return () => {
+      mutationObserver.disconnect();
+    };
+  }, []);
 
   return null;
 }

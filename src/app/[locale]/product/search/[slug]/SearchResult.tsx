@@ -287,7 +287,7 @@ export default function SearchResult({
 
               <Drawer
                 placement="left"
-                width={320}
+                size={320}
                 open={drawerOpen}
                 title={filtersT("title")}
                 onClose={() => setDrawerOpen(false)}

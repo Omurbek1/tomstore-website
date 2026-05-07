@@ -1,3 +1,4 @@
+import Image from "next/image";
 import styled from "styled-components";
 import { Link } from "@i18n/navigation";
 import Typography from "@component/Typography";
@@ -26,12 +27,7 @@ const StyledHeroBannerCard = styled.div`
   .image-holder {
     position: relative;
     flex: 0 0 min(38%, 380px);
-    img {
-      width: 100%;
-      height: auto;
-      display: block;
-      object-fit: contain;
-    }
+    min-height: 240px;
   }
 
   @media only screen and (max-width: 900px) {
@@ -141,7 +137,14 @@ export default function HeroBannerCard({
 
       {image ? (
         <div className="image-holder">
-          <img src={image} alt={title || "banner"} />
+          <Image
+            src={image}
+            alt={title || "banner"}
+            fill
+            priority
+            sizes="(max-width: 600px) 60vw, 38vw"
+            style={{ objectFit: "contain" }}
+          />
         </div>
       ) : null}
     </StyledHeroBannerCard>
