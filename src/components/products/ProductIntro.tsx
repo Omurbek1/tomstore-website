@@ -42,31 +42,30 @@ interface Props {
 // ========================================
 
 type VideoType = "direct" | "iframe";
-type VideoEmbed = { type: VideoType; src: string };
-
-function getVideoThumbnail(url: string): string | null {
-  try {
-    const u = new URL(url);
-    const host = u.hostname.replace(/^www\./, "");
-    if (host.includes("youtube.com") || host === "youtu.be") {
-      let id: string | null = null;
-      if (host === "youtu.be") {
-        id = u.pathname.slice(1).split("?")[0];
-      } else {
-        id =
-          u.searchParams.get("v") ||
-          (/^\/(shorts|embed)\//.test(u.pathname) ? u.pathname.split("/")[2] : null);
-      }
-      if (id) return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
-    }
-  } catch { /* ignore */ }
-  return null;
-}
+type VideoEmbed = {
+  type: VideoType;
+  src: string;
+  aspectRatio: string;
+  thumbnail: string | null;
+  autoPlay: boolean;
+};
 
 function resolveVideoEmbed(url: string): VideoEmbed {
+  const make = (
+    type: VideoType,
+    src: string,
+    opts: { aspectRatio?: string; thumbnail?: string | null; autoPlay?: boolean } = {},
+  ): VideoEmbed => ({
+    type,
+    src,
+    aspectRatio: opts.aspectRatio ?? "16/9",
+    thumbnail: opts.thumbnail ?? null,
+    autoPlay: opts.autoPlay ?? true,
+  });
+
   // Direct video files → <video>
   if (/\.(mp4|webm|ogg|mov|avi|mkv|m3u8)(\?|$)/i.test(url)) {
-    return { type: "direct", src: url };
+    return make("direct", url);
   }
 
   try {
@@ -76,28 +75,30 @@ function resolveVideoEmbed(url: string): VideoEmbed {
     // YouTube
     if (host.includes("youtube.com") || host === "youtu.be") {
       let id: string | null = null;
+      const isShorts = u.pathname.startsWith("/shorts/");
       if (host === "youtu.be") {
         id = u.pathname.slice(1).split("?")[0];
       } else {
         id =
           u.searchParams.get("v") ||
-          (/^\/(shorts|embed)\//.test(u.pathname)
-            ? u.pathname.split("/")[2]
-            : null);
+          (/^\/(shorts|embed)\//.test(u.pathname) ? u.pathname.split("/")[2] : null);
       }
-      if (id) return { type: "iframe", src: `https://www.youtube.com/embed/${id}?autoplay=1&rel=0` };
+      if (id) return make("iframe", `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`, {
+        aspectRatio: isShorts ? "9/16" : "16/9",
+        thumbnail: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+      });
     }
 
     // Vimeo
     if (host === "vimeo.com" || host === "player.vimeo.com") {
       const id = u.pathname.split("/").filter(Boolean).pop();
-      if (id) return { type: "iframe", src: `https://player.vimeo.com/video/${id}?autoplay=1` };
+      if (id) return make("iframe", `https://player.vimeo.com/video/${id}?autoplay=1`);
     }
 
     // Rutube
     if (host === "rutube.ru") {
       const id = u.pathname.replace(/\/$/, "").split("/").pop();
-      if (id) return { type: "iframe", src: `https://rutube.ru/play/embed/${id}` };
+      if (id) return make("iframe", `https://rutube.ru/play/embed/${id}`);
     }
 
     // VK Video  vk.com/video-123_456  or  vk.com/video?z=video-123_456
@@ -108,28 +109,35 @@ function resolveVideoEmbed(url: string): VideoEmbed {
       const match = (z || u.pathname).match(/video(-?\d+)_(\d+)/);
       const params = match
         ? `oid=${match[1]}&id=${match[2]}`
-        : oid && vid
-          ? `oid=${oid}&id=${vid}`
-          : "";
-      if (params) return { type: "iframe", src: `https://vk.com/video_ext.php?${params}&autoplay=1` };
+        : oid && vid ? `oid=${oid}&id=${vid}` : "";
+      if (params) return make("iframe", `https://vk.com/video_ext.php?${params}&autoplay=1`);
     }
 
     // Dailymotion
     if (host === "dailymotion.com") {
       const id = u.pathname.replace(/\/$/, "").split("/").pop();
-      if (id) return { type: "iframe", src: `https://www.dailymotion.com/embed/video/${id}?autoplay=1` };
+      if (id) return make("iframe", `https://www.dailymotion.com/embed/video/${id}?autoplay=1`);
     }
 
-    // TikTok
+    // TikTok — portrait 9:16, no autoplay support
     if (host === "tiktok.com") {
       const id = u.pathname.match(/\/video\/(\d+)/)?.[1];
-      if (id) return { type: "iframe", src: `https://www.tiktok.com/embed/v2/${id}` };
+      if (id) return make("iframe", `https://www.tiktok.com/embed/v2/${id}`, {
+        aspectRatio: "9/16",
+        autoPlay: false,
+      });
     }
 
-    // Instagram  /p/ID/  /reel/ID/  /tv/ID/
+    // Instagram — /p/ = square, /reel/ /tv/ = portrait; no autoplay, load player immediately
     if (host === "instagram.com") {
       const match = u.pathname.match(/^\/(p|reel|tv)\/([\w-]+)/);
-      if (match) return { type: "iframe", src: `https://www.instagram.com/${match[1]}/${match[2]}/embed/` };
+      if (match) {
+        const isReel = match[1] === "reel" || match[1] === "tv";
+        return make("iframe", `https://www.instagram.com/${match[1]}/${match[2]}/embed/`, {
+          aspectRatio: isReel ? "9/16" : "1/1",
+          autoPlay: false,
+        });
+      }
     }
   } catch {
     // fall through
@@ -267,77 +275,94 @@ export default function ProductIntro({
       <Grid container justifyContent="center" alignItems="center" spacing={16}>
         <Grid item md={6} xs={12} alignItems="center">
           <div>
-            <MainMediaBox mb="50px">
-              {showVideo && videoUrl ? (
-                isPlaying ? (
-                  (() => {
-                    const embed = resolveVideoEmbed(videoUrl);
-                    return embed.type === "direct" ? (
-                      <video
-                        src={embed.src}
-                        controls
-                        autoPlay
-                        style={{ width: "100%", height: "100%", display: "block" }}
-                      />
+            {(() => {
+              const embed = videoUrl ? resolveVideoEmbed(videoUrl) : null;
+              const showPlayer = showVideo && videoUrl && embed;
+              const showCover = showPlayer && !isPlaying && !!embed!.thumbnail;
+              const showDirect = showPlayer && (isPlaying || !embed!.autoPlay);
+
+              return (
+                <>
+                  <MainMediaBox
+                    mb="50px"
+                    $aspectRatio={showPlayer ? embed!.aspectRatio : "4/3"}
+                  >
+                    {showDirect ? (
+                      embed!.type === "direct" ? (
+                        <video
+                          src={embed!.src}
+                          controls
+                          autoPlay
+                          style={{ width: "100%", height: "100%", display: "block" }}
+                        />
+                      ) : (
+                        <iframe
+                          src={embed!.src}
+                          title="Product video"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                          style={{ width: "100%", height: "100%", border: "none", display: "block" }}
+                        />
+                      )
+                    ) : showCover ? (
+                      <VideoCover onClick={() => setIsPlaying(true)}>
+                        <img src={embed!.thumbnail!} alt="video preview" />
+                        <VideoOverlay />
+                        <PlayButtonCircle>
+                          <IconPlayerPlay size={36} fill="#fff" color="#fff" />
+                        </PlayButtonCircle>
+                      </VideoCover>
+                    ) : showPlayer && !embed!.thumbnail ? (
+                      <VideoCover onClick={() => setIsPlaying(true)}>
+                        <VideoCoverFallback />
+                        <VideoOverlay />
+                        <PlayButtonCircle>
+                          <IconPlayerPlay size={36} fill="#fff" color="#fff" />
+                        </PlayButtonCircle>
+                      </VideoCover>
                     ) : (
-                      <iframe
-                        src={embed.src}
-                        title="Product video"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                        style={{ width: "100%", height: "100%", border: "none", display: "block" }}
+                      <Image
+                        width={300}
+                        height={300}
+                        src={displayImages[selectedImage] || displayImages[0]}
+                        style={{ display: "block", width: "100%", height: "auto" }}
                       />
-                    );
-                  })()
-                ) : (
-                  <VideoCover onClick={() => setIsPlaying(true)}>
-                    {getVideoThumbnail(videoUrl)
-                      ? <img src={getVideoThumbnail(videoUrl)!} alt="video preview" />
-                      : <VideoCoverFallback />
-                    }
-                    <VideoOverlay />
-                    <PlayButtonCircle>
-                      <IconPlayerPlay size={36} fill="#fff" color="#fff" />
-                    </PlayButtonCircle>
-                  </VideoCover>
-                )
-              ) : (
-                <Image
-                  width={300}
-                  height={300}
-                  src={displayImages[selectedImage] || displayImages[0]}
-                  style={{ display: "block", width: "100%", height: "auto" }}
-                />
-              )}
-            </MainMediaBox>
+                    )}
+                  </MainMediaBox>
 
-            <FlexBox overflow="auto" style={{ gap: 10, paddingBottom: 4 }}>
-              {displayImages.map((url, ind) => (
-                <ThumbBox
-                  key={ind}
-                  $active={!showVideo && selectedImage === ind}
-                  onClick={handleImageClick(ind)}
-                >
-                  <Avatar src={url} borderRadius="8px" size={62} />
-                </ThumbBox>
-              ))}
+                  <FlexBox overflow="auto" style={{ gap: 10, paddingBottom: 4 }}>
+                    {displayImages.map((url: string, ind: number) => (
+                      <ThumbBox
+                        key={ind}
+                        $active={!showVideo && selectedImage === ind}
+                        onClick={handleImageClick(ind)}
+                      >
+                        <Avatar src={url} borderRadius="8px" size={62} />
+                      </ThumbBox>
+                    ))}
 
-              {videoUrl && (
-                <VideoThumbBox
-                  $active={showVideo}
-                  onClick={() => { setShowVideo(true); setIsPlaying(false); }}
-                >
-                  {getVideoThumbnail(videoUrl)
-                    ? <img src={getVideoThumbnail(videoUrl)!} alt="video" />
-                    : <VideoThumbFallback />
-                  }
-                  <VideoThumbOverlay />
-                  <VideoThumbPlay>
-                    <IconPlayerPlay size={18} fill="#fff" color="#fff" />
-                  </VideoThumbPlay>
-                </VideoThumbBox>
-              )}
-            </FlexBox>
+                    {videoUrl && embed && (
+                      <VideoThumbBox
+                        $active={showVideo}
+                        onClick={() => {
+                          setShowVideo(true);
+                          setIsPlaying(!embed.autoPlay);
+                        }}
+                      >
+                        {embed.thumbnail
+                          ? <img src={embed.thumbnail} alt="video" />
+                          : <VideoThumbFallback />
+                        }
+                        <VideoThumbOverlay />
+                        <VideoThumbPlay>
+                          <IconPlayerPlay size={18} fill="#fff" color="#fff" />
+                        </VideoThumbPlay>
+                      </VideoThumbBox>
+                    )}
+                  </FlexBox>
+                </>
+              );
+            })()}
           </div>
         </Grid>
 
@@ -457,11 +482,11 @@ export default function ProductIntro({
 
 // ── Gallery styled components ─────────────────────────────────────────────────
 
-const MainMediaBox = styled(FlexBox)`
+const MainMediaBox = styled(FlexBox)<{ $aspectRatio?: string }>`
   overflow: hidden;
   border-radius: 16px;
   justify-content: center;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: ${({ $aspectRatio }) => $aspectRatio ?? "4/3"};
   background: #f8f8f8;
 
   img, video, iframe { width: 100%; height: 100%; object-fit: contain; display: block; }
