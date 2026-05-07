@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { IconMinus, IconPlus, IconPlayerPlay } from "@tabler/icons-react";
+import styled from "styled-components";
 import { useTranslations } from "next-intl";
 
 import Box from "@component/Box";
@@ -40,29 +41,102 @@ interface Props {
 }
 // ========================================
 
-function getYouTubeEmbedUrl(url: string): string | null {
+type VideoType = "direct" | "iframe";
+type VideoEmbed = { type: VideoType; src: string };
+
+function getVideoThumbnail(url: string): string | null {
   try {
     const u = new URL(url);
-    let videoId: string | null = null;
-    if (u.hostname.includes("youtube.com")) {
-      // watch?v=ID  or  /shorts/ID  or  /embed/ID
-      videoId =
-        u.searchParams.get("v") ||
-        (u.pathname.startsWith("/shorts/") ? u.pathname.replace("/shorts/", "") : null) ||
-        (u.pathname.startsWith("/embed/") ? u.pathname.replace("/embed/", "") : null);
-    } else if (u.hostname === "youtu.be") {
-      videoId = u.pathname.slice(1).split("?")[0];
+    const host = u.hostname.replace(/^www\./, "");
+    if (host.includes("youtube.com") || host === "youtu.be") {
+      let id: string | null = null;
+      if (host === "youtu.be") {
+        id = u.pathname.slice(1).split("?")[0];
+      } else {
+        id =
+          u.searchParams.get("v") ||
+          (/^\/(shorts|embed)\//.test(u.pathname) ? u.pathname.split("/")[2] : null);
+      }
+      if (id) return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
     }
-    return videoId
-      ? `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`
-      : null;
-  } catch {
-    return null;
-  }
+  } catch { /* ignore */ }
+  return null;
 }
 
-function isDirectVideo(url: string) {
-  return /\.(mp4|webm|ogg)(\?|$)/i.test(url);
+function resolveVideoEmbed(url: string): VideoEmbed {
+  // Direct video files → <video>
+  if (/\.(mp4|webm|ogg|mov|avi|mkv|m3u8)(\?|$)/i.test(url)) {
+    return { type: "direct", src: url };
+  }
+
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, "");
+
+    // YouTube
+    if (host.includes("youtube.com") || host === "youtu.be") {
+      let id: string | null = null;
+      if (host === "youtu.be") {
+        id = u.pathname.slice(1).split("?")[0];
+      } else {
+        id =
+          u.searchParams.get("v") ||
+          (/^\/(shorts|embed)\//.test(u.pathname)
+            ? u.pathname.split("/")[2]
+            : null);
+      }
+      if (id) return { type: "iframe", src: `https://www.youtube.com/embed/${id}?autoplay=1&rel=0` };
+    }
+
+    // Vimeo
+    if (host === "vimeo.com" || host === "player.vimeo.com") {
+      const id = u.pathname.split("/").filter(Boolean).pop();
+      if (id) return { type: "iframe", src: `https://player.vimeo.com/video/${id}?autoplay=1` };
+    }
+
+    // Rutube
+    if (host === "rutube.ru") {
+      const id = u.pathname.replace(/\/$/, "").split("/").pop();
+      if (id) return { type: "iframe", src: `https://rutube.ru/play/embed/${id}` };
+    }
+
+    // VK Video  vk.com/video-123_456  or  vk.com/video?z=video-123_456
+    if (host === "vk.com") {
+      const oid = u.searchParams.get("oid") || "";
+      const vid = u.searchParams.get("id") || "";
+      const z = u.searchParams.get("z") || "";
+      const match = (z || u.pathname).match(/video(-?\d+)_(\d+)/);
+      const params = match
+        ? `oid=${match[1]}&id=${match[2]}`
+        : oid && vid
+          ? `oid=${oid}&id=${vid}`
+          : "";
+      if (params) return { type: "iframe", src: `https://vk.com/video_ext.php?${params}&autoplay=1` };
+    }
+
+    // Dailymotion
+    if (host === "dailymotion.com") {
+      const id = u.pathname.replace(/\/$/, "").split("/").pop();
+      if (id) return { type: "iframe", src: `https://www.dailymotion.com/embed/video/${id}?autoplay=1` };
+    }
+
+    // TikTok
+    if (host === "tiktok.com") {
+      const id = u.pathname.match(/\/video\/(\d+)/)?.[1];
+      if (id) return { type: "iframe", src: `https://www.tiktok.com/embed/v2/${id}` };
+    }
+
+    // Instagram  /p/ID/  /reel/ID/  /tv/ID/
+    if (host === "instagram.com") {
+      const match = u.pathname.match(/^\/(p|reel|tv)\/([\w-]+)/);
+      if (match) return { type: "iframe", src: `https://www.instagram.com/${match[1]}/${match[2]}/embed/` };
+    }
+  } catch {
+    // fall through
+  }
+
+  // Unknown URL → try embedding as-is
+  return { type: "iframe", src: url };
 }
 
 export default function ProductIntro({
@@ -86,6 +160,7 @@ export default function ProductIntro({
   const formatCurrency = useCurrency();
   const [selectedImage, setSelectedImage] = useState(0);
   const [showVideo, setShowVideo] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const variants = product?.variants?.length
     ? product.variants
@@ -144,11 +219,13 @@ export default function ProductIntro({
   const handleImageClick = useCallback((ind: number) => () => {
     setSelectedImage(ind);
     setShowVideo(false);
+    setIsPlaying(false);
   }, []);
 
   useEffect(() => {
     setSelectedImage(0);
     setShowVideo(false);
+    setIsPlaying(false);
   }, [displayImages]);
 
   const handleCartAmountChange = useCallback(
@@ -190,24 +267,39 @@ export default function ProductIntro({
       <Grid container justifyContent="center" alignItems="center" spacing={16}>
         <Grid item md={6} xs={12} alignItems="center">
           <div>
-            <FlexBox mb="50px" overflow="hidden" borderRadius={16} justifyContent="center"
-              style={{ aspectRatio: showVideo ? "16/9" : undefined, background: showVideo ? "#000" : undefined }}>
+            <MainMediaBox mb="50px">
               {showVideo && videoUrl ? (
-                isDirectVideo(videoUrl) ? (
-                  <video
-                    src={videoUrl}
-                    controls
-                    autoPlay
-                    style={{ width: "100%", height: "100%", display: "block" }}
-                  />
+                isPlaying ? (
+                  (() => {
+                    const embed = resolveVideoEmbed(videoUrl);
+                    return embed.type === "direct" ? (
+                      <video
+                        src={embed.src}
+                        controls
+                        autoPlay
+                        style={{ width: "100%", height: "100%", display: "block" }}
+                      />
+                    ) : (
+                      <iframe
+                        src={embed.src}
+                        title="Product video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        style={{ width: "100%", height: "100%", border: "none", display: "block" }}
+                      />
+                    );
+                  })()
                 ) : (
-                  <iframe
-                    src={getYouTubeEmbedUrl(videoUrl) || videoUrl}
-                    title="Product video"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    style={{ width: "100%", aspectRatio: "16/9", border: "none", display: "block" }}
-                  />
+                  <VideoCover onClick={() => setIsPlaying(true)}>
+                    {getVideoThumbnail(videoUrl)
+                      ? <img src={getVideoThumbnail(videoUrl)!} alt="video preview" />
+                      : <VideoCoverFallback />
+                    }
+                    <VideoOverlay />
+                    <PlayButtonCircle>
+                      <IconPlayerPlay size={36} fill="#fff" color="#fff" />
+                    </PlayButtonCircle>
+                  </VideoCover>
                 )
               ) : (
                 <Image
@@ -217,46 +309,33 @@ export default function ProductIntro({
                   style={{ display: "block", width: "100%", height: "auto" }}
                 />
               )}
-            </FlexBox>
+            </MainMediaBox>
 
-            <FlexBox overflow="auto">
+            <FlexBox overflow="auto" style={{ gap: 10, paddingBottom: 4 }}>
               {displayImages.map((url, ind) => (
-                <Box
+                <ThumbBox
                   key={ind}
-                  size={70}
-                  bg="white"
-                  minWidth={70}
-                  display="flex"
-                  cursor="pointer"
-                  border="1px solid"
-                  borderRadius="10px"
-                  alignItems="center"
-                  justifyContent="center"
-                  ml={ind === 0 ? "auto" : ""}
-                  mr="10px"
-                  borderColor={!showVideo && selectedImage === ind ? "primary.main" : "gray.400"}
-                  onClick={handleImageClick(ind)}>
-                  <Avatar src={url} borderRadius="10px" size={65} />
-                </Box>
+                  $active={!showVideo && selectedImage === ind}
+                  onClick={handleImageClick(ind)}
+                >
+                  <Avatar src={url} borderRadius="8px" size={62} />
+                </ThumbBox>
               ))}
 
               {videoUrl && (
-                <Box
-                  size={70}
-                  minWidth={70}
-                  display="flex"
-                  cursor="pointer"
-                  border="1px solid"
-                  borderRadius="10px"
-                  alignItems="center"
-                  justifyContent="center"
-                  ml={displayImages.length === 0 ? "auto" : ""}
-                  mr="auto"
-                  borderColor={showVideo ? "primary.main" : "gray.400"}
-                  style={{ background: showVideo ? "#FFEBEE" : "#f5f5f5", flexShrink: 0 }}
-                  onClick={() => setShowVideo(true)}>
-                  <IconPlayerPlay size={28} color="#D32F2F" />
-                </Box>
+                <VideoThumbBox
+                  $active={showVideo}
+                  onClick={() => { setShowVideo(true); setIsPlaying(false); }}
+                >
+                  {getVideoThumbnail(videoUrl)
+                    ? <img src={getVideoThumbnail(videoUrl)!} alt="video" />
+                    : <VideoThumbFallback />
+                  }
+                  <VideoThumbOverlay />
+                  <VideoThumbPlay>
+                    <IconPlayerPlay size={18} fill="#fff" color="#fff" />
+                  </VideoThumbPlay>
+                </VideoThumbBox>
               )}
             </FlexBox>
           </div>
@@ -375,3 +454,109 @@ export default function ProductIntro({
     </Box>
   );
 }
+
+// ── Gallery styled components ─────────────────────────────────────────────────
+
+const MainMediaBox = styled(FlexBox)`
+  overflow: hidden;
+  border-radius: 16px;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  background: #f8f8f8;
+
+  img, video, iframe { width: 100%; height: 100%; object-fit: contain; display: block; }
+`;
+
+const ThumbBox = styled.button<{ $active: boolean }>`
+  flex: 0 0 70px;
+  width: 70px;
+  height: 70px;
+  padding: 3px;
+  border: 2px solid ${({ $active, theme }) => ($active ? "#D32F2F" : theme.colors.gray[300])};
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 150ms ease;
+`;
+
+const VideoThumbBox = styled.button<{ $active: boolean }>`
+  flex: 0 0 70px;
+  width: 70px;
+  height: 70px;
+  border: 2px solid ${({ $active }) => ($active ? "#D32F2F" : "#ddd")};
+  border-radius: 10px;
+  background: #111;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 150ms ease;
+
+  img { width: 100%; height: 100%; object-fit: cover; display: block; }
+`;
+
+const VideoThumbFallback = styled.div`
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+`;
+
+const VideoThumbOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+`;
+
+const VideoThumbPlay = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const VideoCover = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  overflow: hidden;
+  background: #111;
+
+  img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  &:hover ${() => PlayButtonCircle} {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+`;
+
+const VideoCoverFallback = styled.div`
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1c1c1c 0%, #2d2d2d 100%);
+`;
+
+const VideoOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+`;
+
+const PlayButtonCircle = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(211, 47, 47, 0.92);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  transition: transform 200ms ease, background 200ms ease;
+
+  &:hover { background: #D32F2F; }
+`;
