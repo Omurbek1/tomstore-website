@@ -41,13 +41,15 @@ interface Props {
 }
 // ========================================
 
-type VideoType = "direct" | "iframe";
+type VideoType = "direct" | "iframe" | "social-link";
 type VideoEmbed = {
   type: VideoType;
   src: string;
   aspectRatio: string;
   thumbnail: string | null;
   autoPlay: boolean;
+  platform?: string;
+  originalUrl?: string;
 };
 
 function resolveVideoEmbed(url: string): VideoEmbed {
@@ -128,15 +130,20 @@ function resolveVideoEmbed(url: string): VideoEmbed {
       });
     }
 
-    // Instagram — /p/ = square, /reel/ /tv/ = portrait; no autoplay, load player immediately
+    // Instagram — iframe is blocked by X-Frame-Options; show a link card instead
     if (host === "instagram.com") {
       const match = u.pathname.match(/^\/(p|reel|tv)\/([\w-]+)/);
       if (match) {
         const isReel = match[1] === "reel" || match[1] === "tv";
-        return make("iframe", `https://www.instagram.com/${match[1]}/${match[2]}/embed/`, {
+        return {
+          type: "social-link",
+          src: url,
+          originalUrl: url,
+          platform: "instagram",
           aspectRatio: isReel ? "9/16" : "1/1",
+          thumbnail: null,
           autoPlay: false,
-        });
+        };
       }
     }
   } catch {
@@ -277,7 +284,8 @@ export default function ProductIntro({
           <div>
             {(() => {
               const embed = videoUrl ? resolveVideoEmbed(videoUrl) : null;
-              const showPlayer = showVideo && videoUrl && embed;
+              const isSocialLink = embed?.type === "social-link";
+              const showPlayer = showVideo && videoUrl && embed && !isSocialLink;
               const showCover = showPlayer && !isPlaying && !!embed!.thumbnail;
               const showDirect = showPlayer && (isPlaying || !embed!.autoPlay);
 
@@ -287,7 +295,9 @@ export default function ProductIntro({
                     mb="50px"
                     $aspectRatio={showPlayer ? embed!.aspectRatio : "4/3"}
                   >
-                    {showDirect ? (
+                    {showVideo && isSocialLink && embed ? (
+                      <InstagramEmbedWidget url={embed.originalUrl || embed.src} />
+                    ) : showDirect ? (
                       embed!.type === "direct" ? (
                         <video
                           src={embed!.src}
@@ -584,4 +594,59 @@ const PlayButtonCircle = styled.div`
   transition: transform 200ms ease, background 200ms ease;
 
   &:hover { background: #D32F2F; }
+`;
+
+// ── Instagram embed via official embed.js ────────────────────────────────────
+
+function InstagramEmbedWidget({ url }: { url: string }) {
+  useEffect(() => {
+    const process = () => {
+      const ig = (window as any).instgrm;
+      if (ig?.Embeds?.process) ig.Embeds.process();
+    };
+
+    if ((window as any).instgrm) {
+      process();
+    } else {
+      const existing = document.getElementById("instagram-embed-js");
+      if (existing) {
+        existing.addEventListener("load", process);
+      } else {
+        const script = document.createElement("script");
+        script.id = "instagram-embed-js";
+        script.src = "https://www.instagram.com/embed.js";
+        script.async = true;
+        script.onload = process;
+        document.body.appendChild(script);
+      }
+    }
+  }, [url]);
+
+  return (
+    <InstagramEmbedRoot>
+      <blockquote
+        className="instagram-media"
+        data-instgrm-permalink={url}
+        data-instgrm-version="14"
+        data-instgrm-captioned
+        style={{ margin: 0, width: "100%", maxWidth: "100%" }}
+      />
+    </InstagramEmbedRoot>
+  );
+}
+
+const InstagramEmbedRoot = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8px;
+
+  /* Instagram embed iframe */
+  iframe {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
 `;
