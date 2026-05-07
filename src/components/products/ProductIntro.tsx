@@ -293,7 +293,11 @@ export default function ProductIntro({
                 <>
                   <MainMediaBox
                     mb="50px"
-                    $aspectRatio={showPlayer ? embed!.aspectRatio : "4/3"}
+                    $aspectRatio={
+                      showVideo && isSocialLink ? "none"
+                      : showPlayer ? embed!.aspectRatio
+                      : "4/3"
+                    }
                   >
                     {showVideo && isSocialLink && embed ? (
                       <InstagramEmbedWidget url={embed.originalUrl || embed.src} />
@@ -496,8 +500,11 @@ const MainMediaBox = styled(FlexBox)<{ $aspectRatio?: string }>`
   overflow: hidden;
   border-radius: 16px;
   justify-content: center;
-  aspect-ratio: ${({ $aspectRatio }) => $aspectRatio ?? "4/3"};
   background: #f8f8f8;
+  ${({ $aspectRatio }) =>
+    $aspectRatio && $aspectRatio !== "none"
+      ? `aspect-ratio: ${$aspectRatio};`
+      : ""}
 
   img, video, iframe { width: 100%; height: 100%; object-fit: contain; display: block; }
 `;
@@ -628,8 +635,7 @@ function InstagramEmbedWidget({ url }: { url: string }) {
         className="instagram-media"
         data-instgrm-permalink={url}
         data-instgrm-version="14"
-        data-instgrm-captioned
-        style={{ margin: 0, width: "100%", maxWidth: "100%" }}
+        style={{ margin: "0 auto", width: "100%", maxWidth: 540, minWidth: 0 }}
       />
     </InstagramEmbedRoot>
   );
@@ -637,16 +643,20 @@ function InstagramEmbedWidget({ url }: { url: string }) {
 
 const InstagramEmbedRoot = styled.div`
   width: 100%;
-  height: 100%;
-  overflow-y: auto;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 8px;
+  padding: 12px 8px;
 
-  /* Instagram embed iframe */
   iframe {
     max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 12px;
+  }
+
+  .instagram-media {
+    max-width: 100% !important;
+    min-width: 0 !important;
     width: 100% !important;
   }
 `;
