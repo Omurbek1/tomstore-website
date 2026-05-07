@@ -291,17 +291,14 @@ export default function ProductIntro({
 
               return (
                 <>
+                  {showVideo && isSocialLink && embed ? (
+                    <InstagramEmbedWidget url={embed.originalUrl || embed.src} />
+                  ) : (
                   <MainMediaBox
                     mb="50px"
-                    $aspectRatio={
-                      showVideo && isSocialLink ? "none"
-                      : showPlayer ? embed!.aspectRatio
-                      : "4/3"
-                    }
+                    $aspectRatio={showPlayer ? embed!.aspectRatio : "4/3"}
                   >
-                    {showVideo && isSocialLink && embed ? (
-                      <InstagramEmbedWidget url={embed.originalUrl || embed.src} />
-                    ) : showDirect ? (
+                    {showDirect ? (
                       embed!.type === "direct" ? (
                         <video
                           src={embed!.src}
@@ -343,6 +340,7 @@ export default function ProductIntro({
                       />
                     )}
                   </MainMediaBox>
+                  )}
 
                   <FlexBox overflow="auto" style={{ gap: 10, paddingBottom: 4 }}>
                     {displayImages.map((url: string, ind: number) => (
@@ -635,7 +633,16 @@ function InstagramEmbedWidget({ url }: { url: string }) {
         className="instagram-media"
         data-instgrm-permalink={url}
         data-instgrm-version="14"
-        style={{ margin: "0 auto", width: "100%", maxWidth: 540, minWidth: 0 }}
+        style={{
+          background: "#fff",
+          border: "1px solid #dbdbdb",
+          borderRadius: 12,
+          margin: "0 auto 50px",
+          padding: 0,
+          width: "100%",
+          maxWidth: 540,
+          minWidth: 0,
+        }}
       />
     </InstagramEmbedRoot>
   );
@@ -643,20 +650,13 @@ function InstagramEmbedWidget({ url }: { url: string }) {
 
 const InstagramEmbedRoot = styled.div`
   width: 100%;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 12px 8px;
 
-  iframe {
-    max-width: 100% !important;
+  /* override Instagram's fixed-width iframe so it fills the column */
+  iframe.instagram-media,
+  iframe.instagram-media-rendered {
     width: 100% !important;
-    border-radius: 12px;
-  }
-
-  .instagram-media {
     max-width: 100% !important;
     min-width: 0 !important;
-    width: 100% !important;
+    border-radius: 12px !important;
   }
 `;
