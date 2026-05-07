@@ -99,6 +99,7 @@ const StyledHeader = styled.header`
       flex: 0 0 100%;
       margin-left: 0;
       margin-right: 0;
+      padding: 0 2px;
 
       > * {
         width: 100%;

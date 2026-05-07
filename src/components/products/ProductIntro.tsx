@@ -144,7 +144,7 @@ function resolveVideoEmbed(url: string): VideoEmbed {
   }
 
   // Unknown URL → try embedding as-is
-  return { type: "iframe", src: url };
+  return make("iframe", url);
 }
 
 export default function ProductIntro({

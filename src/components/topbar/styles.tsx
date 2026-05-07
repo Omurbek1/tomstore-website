@@ -42,6 +42,18 @@ export const StyledTopbar = styled.div`
     }
   }
 
+  @media only screen and (max-width: 600px) {
+    height: 36px;
+
+    .topbar-left .logo {
+      display: none !important;
+    }
+
+    .container {
+      justify-content: flex-end;
+    }
+  }
+
   .topbar-right {
     .link {
       padding-right: 30px;
@@ -75,6 +87,21 @@ export const StyledTopbar = styled.div`
     @media only screen and (max-width: 900px) {
       .link {
         display: none;
+      }
+    }
+
+    @media only screen and (max-width: 600px) {
+      justify-content: flex-end;
+      width: 100%;
+      gap: 4px;
+
+      .dropdown-handler {
+        height: 36px;
+        padding: 0 8px;
+        gap: 0;
+
+        span { display: none; }
+        svg:last-child { display: none; }
       }
     }
   }

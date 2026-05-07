@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { layoutConstant } from "@utils/constants";
 
 export const MobileCategoryNavStyle = styled.div`
   position: relative;
@@ -14,8 +13,8 @@ export const MobileCategoryNavStyle = styled.div`
   .main-category-holder {
     left: 0;
     position: fixed;
-    top: ${layoutConstant.mobileHeaderHeight};
-    bottom: ${layoutConstant.mobileNavHeight};
+    top: 52px;
+    bottom: 64px;
     background: ${({ theme }) => theme.colors.gray[300]};
 
     .main-category-box {
@@ -31,21 +30,23 @@ export const MobileCategoryNavStyle = styled.div`
       cursor: pointer;
       border-left: 3px solid transparent;
       transition: border-left 300ms ease-out;
+      background: white;
     }
     .active {
-      border-left: 3px solid;
-      border-left-color: ${({ theme }) => theme.colors.text.hint};
+      background: ${({ theme }) => theme.colors.gray[100]};
+      border-left: 3px solid #D32F2F;
     }
   }
 
   .container {
     position: fixed;
-    top: ${layoutConstant.mobileHeaderHeight};
-    bottom: ${layoutConstant.mobileNavHeight};
+    top: 52px;
+    bottom: 64px;
     left: 95px;
     flex: 1 1 0;
     overflow-y: auto;
     padding: 0.5rem 1rem;
+    background: ${({ theme }) => theme.colors.body.paper};
   }
 
   .ellipsis {

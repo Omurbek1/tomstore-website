@@ -3,13 +3,14 @@
 import { Fragment, useEffect, useState } from "react";
 import clsx from "clsx";
 import { useTranslations } from "next-intl";
-import { Link } from "@i18n/navigation";
+import { Link, useRouter } from "@i18n/navigation";
+import styled from "styled-components";
+import { IconArrowLeft } from "@tabler/icons-react";
 // GLOBAL CUSTOM COMPONENTS
 import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
 import Icon from "@component/icon/Icon";
 import Divider from "@component/Divider";
-import { Header } from "@component/header";
 import Scrollbar from "@component/Scrollbar";
 import Typography from "@component/Typography";
 import MobileNavigationBar from "@component/mobile-navigation";
@@ -26,6 +27,7 @@ import localizeNavigations from "@utils/localizeNavigations";
 
 export default function MobileCategoryNav() {
   const t = useTranslations();
+  const router = useRouter();
   const width = useWindowSize();
   const localizedNavigations = localizeNavigations(navigations, t);
   const [selectedCategoryId, setSelectedCategoryId] = useState(localizedNavigations[0]?.id || "");
@@ -49,7 +51,12 @@ export default function MobileCategoryNav() {
 
   return (
     <MobileCategoryNavStyle>
-      <Header className="header" />
+      <MobileCatHeader>
+        <button className="back-btn" onClick={() => router.back()}>
+          <IconArrowLeft size={22} />
+        </button>
+        <span className="title">{t("mobileNav.category")}</span>
+      </MobileCatHeader>
 
       <div className="main-category-holder">
         <Scrollbar>
@@ -114,3 +121,36 @@ export default function MobileCategoryNav() {
     </MobileCategoryNavStyle>
   );
 }
+
+const MobileCatHeader = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 111;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  background: ${({ theme }) => theme.colors.body.paper};
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    padding: 4px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: 700;
+  }
+`;
