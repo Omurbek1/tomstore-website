@@ -43,8 +43,8 @@ export default function HomeStorefrontHighlightsSection({
               <Card p="1rem" borderRadius={8}>
                 <Grid container spacing={4}>
                   {products.map((product) => (
-                    <Grid item md={3} sm={6} xs={6} key={product.id}>
-                      <Link href={`/product/${product.slug}`}>
+                    <Grid item md={3} sm={6} xs={6} key={product.id} style={{ display: "flex" }}>
+                      <Link href={`/product/${product.slug}`} style={{ display: "flex", width: "100%" }}>
                         <TopRatedProductCard
                           title={product.title}
                           price={product.price}
