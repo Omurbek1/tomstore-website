@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link } from "@i18n/navigation";
 import { calculateDiscount, currency } from "@utils/utils";
+import { getOptimizedImageSrc } from "@utils/imageDelivery";
 
 type HomeProductCardProps = {
   slug: string;
@@ -27,11 +28,12 @@ export default function HomeProductCard({
   compact = false,
 }: HomeProductCardProps) {
   const imageSrc = imgUrl || PRODUCT_IMAGE_FALLBACK;
-  const [currentImage, setCurrentImage] = useState(imageSrc);
+  const optimizedImage = getOptimizedImageSrc(imageSrc, compact ? 240 : 560, 78);
+  const [currentImage, setCurrentImage] = useState(optimizedImage || imageSrc);
 
   useEffect(() => {
-    setCurrentImage(imageSrc);
-  }, [imageSrc]);
+    setCurrentImage(optimizedImage || imageSrc);
+  }, [optimizedImage, imageSrc]);
 
   return (
     <CardRoot href={`/product/${slug}`} $compact={compact}>
