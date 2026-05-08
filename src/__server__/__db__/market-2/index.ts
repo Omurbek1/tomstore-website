@@ -1,5 +1,5 @@
 import MockAdapter from "axios-mock-adapter";
-import shuffle from "lodash/shuffle";
+import shuffle from "lodash-es/shuffle";
 import * as db from "./data";
 
 export const market2ApiEndpoints = (Mock: MockAdapter) => {

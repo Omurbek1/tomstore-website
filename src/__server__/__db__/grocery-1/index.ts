@@ -3,7 +3,7 @@
 // IF YOU NEED HELP ABOUT SERVER SIDE IMPLEMENTATION
 // CONTACT US AT support@ui-lib.com
 import type MockAdapter from "axios-mock-adapter";
-import shuffle from "lodash/shuffle";
+import shuffle from "lodash-es/shuffle";
 import * as db from "./data";
 
 const getProducts = (type: string) => {

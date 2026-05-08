@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import styled from "styled-components";
 
 import Box from "@component/Box";
-import Image from "@component/Image";
 import Rating from "@component/rating";
 import NavLink from "@component/nav-link";
 import { Paragraph } from "@component/Typography";
@@ -39,7 +39,16 @@ export default function HorizontalProductCard({ image, title, price, slug, ratin
     <StyledFlexBox>
       <Link href={`/${locale}/product/${slug}`}>
         <Box maxWidth={100} bg="gray.300">
-          <Image width="100%" alt="product" src={image} />
+          <Image
+            width={200}
+            height={200}
+            alt={title}
+            src={image}
+            quality={80}
+            sizes="100px"
+            loading="lazy"
+            style={{ width: "100%", height: "auto", display: "block" }}
+          />
         </Box>
       </Link>
 

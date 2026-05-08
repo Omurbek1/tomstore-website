@@ -72,9 +72,11 @@ const resolveCatalogQuery = async (locale: string, segments: string[]) => {
   const segmentQuery = normalizeCatalogSegment(lastSegment);
 
   // Get the title in the user's locale for display
-  const currentLocaleTitle = await getLocalizedCatalogTitle(locale, path);
-  // Always get the RU title for the API category filter (backend stores categories in Russian)
-  const ruTitle = await getLocalizedCatalogTitle("ru", path);
+  const [currentLocaleTitle, ruTitle] = await Promise.all([
+    getLocalizedCatalogTitle(locale, path),
+    // Always get the RU title for the API category filter (backend stores categories in Russian)
+    getLocalizedCatalogTitle("ru", path),
+  ]);
 
   // Use the RU category name if found (API understands it), otherwise fall back to the decoded segment
   const apiCategorySlug = ruTitle || safeDecodeURIComponent(lastSegment).trim();
@@ -208,13 +210,15 @@ export default async function CatalogPage({ params, searchParams }: CatalogPageP
       : candidates[0]
         ? { q: candidates[0] }
         : { q: fallbackQuery };
-  const catalog = await getSafeStorefrontCatalog({
-    ...catalogParams,
-    pageSize: 48,
-    sort: catalogParams.sort || "popular",
-  });
+  const [catalog, t] = await Promise.all([
+    getSafeStorefrontCatalog({
+      ...catalogParams,
+      pageSize: 48,
+      sort: catalogParams.sort || "popular",
+    }),
+    getTranslations({ locale }),
+  ]);
   const products = catalog?.items.map(mapStorefrontProduct) || [];
-  const t = await getTranslations({ locale });
   const homeLabel = locale === "en" ? "Home" : locale === "ky" ? "Башкы бет" : "Главная";
   const breadcrumbs = buildCatalogBreadcrumbs(slug, homeLabel, (key) => t(key as never));
 

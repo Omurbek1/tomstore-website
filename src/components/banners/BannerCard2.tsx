@@ -1,7 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import styled from "styled-components";
 // GLOBAL CUSTOM COMPONENTS
-import Image from "@component/Image";
 import { Button } from "@component/buttons";
 import { H1, H3, Paragraph } from "@component/Typography";
 
@@ -41,7 +41,16 @@ type BannerCard2Props = {
 export default function BannerCard2({ img, url, text1, text2, text3 }: BannerCard2Props) {
   return (
     <CardWrapper>
-      <Image alt="category" height="100%" width="100%" src={img} />
+      <Image
+        alt="category"
+        src={img}
+        width={900}
+        height={300}
+        quality={80}
+        sizes="100vw"
+        loading="lazy"
+        style={{ width: "100%", height: "auto", display: "block" }}
+      />
 
       <CardContent>
         <div>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import AppLayout from "@component/layout/layout-3";
@@ -351,9 +352,13 @@ export default async function GeoCategoryPage({ params }: Props) {
                 <Grid item lg={2} sm={4} xs={6} key={product.id}>
                   <ProductCard borderRadius={12}>
                     {product.imgUrl && (
-                      <img
+                      <Image
                         src={product.imgUrl}
                         alt={`${product.title} ${inCity}`}
+                        width={320}
+                        height={320}
+                        quality={80}
+                        sizes="(max-width: 768px) 50vw, 16vw"
                         loading="lazy"
                       />
                     )}

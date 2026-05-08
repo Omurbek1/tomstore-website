@@ -142,6 +142,7 @@ export default function HeroBannerCard({
             alt={title || "banner"}
             fill
             priority
+            fetchPriority="high"
             sizes="(max-width: 600px) 60vw, 38vw"
             style={{ objectFit: "contain" }}
           />

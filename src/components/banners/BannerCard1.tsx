@@ -1,8 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import { CSSProperties } from "react";
 import styled from "styled-components";
 // GLOBAL CUSTOM COMPONENTS
-import Image from "@component/Image";
 import Divider from "@component/Divider";
 import { H2, Paragraph, Span } from "@component/Typography";
 // UTILS
@@ -72,7 +72,16 @@ export default function BannerCard1({
 }: BannerCard1Props) {
   return (
     <CardWrapper style={style}>
-      <Image alt="category" height="100%" width="100%" src={img} />
+      <Image
+        alt="category"
+        src={img}
+        width={900}
+        height={300}
+        quality={80}
+        sizes="(max-width: 768px) 100vw, 50vw"
+        loading="lazy"
+        style={{ width: "100%", height: "auto", display: "block" }}
+      />
 
       <CardContent contentAlign={contentPosition ? contentPosition : null} className="content">
         <H2>{title}</H2>

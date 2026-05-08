@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import debounce from "lodash/debounce";
+import debounce from "lodash-es/debounce";
 
 export default function useWindowSize() {
   const [width, setWidth] = useState<number | undefined>(undefined);

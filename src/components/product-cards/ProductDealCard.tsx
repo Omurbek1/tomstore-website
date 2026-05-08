@@ -1,6 +1,7 @@
 "use client";
 
 import styled, { CSSProperties } from "styled-components";
+import Image from "next/image";
 import Rating from "../rating";
 import Icon from "../icon/Icon";
 import FlexBox from "../FlexBox";
@@ -25,7 +26,7 @@ const Wrapper = styled.div`
   .image-holder {
     position: relative;
     text-align: center;
-    display: inlin-block;
+    display: inline-block;
 
     .sale-chip {
       top: 0.625rem;
@@ -104,7 +105,15 @@ export default function ProductDealCard({ ...props }: ProductDealCardProps) {
     <Wrapper {...props}>
       <div className="image-holder">
         <div className="sale-chip">50% off</div>
-        <img src="/assets/images/products/macbook.png" alt="golden-watch" />
+        <Image
+          src="/assets/images/products/macbook.png"
+          alt="golden-watch"
+          width={300}
+          height={300}
+          quality={80}
+          sizes="(max-width: 768px) 100vw, 300px"
+          loading="lazy"
+        />
       </div>
 
       <div className="details">

@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import NextImage from "next/image";
 import { useParams } from "next/navigation";
 import { IconMinus, IconPlus, IconPlayerPlay } from "@tabler/icons-react";
 import styled from "styled-components";
 import { useTranslations } from "next-intl";
 
 import Box from "@component/Box";
-import Image from "@component/Image";
 import Rating from "@component/rating";
 import Avatar from "@component/avatar";
 import Grid from "@component/grid/Grid";
@@ -317,7 +317,13 @@ export default function ProductIntro({
                       )
                     ) : showCover ? (
                       <VideoCover onClick={() => setIsPlaying(true)}>
-                        <img src={embed!.thumbnail!} alt="video preview" />
+                        <NextImage
+                          src={embed!.thumbnail!}
+                          alt="video preview"
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          style={{ objectFit: "cover" }}
+                        />
                         <VideoOverlay />
                         <PlayButtonCircle>
                           <IconPlayerPlay size={36} fill="#fff" color="#fff" />
@@ -332,10 +338,15 @@ export default function ProductIntro({
                         </PlayButtonCircle>
                       </VideoCover>
                     ) : (
-                      <Image
-                        width={300}
-                        height={300}
+                      <NextImage
+                        width={800}
+                        height={800}
                         src={displayImages[selectedImage] || displayImages[0]}
+                        alt={displayTitle}
+                        quality={80}
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        priority
+                        fetchPriority="high"
                         style={{ display: "block", width: "100%", height: "auto" }}
                         onError={(e: { currentTarget: HTMLImageElement }) => {
                           const img = e.currentTarget;
@@ -368,7 +379,15 @@ export default function ProductIntro({
                         }}
                       >
                         {embed.thumbnail
-                          ? <img src={embed.thumbnail} alt="video" />
+                          ? (
+                            <NextImage
+                              src={embed.thumbnail}
+                              alt="video"
+                              fill
+                              sizes="70px"
+                              style={{ objectFit: "cover" }}
+                            />
+                          )
                           : <VideoThumbFallback />
                         }
                         <VideoThumbOverlay />

@@ -1,4 +1,4 @@
-import merge from "lodash/merge";
+import merge from "lodash-es/merge";
 import shadows from "./shadows";
 import { colors } from "./colors";
 import { deviceSize } from "@utils/constants";

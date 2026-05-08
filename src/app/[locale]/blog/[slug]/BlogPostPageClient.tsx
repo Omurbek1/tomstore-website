@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import AppLayout from "@component/layout/layout-3";
 import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
@@ -49,8 +50,9 @@ const ArticleWrapper = styled.article`
   }
 `;
 
-const CoverImage = styled.img`
+const CoverImage = styled(Image)`
   width: 100%;
+  height: auto;
   max-height: 420px;
   object-fit: cover;
   border-radius: 12px;
@@ -87,6 +89,14 @@ const RecentPostItem = styled(Link)`
     width: 60px;
     height: 45px;
     object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+    background: ${({ theme }) => theme.colors.gray[100]};
+  }
+
+  .recent-placeholder {
+    width: 60px;
+    height: 45px;
     border-radius: 6px;
     flex-shrink: 0;
     background: ${({ theme }) => theme.colors.gray[100]};
@@ -194,7 +204,16 @@ export default function BlogPostPageClient({ post, locale }: Props) {
               </Paragraph>
 
               {post.coverImageUrl && (
-                <CoverImage src={post.coverImageUrl} alt={post.title} />
+                <CoverImage
+                  src={post.coverImageUrl}
+                  alt={post.title}
+                  width={1200}
+                  height={630}
+                  quality={80}
+                  sizes="(max-width: 768px) 100vw, 75vw"
+                  priority
+                  fetchPriority="high"
+                />
               )}
 
               <div dangerouslySetInnerHTML={{ __html: renderContent(post.content) }} />
@@ -207,11 +226,19 @@ export default function BlogPostPageClient({ post, locale }: Props) {
                 <SidebarTitle>{recentLabel}</SidebarTitle>
                 {post.recentPosts.map((recent: StorefrontBlogPostSummary) => (
                   <RecentPostItem key={recent.slug} href={`/${locale}/blog/${recent.slug}`}>
-                    <img
-                      src={recent.coverImageUrl || ""}
-                      alt={recent.title}
-                      style={!recent.coverImageUrl ? { background: "#f0f0f0" } : {}}
-                    />
+                    {recent.coverImageUrl ? (
+                      <Image
+                        src={recent.coverImageUrl}
+                        alt={recent.title}
+                        width={120}
+                        height={90}
+                        quality={75}
+                        sizes="60px"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span className="recent-placeholder" aria-hidden="true" />
+                    )}
                     <div className="text">
                       <div className="title">{recent.title}</div>
                       <div className="date">{formatDate(recent.publishedAt, locale)}</div>

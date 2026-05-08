@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
+import Image from "next/image";
 import styled from "styled-components";
 import { FlexProps } from "styled-system";
 // GLOBAL CUSTOM COMPONENTS
 import Box from "@component/Box";
-import Image from "@component/Image";
 
 // STYLED COMPONENTS
 const CardWrapper = styled(Box)({
@@ -33,7 +33,16 @@ interface BannerCard1Props extends FlexProps {
 export default function BannerCard3({ img, children, ...props }: BannerCard1Props) {
   return (
     <CardWrapper {...props}>
-      <Image alt="category" height="100%" width="100%" src={img} />
+      <Image
+        alt="category"
+        src={img}
+        width={900}
+        height={300}
+        quality={80}
+        sizes="100vw"
+        loading="lazy"
+        style={{ width: "100%", height: "auto", display: "block" }}
+      />
       <CardContent>{children}</CardContent>
     </CardWrapper>
   );

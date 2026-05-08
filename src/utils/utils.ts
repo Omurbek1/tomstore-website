@@ -1,4 +1,4 @@
-import ceil from "lodash/ceil";
+import ceil from "lodash-es/ceil";
 import { differenceInMinutes } from "date-fns/differenceInMinutes";
 import isPropValid from "@emotion/is-prop-valid";
 

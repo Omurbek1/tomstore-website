@@ -1,6 +1,7 @@
 "use client";
 
 import { CSSProperties, ReactNode, useState } from "react";
+import Image from "next/image";
 import { BorderProps, ColorProps, SpaceProps, LayoutProps } from "styled-system";
 // STYLED COMPONENT
 import StyledAvatar from "./styles";
@@ -33,11 +34,13 @@ export default function Avatar({
   return (
     <StyledAvatar size={size} {...props}>
       {showImg && (
-        <img
+        <Image
           src={src}
           alt={alt}
+          fill
+          sizes={`${size}px`}
           onError={() => setImgError(true)}
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          style={{ objectFit: "cover" }}
         />
       )}
       {!showImg && children && <span>{children}</span>}

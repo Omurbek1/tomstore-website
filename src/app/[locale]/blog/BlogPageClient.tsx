@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import AppLayout from "@component/layout/layout-3";
 import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
@@ -499,7 +500,18 @@ export default function BlogPageClient({ locale, data, q, category, tag }: Props
                   <Grid item lg={4} sm={6} xs={12} key={post.slug}>
                     <PostCard href={`/${locale}/blog/${post.slug}`}>
                       {post.coverImageUrl
-                        ? <img className="cover" src={post.coverImageUrl} alt={post.title} />
+                        ? (
+                          <Image
+                            className="cover"
+                            src={post.coverImageUrl}
+                            alt={post.title}
+                            width={800}
+                            height={500}
+                            quality={80}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            loading="lazy"
+                          />
+                        )
                         : (
                           <div className="cover-placeholder">
                             {post.category === "Ноутбуки" || post.category === "Laptops" ? "💻"
