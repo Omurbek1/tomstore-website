@@ -1,0 +1,8 @@
+chrome >= 80
+edge >= 80
+firefox >= 78
+opera >= 67
+safari >= 13.1
+not dead
+not ie 11
+not op_mini all
