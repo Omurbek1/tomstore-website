@@ -4,13 +4,16 @@
 
 import { useEffect } from "react";
 import NProgress from "nprogress";
-// @ts-ignore
-import "nprogress/nprogress.css";
+
+const NPROGRESS_STYLES = `#nprogress{pointer-events:none}#nprogress .bar{background:#D32F2F;position:fixed;z-index:1031;top:0;left:0;width:100%;height:3px}#nprogress .peg{display:block;position:absolute;right:0;width:100px;height:100%;box-shadow:0 0 10px #D32F2F,0 0 5px #D32F2F;opacity:1;transform:rotate(3deg) translate(0,-4px)}`;
 
 type PushStateInput = [data: any, unused: string, url?: string | URL | null | undefined];
 
 export default function NProgressBar() {
   useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = NPROGRESS_STYLES;
+    document.head.appendChild(style);
     NProgress.configure({ showSpinner: false, speed: 300, minimum: 0.08 });
 
     const handleAnchorClick = (event: MouseEvent) => {

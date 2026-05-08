@@ -4,6 +4,7 @@ import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "./globals.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
 const organizationSchema = {
   "@context": "https://schema.org",
@@ -74,8 +75,21 @@ const localBusinessSchema = {
 export const dynamic = "force-dynamic";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  const backendOrigin = (() => {
+    try {
+      const url = new URL(BACKEND_URL);
+      return url.hostname === "127.0.0.1" || url.hostname === "localhost" ? null : url.origin;
+    } catch {
+      return null;
+    }
+  })();
+
   return (
     <html lang="ru" suppressHydrationWarning>
+      <head>
+        {backendOrigin && <link rel="preconnect" href={backendOrigin} />}
+        {backendOrigin && <link rel="dns-prefetch" href={backendOrigin} />}
+      </head>
       <body>
         <script
           type="application/ld+json"

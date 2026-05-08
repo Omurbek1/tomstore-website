@@ -1,9 +1,17 @@
 "use client";
 
 import { type FC, type PropsWithChildren, useState } from "react";
+import dynamic from "next/dynamic";
 import { App as AntdApp, ConfigProvider } from "antd";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+const ReactQueryDevtools =
+  process.env.NODE_ENV === "development"
+    ? dynamic(
+        () => import("@tanstack/react-query-devtools").then((m) => ({ default: m.ReactQueryDevtools })),
+        { ssr: false },
+      )
+    : null;
 
 export const Provider: FC<PropsWithChildren> = ({ children }) => {
   const [queryClient] = useState(
@@ -56,9 +64,7 @@ export const Provider: FC<PropsWithChildren> = ({ children }) => {
       <AntdApp>
         <QueryClientProvider client={queryClient}>
           {children}
-          {process.env.NODE_ENV === "development" ? (
-            <ReactQueryDevtools />
-          ) : null}
+          {ReactQueryDevtools ? <ReactQueryDevtools /> : null}
         </QueryClientProvider>
       </AntdApp>
     </ConfigProvider>

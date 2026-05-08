@@ -350,7 +350,6 @@ export default function ProductIntro({
                         quality={80}
                         sizes="(max-width: 768px) 100vw, 50vw"
                         priority
-                        unoptimized
                         fetchPriority="high"
                         style={{
                           display: "block",

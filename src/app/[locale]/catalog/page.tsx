@@ -54,7 +54,6 @@ const toNumberParam = (value?: string) => {
 
 export default async function CatalogRootPage({ params, searchParams }: CatalogRootPageProps) {
   const [{ locale }, sp] = await Promise.all([params, searchParams]);
-  const t = await getTranslations({ locale, namespace: "home" });
 
   const filterParams = Object.fromEntries(
     Object.entries({
@@ -69,17 +68,20 @@ export default async function CatalogRootPage({ params, searchParams }: CatalogR
     }).filter(([, v]) => v !== undefined && v !== ""),
   );
 
+  const [t, catalog] = await Promise.all([
+    getTranslations({ locale, namespace: "home" }),
+    getSafeStorefrontCatalog({
+      ...filterParams,
+      pageSize: 48,
+      sort: (filterParams.sort as string) || "popular",
+    }),
+  ]);
+
   let displayQuery = locale === "en" ? "Catalog" : "Каталог";
   if (sp.label === "sale") displayQuery = t("flashDeals");
   else if (sp.label === "new") displayQuery = t("newArrivals");
   else if (sp.category) displayQuery = sp.category;
   else if (sp.q) displayQuery = sp.q;
-
-  const catalog = await getSafeStorefrontCatalog({
-    ...filterParams,
-    pageSize: 48,
-    sort: (filterParams.sort as string) || "popular",
-  });
   const products = catalog?.items.map(mapStorefrontProduct) || [];
   const homeLabel = locale === "en" ? "Home" : locale === "ky" ? "Башкы бет" : "Главная";
   const catalogLabel = locale === "en" ? "Catalog" : "Каталог";

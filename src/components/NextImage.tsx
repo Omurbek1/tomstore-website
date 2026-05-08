@@ -24,7 +24,7 @@ function NextImage({
   src,
   fallbackSrc = PLACEHOLDER_IMAGE,
   onError,
-  unoptimized = true,
+  unoptimized = false,
   optimizedWidth: _optimizedWidth,
   quality = 80,
   ...props

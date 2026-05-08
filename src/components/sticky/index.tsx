@@ -42,10 +42,15 @@ export default function Sticky({ fixedOn, scrollDistance = 0, children, onSticky
   }, [fixed, onSticky]);
 
   useEffect(() => {
-    if (elementRef.current) {
-      setHeight(elementRef.current.offsetHeight);
+    const el = elementRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver((entries) => {
+      const size = entries[0]?.borderBoxSize?.[0]?.blockSize;
+      setHeight(size ?? entries[0]?.contentRect.height ?? 0);
       scrollListener();
-    }
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
   }, [scrollListener]);
 
   return (
