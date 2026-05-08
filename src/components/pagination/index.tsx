@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import { SpaceProps } from "styled-system";
 import { IconArrowNarrowLeft, IconArrowNarrowRight, IconLineDotted } from "@tabler/icons-react";
@@ -13,6 +14,8 @@ export interface PaginationProps extends SpaceProps {
   pageRangeDisplayed?: number;
   marginPagesDisplayed?: number;
   onChange?: (data: number) => void;
+  prevAriaLabel?: string;
+  nextAriaLabel?: string;
 }
 // ==============================================================
 
@@ -21,8 +24,18 @@ export default function Pagination({
   pageCount,
   pageRangeDisplayed,
   marginPagesDisplayed,
+  prevAriaLabel = "Предыдущая страница",
+  nextAriaLabel = "Следующая страница",
   ...props
 }: PaginationProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // react-paginate renders <ul> with list-style-type:none; VoiceOver strips
+  // list semantics in that case, so we explicitly restore role="list"
+  useEffect(() => {
+    containerRef.current?.querySelector("ul")?.setAttribute("role", "list");
+  }, []);
+
   const handlePageChange = async (page: any) => {
     if (onChange) onChange(page.selected);
   };
@@ -33,8 +46,9 @@ export default function Pagination({
       padding="6px"
       color="primary"
       overflow="hidden"
-      className="control-button">
-      <IconArrowNarrowLeft size={18} />
+      className="control-button"
+      aria-label={prevAriaLabel}>
+      <IconArrowNarrowLeft size={18} aria-hidden="true" />
     </Button>
   );
 
@@ -44,15 +58,16 @@ export default function Pagination({
       padding="6px"
       color="primary"
       overflow="hidden"
-      className="control-button">
-      <IconArrowNarrowRight size={18} />
+      className="control-button"
+      aria-label={nextAriaLabel}>
+      <IconArrowNarrowRight size={18} aria-hidden="true" />
     </Button>
   );
 
-  const BREAK_LABEL = <IconLineDotted size={20} />;
+  const BREAK_LABEL = <IconLineDotted size={20} aria-hidden="true" />;
 
   return (
-    <StyledPagination {...props}>
+    <StyledPagination ref={containerRef} {...props}>
       <ReactPaginate
         pageCount={pageCount}
         nextLabel={NEXT_BUTTON}
@@ -64,7 +79,6 @@ export default function Pagination({
         onPageChange={handlePageChange}
         pageRangeDisplayed={pageRangeDisplayed}
         marginPagesDisplayed={marginPagesDisplayed}
-        // subContainerClassName="pages pagination"
       />
     </StyledPagination>
   );

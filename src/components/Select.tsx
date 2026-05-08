@@ -1,4 +1,4 @@
-import { useMemo, memo } from "react";
+import { useMemo, memo, useId } from "react";
 import { useTheme } from "styled-components";
 import { SpaceProps } from "styled-system";
 import ReactSelect, { Props, Theme } from "react-select";
@@ -29,8 +29,10 @@ const styles = (errorText: string) =>
     })
   } as Props["styles"]);
 
-const Select = memo(({ options, isMulti = false, id, label, errorText, ...props }: SelectProps) => {
+const Select = memo(({ options, isMulti = false, id, inputId, label, errorText, ...props }: SelectProps) => {
   const { colors } = useTheme();
+  const generatedId = useId();
+  const selectInputId = inputId || id || (label ? generatedId : undefined);
 
   const selectTheme = (theme: Theme) => ({
     ...theme,
@@ -56,7 +58,7 @@ const Select = memo(({ options, isMulti = false, id, label, errorText, ...props 
   return (
     <Box {...spacingProps}>
       {label && (
-        <Typography fontSize="0.875rem" mb="6px" fontWeight={500}>
+        <Typography as="label" htmlFor={selectInputId} fontSize="0.875rem" mb="6px" fontWeight={500} display="block">
           {label}
         </Typography>
       )}
@@ -66,6 +68,7 @@ const Select = memo(({ options, isMulti = false, id, label, errorText, ...props 
         options={options}
         theme={selectTheme}
         styles={styles(errorText||'')}
+        inputId={selectInputId}
         {...props}
       />
 
