@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import AppLayout from "@component/layout/layout-3";
 import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
@@ -129,6 +130,53 @@ const MapWrapper = styled.div`
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   margin-bottom: 2.5rem;
 `;
+
+const MapPlaceholder = styled.button`
+  width: 100%;
+  height: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  transition: opacity 0.2s;
+  &:hover { opacity: 0.9; }
+  span.pin { font-size: 2.5rem; }
+  span.hint { font-size: 13px; font-weight: 400; opacity: 0.7; }
+`;
+
+function LazyMap({ title }: { title: string }) {
+  const [loaded, setLoaded] = useState(false);
+  const MAP_SRC = "https://maps.google.com/maps?q=ТЦ+Весна+Калык+Акиев+66+Бишкек&output=embed&hl=ru&z=16";
+
+  if (loaded) {
+    return (
+      <iframe
+        src={MAP_SRC}
+        width="100%"
+        height="380"
+        style={{ border: 0, display: "block" }}
+        allowFullScreen
+        referrerPolicy="no-referrer-when-downgrade"
+        title={title}
+      />
+    );
+  }
+
+  return (
+    <MapPlaceholder onClick={() => setLoaded(true)} aria-label={title}>
+      <span className="pin">📍</span>
+      <span>{title}</span>
+      <span className="hint">ТЦ Весна, Калык Акиев 66, Бишкек</span>
+    </MapPlaceholder>
+  );
+}
 
 const FaqItem = styled.div`
   background: #fff;
@@ -457,16 +505,7 @@ export default function ContactsPageClient({ locale }: { locale: string }) {
         <Box mb="2.5rem">
           <SectionTitle>{mapTitle}</SectionTitle>
           <MapWrapper>
-            <iframe
-              src="https://maps.google.com/maps?q=ТЦ+Весна+Калык+Акиев+66+Бишкек&output=embed&hl=ru&z=16"
-              width="100%"
-              height="380"
-              style={{ border: 0, display: "block" }}
-              loading="lazy"
-              allowFullScreen
-              referrerPolicy="no-referrer-when-downgrade"
-              title="TomStore на карте"
-            />
+            <LazyMap title={mapTitle} />
           </MapWrapper>
         </Box>
 

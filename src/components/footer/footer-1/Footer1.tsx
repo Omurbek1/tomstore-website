@@ -160,24 +160,6 @@ export default function Footer1() {
             </Grid>
           </Box>
 
-          {/* Map */}
-          <Box pb="3rem">
-            <Typography mb="1rem" lineHeight="1" fontSize={18} fontWeight="600">
-              {t("contactUs")}
-            </Typography>
-            <Box borderRadius={8} overflow="hidden" style={{ height: 280 }}>
-              <iframe
-                src="https://maps.google.com/maps?q=ТЦ+Весна+Калык+Акиев+66+Бишкек&output=embed&hl=ru&z=16"
-                width="100%"
-                height="280"
-                style={{ border: 0, display: "block" }}
-                loading="lazy"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-                title="TomStore map"
-              />
-            </Box>
-          </Box>
         </Container>
       </Box>
     </footer>
