@@ -70,12 +70,19 @@ const resolveCatalogQuery = async (locale: string, segments: string[]) => {
   const path = normalizeCatalogPath(segments);
   const lastSegment = segments.at(-1) || "";
   const segmentQuery = normalizeCatalogSegment(lastSegment);
+
+  // Get the title in the user's locale for display
   const currentLocaleTitle = await getLocalizedCatalogTitle(locale, path);
+  // Always get the RU title for the API category filter (backend stores categories in Russian)
+  const ruTitle = await getLocalizedCatalogTitle("ru", path);
+
+  // Use the RU category name if found (API understands it), otherwise fall back to the decoded segment
+  const apiCategorySlug = ruTitle || safeDecodeURIComponent(lastSegment).trim();
 
   return {
     displayQuery: currentLocaleTitle || segmentQuery,
     candidates: [currentLocaleTitle || segmentQuery],
-    categorySlug: safeDecodeURIComponent(lastSegment).trim(),
+    categorySlug: apiCategorySlug,
   };
 };
 

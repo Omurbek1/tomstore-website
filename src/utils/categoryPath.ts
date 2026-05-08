@@ -15,5 +15,8 @@ const CATEGORY_PATHS: Record<string, string> = {
 };
 
 export function categoryNameToCatalogPath(name: string): string {
-  return CATEGORY_PATHS[name.toLowerCase().trim()] ?? "/catalog";
+  return (
+    CATEGORY_PATHS[name.toLowerCase().trim()] ??
+    `/catalog?category=${encodeURIComponent(name)}`
+  );
 }
