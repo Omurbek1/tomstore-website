@@ -14,7 +14,7 @@ import Icon from "@component/icon/Icon";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import { IconButton } from "@component/buttons";
-import { H5, Paragraph } from "@component/Typography";
+import { H1, Paragraph } from "@component/Typography";
 import ProductGridView from "@component/products/ProductGrid";
 import ProductListView from "@component/products/ProductList";
 import ProductFilterCard from "@component/products/ProductFilterCard";
@@ -239,7 +239,7 @@ export default function SearchResult({
         justifyContent="space-between"
       >
         <div>
-          <H5>{t("searchingFor", { query })}</H5>
+          <H1 fontSize="16px" fontWeight="600" mb="0" mt="0">{t("searchingFor", { query })}</H1>
           <Paragraph color="text.muted">
             {isFetching
               ? "…"

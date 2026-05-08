@@ -675,3 +675,116 @@ export const getProductBySlug = async (slug: string) => {
 export const getProductSlugs = async () => {
   return getServerQueryClient().fetchQuery(storefrontSlugsQueryOptions());
 };
+
+// ─── Blog ────────────────────────────────────────────────────────────────────
+
+export type StorefrontBlogPostSummary = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  coverImageUrl?: string;
+  coverVideoUrl?: string;
+  category?: string;
+  tags: string[];
+  authorName?: string;
+  authorRole?: string;
+  publishedAt: string;
+  views: number;
+};
+
+export type StorefrontBlogPostDetails = StorefrontBlogPostSummary & {
+  content: string;
+  recentPosts: StorefrontBlogPostSummary[];
+  featuredProducts: StorefrontProductCard[];
+  categories: StorefrontBlogCategory[];
+  availableTags: StorefrontBlogTag[];
+};
+
+export type StorefrontBlogCategory = {
+  name: string;
+  slug: string;
+  totalPosts: number;
+};
+
+export type StorefrontBlogTag = {
+  name: string;
+  slug: string;
+  totalPosts: number;
+};
+
+export type StorefrontBlogListResponse = {
+  enabled: boolean;
+  items: StorefrontBlogPostSummary[];
+  recentPosts: StorefrontBlogPostSummary[];
+  categories: StorefrontBlogCategory[];
+  tags: StorefrontBlogTag[];
+  total: number;
+  query?: string;
+  selectedCategory?: string;
+  selectedTag?: string;
+};
+
+const buildBlogPath = (params?: { q?: string; category?: string; tag?: string }) => {
+  if (!params) return "/storefront/blogs";
+  const qs = new URLSearchParams();
+  if (params.q) qs.set("q", params.q);
+  if (params.category) qs.set("category", params.category);
+  if (params.tag) qs.set("tag", params.tag);
+  const str = qs.toString();
+  return str ? `/storefront/blogs?${str}` : "/storefront/blogs";
+};
+
+export const storefrontBlogQueryKeys = {
+  all: ["storefront", "blog"] as const,
+  list: (params?: { q?: string; category?: string; tag?: string }) =>
+    [...storefrontBlogQueryKeys.all, "list", params ?? {}] as const,
+  post: (slug: string) => [...storefrontBlogQueryKeys.all, "post", slug] as const,
+};
+
+export const storefrontBlogListQueryOptions = (params?: {
+  q?: string;
+  category?: string;
+  tag?: string;
+}) =>
+  queryOptions({
+    queryKey: storefrontBlogQueryKeys.list(params),
+    staleTime: STALE_TIME_MS,
+    queryFn: () => storefrontFetch<StorefrontBlogListResponse>(buildBlogPath(params)),
+  });
+
+export const storefrontBlogPostQueryOptions = (slug: string) =>
+  queryOptions({
+    queryKey: storefrontBlogQueryKeys.post(slug),
+    staleTime: STALE_TIME_MS,
+    queryFn: () =>
+      storefrontFetch<StorefrontBlogPostDetails>(`/storefront/blogs/${encodeURIComponent(slug)}`),
+  });
+
+export const getBlogList = async (params?: {
+  q?: string;
+  category?: string;
+  tag?: string;
+}): Promise<StorefrontBlogListResponse> => {
+  try {
+    return await getServerQueryClient().fetchQuery(storefrontBlogListQueryOptions(params));
+  } catch {
+    return { enabled: false, items: [], recentPosts: [], categories: [], tags: [], total: 0 };
+  }
+};
+
+export const getBlogPost = async (slug: string): Promise<StorefrontBlogPostDetails | null> => {
+  try {
+    return await getServerQueryClient().fetchQuery(storefrontBlogPostQueryOptions(slug));
+  } catch {
+    return null;
+  }
+};
+
+export const getBlogSlugs = async (): Promise<string[]> => {
+  try {
+    const list = await getBlogList();
+    return list.items.map((p) => p.slug).filter(Boolean);
+  } catch {
+    return [];
+  }
+};

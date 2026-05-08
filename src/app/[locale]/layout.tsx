@@ -20,6 +20,8 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+
 export async function generateMetadata({
   params,
 }: Omit<LocaleLayoutProps, "children">): Promise<Metadata> {
@@ -34,9 +36,52 @@ export async function generateMetadata({
     namespace: "LocaleLayout",
   });
 
+  const title = t("title");
+  const description = t("description");
+  const canonicalUrl = `${SITE_URL}/${locale}`;
+
   return {
-    title: t("title"),
-    description: t("description"),
+    title: {
+      default: title,
+      template: `%s | TomStore`,
+    },
+    description,
+    metadataBase: new URL(SITE_URL),
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        ru: `${SITE_URL}/ru`,
+        en: `${SITE_URL}/en`,
+        ky: `${SITE_URL}/ky`,
+        "x-default": `${SITE_URL}/ru`,
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "TomStore",
+      locale: locale === "en" ? "en_US" : locale === "ky" ? "ky_KG" : "ru_RU",
+      type: "website",
+      images: [
+        {
+          url: `${SITE_URL}/assets/images/logo.svg`,
+          width: 800,
+          height: 600,
+          alt: "TomStore",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true },
+    },
   };
 }
 

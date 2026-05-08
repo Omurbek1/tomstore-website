@@ -1,15 +1,21 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import AppLayout from "@component/layout/layout-3";
 import Box from "@component/Box";
 import SearchResult from "../../product/search/[slug]/SearchResult";
+import Breadcrumbs from "@component/seo/Breadcrumbs";
+import CategorySeo from "@component/seo/CategorySeo";
 import navigations from "@data/navigations";
 import localizeNavigations from "@utils/localizeNavigations";
+import { buildCatalogBreadcrumbs } from "@utils/buildCatalogBreadcrumbs";
 import {
   getSafeStorefrontCatalog,
   mapStorefrontProduct,
   type StorefrontCatalogParams,
 } from "@utils/__api__/storefront";
 import { getTranslations } from "next-intl/server";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
 
 type CatalogPageProps = {
   params: Promise<{ locale: string; slug: string[] }>;
@@ -126,6 +132,41 @@ const getDirectCatalogTitle = async (
   return fallbackQuery;
 };
 
+export async function generateMetadata({ params }: CatalogPageProps): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const { displayQuery } = await resolveCatalogQuery(locale, slug);
+  const path = normalizeCatalogPath(slug);
+  const url = `${SITE_URL}/${locale}${path}`;
+  const title = displayQuery
+    ? locale === "en"
+      ? `${displayQuery} — Buy in Bishkek | TomStore`
+      : `${displayQuery} — купить в Бишкеке | TomStore`
+    : "TomStore";
+  const description =
+    locale === "en"
+      ? `${displayQuery} at the best prices in Bishkek. Warranty, installment, delivery. TomStore.`
+      : `${displayQuery} по лучшим ценам в Бишкеке. Гарантия, рассрочка, доставка. TomStore.`;
+
+  return {
+    title: displayQuery,
+    description,
+    alternates: {
+      canonical: url,
+      languages: {
+        ru: `${SITE_URL}/ru${path}`,
+        en: `${SITE_URL}/en${path}`,
+        ky: `${SITE_URL}/ky${path}`,
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      type: "website",
+    },
+  };
+}
+
 export default async function CatalogPage({ params, searchParams }: CatalogPageProps) {
   const [{ locale, slug }, resolvedSearchParams] = await Promise.all([
     params,
@@ -158,10 +199,14 @@ export default async function CatalogPage({ params, searchParams }: CatalogPageP
     sort: catalogParams.sort || "popular",
   });
   const products = catalog?.items.map(mapStorefrontProduct) || [];
+  const t = await getTranslations({ locale, namespace: "" });
+  const homeLabel = locale === "en" ? "Home" : locale === "ky" ? "Башкы бет" : "Главная";
+  const breadcrumbs = buildCatalogBreadcrumbs(slug, homeLabel, (key) => t(key as never));
 
   return (
     <AppLayout>
       <Box pt="20px">
+        <Breadcrumbs items={breadcrumbs} locale={locale} />
         <Suspense>
           <SearchResult
             products={products}
@@ -171,6 +216,7 @@ export default async function CatalogPage({ params, searchParams }: CatalogPageP
             initialFilters={catalog?.filters}
           />
         </Suspense>
+        <CategorySeo catalogPath={normalizeCatalogPath(slug)} locale={locale} />
       </Box>
     </AppLayout>
   );
