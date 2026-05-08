@@ -1,6 +1,6 @@
 import Box from "@component/Box";
 import styled from "styled-components";
-import ProductGridCard from "@component/product-cards/ProductGridCard";
+import HomeProductCard from "@component/product-cards/HomeProductCard";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import Product from "@models/product.model";
 
@@ -45,15 +45,12 @@ export default function HomeProductCarouselSection({
       <ProductGrid mt="-0.25rem" mb="-0.25rem">
         {products.slice(0, 8).map((product) => (
           <Box py="0.25rem" key={product.id} minWidth="0" style={{ minHeight: 410 }}>
-            <ProductGridCard
-              id={product.id}
+            <HomeProductCard
               slug={product.slug}
-              price={product.price}
               title={product.title}
-              off={product.discount}
-              images={product.images}
+              price={product.price}
               imgUrl={product.thumbnail}
-              rating={product.rating || 4}
+              discount={product.discount}
             />
           </Box>
         ))}

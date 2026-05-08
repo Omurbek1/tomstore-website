@@ -11,7 +11,7 @@ import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 import NextImage from "@component/NextImage";
 import { IconButton } from "@component/buttons";
-import { H4, Paragraph, Small } from "@component/Typography";
+import Typography, { Paragraph, Small } from "@component/Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
 import { useCartItemBySlug, useChangeCartAmount } from "@hook/useCart";
 import { currency } from "@utils/utils";
@@ -154,9 +154,9 @@ export default function OverlayActionProductCard({
       <Box p={1} textAlign="center">
         <Small color="gray.500">{category}</Small>
         <Paragraph fontWeight="bold">{title}</Paragraph>
-        <H4 fontWeight={700} py={0.5}>
+        <Typography as="span" display="block" fontWeight={700} py={0.5}>
           {currency(price)}
-        </H4>
+        </Typography>
 
         <FlexBox alignItems="center" justifyContent="center">
           <Rating value={4} color="warn" />

@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import HoverBox from "@component/HoverBox";
-import { H4 } from "@component/Typography";
+import Typography from "@component/Typography";
 import NextImage from "@component/NextImage";
 import useCurrency from "@hook/useCurrency";
 import { useLocale } from "next-intl";
@@ -49,7 +49,7 @@ export default function ProductTileCard({ imgUrl, title, price, slug }: ProductT
         />
       </ImageBox>
 
-      <H4
+      <Typography
         fontWeight="600"
         fontSize="14px"
         mb="0.25rem"
@@ -63,11 +63,11 @@ export default function ProductTileCard({ imgUrl, title, price, slug }: ProductT
         }}
       >
         {title}
-      </H4>
+      </Typography>
 
-      <H4 fontWeight="600" fontSize="14px" color="primary.main">
+      <Typography as="span" fontWeight="600" fontSize="14px" color="primary.main">
         {formatCurrency(price)}
-      </H4>
+      </Typography>
     </CardRoot>
   );
 }

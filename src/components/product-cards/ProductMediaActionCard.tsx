@@ -11,7 +11,7 @@ import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 import NextImage from "@component/NextImage";
 import { IconButton } from "@component/buttons";
-import { H4, Paragraph, Small } from "@component/Typography";
+import Typography, { Paragraph, Small } from "@component/Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
 import { useCartItemBySlug, useChangeCartAmount } from "@hook/useCart";
 import { currency } from "@utils/utils";
@@ -134,9 +134,9 @@ export default function ProductMediaActionCard({
 
         <Box p={2} textAlign="center">
           <Paragraph>{name}</Paragraph>
-          <H4 fontWeight={700} py=".5rem">
+          <Typography as="span" display="block" fontWeight={700} py=".5rem">
             {currency(price)}
-          </H4>
+          </Typography>
 
           <FlexBox justifyContent="center" alignItems="center" mb="1rem">
             <Rating value={4} color="warn" size="small" />

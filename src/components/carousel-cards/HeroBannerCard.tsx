@@ -100,13 +100,22 @@ const buttonStyles = ({ theme }: any) => ({
   justifyContent: "center",
   padding: "1rem 1.5rem",
   borderRadius: "0.5rem",
-  color: theme?.colors?.primary?.text || "#FFFFFF",
-  backgroundColor: theme?.colors?.primary?.main || "#E94560",
+  color: "#FFFFFF",
+  backgroundColor: theme?.colors?.primary?.main || "#C81E3A",
   fontSize: 14,
   fontWeight: 600,
   lineHeight: 1,
   textDecoration: "none",
   transition: "all 150ms ease-in-out",
+  border: "1px solid transparent",
+  "&:hover": {
+    color: "#FFFFFF",
+    backgroundColor: theme?.colors?.primary?.[900] || "#A1122B",
+  },
+  "&:focus-visible": {
+    outline: `3px solid ${theme?.colors?.primary?.light || "#FFE1E6"}`,
+    outlineOffset: 2,
+  },
 });
 
 const InternalButtonLink = styled(Link)(buttonStyles);

@@ -96,15 +96,26 @@ export default function Header({ isFixed, className }: HeaderProps) {
         <FlexBox className="header-right" alignItems="center">
           {/* account icon hidden temporarily */}
 
-          <Link href="/wish-list" aria-label="Open wishlist" title="Open wishlist">
-            <Box ml="1rem" position="relative">
+          <Link
+            href="/wish-list"
+            aria-label="Open wishlist"
+            title="Open wishlist"
+            style={{
+              alignItems: "center",
+              display: "inline-flex",
+              justifyContent: "center",
+              marginLeft: "1rem",
+              minHeight: 44,
+              minWidth: 44,
+            }}>
+            <Box position="relative">
               <IconButton
                 bg="gray.200"
-                p="12px"
                 size="small"
                 borderRadius={8}
                 aria-label="Open wishlist"
                 title="Open wishlist"
+                style={{ height: 44, minWidth: 44, padding: 0, width: 44 }}
               >
                 <IconHeart size={16} stroke={1.5} />
               </IconButton>

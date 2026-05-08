@@ -1,5 +1,5 @@
 import HoverBox from "@component/HoverBox";
-import { H4 } from "@component/Typography";
+import Typography from "@component/Typography";
 import NextImage from "@component/NextImage";
 
 // ====================================================================
@@ -13,9 +13,9 @@ export default function BrandShowcaseCard({ imgUrl, title }: BrandShowcaseCardPr
         <NextImage alt={title} src={imgUrl} width={260} height={175} />
       </HoverBox>
 
-      <H4 fontSize="14px" fontWeight="600">
+      <Typography fontSize="14px" fontWeight="600">
         {title}
-      </H4>
+      </Typography>
     </div>
   );
 }

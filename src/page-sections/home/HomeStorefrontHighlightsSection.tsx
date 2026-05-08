@@ -2,7 +2,7 @@ import Box from "@component/Box";
 import Card from "@component/Card";
 import Grid from "@component/grid/Grid";
 import Container from "@component/Container";
-import TopRatedProductCard from "@component/product-cards/TopRatedProductCard";
+import HomeProductCard from "@component/product-cards/HomeProductCard";
 import BrandShowcaseCard from "@component/product-cards/BrandShowcaseCard";
 import CategorySectionHeader from "@component/CategorySectionHeader";
 import { Link } from "@i18n/navigation";
@@ -44,15 +44,14 @@ export default function HomeStorefrontHighlightsSection({
                 <Grid container spacing={4}>
                   {products.map((product) => (
                     <Grid item md={3} sm={6} xs={6} key={product.id} style={{ display: "flex" }}>
-                      <Link href={`/product/${product.slug}`} style={{ display: "flex", width: "100%" }}>
-                        <TopRatedProductCard
-                          title={product.title}
-                          price={product.price}
-                          imgUrl={product.thumbnail}
-                          rating={product.rating || 4}
-                          reviewCount={product.reviews?.length || 12}
-                        />
-                      </Link>
+                      <HomeProductCard
+                        slug={product.slug}
+                        title={product.title}
+                        price={product.price}
+                        imgUrl={product.thumbnail}
+                        discount={product.discount}
+                        compact
+                      />
                     </Grid>
                   ))}
                 </Grid>

@@ -5,7 +5,7 @@ import Rating from "@component/rating";
 import FlexBox from "@component/FlexBox";
 import HoverBox from "@component/HoverBox";
 import NextImage from "@component/NextImage";
-import { H4, Small } from "@component/Typography";
+import Typography, { Small } from "@component/Typography";
 import useCurrency from "@hook/useCurrency";
 
 // =======================================================
@@ -35,7 +35,7 @@ export default function TopRatedProductCard(props: TopRatedProductCardProps) {
         </Small>
       </FlexBox>
 
-      <H4
+      <Typography
         fontWeight="600"
         fontSize="14px"
         textAlign="center"
@@ -50,11 +50,11 @@ export default function TopRatedProductCard(props: TopRatedProductCardProps) {
         }}
       >
         {title}
-      </H4>
+      </Typography>
 
-      <H4 fontWeight="600" fontSize="14px" textAlign="center" color="primary.main">
+      <Typography as="span" fontWeight="600" fontSize="14px" textAlign="center" color="primary.main">
         {formatCurrency(price)}
-      </H4>
+      </Typography>
     </CardRoot>
   );
 }
