@@ -38,6 +38,7 @@ const CategoryPromoCard = ({
           loading={priority ? undefined : "lazy"}
           fetchPriority={priority ? "high" : "auto"}
           quality={80}
+          optimizedWidth={720}
           style={{ objectFit: "cover" }}
           sizes="(max-width: 650px) 100vw, (max-width: 959px) 50vw, 33vw"
         />

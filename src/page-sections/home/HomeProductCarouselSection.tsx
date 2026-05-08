@@ -1,22 +1,26 @@
 import Box from "@component/Box";
 import styled from "styled-components";
-import { Carousel } from "@component/carousel";
 import ProductGridCard from "@component/product-cards/ProductGridCard";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import Product from "@models/product.model";
 
-const ProductSlide = styled(Box)`
-  height: 100%;
-  min-height: 410px;
-  min-width: 0;
-`;
+const ProductGrid = styled(Box)`
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
 
-const responsive = [
-  { breakpoint: 1279, settings: { slidesToShow: 4 } },
-  { breakpoint: 959, settings: { slidesToShow: 3 } },
-  { breakpoint: 650, settings: { slidesToShow: 2 } },
-  { breakpoint: 500, settings: { slidesToShow: 1 } },
-];
+  @media only screen and (max-width: 959px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media only screen and (max-width: 650px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media only screen and (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+`;
 
 type HomeProductCarouselSectionProps = {
   products: Product[];
@@ -38,24 +42,22 @@ export default function HomeProductCarouselSection({
       iconName={iconName}
       title={title}
       seeMoreLink={seeMoreLink}>
-      <Box mt="-0.25rem" mb="-0.25rem">
-        <Carousel slidesToShow={4} responsive={responsive}>
-          {products.map((product) => (
-            <ProductSlide py="0.25rem" key={product.id}>
-              <ProductGridCard
-                id={product.id}
-                slug={product.slug}
-                price={product.price}
-                title={product.title}
-                off={product.discount}
-                images={product.images}
-                imgUrl={product.thumbnail}
-                rating={product.rating || 4}
-              />
-            </ProductSlide>
-          ))}
-        </Carousel>
-      </Box>
+      <ProductGrid mt="-0.25rem" mb="-0.25rem">
+        {products.slice(0, 8).map((product) => (
+          <Box py="0.25rem" key={product.id} minWidth="0" style={{ minHeight: 410 }}>
+            <ProductGridCard
+              id={product.id}
+              slug={product.slug}
+              price={product.price}
+              title={product.title}
+              off={product.discount}
+              images={product.images}
+              imgUrl={product.thumbnail}
+              rating={product.rating || 4}
+            />
+          </Box>
+        ))}
+      </ProductGrid>
     </CategorySectionCreator>
   );
 }

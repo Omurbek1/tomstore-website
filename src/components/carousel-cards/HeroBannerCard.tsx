@@ -174,6 +174,7 @@ export default function HeroBannerCard({
             priority={priority}
             fetchPriority={priority ? "high" : "auto"}
             quality={80}
+            optimizedWidth={1200}
             sizes="(max-width: 600px) 76vw, (max-width: 900px) 38vw, 380px"
             fallbackSrc={HERO_FALLBACK_IMAGE}
             style={{ objectFit: "contain" }}
@@ -188,6 +189,7 @@ export default function HeroBannerCard({
               priority={priority}
               fetchPriority={priority ? "high" : "auto"}
               quality={80}
+              optimizedWidth={720}
               sizes="76vw"
               fallbackSrc={desktopImage}
               style={{ objectFit: "contain" }}

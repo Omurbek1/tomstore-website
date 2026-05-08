@@ -262,6 +262,7 @@ export default function ProductGridCard({
               width={277}
               src={imgUrl}
               height={270}
+              optimizedWidth={560}
               sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 277px"
               style={{ objectFit: "contain" }}
             />
