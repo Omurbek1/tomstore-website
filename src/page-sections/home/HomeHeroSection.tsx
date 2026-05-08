@@ -30,14 +30,16 @@ export default function HomeHeroSection({ slides }: HomeHeroSectionProps) {
             autoplaySpeed={4500}
             speed={500}
             pauseOnHover>
-            {slides.map((slide) => (
+            {slides.map((slide, index) => (
               <HeroBannerCard
                 key={slide.id}
                 title={slide.title}
                 image={slide.imgUrl}
+                mobileImage={slide.mobileImgUrl}
                 buttonText={slide.buttonText}
                 buttonLink={slide.buttonLink}
                 description={slide.description}
+                priority={index === 0}
               />
             ))}
           </Carousel>
@@ -45,9 +47,11 @@ export default function HomeHeroSection({ slides }: HomeHeroSectionProps) {
           <HeroBannerCard
             title={singleSlide.title}
             image={singleSlide.imgUrl}
+            mobileImage={singleSlide.mobileImgUrl}
             buttonText={singleSlide.buttonText}
             buttonLink={singleSlide.buttonLink}
             description={singleSlide.description}
+            priority
           />
         )}
       </Container>

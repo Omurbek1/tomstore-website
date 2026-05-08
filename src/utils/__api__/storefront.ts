@@ -91,6 +91,7 @@ export type StorefrontHeroSlide = {
   secondaryCtaLabel: string;
   secondaryCtaHref: string;
   backgroundImageUrl?: string;
+  mobileBackgroundImageUrl?: string;
 };
 
 type StorefrontCatalogResponse = {
@@ -139,6 +140,7 @@ export type StorefrontHeroCarouselItem = {
   id: string;
   title?: string;
   imgUrl?: string;
+  mobileImgUrl?: string;
   buttonText?: string;
   buttonLink?: string;
   description?: string;
@@ -215,6 +217,7 @@ export const resolveStorefrontMediaUrl = (value?: string | null) => {
   const url = String(value || "").trim();
   if (!url) return undefined;
   if (url.startsWith("/uploads/")) return `/api${url}`;
+  if (url.startsWith("uploads/")) return `/api/${url}`;
   if (
     url.startsWith("http://") ||
     url.startsWith("https://") ||
@@ -551,7 +554,8 @@ const getHeroSlides = (
       Boolean(
         String(slide.title || "").trim() ||
           String(slide.subtitle || "").trim() ||
-          String(slide.backgroundImageUrl || "").trim(),
+          String(slide.backgroundImageUrl || "").trim() ||
+          String(slide.mobileBackgroundImageUrl || "").trim(),
       ),
     )
     .filter((slide) => {
@@ -561,6 +565,7 @@ const getHeroSlides = (
         slide.primaryCtaLabel,
         slide.primaryCtaHref,
         slide.backgroundImageUrl,
+        slide.mobileBackgroundImageUrl,
       ]
         .map((value) => String(value || "").trim())
         .join("|");
@@ -579,6 +584,7 @@ export const mapStorefrontHeroCarousel = (
       slide.title,
       slide.primaryCtaHref,
       slide.backgroundImageUrl,
+      slide.mobileBackgroundImageUrl,
       index,
     ]
       .map((value) => String(value || "").trim())
@@ -586,6 +592,7 @@ export const mapStorefrontHeroCarousel = (
       .join("-"),
     title: slide.title,
     imgUrl: resolveStorefrontMediaUrl(slide.backgroundImageUrl),
+    mobileImgUrl: resolveStorefrontMediaUrl(slide.mobileBackgroundImageUrl),
     buttonText: slide.primaryCtaLabel,
     buttonLink: slide.primaryCtaHref,
     description: slide.subtitle,

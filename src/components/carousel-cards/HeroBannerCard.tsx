@@ -1,7 +1,7 @@
-import Image from "next/image";
 import styled from "styled-components";
 import { Link } from "@i18n/navigation";
 import Typography from "@component/Typography";
+import NextImage from "@component/NextImage";
 import { JSX } from "react/jsx-runtime";
 
 // STYLED COMPONENT
@@ -27,7 +27,19 @@ const StyledHeroBannerCard = styled.div`
   .image-holder {
     position: relative;
     flex: 0 0 min(38%, 380px);
+    width: min(38%, 380px);
     min-height: 240px;
+    aspect-ratio: 1 / 1;
+  }
+
+  .desktop-image,
+  .mobile-image {
+    position: absolute;
+    inset: 0;
+  }
+
+  .mobile-image {
+    display: none;
   }
 
   @media only screen and (max-width: 900px) {
@@ -58,9 +70,18 @@ const StyledHeroBannerCard = styled.div`
 
     .image-holder {
       flex: 0 0 auto;
-      width: 60%;
-      max-width: 200px;
+      width: min(76vw, 240px);
+      max-width: 240px;
+      min-height: 190px;
       margin: 0 auto;
+    }
+
+    .desktop-image.has-mobile {
+      display: none;
+    }
+
+    .mobile-image {
+      display: block;
     }
 
     .button-link {
@@ -95,21 +116,30 @@ const ExternalButtonLink = styled.a(buttonStyles);
 interface Props {
   title: string | undefined;
   image: string | undefined;
+  mobileImage?: string;
   buttonLink?: string;
   buttonText: string | string[] | JSX.Element | undefined;
   description: string | string[] | JSX.Element | undefined;
+  priority?: boolean;
 }
 // ===============================================
 
 const isExternalUrl = (href?: string) => /^https?:\/\//.test(String(href || ""));
+const HERO_FALLBACK_IMAGE = "/assets/images/banners/banner.png";
 
 export default function HeroBannerCard({
   title,
   image,
+  mobileImage,
   buttonLink,
   buttonText,
   description,
+  priority = false,
 }: Props) {
+  const desktopImage = image || mobileImage || HERO_FALLBACK_IMAGE;
+  const responsiveMobileImage = mobileImage || desktopImage;
+  const hasMobileImage = Boolean(mobileImage && mobileImage !== desktopImage);
+
   return (
     <StyledHeroBannerCard>
       <div className="content">
@@ -135,19 +165,36 @@ export default function HeroBannerCard({
         ) : null}
       </div>
 
-      {image ? (
-        <div className="image-holder">
-          <Image
-            src={image}
+      <div className="image-holder">
+        <div className={`desktop-image${hasMobileImage ? " has-mobile" : ""}`}>
+          <NextImage
+            src={desktopImage}
             alt={title || "banner"}
             fill
-            priority
-            fetchPriority="high"
-            sizes="(max-width: 600px) 60vw, 38vw"
+            priority={priority}
+            fetchPriority={priority ? "high" : "auto"}
+            quality={80}
+            sizes="(max-width: 600px) 76vw, (max-width: 900px) 38vw, 380px"
+            fallbackSrc={HERO_FALLBACK_IMAGE}
             style={{ objectFit: "contain" }}
           />
         </div>
-      ) : null}
+        {hasMobileImage ? (
+          <div className="mobile-image">
+            <NextImage
+              src={responsiveMobileImage}
+              alt={title || "banner"}
+              fill
+              priority={priority}
+              fetchPriority={priority ? "high" : "auto"}
+              quality={80}
+              sizes="76vw"
+              fallbackSrc={desktopImage}
+              style={{ objectFit: "contain" }}
+            />
+          </div>
+        ) : null}
+      </div>
     </StyledHeroBannerCard>
   );
 }
