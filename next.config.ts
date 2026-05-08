@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["@tabler/icons-react", "antd", "lucide-react"],
   },
   images: {
+    unoptimized: true,
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       { protocol: "https", hostname: "**" },

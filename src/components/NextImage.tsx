@@ -24,6 +24,7 @@ function NextImage({
   src,
   fallbackSrc = PLACEHOLDER_IMAGE,
   onError,
+  unoptimized = true,
   ...props
 }: NextImageProps) {
   const initialSrc = src || fallbackSrc;
@@ -37,6 +38,7 @@ function NextImage({
     <StyledImage
       {...props}
       src={currentSrc}
+      unoptimized={unoptimized}
       onError={(event) => {
         if (currentSrc !== fallbackSrc) setCurrentSrc(fallbackSrc);
         onError?.(event);
