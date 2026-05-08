@@ -61,5 +61,15 @@
     "@types/styled-system__css": "^5.0.21",
     "typescript": "^6.0.2"
   },
-  "license": "https://themeforest.net/licenses/standard"
+  "license": "https://themeforest.net/licenses/standard",
+  "browserslist": [
+    "chrome >= 80",
+    "edge >= 80",
+    "firefox >= 78",
+    "opera >= 67",
+    "safari >= 13.1",
+    "not dead",
+    "not ie 11",
+    "not op_mini all"
+  ]
 }

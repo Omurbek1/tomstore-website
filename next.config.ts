@@ -13,6 +13,24 @@ const nextConfig: NextConfig = {
   compiler: {
     styledComponents: true,
   },
+  webpack(config, { isServer }) {
+    if (!isServer) {
+      config.output = {
+        ...config.output,
+        environment: {
+          arrowFunction: true,
+          const: true,
+          destructuring: true,
+          dynamicImport: true,
+          forOf: true,
+          module: true,
+          optionalChaining: true,
+          templateLiteral: true,
+        },
+      };
+    }
+    return config;
+  },
   async headers() {
     return [
       {
