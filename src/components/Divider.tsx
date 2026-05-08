@@ -6,7 +6,6 @@ import { isValidProp } from "@utils/utils";
 
 // ==============================================================
 type DividerProps = SpaceProps & LayoutProps & ColorProps;
-// ==============================================================
 
 const Divider = styled.div.withConfig({
   shouldForwardProp: isValidProp
