@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, Fragment } from "react";
 import styled from "styled-components";
 
 import Box from "@component/Box";
 import Card from "@component/Card";
 import FlexBox from "@component/FlexBox";
-import { H5, H6, SemiSpan, Small } from "@component/Typography";
+import { H5, H6, Small } from "@component/Typography";
 import useCurrency from "@hook/useCurrency";
 import Product, { ProductVariant } from "@models/product.model";
 
@@ -118,6 +118,11 @@ export default function ProductVariantSelector({ product, selectedVariant, onSel
 
   const showConfig = visibleFilters.length > 0 || dynamicAttrs.length > 0;
 
+  const descSections = useMemo(
+    () => parseVariantDescription(selectedVariant.description),
+    [selectedVariant.description],
+  );
+
   return (
     <VariantGrid $single={!showConfig}>
       {/* ── Варианты (cards) ── */}
@@ -135,12 +140,9 @@ export default function ProductVariantSelector({ product, selectedVariant, onSel
               >
                 <FlexBox justifyContent="space-between" alignItems="flex-start" style={{ gap: 12 }}>
                   <Box minWidth={0}>
-                    <H6 mb="6px">{variant.title}</H6>
-                    <SemiSpan display="block" color="text.muted">
-                      {getVariantSpecs(variant)}
-                    </SemiSpan>
+                    <H6 mb="2px">{variant.title}</H6>
                     {variant.warehouse && (
-                      <Small display="block" color="text.muted" mt="8px">
+                      <Small display="block" color="text.muted" mt="4px">
                         {variant.warehouse}
                       </Small>
                     )}
@@ -221,23 +223,132 @@ export default function ProductVariantSelector({ product, selectedVariant, onSel
           </FilterList>
         </Card>
       )}
+      {/* ── Характеристики выбранного варианта ── */}
+      {descSections.length > 0 && (
+        <VariantDescCard>
+          <H5 mb="16px">Характеристики варианта</H5>
+          {descSections.map((section, si) => (
+            <Fragment key={si}>
+              {si > 0 && <DescDivider />}
+              {section.title && <DescSectionTitle>{section.title}</DescSectionTitle>}
+              {section.type === "specs" && (
+                <SpecsGrid>
+                  {section.items.map((item, ii) => (
+                    <Fragment key={ii}>
+                      <SpecLabel>{item.label}</SpecLabel>
+                      <SpecValue>{item.value}</SpecValue>
+                    </Fragment>
+                  ))}
+                </SpecsGrid>
+              )}
+              {section.type === "list" && (
+                <DescList>
+                  {section.items.map((item, ii) => (
+                    <DescListItem key={ii} $icon={item.icon}>
+                      <span>{item.icon}</span>
+                      <span>{item.text}</span>
+                    </DescListItem>
+                  ))}
+                </DescList>
+              )}
+            </Fragment>
+          ))}
+        </VariantDescCard>
+      )}
     </VariantGrid>
   );
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
-function getVariantSpecs(variant: ProductVariant) {
-  const parts: string[] = [];
-  if (variant.cpu) parts.push(variant.cpu);
-  if (Number(variant.ram) > 0) parts.push(`${variant.ram} GB`);
-  if (variant.storage) parts.push(variant.storage);
-  if (variant.color) parts.push(variant.color);
-  // add any extra attributes
-  variant.attributes?.forEach(({ name, value }) => {
-    if (name && value) parts.push(value);
-  });
-  return parts.join(" / ");
+type SpecSection = {
+  type: "specs";
+  title?: string;
+  items: Array<{ label: string; value: string }>;
+};
+
+type ListSection = {
+  type: "list";
+  title?: string;
+  items: Array<{ icon: string; text: string }>;
+};
+
+type DescSection = SpecSection | ListSection;
+
+function parseVariantDescription(description?: string | null): DescSection[] {
+  if (!description) return [];
+  const lines = description.split("\n");
+  const sections: DescSection[] = [];
+  let currentSection: DescSection | null = null;
+
+  for (const raw of lines) {
+    const line = raw.trim();
+
+    // Empty line — flush current section
+    if (!line) {
+      if (currentSection) {
+        if ((currentSection.type === "specs" && currentSection.items.length > 0) ||
+            (currentSection.type === "list" && currentSection.items.length > 0)) {
+          sections.push(currentSection);
+        }
+        currentSection = null;
+      }
+      continue;
+    }
+
+    // Section header lines (e.g. "Подходит для:", "Преимущества:")
+    if (/^[А-Яа-яA-Za-z][^•✓\n]{0,40}:$/.test(line)) {
+      if (currentSection) {
+        if ((currentSection.type === "specs" && currentSection.items.length > 0) ||
+            (currentSection.type === "list" && currentSection.items.length > 0)) {
+          sections.push(currentSection);
+        }
+      }
+      currentSection = { type: "list", title: line.replace(/:$/, ""), items: [] };
+      continue;
+    }
+
+    // Bullet / checkmark lines
+    if (line.startsWith("•") || line.startsWith("✓")) {
+      const icon = line.startsWith("✓") ? "✓" : "•";
+      const text = line.replace(/^[•✓]\s*/, "");
+      if (!currentSection || currentSection.type !== "list") {
+        if (currentSection && currentSection.type === "specs" && currentSection.items.length > 0) {
+          sections.push(currentSection);
+        }
+        currentSection = { type: "list", title: undefined, items: [] };
+      }
+      (currentSection as ListSection).items.push({ icon, text });
+      continue;
+    }
+
+    // "Name: Value" spec line
+    const colonIdx = line.indexOf(":");
+    if (colonIdx > 0) {
+      const label = line.slice(0, colonIdx).trim();
+      const value = line.slice(colonIdx + 1).trim();
+      if (label && value) {
+        if (!currentSection || currentSection.type !== "specs") {
+          if (currentSection && currentSection.type === "list" && currentSection.items.length > 0) {
+            sections.push(currentSection);
+          }
+          currentSection = { type: "specs", title: undefined, items: [] };
+        }
+        (currentSection as SpecSection).items.push({ label, value });
+        continue;
+      }
+    }
+  }
+
+  // Flush last section
+  if (currentSection) {
+    if ((currentSection.type === "specs" && currentSection.items.length > 0) ||
+        (currentSection.type === "list" && currentSection.items.length > 0)) {
+      sections.push(currentSection);
+    }
+  }
+
+  return sections;
 }
 
 /**
@@ -303,8 +414,77 @@ const VariantGrid = styled.div<{ $single?: boolean }>`
   gap: 18px;
   margin-bottom: 28px;
 
+  /* Description card always spans full width */
+  & > *:last-child:nth-child(n+2) {
+    grid-column: 1 / -1;
+  }
+
   @media (max-width: 767px) {
     grid-template-columns: 1fr;
+  }
+`;
+
+const VariantDescCard = styled.div`
+  padding: 20px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: ${({ theme }) => theme.shadows.small};
+`;
+
+const DescDivider = styled.div`
+  height: 1px;
+  background: ${({ theme }) => theme.colors.gray[200]};
+  margin: 14px 0;
+`;
+
+const DescSectionTitle = styled.p`
+  font-size: 13px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 10px;
+`;
+
+const SpecsGrid = styled.div`
+  display: grid;
+  grid-template-columns: minmax(140px, max-content) 1fr;
+  gap: 6px 16px;
+`;
+
+const SpecLabel = styled.span`
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors.text.muted};
+  white-space: nowrap;
+`;
+
+const SpecValue = styled.span`
+  font-size: 13px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.text.primary};
+`;
+
+const DescList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+const DescListItem = styled.li<{ $icon: string }>`
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors.text.primary};
+
+  & > span:first-child {
+    flex-shrink: 0;
+    font-weight: 700;
+    color: ${({ $icon }) => ($icon === "✓" ? "#2E7D32" : "#1565C0")};
+    margin-top: 1px;
   }
 `;
 
