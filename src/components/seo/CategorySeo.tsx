@@ -1,3 +1,4 @@
+"use client";
 import styled from "styled-components";
 import categoryDescriptions from "@data/categoryDescriptions";
 import categoryFaqs from "@data/categoryFaqs";
