@@ -7,7 +7,7 @@ import Grid from "@component/grid/Grid";
 import { H1, H2, H3, Paragraph } from "@component/Typography";
 import Card from "@component/Card";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
-import { ALL_REGIONS, GEO_CATEGORIES, getRegion, getDistrict } from "@data/geo";
+import { ALL_REGIONS, GEO_CATEGORIES, MAJOR_CITIES, getRegion, getDistrict, getGeoCategory, getMajorCity, isCategorySlug } from "@data/geo";
 import styled from "styled-components";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
@@ -16,9 +16,16 @@ type Props = { params: Promise<{ locale: string; region: string; district: strin
 
 export function generateStaticParams() {
   const combos: { region: string; district: string }[] = [];
+  // Pattern 1: /[region]/[district]  →  /chuy/kant
   for (const region of ALL_REGIONS) {
     for (const d of region.districts) {
       combos.push({ region: region.slug, district: d.slug });
+    }
+  }
+  // Pattern 2: /[category]/[city]  →  /noutbuki/bishkek
+  for (const cat of GEO_CATEGORIES) {
+    for (const city of MAJOR_CITIES) {
+      combos.push({ region: cat.slug, district: city.slug });
     }
   }
   return combos;
@@ -26,13 +33,31 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, region: rSlug, district: dSlug } = await params;
+  const url = `${SITE_URL}/${locale}/${rSlug}/${dSlug}`;
+
+  // Pattern 2: /[category]/[city]
+  if (isCategorySlug(rSlug)) {
+    const cat  = getGeoCategory(rSlug)!;
+    const city = getMajorCity(dSlug);
+    if (!city) return {};
+    const catName = locale === "en" ? cat.nameEn : locale === "ky" ? cat.nameKy : cat.nameRu;
+    const title =
+      locale === "en" ? `Buy ${cat.nameEn} in ${city.nameEn} — TomStore`
+      : locale === "ky" ? `${city.nameKy}га ${cat.nameKy} — TomStore`
+      : `Купить ${cat.nameRu.toLowerCase()} ${city.inRu} — доставка ${city.deliveryDays} | TomStore`;
+    const description =
+      locale === "en" ? `Order ${cat.nameEn.toLowerCase()} online with delivery to ${city.nameEn} (${city.regionRu}). Delivery ${city.deliveryDays}. Warranty, installment.`
+      : locale === "ky" ? `TomStore ${city.nameKy}га ${cat.nameKy.toLowerCase()} жеткирет. Кепилдик, бөлүп төлөө.`
+      : `Заказать ${cat.nameRu.toLowerCase()} ${city.inRu} онлайн. Доставка ${city.deliveryDays}. ${city.regionRu}. Гарантия, рассрочка, большой выбор.`;
+    return { title, description, alternates: { canonical: url, languages: { ru: `${SITE_URL}/ru/${rSlug}/${dSlug}`, en: `${SITE_URL}/en/${rSlug}/${dSlug}`, ky: `${SITE_URL}/ky/${rSlug}/${dSlug}` } }, openGraph: { title, description, url, type: "website" } };
+  }
+
+  // Pattern 1: /[region]/[district]
   const district = getDistrict(rSlug, dSlug);
   const region   = getRegion(rSlug);
   if (!district || !region) return {};
 
-  const inCity     = locale === "ky" ? `${district.nameKy}га` : locale === "en" ? `in ${district.nameEn}` : district.inRu;
   const regionName = locale === "ky" ? region.nameKy : locale === "en" ? region.nameEn : region.nameRu;
-  const url        = `${SITE_URL}/${locale}/${rSlug}/${dSlug}`;
 
   const title =
     locale === "en"
@@ -112,6 +137,108 @@ const FaqItem = styled.details`
 
 export default async function DistrictPage({ params }: Props) {
   const { locale, region: rSlug, district: dSlug } = await params;
+
+  // ── Pattern 2: /[category]/[city]  e.g. /noutbuki/bishkek ─────────────────
+  if (isCategorySlug(rSlug)) {
+    const cat  = getGeoCategory(rSlug)!;
+    const city = getMajorCity(dSlug);
+    if (!city) notFound();
+
+    const isEn = locale === "en";
+    const isKy = locale === "ky";
+    const catName  = isEn ? cat.nameEn  : isKy ? cat.nameKy  : cat.nameRu;
+    const cityName = isEn ? city.nameEn : isKy ? city.nameKy : city.nameRu;
+    const inCity   = isEn ? `in ${city.nameEn}` : isKy ? `${city.nameKy}га` : city.inRu;
+    const homeLabel = isEn ? "Home" : isKy ? "Башкы бет" : "Главная";
+
+    const h1 = isEn
+      ? `Buy ${cat.nameEn} in ${city.nameEn} — TomStore, Delivery ${city.deliveryDays}`
+      : isKy
+      ? `${city.nameKy}га ${cat.nameKy} — TomStore жеткирет`
+      : `Купить ${cat.nameRu.toLowerCase()} ${city.inRu} — доставка ${city.deliveryDays}`;
+
+    const lead = isEn
+      ? `TomStore delivers ${cat.nameEn.toLowerCase()} to ${city.nameEn} (${city.regionRu}) in ${city.deliveryDays}. Official warranty, installment plans, secure online payment.`
+      : isKy
+      ? `TomStore ${city.nameKy}га (${city.regionRu}) ${city.deliveryDays} ичинде ${cat.nameKy.toLowerCase()} жеткирет. Кепилдик, бөлүп төлөө.`
+      : `TomStore доставляет ${cat.nameRu.toLowerCase()} ${city.inRu} (${city.regionRu}) за ${city.deliveryDays}. Официальная гарантия, рассрочка без переплат.`;
+
+    const faqItems = isEn ? [
+      { q: `Does TomStore deliver ${cat.nameEn.toLowerCase()} to ${city.nameEn}?`, a: `Yes! We deliver to ${city.nameEn} in ${city.deliveryDays}. All items come with an official warranty.` },
+      { q: `How to order a ${cat.accusRu} for delivery to ${city.nameEn}?`, a: `Choose from our catalog, add to cart, and enter your address in ${city.nameEn}. Delivery in ${city.deliveryDays}.` },
+      { q: `Is installment available in ${city.nameEn}?`, a: `Yes, installment is available throughout Kyrgyzstan including ${city.nameEn}. Call: +996-508-724-365.` },
+    ] : [
+      { q: `TomStore доставляет ${cat.nameRu.toLowerCase()} ${city.inRu}?`, a: `Да! Доставляем ${city.inRu} за ${city.deliveryDays}. Гарантия на все товары.` },
+      { q: `Как заказать ${cat.accusRu} с доставкой ${city.inRu}?`, a: `Добавьте товар в корзину на сайте TomStore и укажите адрес ${city.inRu}. Курьер доставит за ${city.deliveryDays}.` },
+      { q: `Какие ${cat.nameRu.toLowerCase()} самые популярные ${city.inRu}?`, a: `Жители ${cityName} чаще выбирают ноутбуки для работы и учёбы, МФУ для дома и принтеры. Бренды: HP, Asus, Acer, Lenovo.` },
+      { q: `Есть ли рассрочка для жителей ${cityName}?`, a: `Да, рассрочка доступна по всему Кыргызстану, включая ${cityName}. Оформление: +996-508-724-365.` },
+    ];
+
+    const faqSchema = {
+      "@context": "https://schema.org", "@type": "FAQPage",
+      mainEntity: faqItems.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+    };
+
+    return (
+      <AppLayout>
+        <Box pt="20px" pb="60px">
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+          <Breadcrumbs items={[{ label: homeLabel, href: "/" }, { label: catName, href: `/${rSlug}` }, { label: cityName }]} locale={locale} />
+          <DistrictHero>
+            <H1 fontSize="26px">{h1}</H1>
+            <p>{lead}</p>
+            <BadgeRow>
+              <Badge>{cat.icon} {catName}</Badge>
+              <Badge>🚚 {isEn ? `Delivery ${city.deliveryDays}` : `Доставка ${city.deliveryDays}`}</Badge>
+              <Badge>✅ {isEn ? "Warranty" : "Гарантия"}</Badge>
+              <Badge>💳 {isEn ? "Installment" : "Рассрочка"}</Badge>
+            </BadgeRow>
+          </DistrictHero>
+
+          {/* Other categories in this city */}
+          <H2 fontSize="18px" mb="1.25rem">
+            {isEn ? `More electronics in ${cityName}` : `Другая электроника ${city.inRu}`}
+          </H2>
+          <Grid container spacing={3} mb="2.5rem">
+            {GEO_CATEGORIES.map((c) => (
+              <Grid item lg={2} sm={4} xs={6} key={c.slug}>
+                <CategoryCard as={Link} href={`/${locale}/${c.slug}/${dSlug}`} borderRadius={12}>
+                  <div className="icon">{c.icon}</div>
+                  <div className="name">{isEn ? c.nameEn : c.nameRu}</div>
+                  <div className="hint">{city.deliveryDays}</div>
+                </CategoryCard>
+              </Grid>
+            ))}
+          </Grid>
+
+          {/* Same category in other cities */}
+          <H2 fontSize="18px" mb="1rem">
+            {isEn ? `${cat.nameEn} in other cities` : `${cat.nameRu} в других городах`}
+          </H2>
+          <Box mb="2.5rem" display="flex" flexWrap="wrap" style={{ gap: "0.5rem" }}>
+            {MAJOR_CITIES.filter((c) => c.slug !== dSlug).map((c) => (
+              <Link key={c.slug} href={`/${locale}/${rSlug}/${c.slug}`}
+                style={{ fontSize: 13, color: "#1565c0", textDecoration: "none", background: "#e8f0fe", borderRadius: 12, padding: "4px 12px" }}>
+                {isEn ? c.nameEn : c.nameRu}
+              </Link>
+            ))}
+          </Box>
+
+          <H2 fontSize="18px" mb="1.25rem">
+            {isEn ? "Frequently Asked Questions" : "Частые вопросы"}
+          </H2>
+          {faqItems.map((item, i) => (
+            <FaqItem key={i}>
+              <summary>{item.q}</summary>
+              <div className="answer">{item.a}</div>
+            </FaqItem>
+          ))}
+        </Box>
+      </AppLayout>
+    );
+  }
+
+  // ── Pattern 1: /[region]/[district]  e.g. /chuy/kant ──────────────────────
   const district = getDistrict(rSlug, dSlug);
   const region   = getRegion(rSlug);
   if (!district || !region) notFound();

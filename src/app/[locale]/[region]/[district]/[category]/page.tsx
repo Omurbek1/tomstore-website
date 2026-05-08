@@ -14,6 +14,7 @@ import {
   getDistrict,
   getGeoCategory,
   getAllGeoCombinations,
+  isCategorySlug,
 } from "@data/geo";
 import { getSafeStorefrontCatalog, mapStorefrontProduct } from "@utils/__api__/storefront";
 import styled from "styled-components";
@@ -30,6 +31,26 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, region: rSlug, district: dSlug, category: catSlug } = await params;
+  const url = `${SITE_URL}/${locale}/${rSlug}/${dSlug}/${catSlug}`;
+
+  // New style: /[category]/[region]/[district]  →  /noutbuki/chuy/sokuluk
+  if (isCategorySlug(rSlug)) {
+    const cat      = getGeoCategory(rSlug)!;
+    const district = getDistrict(dSlug, catSlug); // dSlug=region, catSlug=district
+    const region   = getRegion(dSlug);
+    if (!cat || !district || !region) return {};
+    const title = locale === "en"
+      ? `Buy ${cat.nameEn} in ${district.nameEn}, ${region.nameEn} — TomStore`
+      : locale === "ky" ? `${district.nameKy}га ${cat.nameKy} — TomStore`
+      : `Купить ${cat.nameRu.toLowerCase()} ${district.inRu} — TomStore`;
+    const description = locale === "en"
+      ? `TomStore delivers ${cat.nameEn.toLowerCase()} to ${district.nameEn} (${region.nameEn}). Delivery ${district.deliveryDays}. ${district.distanceFromCapital}.`
+      : locale === "ky" ? `TomStore ${district.nameKy}га ${cat.nameKy.toLowerCase()} жеткирет. Жеткирүү ${district.deliveryDays}.`
+      : `Купить ${cat.nameRu.toLowerCase()} ${district.inRu} (${region.nameRu}). Доставка ${district.deliveryDays}. ${district.distanceFromCapital}. Гарантия, рассрочка.`;
+    return { title, description, alternates: { canonical: url, languages: { ru: `${SITE_URL}/ru/${rSlug}/${dSlug}/${catSlug}`, en: `${SITE_URL}/en/${rSlug}/${dSlug}/${catSlug}`, ky: `${SITE_URL}/ky/${rSlug}/${dSlug}/${catSlug}` } }, openGraph: { title, description, url, type: "website" } };
+  }
+
+  // Old style: /[region]/[district]/[category]
   const district = getDistrict(rSlug, dSlug);
   const region   = getRegion(rSlug);
   const cat      = getGeoCategory(catSlug);

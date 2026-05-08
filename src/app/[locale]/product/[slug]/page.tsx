@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import api from "@utils/__api__/products";
-import { getProductBySlug, getProductSlugs } from "@utils/__api__/storefront";
+import {
+  getProductBySlug,
+  getProductSlugs,
+  getSafeProductBySlug,
+} from "@utils/__api__/storefront";
 import ProductPageClient from "@component/products/ProductPageClient";
 import ProductJsonLd from "@component/seo/ProductJsonLd";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
@@ -64,10 +69,14 @@ export default async function ProductDetails({ params }: Props) {
   const { slug, locale = "ru" } = await params;
 
   const [productPayload, shops, frequentlyBought] = await Promise.all([
-    getProductBySlug(slug),
+    getSafeProductBySlug(slug),
     api.getAvailableShop(),
     api.getFrequentlyBought(),
   ]);
+
+  if (!productPayload) {
+    notFound();
+  }
 
   const product = productPayload.product;
   const homeLabel = locale === "en" ? "Home" : locale === "ky" ? "Башкы бет" : "Главная";

@@ -4,6 +4,7 @@ import {
   getProductBySlug,
   getProductSlugs,
   getProducts,
+  getSafeProducts,
 } from "./storefront";
 
 // get all product slug
@@ -18,7 +19,7 @@ const getProduct = async (slug: string): Promise<Product> => {
 };
 
 const getFrequentlyBought = async (): Promise<Product[]> => {
-  return getProducts({ sort: "popular", pageSize: 3 });
+  return getSafeProducts({ sort: "popular", pageSize: 3 });
 };
 
 const getRelatedProducts = async (): Promise<Product[]> => {

@@ -672,6 +672,17 @@ export const getProductBySlug = async (slug: string) => {
   return getServerQueryClient().fetchQuery(storefrontProductQueryOptions(slug));
 };
 
+export const getSafeProductBySlug = async (
+  slug: string,
+): Promise<StorefrontProductPayload | null> => {
+  try {
+    return await getProductBySlug(slug);
+  } catch (error) {
+    console.error("[storefront] Failed to load product", { slug, error });
+    return null;
+  }
+};
+
 export const getProductSlugs = async () => {
   return getServerQueryClient().fetchQuery(storefrontSlugsQueryOptions());
 };
