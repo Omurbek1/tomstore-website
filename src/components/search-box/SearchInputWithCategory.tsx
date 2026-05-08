@@ -134,6 +134,11 @@ export default function SearchInputWithCategory() {
   }, [handleDocumentClick]);
 
   useEffect(() => {
+    const input = document.querySelector<HTMLInputElement>(".category-cascader input");
+    input?.setAttribute("aria-label", t("categories.all"));
+  }, [t]);
+
+  useEffect(() => {
     return () => { if (debounceTimer.current) clearTimeout(debounceTimer.current); };
   }, []);
 
@@ -160,6 +165,7 @@ export default function SearchInputWithCategory() {
         <div className="category-cascader">
           <Cascader
             allowClear={false}
+            aria-label={t("categories.all")}
             changeOnSelect
             expandTrigger="hover"
             options={categoryOptions}

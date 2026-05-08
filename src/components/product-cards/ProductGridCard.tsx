@@ -231,6 +231,8 @@ export default function ProductGridCard({
             <IconButton
               size="small"
               onClick={toggleDialog}
+              aria-label={`Quick view ${title}`}
+              title={`Quick view ${title}`}
               style={{ width: 35, height: 35, padding: "0.5rem" }}
             >
               <IconEye size={18} color={theme.colors.gray[500]} />
@@ -238,6 +240,8 @@ export default function ProductGridCard({
 
             <IconButton
               size="small"
+              aria-label={isWishlisted ? `Remove ${title} from wishlist` : `Add ${title} to wishlist`}
+              title={isWishlisted ? `Remove ${title} from wishlist` : `Add ${title} to wishlist`}
               style={{ width: 35, height: 35, padding: "0.5rem" }}
               onClick={() => toggleWishlist({ id, slug, title, price, imgUrl })}
             >
@@ -319,6 +323,8 @@ export default function ProductGridCard({
                 color="primary"
                 variant="outlined"
                 borderColor="primary.light"
+                aria-label={`Add ${title} to cart`}
+                title={`Add ${title} to cart`}
                 onClick={handleCartAmountChange((cartItem?.qty || 0) + 1)}
               >
                 <IconPlus size={18} />
@@ -336,6 +342,8 @@ export default function ProductGridCard({
                     color="primary"
                     variant="outlined"
                     borderColor="primary.light"
+                    aria-label={`Remove one ${title} from cart`}
+                    title={`Remove one ${title} from cart`}
                     onClick={handleCartAmountChange(cartItem.qty - 1)}
                   >
                     <IconMinus size={18} />

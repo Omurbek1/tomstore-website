@@ -271,14 +271,22 @@ export default function SearchResult({
 
           <Paragraph color="text.muted">{t("view")}</Paragraph>
 
-          <IconButton onClick={toggleView("grid", updateUrl)}>
+          <IconButton
+            onClick={toggleView("grid", updateUrl)}
+            aria-label="Grid view"
+            title="Grid view"
+          >
             <IconLayoutGrid
               size={22}
               color={view === "grid" ? theme.colors.primary.main : "currentColor"}
             />
           </IconButton>
 
-          <IconButton onClick={toggleView("list", updateUrl)}>
+          <IconButton
+            onClick={toggleView("list", updateUrl)}
+            aria-label="List view"
+            title="List view"
+          >
             <IconList
               size={22}
               color={view === "list" ? theme.colors.primary.main : "currentColor"}

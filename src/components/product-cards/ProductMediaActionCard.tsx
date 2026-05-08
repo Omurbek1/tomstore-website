@@ -109,11 +109,21 @@ export default function ProductMediaActionCard({
             <NextImage src={img} width={300} height={300} alt="category" className="product-img" />
           </Link>
 
-          <EyeButton className="product-actions" onClick={() => setOpenDialog(true)}>
+          <EyeButton
+            className="product-actions"
+            onClick={() => setOpenDialog(true)}
+            aria-label={`Quick view ${name}`}
+            title={`Quick view ${name}`}
+          >
             <IconEye size={18} color={theme.colors.gray[500]} />
           </EyeButton>
 
-          <FavoriteButton className="product-actions" onClick={handleFavorite}>
+          <FavoriteButton
+            className="product-actions"
+            onClick={handleFavorite}
+            aria-label={isFavorite ? `Remove ${name} from wishlist` : `Add ${name} to wishlist`}
+            title={isFavorite ? `Remove ${name} from wishlist` : `Add ${name} to wishlist`}
+          >
             {isFavorite ? (
               <IconHeartFilled size={18} color={theme.colors.gray[500]} />
             ) : (

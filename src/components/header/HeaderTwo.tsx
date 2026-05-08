@@ -30,7 +30,14 @@ export default function HeaderTwo({ className }: HeaderProps) {
 
   const CART_HANDLE = (
     <FlexBox ml="20px" alignItems="flex-start" onClick={handleOpenCart}>
-      <IconButton bg="gray.200" p="12px" size="small" borderRadius={8}>
+      <IconButton
+        bg="gray.200"
+        p="12px"
+        size="small"
+        borderRadius={8}
+        aria-label="Open cart"
+        title="Open cart"
+      >
         <IconShoppingCart size={16} stroke={1.5} />
       </IconButton>
 
@@ -68,9 +75,16 @@ export default function HeaderTwo({ className }: HeaderProps) {
         <FlexBox className="header-right" alignItems="center">
           {/* account icon hidden temporarily */}
 
-          <Link href="/wish-list">
+          <Link href="/wish-list" aria-label="Open wishlist" title="Open wishlist">
             <FlexBox ml="20px" alignItems="flex-start">
-              <IconButton bg="gray.200" p="12px" size="small" borderRadius={8}>
+              <IconButton
+                bg="gray.200"
+                p="12px"
+                size="small"
+                borderRadius={8}
+                aria-label="Open wishlist"
+                title="Open wishlist"
+              >
                 <IconHeart size={16} stroke={1.5} />
               </IconButton>
 

@@ -97,7 +97,13 @@ export default function CartProductRow({
         </Link>
 
         <Box position="absolute" right="1rem" top="1rem">
-          <IconButton color="gray.600" padding="4px" ml="12px" onClick={handleCartAmountChange(0)}>
+          <IconButton
+            color="gray.600"
+            padding="4px"
+            ml="12px"
+            onClick={handleCartAmountChange(0)}
+            aria-label={`Remove ${name} from cart`}
+            title={`Remove ${name} from cart`}>
             <IconX size={18} />
           </IconButton>
         </Box>
@@ -121,7 +127,9 @@ export default function CartProductRow({
               variant="outlined"
               disabled={qty === 1}
               borderColor="primary.light"
-              onClick={handleCartAmountChange(qty - 1)}>
+              onClick={handleCartAmountChange(qty - 1)}
+              aria-label={`Remove one ${name} from cart`}
+              title={`Remove one ${name} from cart`}>
               <IconMinus size={16} />
             </Button>
 
@@ -135,7 +143,9 @@ export default function CartProductRow({
               color="primary"
               variant="outlined"
               borderColor="primary.light"
-              onClick={handleCartAmountChange(qty + 1)}>
+              onClick={handleCartAmountChange(qty + 1)}
+              aria-label={`Add one ${name} to cart`}
+              title={`Add one ${name} to cart`}>
               <IconPlus size={16} />
             </Button>
           </FlexBox>

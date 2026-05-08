@@ -139,6 +139,8 @@ export default function Footer1() {
                       target="_blank"
                       key={item.iconName}
                       rel="noreferrer noopenner"
+                      aria-label={`Open TomStore ${item.iconName}`}
+                      title={`TomStore ${item.iconName}`}
                     >
                       <Box
                         m="5px"

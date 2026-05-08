@@ -57,7 +57,7 @@ export default async function TicketList() {
 
             <Hidden flex="0 0 0 !important" down={769}>
               <Typography textAlign="center" color="text.muted">
-                <IconButton>
+                <IconButton aria-label={`Open support ticket ${item.id}`} title={`Open support ticket ${item.id}`}>
                   <IconArrowRight size={18} />
                 </IconButton>
               </Typography>

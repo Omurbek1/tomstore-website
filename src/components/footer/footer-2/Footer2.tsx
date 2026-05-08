@@ -57,7 +57,12 @@ export default async function Footer2() {
 
               <FlexBox mx="-5px" mt="1rem">
                 {iconList.map((item, ind) => (
-                  <Link href="/" key={ind}>
+                  <Link
+                    href="/"
+                    key={ind}
+                    aria-label={`Open TomStore ${item}`}
+                    title={`TomStore ${item}`}
+                  >
                     <Box
                       m="5px"
                       p="10px"

@@ -118,11 +118,21 @@ export default function OverlayActionProductCard({
           <NextImage width={300} height={300} src={imgUrl} alt="category" className="product-img" />
         </Link>
 
-        <AddToCartButton className="product-actions" onClick={handleAddToCart}>
+        <AddToCartButton
+          className="product-actions"
+          onClick={handleAddToCart}
+          aria-label={`Add ${title} to cart`}
+          title={`Add ${title} to cart`}
+        >
           <IconShoppingCart size={18} />
         </AddToCartButton>
 
-        <FavoriteButton className="product-actions" onClick={handleFavorite}>
+        <FavoriteButton
+          className="product-actions"
+          onClick={handleFavorite}
+          aria-label={isFavorite ? `Remove ${title} from wishlist` : `Add ${title} to wishlist`}
+          title={isFavorite ? `Remove ${title} from wishlist` : `Add ${title} to wishlist`}
+        >
           {isFavorite ? <IconHeartFilled size={18} /> : <IconHeart size={18} />}
         </FavoriteButton>
 

@@ -47,7 +47,12 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
               {t("itemsCount", { count: cart.length })}
             </Typography>
           </FlexBox>
-          <IconButton color="gray.600" padding="4px" onClick={toggleSidenav}>
+          <IconButton
+            color="gray.600"
+            padding="4px"
+            onClick={toggleSidenav}
+            aria-label="Close cart"
+            title="Close cart">
             <IconX size={20} />
           </IconButton>
         </FlexBox>
@@ -78,7 +83,9 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
                   variant="outlined"
                   borderRadius="300px"
                   borderColor="primary.light"
-                  onClick={handleCartAmountChange(item.qty + 1, item)}>
+                  onClick={handleCartAmountChange(item.qty + 1, item)}
+                  aria-label={`Add one ${item.name} to cart`}
+                  title={`Add one ${item.name} to cart`}>
                   <Icon size="1rem">plus</Icon>
                 </Button>
 
@@ -94,7 +101,9 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
                   borderRadius="300px"
                   borderColor="primary.light"
                   onClick={handleCartAmountChange(item.qty - 1, item)}
-                  disabled={item.qty === 1}>
+                  disabled={item.qty === 1}
+                  aria-label={`Remove one ${item.name} from cart`}
+                  title={`Remove one ${item.name} from cart`}>
                   <Icon size="1rem">minus</Icon>
                 </Button>
               </FlexBox>
