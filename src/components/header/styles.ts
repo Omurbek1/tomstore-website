@@ -15,7 +15,9 @@ const StyledHeader = styled.header`
   }
 
   .site-logo {
-    height: 60px;
+    width: 132px;
+    height: 38px;
+    max-width: 132px;
   }
 
 
@@ -43,7 +45,9 @@ const StyledHeader = styled.header`
   /* ── Tablet (≤900px): single row, smaller logo, hide extras ── */
   @media only screen and (max-width: 900px) {
     .site-logo {
-      height: 40px;
+      width: 120px;
+      height: 34px;
+      max-width: 120px;
     }
 
     .logo {
@@ -109,7 +113,9 @@ const StyledHeader = styled.header`
     }
 
     .site-logo {
-      height: 34px;
+      width: 108px;
+      height: 30px;
+      max-width: 108px;
     }
   }
 `;

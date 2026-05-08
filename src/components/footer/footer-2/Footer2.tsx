@@ -23,10 +23,16 @@ export default async function Footer2() {
           <Image
             src="/assets/images/logo-no-bg.svg"
             alt="TomStore"
-            width={220}
-            height={60}
+            width={150}
+            height={44}
             unoptimized
-            style={{ width: "auto", height: 60, marginBottom: "1.5rem" }}
+            style={{
+              width: 150,
+              height: 44,
+              objectFit: "contain",
+              objectPosition: "left center",
+              marginBottom: "1.5rem",
+            }}
           />
         </Link>
 

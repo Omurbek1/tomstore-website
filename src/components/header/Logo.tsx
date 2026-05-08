@@ -9,7 +9,7 @@ export default function Logo() {
       height={40}
       priority
       className="site-logo"
-      style={{ display: "block", width: "auto", height: "auto" }}
+      style={{ display: "block", objectFit: "contain", objectPosition: "left center" }}
     />
   );
 }
