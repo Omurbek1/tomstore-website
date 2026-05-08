@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getBlogPost, getBlogSlugs, buildStorefrontImageUrl } from "@utils/__api__/storefront";
 import BlogPostPageClient from "./BlogPostPageClient";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+import { SITE_URL } from "@lib/siteUrl";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 

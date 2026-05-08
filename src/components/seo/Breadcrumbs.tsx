@@ -3,7 +3,7 @@ import Link from "next/link";
 import styled from "styled-components";
 import { Fragment } from "react";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+import { SITE_URL } from "@lib/siteUrl";
 
 export interface BreadcrumbItem {
   label: string;

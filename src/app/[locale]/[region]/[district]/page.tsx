@@ -10,7 +10,7 @@ import Breadcrumbs from "@component/seo/Breadcrumbs";
 import { ALL_REGIONS, GEO_CATEGORIES, MAJOR_CITIES, getRegion, getDistrict, getGeoCategory, getMajorCity, isCategorySlug } from "@data/geo";
 import styled from "styled-components";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+import { SITE_URL } from "@lib/siteUrl";
 
 type Props = { params: Promise<{ locale: string; region: string; district: string }> };
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getBlogList } from "@utils/__api__/storefront";
 import BlogPageClient from "./BlogPageClient";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+import { SITE_URL } from "@lib/siteUrl";
 
 type Props = {
   params: Promise<{ locale: string }>;

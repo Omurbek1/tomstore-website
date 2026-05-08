@@ -15,7 +15,7 @@ import {
 } from "@utils/__api__/storefront";
 import { getTranslations } from "next-intl/server";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+import { SITE_URL } from "@lib/siteUrl";
 
 type CatalogPageProps = {
   params: Promise<{ locale: string; slug: string[] }>;

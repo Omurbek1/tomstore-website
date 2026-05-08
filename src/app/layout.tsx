@@ -3,7 +3,7 @@ import { AntdRegistry } from "@ant-design/nextjs-registry";
 // @ts-ignore
 import "./globals.css";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+import { SITE_URL } from "@lib/siteUrl";
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
 const organizationSchema = {

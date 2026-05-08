@@ -1,6 +1,6 @@
 import type Product from "@models/product.model";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+import { SITE_URL } from "@lib/siteUrl";
 
 interface Props {
   product: Product;

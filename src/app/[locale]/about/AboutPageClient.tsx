@@ -7,7 +7,7 @@ import Grid from "@component/grid/Grid";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
 import styled from "styled-components";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+import { SITE_URL } from "@lib/siteUrl";
 
 // ── Styled Components ────────────────────────────────────────────────────
 

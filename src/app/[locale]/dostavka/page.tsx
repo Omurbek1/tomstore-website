@@ -9,7 +9,7 @@ import Breadcrumbs from "@component/seo/Breadcrumbs";
 import cities from "@data/cities";
 import styled from "styled-components";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+import { SITE_URL } from "@lib/siteUrl";
 
 type Props = { params: Promise<{ locale: string }> };
 

@@ -1,6 +1,26 @@
+import type { Metadata } from "next";
 import AppLayout from "@component/layout/layout-1";
 import Navbar from "@component/navbar/Navbar";
 import HomePage from "@sections/home/HomePage";
+import { SITE_URL } from "@lib/siteUrl";
+
+type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const url = `${SITE_URL}/${locale}`;
+  return {
+    alternates: {
+      canonical: url,
+      languages: {
+        ru: `${SITE_URL}/ru`,
+        en: `${SITE_URL}/en`,
+        ky: `${SITE_URL}/ky`,
+        "x-default": `${SITE_URL}/ru`,
+      },
+    },
+  };
+}
 
 export default function Home() {
   return (

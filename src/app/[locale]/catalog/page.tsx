@@ -21,7 +21,7 @@ type CatalogRootPageProps = {
   }>;
 };
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+import { SITE_URL } from "@lib/siteUrl";
 
 export async function generateMetadata({ params }: CatalogRootPageProps): Promise<Metadata> {
   const { locale } = await params;

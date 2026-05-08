@@ -13,7 +13,7 @@ import { categoryNameToCatalogPath } from "@utils/categoryPath";
 
 export const revalidate = 60;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+import { SITE_URL } from "@lib/siteUrl";
 
 export async function generateStaticParams() {
   try {

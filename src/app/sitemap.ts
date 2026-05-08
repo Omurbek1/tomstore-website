@@ -4,7 +4,7 @@ import navigations from "@data/navigations";
 import cities from "@data/cities";
 import { ALL_REGIONS, GEO_CATEGORIES, MAJOR_CITIES } from "@data/geo";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+import { SITE_URL } from "@lib/siteUrl";
 const LOCALES = ["ru", "en", "ky"] as const;
 
 const collectCatalogHrefs = () => {

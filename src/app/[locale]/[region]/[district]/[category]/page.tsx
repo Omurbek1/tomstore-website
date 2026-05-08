@@ -20,7 +20,7 @@ import {
 import { getSafeStorefrontCatalog, mapStorefrontProduct } from "@utils/__api__/storefront";
 import styled from "styled-components";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
+import { SITE_URL } from "@lib/siteUrl";
 
 type Props = {
   params: Promise<{ locale: string; region: string; district: string; category: string }>;

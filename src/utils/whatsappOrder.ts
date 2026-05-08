@@ -1,11 +1,10 @@
 import type { CartItem } from "../store/cart.store";
+import { SITE_URL } from "@lib/siteUrl";
 
 const WHATSAPP_PHONE =
   process.env.NEXT_PUBLIC_WHATSAPP_PHONE ||
   process.env.NEXT_PUBLIC_STOREFRONT_WHATSAPP_PHONE ||
   "";
-
-const SITE_URL = String(process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/+$/, "");
 
 type ProductOrderInput = {
   title: string;
