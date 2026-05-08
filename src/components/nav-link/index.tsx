@@ -32,10 +32,9 @@ export default function NavLink({
   };
 
   return (
-    <Link href={href}>
+    <Link href={href} className={className}>
       <StyledNavLink
         style={style}
-        className={className}
         isCurrentRoute={checkRouteMatch()}
         {...props}>
         {children}

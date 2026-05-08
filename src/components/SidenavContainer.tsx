@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import styled from "styled-components";
 import clsx from "clsx";
 
@@ -73,18 +73,17 @@ export default function SidenavContainer({
 }: SidenavContainerProps) {
   const [isSidenavFixed, setSidenavFixed] = useState<boolean>(false);
 
-  const scrollListener = useCallback(() => {
-    const element = document.getElementById(navFixedComponentID) as HTMLElement;
-    const elementBottom = element.getBoundingClientRect().bottom;
-
-    const position = elementBottom + window.scrollY - 80;
-    setSidenavFixed(window.scrollY > position);
-  }, []);
-
   useEffect(() => {
-    window.addEventListener("scroll", scrollListener);
-    return () => window.removeEventListener("scroll", scrollListener);
-  }, []);
+    const element = document.getElementById(navFixedComponentID);
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setSidenavFixed(!entry.isIntersecting),
+      { rootMargin: "-80px 0px 0px 0px", threshold: 0 },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [navFixedComponentID]);
 
   return (
     <StyledContainer>
