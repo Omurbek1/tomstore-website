@@ -18,7 +18,6 @@ export default function BrandShowcaseCard({ imgUrl, title }: BrandShowcaseCardPr
           sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 260px"
         />
       </HoverBox>
-
       <Typography fontSize="14px" fontWeight="600">
         {title}
       </Typography>
