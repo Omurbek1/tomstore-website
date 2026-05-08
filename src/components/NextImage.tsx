@@ -20,28 +20,35 @@ const StyledImage = styled(Image)<NextImageProps>(
   compose(space, borderRadius)
 );
 
+function isProxiedPath(src: ImageProps["src"]): boolean {
+  return typeof src === "string" && src.startsWith("/api/");
+}
+
 function NextImage({
   src,
   fallbackSrc = PLACEHOLDER_IMAGE,
   onError,
-  unoptimized = false,
+  unoptimized,
   optimizedWidth: _optimizedWidth,
   quality = 80,
   ...props
 }: NextImageProps) {
   const originalSrc = src || fallbackSrc;
-  const initialSrc = originalSrc;
-  const [currentSrc, setCurrentSrc] = useState(initialSrc);
+  const [currentSrc, setCurrentSrc] = useState(originalSrc);
 
   useEffect(() => {
     setCurrentSrc(originalSrc);
   }, [originalSrc]);
 
+  // Proxied backend paths (/api/uploads/…) can't be self-fetched by Next.js
+  // image optimization in production — bypass the optimizer for those only.
+  const resolvedUnoptimized = unoptimized ?? isProxiedPath(currentSrc);
+
   return (
     <StyledImage
       {...props}
       src={currentSrc}
-      unoptimized={unoptimized}
+      unoptimized={resolvedUnoptimized}
       quality={quality}
       onError={(event) => {
         if (currentSrc !== originalSrc) setCurrentSrc(originalSrc);
