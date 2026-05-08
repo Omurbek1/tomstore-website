@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link } from "@i18n/navigation";
 import { calculateDiscount, currency } from "@utils/utils";
+import NextImage from "@component/NextImage";
 
 type HomeProductCardProps = {
   slug: string;
@@ -13,6 +13,7 @@ type HomeProductCardProps = {
   discount?: number;
   priority?: boolean;
   compact?: boolean;
+  sizes?: string;
 };
 
 const PRODUCT_IMAGE_FALLBACK = "/assets/images/products/iphone-xi.png";
@@ -25,32 +26,27 @@ export default function HomeProductCard({
   discount,
   priority = false,
   compact = false,
+  sizes,
 }: HomeProductCardProps) {
   const imageSrc = imgUrl || PRODUCT_IMAGE_FALLBACK;
-  const [currentImage, setCurrentImage] = useState(imageSrc);
-
-  useEffect(() => {
-    setCurrentImage(imageSrc);
-  }, [imageSrc]);
 
   return (
     <CardRoot href={`/product/${slug}`} $compact={compact}>
       <ImageWrap $compact={compact}>
-        <img
-          src={currentImage}
+        <NextImage
+          src={imageSrc}
           alt={title}
-          width={compact ? 120 : 277}
-          height={compact ? 120 : 270}
-          loading={priority ? "eager" : "lazy"}
+          fill
+          priority={priority}
+          loading={priority ? undefined : "lazy"}
           fetchPriority={priority ? "high" : "auto"}
-          decoding="async"
-          onError={() => {
-            if (currentImage !== imageSrc) {
-              setCurrentImage(imageSrc);
-            } else if (currentImage !== PRODUCT_IMAGE_FALLBACK) {
-              setCurrentImage(PRODUCT_IMAGE_FALLBACK);
-            }
-          }}
+          quality={80}
+          sizes={sizes ?? (compact
+            ? "(max-width: 960px) 25vw, 140px"
+            : "(max-width: 500px) 100vw, (max-width: 650px) 50vw, (max-width: 960px) 33vw, 277px"
+          )}
+          fallbackSrc={PRODUCT_IMAGE_FALLBACK}
+          style={{ objectFit: "contain" }}
         />
       </ImageWrap>
 
@@ -78,20 +74,11 @@ const CardRoot = styled(Link)<{ $compact: boolean }>`
 
 const ImageWrap = styled.div<{ $compact: boolean }>`
   width: 100%;
-  display: flex;
+  position: relative;
   overflow: hidden;
   aspect-ratio: 1 / 1;
-  align-items: center;
   border-radius: 8px;
-  justify-content: center;
   margin-bottom: ${({ $compact }) => ($compact ? "0.75rem" : "1rem")};
-
-  img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: contain;
-  }
 `;
 
 const Title = styled.h3`

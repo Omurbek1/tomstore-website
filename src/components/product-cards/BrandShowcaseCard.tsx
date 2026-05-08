@@ -10,7 +10,13 @@ export default function BrandShowcaseCard({ imgUrl, title }: BrandShowcaseCardPr
   return (
     <div>
       <HoverBox borderRadius={5} mb="0.5rem" display="flex">
-        <NextImage alt={title} src={imgUrl} width={260} height={175} />
+        <NextImage
+          alt={title}
+          src={imgUrl}
+          width={260}
+          height={175}
+          sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 260px"
+        />
       </HoverBox>
 
       <Typography fontSize="14px" fontWeight="600">
