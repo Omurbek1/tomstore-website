@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { Tabs } from "antd";
 import { useTranslations } from "next-intl";
 
@@ -11,6 +11,7 @@ import AvailableShops from "@component/products/AvailableShops";
 import RelatedProducts from "@component/products/RelatedProducts";
 import FrequentlyBought from "@component/products/FrequentlyBought";
 import ProductDescription from "@component/products/ProductDescription";
+import ProductVariantDetails from "@component/products/ProductVariantDetails";
 import Product, { ProductVariant } from "@models/product.model";
 
 // ==============================================================
@@ -31,18 +32,34 @@ export default function ProductView({
   selectedVariant,
 }: Props) {
   const t = useTranslations("product");
-  const tabItems = [
-    {
-      key: "description",
-      label: t("descriptionTab"),
-      children: <ProductDescription product={product} selectedVariant={selectedVariant} />
-    },
-    {
+
+  const tabItems = useMemo(() => {
+    const items = [
+      {
+        key: "description",
+        label: t("descriptionTab"),
+        // "Описание" always shows product-level content, not variant-specific
+        children: <ProductDescription product={product} />,
+      },
+    ];
+
+    // Show variant tab only when selected variant has description content
+    if (selectedVariant?.description) {
+      items.push({
+        key: `variant-${selectedVariant.id}`,
+        label: "Характеристики варианта",
+        children: <ProductVariantDetails variant={selectedVariant} />,
+      });
+    }
+
+    items.push({
       key: "review",
       label: t("reviewTab", { count: 3 }),
-      children: <ProductReview />
-    }
-  ];
+      children: <ProductReview />,
+    });
+
+    return items;
+  }, [product, selectedVariant, t]);
 
   return (
     <Fragment>
