@@ -1,10 +1,15 @@
+import Image from "next/image";
+
 export default function Logo() {
   return (
-    <img
+    <Image
       src="/assets/images/logo.svg"
       alt="TomStore"
+      width={140}
+      height={40}
+      priority
       className="site-logo"
-      style={{ display: "block", width: "auto" }}
+      style={{ display: "block", width: "auto", height: "auto" }}
     />
   );
 }
