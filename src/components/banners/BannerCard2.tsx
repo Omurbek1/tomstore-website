@@ -49,6 +49,7 @@ export default function BannerCard2({ img, url, text1, text2, text3 }: BannerCar
         quality={80}
         sizes="100vw"
         loading="lazy"
+        unoptimized
         style={{ width: "100%", height: "auto", display: "block" }}
       />
 

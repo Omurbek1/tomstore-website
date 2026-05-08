@@ -62,6 +62,7 @@ export default function Cart() {
           width={120}
           height={120}
           alt="empty cart"
+          unoptimized
         />
         <Paragraph mt="1.5rem" color="text.muted" textAlign="center" maxWidth="280px" fontSize="16px">
           Your cart is empty. Add some products to continue shopping.

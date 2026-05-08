@@ -235,6 +235,7 @@ export default function BlogPostPageClient({ post, locale }: Props) {
                         quality={75}
                         sizes="60px"
                         loading="lazy"
+                        unoptimized
                       />
                     ) : (
                       <span className="recent-placeholder" aria-hidden="true" />

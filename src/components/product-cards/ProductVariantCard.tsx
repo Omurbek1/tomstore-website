@@ -173,7 +173,7 @@ export default function ProductVariantCard({
             </Chip>
           )}
 
-          <Image width={400} height={400} src={imgUrl} id="productImg" alt="tomstore" />
+          <Image width={400} height={400} src={imgUrl} id="productImg" alt="tomstore" unoptimized />
         </ImgBox>
       </Link>
 

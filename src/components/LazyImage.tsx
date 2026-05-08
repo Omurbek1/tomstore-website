@@ -7,7 +7,7 @@ type LazyImageProps = ImageProps & BorderProps & SpaceProps & ColorProps;
 const styles = compose(color, space, border);
 
 const LazyImage = styled(({ borderRadius, ...props }: LazyImageProps) => {
-  return <NextImage {...props} />;
+  return <NextImage {...props} unoptimized />;
 })<LazyImageProps>`
   ${styles}
 `;

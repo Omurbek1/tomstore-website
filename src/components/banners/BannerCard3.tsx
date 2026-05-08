@@ -41,6 +41,7 @@ export default function BannerCard3({ img, children, ...props }: BannerCard1Prop
         quality={80}
         sizes="100vw"
         loading="lazy"
+        unoptimized
         style={{ width: "100%", height: "auto", display: "block" }}
       />
       <CardContent>{children}</CardContent>

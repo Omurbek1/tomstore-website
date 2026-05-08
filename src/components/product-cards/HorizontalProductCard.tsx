@@ -47,6 +47,7 @@ export default function HorizontalProductCard({ image, title, price, slug, ratin
             quality={80}
             sizes="100px"
             loading="lazy"
+            unoptimized
             style={{ width: "100%", height: "auto", display: "block" }}
           />
         </Box>

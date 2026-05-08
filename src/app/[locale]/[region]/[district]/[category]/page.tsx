@@ -360,6 +360,7 @@ export default async function GeoCategoryPage({ params }: Props) {
                         quality={80}
                         sizes="(max-width: 768px) 50vw, 16vw"
                         loading="lazy"
+                        unoptimized
                       />
                     )}
                     <div className="body">

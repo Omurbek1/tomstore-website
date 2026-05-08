@@ -80,6 +80,7 @@ export default function BannerCard1({
         quality={80}
         sizes="(max-width: 768px) 100vw, 50vw"
         loading="lazy"
+        unoptimized
         style={{ width: "100%", height: "auto", display: "block" }}
       />
 

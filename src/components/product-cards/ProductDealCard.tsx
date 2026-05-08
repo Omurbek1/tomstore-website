@@ -113,6 +113,7 @@ export default function ProductDealCard({ ...props }: ProductDealCardProps) {
           quality={80}
           sizes="(max-width: 768px) 100vw, 300px"
           loading="lazy"
+          unoptimized
         />
       </div>
 

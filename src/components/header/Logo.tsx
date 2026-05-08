@@ -8,6 +8,7 @@ export default function Logo() {
       width={140}
       height={40}
       priority
+      unoptimized
       className="site-logo"
       style={{ display: "block", objectFit: "contain", objectPosition: "left center" }}
     />
