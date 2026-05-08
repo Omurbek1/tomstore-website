@@ -15,27 +15,6 @@ type NextImageProps = ImageProps &
 // ==============================================================
 
 const PLACEHOLDER_IMAGE = "/assets/images/products/iphone-xi.png";
-const DEFAULT_REMOTE_IMAGE_WIDTH = 960;
-
-const getSupabaseOptimizedUrl = (value: ImageProps["src"], width: number, quality = 80) => {
-  if (typeof value !== "string") return value;
-  if (!value.includes(".supabase.co/storage/v1/object/public/")) return value;
-
-  try {
-    const url = new URL(value);
-    url.pathname = url.pathname.replace(
-      "/storage/v1/object/public/",
-      "/storage/v1/render/image/public/",
-    );
-    url.searchParams.set("width", String(width));
-    url.searchParams.set("quality", String(quality));
-    url.searchParams.set("resize", "contain");
-    return url.toString();
-  } catch {
-    return value;
-  }
-};
-
 const StyledImage = styled(Image)<NextImageProps>(
   ({ fill }) => (fill ? {} : { width: "100%", height: "auto" }),
   compose(space, borderRadius)
@@ -46,25 +25,15 @@ function NextImage({
   fallbackSrc = PLACEHOLDER_IMAGE,
   onError,
   unoptimized = true,
-  optimizedWidth,
   quality = 80,
   ...props
 }: NextImageProps) {
-  const imageWidth =
-    optimizedWidth ||
-    (typeof props.width === "number" ? props.width * 2 : DEFAULT_REMOTE_IMAGE_WIDTH);
-  const resolvedSrc = getSupabaseOptimizedUrl(src || fallbackSrc, imageWidth, Number(quality) || 80);
-  const resolvedFallbackSrc = getSupabaseOptimizedUrl(
-    fallbackSrc,
-    imageWidth,
-    Number(quality) || 80,
-  );
-  const initialSrc = resolvedSrc || resolvedFallbackSrc;
+  const initialSrc = src || fallbackSrc;
   const [currentSrc, setCurrentSrc] = useState(initialSrc);
 
   useEffect(() => {
-    setCurrentSrc(resolvedSrc || resolvedFallbackSrc);
-  }, [resolvedFallbackSrc, resolvedSrc]);
+    setCurrentSrc(src || fallbackSrc);
+  }, [fallbackSrc, src]);
 
   return (
     <StyledImage
@@ -73,7 +42,7 @@ function NextImage({
       unoptimized={unoptimized}
       quality={quality}
       onError={(event) => {
-        if (currentSrc !== resolvedFallbackSrc) setCurrentSrc(resolvedFallbackSrc);
+        if (currentSrc !== fallbackSrc) setCurrentSrc(fallbackSrc);
         onError?.(event);
       }}
     />

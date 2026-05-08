@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link } from "@i18n/navigation";
 import { calculateDiscount, currency } from "@utils/utils";
@@ -14,23 +15,7 @@ type HomeProductCardProps = {
   compact?: boolean;
 };
 
-const optimizeSupabaseImageUrl = (value: string, width: number, quality = 80) => {
-  if (!value.includes(".supabase.co/storage/v1/object/public/")) return value;
-
-  try {
-    const url = new URL(value);
-    url.pathname = url.pathname.replace(
-      "/storage/v1/object/public/",
-      "/storage/v1/render/image/public/",
-    );
-    url.searchParams.set("width", String(width));
-    url.searchParams.set("quality", String(quality));
-    url.searchParams.set("resize", "contain");
-    return url.toString();
-  } catch {
-    return value;
-  }
-};
+const PRODUCT_IMAGE_FALLBACK = "/assets/images/products/iphone-xi.png";
 
 export default function HomeProductCard({
   slug,
@@ -41,23 +26,29 @@ export default function HomeProductCard({
   priority = false,
   compact = false,
 }: HomeProductCardProps) {
-  const imageWidth = compact ? 240 : 560;
-  const imageSrc = optimizeSupabaseImageUrl(
-    imgUrl || "/assets/images/products/iphone-xi.png",
-    imageWidth,
-  );
+  const imageSrc = imgUrl || PRODUCT_IMAGE_FALLBACK;
+  const [currentImage, setCurrentImage] = useState(imageSrc);
+
+  useEffect(() => {
+    setCurrentImage(imageSrc);
+  }, [imageSrc]);
 
   return (
     <CardRoot href={`/product/${slug}`} $compact={compact}>
       <ImageWrap $compact={compact}>
         <img
-          src={imageSrc}
+          src={currentImage}
           alt={title}
           width={compact ? 120 : 277}
           height={compact ? 120 : 270}
           loading={priority ? "eager" : "lazy"}
           fetchPriority={priority ? "high" : "auto"}
           decoding="async"
+          onError={() => {
+            if (currentImage !== PRODUCT_IMAGE_FALLBACK) {
+              setCurrentImage(PRODUCT_IMAGE_FALLBACK);
+            }
+          }}
         />
       </ImageWrap>
 
