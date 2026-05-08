@@ -1,5 +1,7 @@
 import { cache } from "react";
 import { QueryClient, queryOptions } from "@tanstack/react-query";
+
+const safeDecode = (v: string) => { try { return decodeURIComponent(v); } catch { return v; } };
 import Brand from "@models/Brand.model";
 import Category from "@models/category.model";
 import Product, { ProductVariant } from "@models/product.model";
@@ -306,7 +308,7 @@ export const mapStorefrontProduct = (
     availabilityLabel: product.availability?.label,
     isInStock: product.availability?.isInStock,
     labels: product.labels || [],
-    categories: product.category ? [product.category] : [],
+    categories: product.category ? [safeDecode(product.category)] : [],
     published: true,
   };
 };

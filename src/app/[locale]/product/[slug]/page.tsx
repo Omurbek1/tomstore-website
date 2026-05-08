@@ -85,7 +85,7 @@ export default async function ProductDetails({ params }: Props) {
   const breadcrumbs = [
     { label: homeLabel, href: "/" },
     { label: catalogLabel, href: "/catalog" },
-    ...(category ? [{ label: category, href: `/catalog/${encodeURIComponent(category)}` }] : []),
+    ...(category ? [{ label: category, href: `/catalog/${category}` }] : []),
     { label: product.title },
   ];
 
