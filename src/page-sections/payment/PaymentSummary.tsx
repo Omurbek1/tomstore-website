@@ -3,22 +3,26 @@
 import { useTranslations } from "next-intl";
 
 import OrderSummaryCard from "@component/checkout/OrderSummaryCard";
-import { ORDER_SUMMARY } from "@data/order-summary";
+import { useCartStore } from "../../store/cart.store";
 
 export default function PaymentSummary() {
   const t = useTranslations("checkout.summary");
+  const cart = useCartStore((s) => s.cart);
+
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
   const rows = [
-    { label: t("subtotal"), value: ORDER_SUMMARY.subtotal },
-    { label: t("shipping"), value: ORDER_SUMMARY.shipping },
-    { label: t("tax"), value: ORDER_SUMMARY.tax },
-    { label: t("discount"), value: ORDER_SUMMARY.discount }
+    { label: t("subtotal"), value: subtotal },
+    { label: t("shipping"), value: 0 },
+    { label: t("tax"), value: null },
+    { label: t("discount"), value: null },
   ];
 
   return (
     <OrderSummaryCard
       title={t("title")}
       rows={rows}
-      total={ORDER_SUMMARY.total}
+      total={subtotal}
       totalLabel={t("total")}
     />
   );
