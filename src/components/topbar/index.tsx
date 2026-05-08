@@ -28,7 +28,7 @@ import type { FlagCode, LanguageOption } from "./data";
 
 const PHONE_DISPLAY = "0508 724 365";
 const PHONE_RAW = "+996508724365";
-const WA_HREF = `https://wa.me/996508724365`;
+const WA_HREF = `https://api.whatsapp.com/send?phone=996508724365`;
 
 const LOCALE_SWITCH_SUPPORTED_PATHS = new Set<string>(["/"]);
 const FLAG_COMPONENTS = { KG, RU, US } as const;

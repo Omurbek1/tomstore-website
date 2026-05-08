@@ -32,8 +32,8 @@ export const buildWhatsAppOrderUrl = (message: string) => {
   const encodedMessage = encodeURIComponent(message);
 
   return phone
-    ? `https://wa.me/${phone}?text=${encodedMessage}`
-    : `https://wa.me/?text=${encodedMessage}`;
+    ? `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMessage}`
+    : `https://api.whatsapp.com/send?text=${encodedMessage}`;
 };
 
 export const buildProductWhatsAppOrderUrl = ({

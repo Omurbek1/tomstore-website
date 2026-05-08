@@ -188,7 +188,7 @@ function OrgSchema({ locale }: { locale: string }) {
     },
     sameAs: [
       "https://www.instagram.com/tomstore.kg",
-      "https://wa.me/996508724365",
+      "https://api.whatsapp.com/send?phone=996508724365",
     ],
   };
   return (

@@ -238,7 +238,7 @@ export default function ContactsPageClient({ locale }: { locale: string }) {
           color: "linear-gradient(135deg, #25d366, #128c7e)",
           label: "WhatsApp",
           value: "Write to us",
-          href: "https://wa.me/996508724365",
+          href: "https://api.whatsapp.com/send?phone=996508724365",
           target: "_blank",
         },
         {
@@ -271,7 +271,7 @@ export default function ContactsPageClient({ locale }: { locale: string }) {
           color: "linear-gradient(135deg, #25d366, #128c7e)",
           label: "WhatsApp",
           value: "Жазыңыз",
-          href: "https://wa.me/996508724365",
+          href: "https://api.whatsapp.com/send?phone=996508724365",
           target: "_blank",
         },
         {
@@ -303,7 +303,7 @@ export default function ContactsPageClient({ locale }: { locale: string }) {
           color: "linear-gradient(135deg, #25d366, #128c7e)",
           label: "WhatsApp",
           value: "Написать нам",
-          href: "https://wa.me/996508724365",
+          href: "https://api.whatsapp.com/send?phone=996508724365",
           target: "_blank",
         },
         {
