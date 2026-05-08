@@ -60,7 +60,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const dName     = locale === "en" ? district.nameEn : locale === "ky" ? district.nameKy : district.nameRu;
   const inCity    = locale === "en" ? `in ${district.nameEn}` : locale === "ky" ? `${district.nameKy}га` : district.inRu;
   const rName     = locale === "en" ? region.nameEn : locale === "ky" ? region.nameKy : region.nameRu;
-  const url       = `${SITE_URL}/${locale}/${rSlug}/${dSlug}/${catSlug}`;
 
   const title =
     locale === "en"
@@ -241,9 +240,15 @@ function buildFaqItems(locale: string, district: ReturnType<typeof getDistrict>,
 
 export default async function GeoCategoryPage({ params }: Props) {
   const { locale, region: rSlug, district: dSlug, category: catSlug } = await params;
-  const district = getDistrict(rSlug, dSlug);
-  const region   = getRegion(rSlug);
-  const cat      = getGeoCategory(catSlug);
+
+  // Normalise: new-style /noutbuki/chuy/sokuluk → swap to old-style semantics
+  const isCatFirst = isCategorySlug(rSlug);
+  const effectiveCat      = isCatFirst ? getGeoCategory(rSlug)      : getGeoCategory(catSlug);
+  const effectiveRegion   = isCatFirst ? getRegion(dSlug)           : getRegion(rSlug);
+  const effectiveDistrict = isCatFirst ? getDistrict(dSlug, catSlug): getDistrict(rSlug, dSlug);
+  const district = effectiveDistrict;
+  const region   = effectiveRegion;
+  const cat      = effectiveCat;
   if (!district || !region || !cat) notFound();
 
   const isEn = locale === "en";

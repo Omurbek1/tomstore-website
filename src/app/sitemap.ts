@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getProductSlugs, getBlogList } from "@utils/__api__/storefront";
 import navigations from "@data/navigations";
 import cities from "@data/cities";
-import { ALL_REGIONS, GEO_CATEGORIES } from "@data/geo";
+import { ALL_REGIONS, GEO_CATEGORIES, MAJOR_CITIES } from "@data/geo";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
 const LOCALES = ["ru", "en", "ky"] as const;
@@ -82,18 +82,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
       });
 
-      // Geo × Category pages
+      // Geo × Category pages — both URL patterns
       for (const cat of GEO_CATEGORIES) {
+        // Old style: /chuy/kant/noutbuki
         entries.push({
           url: `${SITE_URL}/ru/${region.slug}/${district.slug}/${cat.slug}`,
-          lastModified: now,
-          changeFrequency: "weekly",
-          priority: 0.78,
-          alternates: {
-            languages: Object.fromEntries(LOCALES.map((l) => [l, `${SITE_URL}/${l}/${region.slug}/${district.slug}/${cat.slug}`])),
-          },
+          lastModified: now, changeFrequency: "weekly", priority: 0.78,
+          alternates: { languages: Object.fromEntries(LOCALES.map((l) => [l, `${SITE_URL}/${l}/${region.slug}/${district.slug}/${cat.slug}`])) },
+        });
+        // New style: /noutbuki/chuy/kant
+        entries.push({
+          url: `${SITE_URL}/ru/${cat.slug}/${region.slug}/${district.slug}`,
+          lastModified: now, changeFrequency: "weekly", priority: 0.80,
+          alternates: { languages: Object.fromEntries(LOCALES.map((l) => [l, `${SITE_URL}/${l}/${cat.slug}/${region.slug}/${district.slug}`])) },
         });
       }
+    }
+  }
+
+  // Category/city pages: /noutbuki/bishkek
+  for (const cat of GEO_CATEGORIES) {
+    for (const city of MAJOR_CITIES) {
+      entries.push({
+        url: `${SITE_URL}/ru/${cat.slug}/${city.slug}`,
+        lastModified: now, changeFrequency: "weekly", priority: 0.82,
+        alternates: { languages: Object.fromEntries(LOCALES.map((l) => [l, `${SITE_URL}/${l}/${cat.slug}/${city.slug}`])) },
+      });
     }
   }
 
