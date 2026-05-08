@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import NextImage from "next/image";
 import { useParams } from "next/navigation";
 import { IconMinus, IconPlus, IconPlayerPlay } from "@tabler/icons-react";
 import styled from "styled-components";
 import { useTranslations } from "next-intl";
 
 import Box from "@component/Box";
+import NextImage from "@component/NextImage";
 import Rating from "@component/rating";
 import Avatar from "@component/avatar";
 import Grid from "@component/grid/Grid";
@@ -22,6 +22,7 @@ import ProductShareButton from "./ProductShareButton";
 import ProductVariantSelector from "./ProductVariantSelector";
 
 const EMPTY_VARIANTS: ProductVariant[] = [];
+const PRODUCT_IMAGE_FALLBACK = "/assets/images/products/iphone-xi.png";
 
 // ========================================
 interface Props {
@@ -220,6 +221,8 @@ export default function ProductIntro({
   const displayOldPrice = selectedVariant?.oldPrice ?? oldPrice;
   const displayImages =
     selectedVariant?.images && selectedVariant.images.length ? selectedVariant.images : images;
+  const safeDisplayImages = displayImages.length ? displayImages : [PRODUCT_IMAGE_FALLBACK];
+  const activeImage = safeDisplayImages[selectedImage] || safeDisplayImages[0];
   const cartId = selectedVariant?.id || id;
   const cartItem = useCartItemByIdOrSlug(cartId, routerId);
   const shareSlug = slug || routerId;
@@ -250,11 +253,11 @@ export default function ProductIntro({
         price: displayPrice,
         qty: amount,
         name: displayTitle,
-        imgUrl: displayImages[0],
+        imgUrl: safeDisplayImages[0],
         slug: shareSlug,
       });
     },
-    [cartId, changeCartAmount, displayImages, displayPrice, displayTitle, shareSlug]
+    [cartId, changeCartAmount, displayPrice, displayTitle, safeDisplayImages, shareSlug]
   );
 
   const selectorProduct = useMemo<Product>(
@@ -268,8 +271,8 @@ export default function ProductIntro({
         price,
         rating: 4,
         discount: 0,
-        thumbnail: images[0],
-        images,
+        thumbnail: images[0] || PRODUCT_IMAGE_FALLBACK,
+        images: images.length ? images : [PRODUCT_IMAGE_FALLBACK],
         brand,
         categories: [],
         variants,
@@ -341,26 +344,21 @@ export default function ProductIntro({
                       <NextImage
                         width={800}
                         height={800}
-                        src={displayImages[selectedImage] || displayImages[0]}
+                        src={activeImage}
                         alt={displayTitle}
+                        fallbackSrc={PRODUCT_IMAGE_FALLBACK}
                         quality={80}
                         sizes="(max-width: 768px) 100vw, 50vw"
                         priority
                         fetchPriority="high"
                         style={{ display: "block", width: "100%", height: "auto" }}
-                        onError={(e: { currentTarget: HTMLImageElement }) => {
-                          const img = e.currentTarget;
-                          if (img.src !== "/assets/images/products/iphone-xi.png") {
-                            img.src = "/assets/images/products/iphone-xi.png";
-                          }
-                        }}
                       />
                     )}
                   </MainMediaBox>
                   )}
 
                   <FlexBox overflow="auto" style={{ gap: 10, paddingBottom: 4 }}>
-                    {displayImages.map((url: string, ind: number) => (
+                    {safeDisplayImages.map((url: string, ind: number) => (
                       <ThumbBox
                         key={ind}
                         $active={!showVideo && selectedImage === ind}

@@ -1,10 +1,10 @@
 "use client";
 
-import { CSSProperties, ReactNode, useState } from "react";
-import Image from "next/image";
+import { CSSProperties, ReactNode } from "react";
 import { BorderProps, ColorProps, SpaceProps, LayoutProps } from "styled-system";
 // STYLED COMPONENT
 import StyledAvatar from "./styles";
+import NextImage from "@component/NextImage";
 
 // ==============================================================
 export interface BaseAvatarProps extends BorderProps, ColorProps, SpaceProps, LayoutProps {
@@ -28,18 +28,17 @@ export default function Avatar({
   alt = "avatar",
   ...props
 }: AvatarProps) {
-  const [imgError, setImgError] = useState(false);
-  const showImg = src && !imgError;
+  const showImg = Boolean(src);
 
   return (
     <StyledAvatar size={size} {...props}>
       {showImg && (
-        <Image
-          src={src}
+        <NextImage
+          src={src || "/assets/images/products/iphone-xi.png"}
           alt={alt}
           fill
           sizes={`${size}px`}
-          onError={() => setImgError(true)}
+          fallbackSrc="/assets/images/products/iphone-xi.png"
           style={{ objectFit: "cover" }}
         />
       )}
