@@ -1,13 +1,22 @@
 import { Link } from "@i18n/navigation";
-import { Carousel } from "@component/carousel";
+import styled from "styled-components";
 import CategoryPromoCard from "@component/product-cards/CategoryPromoCard";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import Category from "@models/category.model";
 
-const responsive = [
-  { breakpoint: 959, settings: { slidesToShow: 2 } },
-  { breakpoint: 650, settings: { slidesToShow: 1 } },
-];
+const CategoryGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+
+  @media only screen and (max-width: 959px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media only screen and (max-width: 650px) {
+    grid-template-columns: 1fr;
+  }
+`;
 
 type HomePopularCategoriesSectionProps = {
   categories: Category[];
@@ -25,8 +34,8 @@ export default function HomePopularCategoriesSection({
       iconName="categories"
       title={title}
       seeMoreLink="/catalog/all?sort=popular">
-      <Carousel slidesToShow={3} responsive={responsive}>
-        {categories.map((category) => (
+      <CategoryGrid>
+        {categories.slice(0, 6).map((category, index) => (
           <Link
             href={`/catalog/${category.slug}`}
             key={category.slug}
@@ -36,10 +45,11 @@ export default function HomePopularCategoriesSection({
               title={category.name}
               imgUrl={category.image || "/assets/images/banners/category-1.png"}
               subtitle={category.description ?? ""}
+              priority={index === 0}
             />
           </Link>
         ))}
-      </Carousel>
+      </CategoryGrid>
     </CategorySectionCreator>
   );
 }

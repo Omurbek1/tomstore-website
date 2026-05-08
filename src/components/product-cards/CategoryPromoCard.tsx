@@ -8,10 +8,16 @@ type CategoryPromoCardProps = {
   title: string;
   imgUrl: string;
   subtitle: string;
+  priority?: boolean;
 };
 // ===========================================================================
 
-const CategoryPromoCard = ({ title, subtitle, imgUrl }: CategoryPromoCardProps) => {
+const CategoryPromoCard = ({
+  title,
+  subtitle,
+  imgUrl,
+  priority = false,
+}: CategoryPromoCardProps) => {
   const imageSrc = imgUrl || "/assets/images/banners/category-1.png";
 
   return (
@@ -28,6 +34,10 @@ const CategoryPromoCard = ({ title, subtitle, imgUrl }: CategoryPromoCardProps) 
           src={imageSrc}
           fill
           alt={title}
+          priority={priority}
+          loading={priority ? undefined : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
+          quality={80}
           style={{ objectFit: "cover" }}
           sizes="(max-width: 650px) 100vw, (max-width: 959px) 50vw, 33vw"
         />
