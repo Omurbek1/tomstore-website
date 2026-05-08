@@ -32,7 +32,7 @@ type CatalogPageProps = {
 };
 
 const normalizeCatalogSegment = (segment: string) =>
-  decodeURIComponent(segment)
+  safeDecodeURIComponent(segment)
     .replace(/[-_]+/g, " ")
     .trim();
 
@@ -75,15 +75,23 @@ const resolveCatalogQuery = async (locale: string, segments: string[]) => {
   return {
     displayQuery: currentLocaleTitle || segmentQuery,
     candidates: [currentLocaleTitle || segmentQuery],
-    categorySlug: decodeURIComponent(lastSegment).trim(),
+    categorySlug: safeDecodeURIComponent(lastSegment).trim(),
   };
 };
 
 const normalizeCatalogQuery = (segments: string[]) => {
   const lastSegment = segments.at(-1) || "";
-  return decodeURIComponent(lastSegment)
+  return safeDecodeURIComponent(lastSegment)
     .replace(/[-_]+/g, " ")
     .trim();
+};
+
+const safeDecodeURIComponent = (value: string) => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
 };
 
 const toNumberParam = (value?: string) => {
@@ -199,7 +207,7 @@ export default async function CatalogPage({ params, searchParams }: CatalogPageP
     sort: catalogParams.sort || "popular",
   });
   const products = catalog?.items.map(mapStorefrontProduct) || [];
-  const t = await getTranslations({ locale, namespace: "" });
+  const t = await getTranslations({ locale });
   const homeLabel = locale === "en" ? "Home" : locale === "ky" ? "Башкы бет" : "Главная";
   const breadcrumbs = buildCatalogBreadcrumbs(slug, homeLabel, (key) => t(key as never));
 
