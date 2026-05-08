@@ -337,6 +337,12 @@ export default function ProductIntro({
                         height={300}
                         src={displayImages[selectedImage] || displayImages[0]}
                         style={{ display: "block", width: "100%", height: "auto" }}
+                        onError={(e: { currentTarget: HTMLImageElement }) => {
+                          const img = e.currentTarget;
+                          if (img.src !== "/assets/images/products/iphone-xi.png") {
+                            img.src = "/assets/images/products/iphone-xi.png";
+                          }
+                        }}
                       />
                     )}
                   </MainMediaBox>
