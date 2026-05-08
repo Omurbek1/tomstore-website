@@ -28,12 +28,13 @@ const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "Store",
   name: "TomStore",
-  description: "Магазин электроники в Бишкеке. Ноутбуки, принтеры, ПК. Гарантия, рассрочка, доставка.",
+  description: "Интернет-магазин электроники с доставкой по всему Кыргызстану. Ноутбуки, принтеры, ПК, мониторы. Гарантия, рассрочка, доставка в Бишкек, Ош, Джалал-Абад, Каракол и все регионы КР.",
   url: SITE_URL,
   telephone: "+996-508-724-365",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Бишкек",
+    addressRegion: "Чуйская область",
     addressCountry: "KG",
   },
   geo: {
@@ -41,6 +42,25 @@ const localBusinessSchema = {
     latitude: 42.8746,
     longitude: 74.5698,
   },
+  areaServed: [
+    { "@type": "City", name: "Бишкек" },
+    { "@type": "City", name: "Ош" },
+    { "@type": "City", name: "Джалал-Абад" },
+    { "@type": "City", name: "Каракол" },
+    { "@type": "City", name: "Токмок" },
+    { "@type": "City", name: "Нарын" },
+    { "@type": "City", name: "Талас" },
+    { "@type": "City", name: "Баткен" },
+    { "@type": "City", name: "Балыкчы" },
+    { "@type": "City", name: "Кара-Балта" },
+    { "@type": "City", name: "Кант" },
+    { "@type": "City", name: "Узген" },
+    { "@type": "City", name: "Кара-Суу" },
+    { "@type": "City", name: "Чолпон-Ата" },
+    { "@type": "City", name: "Кызыл-Кия" },
+    { "@type": "City", name: "Майлуу-Суу" },
+    { "@type": "AdministrativeArea", name: "Кыргызская Республика" },
+  ],
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
@@ -52,6 +72,7 @@ const localBusinessSchema = {
   priceRange: "$$",
   currenciesAccepted: "KGS",
   paymentAccepted: "Cash, Credit Card",
+  hasMap: "https://2gis.kg/bishkek",
 };
 
 export const dynamic = "force-dynamic";

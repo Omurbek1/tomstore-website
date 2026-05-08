@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getProductSlugs, getBlogList } from "@utils/__api__/storefront";
 import navigations from "@data/navigations";
+import cities from "@data/cities";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://tomstore.kg";
 const LOCALES = ["ru", "en", "ky"] as const;
@@ -24,7 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   // Static pages
-  const staticPages = ["/", "/catalog", "/shops", "/blog"];
+  const staticPages = ["/", "/catalog", "/shops", "/blog", "/dostavka"];
   for (const page of staticPages) {
     entries.push({
       url: `${SITE_URL}/ru${page === "/" ? "" : page}`,
@@ -50,6 +51,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       alternates: {
         languages: Object.fromEntries(
           LOCALES.map((locale) => [locale, `${SITE_URL}/${locale}${href}`]),
+        ),
+      },
+    });
+  }
+
+  // City delivery pages
+  for (const city of cities) {
+    entries.push({
+      url: `${SITE_URL}/ru/dostavka/${city.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.75,
+      alternates: {
+        languages: Object.fromEntries(
+          LOCALES.map((locale) => [locale, `${SITE_URL}/${locale}/dostavka/${city.slug}`]),
         ),
       },
     });
