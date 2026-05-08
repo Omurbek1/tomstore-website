@@ -45,7 +45,9 @@ export default function HomeProductCard({
           fetchPriority={priority ? "high" : "auto"}
           decoding="async"
           onError={() => {
-            if (currentImage !== PRODUCT_IMAGE_FALLBACK) {
+            if (currentImage !== imageSrc) {
+              setCurrentImage(imageSrc);
+            } else if (currentImage !== PRODUCT_IMAGE_FALLBACK) {
               setCurrentImage(PRODUCT_IMAGE_FALLBACK);
             }
           }}

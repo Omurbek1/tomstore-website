@@ -28,12 +28,13 @@ function NextImage({
   quality = 80,
   ...props
 }: NextImageProps) {
-  const initialSrc = src || fallbackSrc;
+  const originalSrc = src || fallbackSrc;
+  const initialSrc = originalSrc;
   const [currentSrc, setCurrentSrc] = useState(initialSrc);
 
   useEffect(() => {
-    setCurrentSrc(src || fallbackSrc);
-  }, [fallbackSrc, src]);
+    setCurrentSrc(originalSrc);
+  }, [originalSrc]);
 
   return (
     <StyledImage
@@ -42,7 +43,8 @@ function NextImage({
       unoptimized={unoptimized}
       quality={quality}
       onError={(event) => {
-        if (currentSrc !== fallbackSrc) setCurrentSrc(fallbackSrc);
+        if (currentSrc !== originalSrc) setCurrentSrc(originalSrc);
+        else if (currentSrc !== fallbackSrc) setCurrentSrc(fallbackSrc);
         onError?.(event);
       }}
     />
