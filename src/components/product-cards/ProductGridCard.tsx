@@ -5,9 +5,10 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Fragment, useCallback, useState } from "react";
 import styled, { useTheme } from "styled-components";
-import { IconEye, IconHeart, IconPlus, IconMinus } from "@tabler/icons-react";
+import { IconEye, IconHeart, IconHeartFilled, IconPlus, IconMinus } from "@tabler/icons-react";
 
 import { useCartItemById, useChangeCartAmount } from "@hook/useCart";
+import { useIsWishlisted, useToggleWishlist } from "@hook/useWishlist";
 
 import Box from "@component/Box";
 import Rating from "@component/rating";
@@ -177,6 +178,8 @@ export default function ProductGridCard({
   const router = useRouter();
   const prefetchProductQuery = usePrefetchStorefrontProduct();
   const changeCartAmount = useChangeCartAmount();
+  const toggleWishlist = useToggleWishlist();
+  const isWishlisted = useIsWishlisted(id);
   const [open, setOpen] = useState(false);
   const cartItem = useCartItemById(id);
   const productHref = `/${locale}/product/${slug}`;
@@ -236,8 +239,12 @@ export default function ProductGridCard({
             <IconButton
               size="small"
               style={{ width: 35, height: 35, padding: "0.5rem" }}
+              onClick={() => toggleWishlist({ id, slug, title, price, imgUrl })}
             >
-              <IconHeart size={18} color={theme.colors.gray[500]} />
+              {isWishlisted
+                ? <IconHeartFilled size={18} color={theme.colors.primary.main} />
+                : <IconHeart size={18} color={theme.colors.gray[500]} />
+              }
             </IconButton>
           </FlexBox>
 

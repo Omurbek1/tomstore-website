@@ -11,6 +11,7 @@ import {
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { usePathname } from "@i18n/navigation";
+import { useWishlistCount } from "@hook/useWishlist";
 
 import FlexBox from "@component/FlexBox";
 import Typography from "@component/Typography";
@@ -20,12 +21,13 @@ import { DashboardNavigationWrapper, StyledDashboardNav } from "./styles";
 export default function DashboardNavigation() {
   const pathname = usePathname();
   const t = useTranslations("dashboard");
+  const wishlistCount = useWishlistCount();
   const navigationLinks = [
     {
       title: t("groups.dashboard"),
       links: [
         { href: "/orders", title: t("nav.orders"), Icon: IconShoppingBagCheck, count: 5 },
-        { href: "/wish-list", title: t("nav.wishlist"), Icon: IconHeart, count: 19 },
+        { href: "/wish-list", title: t("nav.wishlist"), Icon: IconHeart, count: wishlistCount },
         { href: "/support-tickets", title: t("nav.supportTickets"), Icon: IconHelpCircle, count: 1 }
       ]
     },

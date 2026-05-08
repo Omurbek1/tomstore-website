@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { IconEye, IconHeart, IconMinus, IconPlus } from "@tabler/icons-react";
+import { IconEye, IconHeart, IconHeartFilled, IconMinus, IconPlus } from "@tabler/icons-react";
 
 import Box from "@component/Box";
 import Card from "@component/Card";
@@ -15,6 +15,7 @@ import { H3, SemiSpan } from "@component/Typography";
 import { Button, IconButton } from "@component/buttons";
 import ProductQuickView from "@component/products/ProductQuickView";
 import { useCartItemById, useChangeCartAmount } from "@hook/useCart";
+import { useIsWishlisted, useToggleWishlist } from "@hook/useWishlist";
 import { calculateDiscount, currency } from "@utils/utils";
 import { useLocale } from "next-intl";
 
@@ -129,6 +130,8 @@ export default function ProductActionCard({
 }: ProductActionCardProps) {
     const locale = useLocale();
   const changeCartAmount = useChangeCartAmount();
+  const toggleWishlist = useToggleWishlist();
+  const isWishlisted = useIsWishlisted(id);
   const [open, setOpen] = useState(false);
   const [discountPrice, setDiscountPrice] = useState<string>("");
   const [discountAmount, setDiscountAmount] = useState<string>("");
@@ -171,8 +174,8 @@ export default function ProductActionCard({
             <IconEye size={18} />
           </IconButton>
 
-          <IconButton padding=".5rem">
-            <IconHeart size={18} />
+          <IconButton padding=".5rem" onClick={() => toggleWishlist({ id, slug, title, price, imgUrl })}>
+            {isWishlisted ? <IconHeartFilled size={18} color="#D23F57" /> : <IconHeart size={18} />}
           </IconButton>
         </FlexBox>
 

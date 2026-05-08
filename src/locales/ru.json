@@ -498,6 +498,7 @@
       "addAddress": "Добавить адрес",
       "editAddress": "Редактировать адрес"
     },
+    "emptyWishlist": "Ваш список желаний пуст",
     "buttons": {
       "addAllToCart": "Добавить все в корзину",
       "editProfile": "Редактировать профиль",

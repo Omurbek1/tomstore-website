@@ -12,12 +12,14 @@ import Hidden from "../hidden";
 import Rating from "../rating";
 import Grid from "../grid/Grid";
 import Icon from "../icon/Icon";
+import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import FlexBox from "../FlexBox";
 import NavLink from "../nav-link";
 import { Button } from "../buttons";
 import { H5, SemiSpan } from "../Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
 import { useCartItemById, useChangeCartAmount } from "@hook/useCart";
+import { useIsWishlisted, useToggleWishlist } from "@hook/useWishlist";
 import { calculateDiscount } from "@utils/utils";
 import useCurrency from "@hook/useCurrency";
 import { useLocale, useTranslations } from "next-intl";
@@ -132,6 +134,8 @@ export default function ProductListCard({
   const prefetchProductQuery = usePrefetchStorefrontProduct();
   const [open, setOpen] = useState(false);
   const changeCartAmount = useChangeCartAmount();
+  const toggleWishlist = useToggleWishlist();
+  const isWishlisted = useIsWishlisted(id);
   const cartItem = useCartItemById(id);
   const productHref = `/${locale}/product/${slug}`;
 
@@ -230,9 +234,15 @@ export default function ProductListCard({
                 alignItems="center"
                 flexDirection="row-reverse"
                 justifyContent="space-between">
-                <Icon className="favorite-icon outlined-icon" variant="small">
-                  heart
-                </Icon>
+                <span
+                  className="favorite-icon"
+                  onClick={() => toggleWishlist({ id, slug, title, price, imgUrl })}
+                  style={{ display: "flex", cursor: "pointer" }}>
+                  {isWishlisted
+                    ? <IconHeartFilled size={16} color="#D23F57" />
+                    : <IconHeart size={16} color="#aaa" />
+                  }
+                </span>
 
                 <FlexBox alignItems="center" flexDirection="row-reverse">
                   <Button
@@ -278,9 +288,15 @@ export default function ProductListCard({
             alignItems="center"
             flexDirection="column"
             justifyContent="space-between">
-            <Icon className="favorite-icon outlined-icon" variant="small">
-              heart
-            </Icon>
+            <span
+              className="favorite-icon"
+              onClick={() => toggleWishlist({ id, slug, title, price, imgUrl })}
+              style={{ display: "flex", cursor: "pointer" }}>
+              {isWishlisted
+                ? <IconHeartFilled size={16} color="#D23F57" />
+                : <IconHeart size={16} color="#aaa" />
+              }
+            </span>
 
             <FlexBox
               alignItems="center"

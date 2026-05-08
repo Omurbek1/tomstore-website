@@ -498,6 +498,7 @@
       "addAddress": "Add New Address",
       "editAddress": "Edit Address"
     },
+    "emptyWishlist": "Your wishlist is empty",
     "buttons": {
       "addAllToCart": "Add All to Cart",
       "editProfile": "Edit Profile",
