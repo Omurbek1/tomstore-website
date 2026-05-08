@@ -76,8 +76,10 @@ const CardRoot = styled(Link)<{ $compact: boolean }>`
   border-radius: 8px;
   padding: ${({ $compact }) => ($compact ? "0" : "1rem")};
   flex-direction: column;
-  background: ${({ theme, $compact }) => ($compact ? "transparent" : theme.colors.body.paper)};
-  box-shadow: ${({ theme, $compact }) => ($compact ? "none" : theme.shadows.small)};
+  background: ${({ theme, $compact }) =>
+    $compact ? "transparent" : theme?.colors?.body?.paper || "#FFFFFF"};
+  box-shadow: ${({ theme, $compact }) =>
+    $compact ? "none" : theme?.shadows?.small || "0 1px 3px rgba(3, 0, 71, 0.09)"};
   text-decoration: none;
 `;
 
@@ -101,7 +103,7 @@ const ImageWrap = styled.div<{ $compact: boolean }>`
 
 const Title = styled.h3`
   margin: 0 0 0.5rem;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme?.colors?.text?.secondary || "#373F50"};
   display: -webkit-box;
   overflow: hidden;
   font-size: 14px;
@@ -113,7 +115,7 @@ const Title = styled.h3`
 `;
 
 const Price = styled.span`
-  color: ${({ theme }) => theme.colors.primary.main};
+  color: ${({ theme }) => theme?.colors?.primary?.main || "#C81E3A"};
   font-size: 14px;
   font-weight: 700;
 `;
