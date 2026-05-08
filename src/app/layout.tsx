@@ -70,8 +70,6 @@ const localBusinessSchema = {
   hasMap: "https://2gis.kg/bishkek",
 };
 
-export const dynamic = "force-dynamic";
-
 export default function RootLayout({ children }: { children: ReactNode }) {
   const backendOrigin = (() => {
     try {
