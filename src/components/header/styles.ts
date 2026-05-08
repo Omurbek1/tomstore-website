@@ -18,6 +18,7 @@ const StyledHeader = styled.header`
     height: 60px;
   }
 
+
   .icon-holder {
     span {
       font-size: 12px;
