@@ -1,9 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import Image from "@component/Image";
 import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 
@@ -18,7 +18,14 @@ export default function NotFound() {
       alignItems="center"
       flexDirection="column"
       justifyContent="center">
-      <Image src="/assets/images/illustrations/404.svg" maxWidth="320px" width="100%" mb="2rem" />
+      <Image
+        src="/assets/images/illustrations/404.svg"
+        alt="Not found"
+        width={320}
+        height={240}
+        unoptimized
+        style={{ width: "100%", maxWidth: 320, height: "auto", marginBottom: "2rem" }}
+      />
 
       <FlexBox flexWrap="wrap">
         <Button variant="outlined" color="primary" m="0.5rem" onClick={handleGoBack}>

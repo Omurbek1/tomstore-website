@@ -1,5 +1,5 @@
+import Image from "next/image";
 import Box from "@component/Box";
-import Image from "@component/Image";
 import Grid from "@component/grid/Grid";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
@@ -20,7 +20,14 @@ export default async function Footer2() {
     <footer>
       <Wrapper>
         <Link href="/">
-          <Image mb="1.5rem" src="/assets/images/logo-no-bg.svg" alt="TomStore" height="60px" />
+          <Image
+            src="/assets/images/logo-no-bg.svg"
+            alt="TomStore"
+            width={220}
+            height={60}
+            unoptimized
+            style={{ width: "auto", height: 60, marginBottom: "1.5rem" }}
+          />
         </Link>
 
         <Grid container spacing={6}>

@@ -1,7 +1,7 @@
 "use client";
 
+import Image from "next/image";
 import Box from "@component/Box";
-import Image from "@component/Image";
 import Grid from "@component/grid/Grid";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
@@ -43,7 +43,14 @@ export default function Footer1() {
             <Grid container spacing={6}>
               <Grid item lg={4} md={6} sm={6} xs={12}>
                 <Link href="/">
-                  <Image alt="TomStore" mb="1rem" src="/assets/images/logo-no-bg.svg" height="60px" />
+                  <Image
+                    alt="TomStore"
+                    src="/assets/images/logo-no-bg.svg"
+                    width={220}
+                    height={60}
+                    unoptimized
+                    style={{ width: "auto", height: 60, marginBottom: "1rem" }}
+                  />
                 </Link>
 
                 <Paragraph mb="1.25rem" color="gray.500" maxWidth="320px">
