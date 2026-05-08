@@ -9,6 +9,7 @@ import {
 import ProductPageClient from "@component/products/ProductPageClient";
 import ProductJsonLd from "@component/seo/ProductJsonLd";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
+import { categoryNameToCatalogPath } from "@utils/categoryPath";
 
 export const revalidate = 60;
 
@@ -85,7 +86,7 @@ export default async function ProductDetails({ params }: Props) {
   const breadcrumbs = [
     { label: homeLabel, href: "/" },
     { label: catalogLabel, href: "/catalog" },
-    ...(category ? [{ label: category, href: `/catalog/${category}` }] : []),
+    ...(category ? [{ label: category, href: categoryNameToCatalogPath(category) }] : []),
     { label: product.title },
   ];
 
