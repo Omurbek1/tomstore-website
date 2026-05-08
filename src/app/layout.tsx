@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-// @ts-ignore
-import "./globals.css";
 
 import { SITE_URL } from "@lib/siteUrl";
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
@@ -87,6 +85,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ru" suppressHydrationWarning>
       <head>
+        <style dangerouslySetInnerHTML={{ __html: "@view-transition{navigation:auto}" }} />
         {backendOrigin && <link rel="preconnect" href={backendOrigin} />}
         {backendOrigin && <link rel="dns-prefetch" href={backendOrigin} />}
       </head>
