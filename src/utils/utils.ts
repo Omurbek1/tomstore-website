@@ -1,5 +1,3 @@
-import ceil from "lodash-es/ceil";
-import { differenceInMinutes } from "date-fns/differenceInMinutes";
 import isPropValid from "@emotion/is-prop-valid";
 
 export const isValidProp = (prop: string) => isPropValid(prop);
@@ -25,20 +23,20 @@ export const convertHexToRGB = (hex: string) => {
 
 // GET THE DATE/TIME DIFFERENCE
 export const getDateDifference = (date: string) => {
-  let diff = differenceInMinutes(new Date(), new Date(date));
+  let diff = Math.round((Date.now() - new Date(date).getTime()) / 60_000);
   if (diff < 60) return diff + " minutes ago";
 
-  diff = ceil(diff / 60);
-  if (diff < 24) return `${diff} hour${diff === 0 ? "" : "s"} ago`;
+  diff = Math.ceil(diff / 60);
+  if (diff < 24) return `${diff} hour${diff === 1 ? "" : "s"} ago`;
 
-  diff = ceil(diff / 24);
-  if (diff < 30) return `${diff} day${diff === 0 ? "" : "s"} ago`;
+  diff = Math.ceil(diff / 24);
+  if (diff < 30) return `${diff} day${diff === 1 ? "" : "s"} ago`;
 
-  diff = ceil(diff / 30);
-  if (diff < 12) return `${diff} month${diff === 0 ? "" : "s"} ago`;
+  diff = Math.ceil(diff / 30);
+  if (diff < 12) return `${diff} month${diff === 1 ? "" : "s"} ago`;
 
-  diff = diff / 12;
-  return `${diff.toFixed(1)} year${ceil(diff) === 0 ? "" : "s"} ago`;
+  const years = diff / 12;
+  return `${years.toFixed(1)} year${Math.ceil(years) === 1 ? "" : "s"} ago`;
 };
 
 export const renderProductCount = (
