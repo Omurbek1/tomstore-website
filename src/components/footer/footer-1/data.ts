@@ -1,4 +1,4 @@
-export const aboutLinkKeys = ["careers", "ourStores", "ourStory", "terms", "privacy"] as const;
+export const aboutLinkKeys = ["careers", "ourStores", "ourStory", "blog", "terms", "privacy"] as const;
 
 export const customerCareLinkKeys = [
   "helpCenter",
@@ -13,5 +13,5 @@ export const iconList = [
   { iconName: "twitter", url: "/" },
   { iconName: "youtube", url: "https://www.youtube.com/channel/UCsIyD-TSO1wQFz-n2Y4i3Rg" },
   { iconName: "google", url: "/" },
-  { iconName: "instagram", url: "/" }
+  { iconName: "instagram", url: "https://www.instagram.com/tomstore.kg" }
 ];

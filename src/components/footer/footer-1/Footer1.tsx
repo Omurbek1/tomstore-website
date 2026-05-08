@@ -15,6 +15,23 @@ import { StyledLink } from "./styles";
 // CUSTOM DATA
 import { aboutLinkKeys, customerCareLinkKeys, iconList } from "./data";
 
+const ABOUT_LINK_HREFS: Record<string, string> = {
+  ourStory: "/about",
+  ourStores: "/shops",
+  blog: "/blog",
+  terms: "/contacts",
+  privacy: "/contacts",
+  careers: "/contacts",
+};
+
+const CUSTOMER_CARE_HREFS: Record<string, string> = {
+  helpCenter: "/contacts",
+  howToBuy: "/contacts",
+  trackOrder: "/contacts",
+  corporatePurchasing: "/contacts",
+  returns: "/contacts",
+};
+
 export default function Footer1() {
   const t = useTranslations("footer");
 
@@ -48,7 +65,7 @@ export default function Footer1() {
 
                 <div>
                   {aboutLinkKeys.map((item) => (
-                    <StyledLink href="/" key={item}>
+                    <StyledLink href={ABOUT_LINK_HREFS[item] ?? "/"} key={item}>
                       {t(`aboutLinks.${item}`)}
                     </StyledLink>
                   ))}
@@ -67,7 +84,7 @@ export default function Footer1() {
 
                 <div>
                   {customerCareLinkKeys.map((item) => (
-                    <StyledLink href="/" key={item}>
+                    <StyledLink href={CUSTOMER_CARE_HREFS[item] ?? "/"} key={item}>
                       {t(`customerCareLinks.${item}`)}
                     </StyledLink>
                   ))}

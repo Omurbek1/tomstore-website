@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   // Static pages
-  const staticPages = ["/", "/catalog", "/shops", "/blog", "/dostavka"];
+  const staticPages = ["/", "/catalog", "/shops", "/blog", "/dostavka", "/contacts", "/about"];
   for (const page of staticPages) {
     entries.push({
       url: `${SITE_URL}/ru${page === "/" ? "" : page}`,

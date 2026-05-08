@@ -357,8 +357,8 @@ function TopbarContent() {
 
         {/* Desktop right */}
         <div className="topbar-right">
-          <NavLink className="link" href="/">{t("themeFaq")}</NavLink>
-          <NavLink className="link" href="/">{t("needHelp")}</NavLink>
+          <NavLink className="link" href="/contacts">{t("themeFaq")}</NavLink>
+          <NavLink className="link" href="/contacts">{t("needHelp")}</NavLink>
 
           {langMenu}
 
