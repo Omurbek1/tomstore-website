@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useCallback, useState } from "react";
-import { IconShoppingCart } from "@tabler/icons-react";
+import { IconShoppingCart, IconHeart } from "@tabler/icons-react";
+import { Link } from "@i18n/navigation";
 
 import Box from "@component/Box";
 import Icon from "@component/icon/Icon";
@@ -15,6 +15,7 @@ import Sidenav from "@component/sidenav/Sidenav";
 import Categories from "@component/categories/Categories";
 import { SearchInputWithCategory } from "@component/search-box";
 import { useCartCount } from "@hook/useCart";
+import { useWishlistCount } from "@hook/useWishlist";
 import StyledHeader from "./styles";
 import Logo from "./Logo";
 
@@ -28,6 +29,7 @@ type HeaderProps = { isFixed?: boolean; className?: string };
 
 export default function Header({ isFixed, className }: HeaderProps) {
   const cartCount = useCartCount();
+  const wishlistCount = useWishlistCount();
   const [open, setOpen] = useState(false);
 
   const handleOpenCart = useCallback(() => setOpen(true), []);
@@ -86,6 +88,31 @@ export default function Header({ isFixed, className }: HeaderProps) {
 
         <FlexBox className="header-right" alignItems="center">
           {/* account icon hidden temporarily */}
+
+          <Link href="/wish-list">
+            <Box ml="1rem" position="relative">
+              <IconButton bg="gray.200" p="12px" size="small" borderRadius={8}>
+                <IconHeart size={16} stroke={1.5} />
+              </IconButton>
+
+              {wishlistCount > 0 && (
+                <FlexBox
+                  top={-5}
+                  right={-5}
+                  height={20}
+                  minWidth={20}
+                  bg="primary.main"
+                  borderRadius="50%"
+                  alignItems="center"
+                  position="absolute"
+                  justifyContent="center">
+                  <Tiny color="white" fontWeight="600" lineHeight={1}>
+                    {wishlistCount}
+                  </Tiny>
+                </FlexBox>
+              )}
+            </Box>
+          </Link>
 
           <Sidenav
             open={open}

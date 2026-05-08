@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useState } from "react";
-import { IconShoppingCart } from "@tabler/icons-react";
+import { IconShoppingCart, IconHeart } from "@tabler/icons-react";
+import { Link } from "@i18n/navigation";
 
 import FlexBox from "@component/FlexBox";
 import MiniCart from "@component/mini-cart";
@@ -12,6 +12,7 @@ import { IconButton } from "@component/buttons";
 import Sidenav from "@component/sidenav/Sidenav";
 import { SearchInput } from "@component/search-box";
 import { useCartCount } from "@hook/useCart";
+import { useWishlistCount } from "@hook/useWishlist";
 import StyledHeader from "./styles";
 import Logo from "./Logo";
 
@@ -21,6 +22,7 @@ type HeaderProps = { className?: string };
 
 export default function HeaderTwo({ className }: HeaderProps) {
   const cartCount = useCartCount();
+  const wishlistCount = useWishlistCount();
   const [open, setOpen] = useState(false);
 
   const handleOpenCart = useCallback(() => setOpen(true), []);
@@ -65,6 +67,30 @@ export default function HeaderTwo({ className }: HeaderProps) {
 
         <FlexBox className="header-right" alignItems="center">
           {/* account icon hidden temporarily */}
+
+          <Link href="/wish-list">
+            <FlexBox ml="20px" alignItems="flex-start">
+              <IconButton bg="gray.200" p="12px" size="small" borderRadius={8}>
+                <IconHeart size={16} stroke={1.5} />
+              </IconButton>
+
+              {wishlistCount > 0 && (
+                <FlexBox
+                  px="5px"
+                  py="2px"
+                  mt="-9px"
+                  ml="-1rem"
+                  bg="primary.main"
+                  alignItems="center"
+                  borderRadius="300px"
+                  justifyContent="center">
+                  <Tiny color="white" fontWeight="600">
+                    {wishlistCount}
+                  </Tiny>
+                </FlexBox>
+              )}
+            </FlexBox>
+          </Link>
 
           <Sidenav
             open={open}
