@@ -350,8 +350,14 @@ export default function ProductIntro({
                         quality={80}
                         sizes="(max-width: 768px) 100vw, 50vw"
                         priority
+                        unoptimized
                         fetchPriority="high"
-                        style={{ display: "block", width: "100%", height: "auto" }}
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                        }}
                       />
                     )}
                   </MainMediaBox>
@@ -383,6 +389,7 @@ export default function ProductIntro({
                               alt="video"
                               fill
                               sizes="70px"
+                              unoptimized
                               style={{ objectFit: "cover" }}
                             />
                           )

@@ -214,11 +214,25 @@ const buildStorefrontUrl = (path: string) => {
 export const resolveStorefrontMediaUrl = (value?: string | null) => {
   const url = String(value || "").trim();
   if (!url) return undefined;
+  if (url.startsWith("/uploads/")) return `/api${url}`;
   if (
     url.startsWith("http://") ||
     url.startsWith("https://") ||
     url.startsWith("data:")
   ) {
+    try {
+      const parsedUrl = new URL(url);
+      const backendUrl = new URL(getBackendUrl());
+      if (
+        parsedUrl.origin === backendUrl.origin &&
+        parsedUrl.pathname.startsWith("/uploads/")
+      ) {
+        return `/api${parsedUrl.pathname}${parsedUrl.search}`;
+      }
+    } catch {
+      // Keep the original URL below if parsing fails.
+    }
+
     return url;
   }
   if (url.startsWith("/assets/")) return url;
