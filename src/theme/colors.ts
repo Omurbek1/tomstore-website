@@ -12,8 +12,8 @@ const gray = {
 };
 
 const textColor = {
-  hint: gray[600],
-  muted: gray[600],
+  hint: gray[700],
+  muted: gray[700],
   primary: gray[900],
   disabled: gray[400],
   secondary: gray[800]
@@ -27,7 +27,7 @@ const bodyColor = {
 
 const primaryColor = {
   light: "#FFE1E6",
-  main: "#E94560",
+  main: "#C81E3A",
   dark: "#4F4CB6",
   text: "#ffffff",
   100: "#FCE9EC",

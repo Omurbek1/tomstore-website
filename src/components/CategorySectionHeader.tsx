@@ -34,8 +34,16 @@ export default function CategorySectionHeader({ title, iconName, seeMoreLink }: 
       </FlexBox>
 
       {seeMoreLink && (
-        <Link href={seeMoreLink}>
-          <FlexBox alignItems="center" ml="0.5rem" color="text.muted">
+        <Link
+          href={seeMoreLink}
+          aria-label={`${t("viewAll")}: ${title || ""}`.trim()}
+          style={{
+            alignItems: "center",
+            display: "inline-flex",
+            minHeight: 44,
+            paddingInline: 8,
+          }}>
+          <FlexBox alignItems="center" ml="0.5rem" color="text.secondary">
             <SemiSpan mr="0.5rem">{t("viewAll")}</SemiSpan>
             <IconChevronRight size={16} stroke={1.5} />
           </FlexBox>
