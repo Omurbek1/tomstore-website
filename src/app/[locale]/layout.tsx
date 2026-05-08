@@ -38,7 +38,6 @@ export async function generateMetadata({
 
   const title = t("title");
   const description = t("description");
-  const canonicalUrl = `${SITE_URL}/${locale}`;
 
   return {
     title: {
@@ -47,19 +46,7 @@ export async function generateMetadata({
     },
     description,
     metadataBase: new URL(SITE_URL),
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        ru: `${SITE_URL}/ru`,
-        en: `${SITE_URL}/en`,
-        ky: `${SITE_URL}/ky`,
-        "x-default": `${SITE_URL}/ru`,
-      },
-    },
     openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
       siteName: "TomStore",
       locale: locale === "en" ? "en_US" : locale === "ky" ? "ky_KG" : "ru_RU",
       type: "website",
@@ -74,8 +61,6 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
     },
     robots: {
       index: true,
