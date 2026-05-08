@@ -85,5 +85,5 @@ const list = [
   { translationKey: "home", icon: "home", href: "/" },
   { translationKey: "category", icon: "category", href: "/mobile-category-nav" },
   { translationKey: "cart", icon: "bag", href: "/cart" },
-  { translationKey: "account", icon: "user-2", href: "/profile" }
+  // account hidden temporarily
 ];

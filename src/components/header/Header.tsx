@@ -3,10 +3,9 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useCallback, useState } from "react";
-import { IconShoppingCart, IconUser } from "@tabler/icons-react";
+import { IconShoppingCart } from "@tabler/icons-react";
 
 import Box from "@component/Box";
-import Modal from "@component/modal";
 import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import Container from "@component/Container";
@@ -30,12 +29,9 @@ type HeaderProps = { isFixed?: boolean; className?: string };
 export default function Header({ isFixed, className }: HeaderProps) {
   const cartCount = useCartCount();
   const [open, setOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
 
   const handleOpenCart = useCallback(() => setOpen(true), []);
   const handleCloseCart = useCallback(() => setOpen(false), []);
-  const handleOpenLogin = useCallback(() => setLoginOpen(true), []);
-  const handleCloseLogin = useCallback(() => setLoginOpen(false), []);
 
   const CART_HANDLE = (
     <Box ml="1rem" position="relative" onClick={handleOpenCart}>
@@ -89,21 +85,7 @@ export default function Header({ isFixed, className }: HeaderProps) {
         </FlexBox>
 
         <FlexBox className="header-right" alignItems="center">
-          <IconButton
-            borderRadius={8}
-            ml="1rem"
-            bg="gray.200"
-            p="12px"
-            onClick={handleOpenLogin}
-            className="desktop-only">
-            <IconUser size={16} stroke={1.5} />
-          </IconButton>
-
-          {loginOpen && (
-            <Modal open={loginOpen} onClose={handleCloseLogin}>
-              <Login />
-            </Modal>
-          )}
+          {/* account icon hidden temporarily */}
 
           <Sidenav
             open={open}

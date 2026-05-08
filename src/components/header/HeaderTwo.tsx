@@ -2,11 +2,8 @@
 
 import Link from "next/link";
 import { useCallback, useState } from "react";
-import { IconShoppingCart, IconUser } from "@tabler/icons-react";
+import { IconShoppingCart } from "@tabler/icons-react";
 
-import Login from "@sections/auth/Login";
-
-import Modal from "@component/modal/Modal";
 import FlexBox from "@component/FlexBox";
 import MiniCart from "@component/mini-cart";
 import Container from "@component/Container";
@@ -25,12 +22,9 @@ type HeaderProps = { className?: string };
 export default function HeaderTwo({ className }: HeaderProps) {
   const cartCount = useCartCount();
   const [open, setOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
 
   const handleOpenCart = useCallback(() => setOpen(true), []);
   const handleCloseCart = useCallback(() => setOpen(false), []);
-  const handleOpenLogin = useCallback(() => setLoginOpen(true), []);
-  const handleCloseLogin = useCallback(() => setLoginOpen(false), []);
 
   const CART_HANDLE = (
     <FlexBox ml="20px" alignItems="flex-start" onClick={handleOpenCart}>
@@ -70,21 +64,7 @@ export default function HeaderTwo({ className }: HeaderProps) {
         </FlexBox>
 
         <FlexBox className="header-right" alignItems="center">
-          <IconButton
-            ml="1rem"
-            p="12px"
-            size="small"
-            bg="gray.200"
-            borderRadius={8}
-            onClick={handleOpenLogin}>
-            <IconUser size={16} stroke={1.5} />
-          </IconButton>
-
-          <Modal open={loginOpen} onClose={handleCloseLogin}>
-            <div>
-              <Login />
-            </div>
-          </Modal>
+          {/* account icon hidden temporarily */}
 
           <Sidenav
             open={open}
