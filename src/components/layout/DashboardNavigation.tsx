@@ -2,12 +2,12 @@
 
 import { Fragment } from "react";
 import {
-  IconPin,
-  IconUser,
+  // IconPin,
+  // IconUser,
   IconHeart,
-  IconHelpCircle,
-  IconCreditCard,
-  IconShoppingBagCheck
+  // IconHelpCircle,
+  // IconCreditCard,
+  // IconShoppingBagCheck,
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { usePathname } from "@i18n/navigation";
@@ -26,19 +26,20 @@ export default function DashboardNavigation() {
     {
       title: t("groups.dashboard"),
       links: [
-        { href: "/orders", title: t("nav.orders"), Icon: IconShoppingBagCheck, count: 5 },
+        // { href: "/orders", title: t("nav.orders"), Icon: IconShoppingBagCheck, count: 5 }, // hidden temporarily
         { href: "/wish-list", title: t("nav.wishlist"), Icon: IconHeart, count: wishlistCount },
-        { href: "/support-tickets", title: t("nav.supportTickets"), Icon: IconHelpCircle, count: 1 }
+        // { href: "/support-tickets", title: t("nav.supportTickets"), Icon: IconHelpCircle, count: 1 }, // hidden temporarily
       ]
     },
-    {
-      title: t("groups.accountSettings"),
-      links: [
-        { href: "/profile", title: t("nav.profileInfo"), Icon: IconUser, count: 3 },
-        { href: "/address", title: t("nav.addresses"), Icon: IconPin, count: 16 },
-        { href: "/payment-methods", title: t("nav.paymentMethods"), Icon: IconCreditCard, count: 4 }
-      ]
-    }
+    // account settings group hidden temporarily
+    // {
+    //   title: t("groups.accountSettings"),
+    //   links: [
+    //     { href: "/profile", title: t("nav.profileInfo"), Icon: IconUser, count: 3 },
+    //     { href: "/address", title: t("nav.addresses"), Icon: IconPin, count: 16 },
+    //     { href: "/payment-methods", title: t("nav.paymentMethods"), Icon: IconCreditCard, count: 4 },
+    //   ]
+    // },
   ];
 
   return (
