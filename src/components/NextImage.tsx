@@ -9,7 +9,7 @@ type NextImageProps = ImageProps & SpaceProps & BorderRadiusProps;
 // ==============================================================
 
 const NextImage = styled(Image)<NextImageProps>(
-  { width: "100%", height: "auto" },
+  ({ fill }) => (fill ? {} : { width: "100%", height: "auto" }),
   compose(space, borderRadius)
 );
 

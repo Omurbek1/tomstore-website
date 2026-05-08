@@ -26,8 +26,6 @@ import { StyledTopbar } from "./styles";
 import { LANGUAGES, CURRENCIES } from "./data";
 import type { FlagCode, LanguageOption } from "./data";
 
-import logo from "../../../public/assets/images/logo.svg";
-
 const PHONE_DISPLAY = "0508 724 365";
 const PHONE_RAW = "+996508724365";
 const WA_HREF = `https://wa.me/996508724365`;
@@ -338,7 +336,13 @@ function TopbarContent() {
         {/* Desktop left */}
         <div className="topbar-left">
           <div className="logo">
-            <NextImage src={logo} alt="Tomstore" />
+            <NextImage
+              src="/assets/images/logo.svg"
+              alt="Tomstore"
+              width={112}
+              height={32}
+              unoptimized
+            />
           </div>
           <div className="phone">
             <IconPhone size={16} stroke={1.5} />

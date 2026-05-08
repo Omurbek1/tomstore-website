@@ -22,7 +22,12 @@ export const StyledTopbar = styled.div`
 
     .logo {
       display: none;
-      img { display: block; height: 36px; }
+      img {
+        display: block;
+        width: 112px;
+        height: 32px;
+        object-fit: contain;
+      }
     }
 
     span { margin-left: 10px; }

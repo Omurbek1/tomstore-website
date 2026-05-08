@@ -12,6 +12,8 @@ type CategoryPromoCardProps = {
 // ===========================================================================
 
 const CategoryPromoCard = ({ title, subtitle, imgUrl }: CategoryPromoCardProps) => {
+  const imageSrc = imgUrl || "/assets/images/banners/category-1.png";
+
   return (
     <Card
       position="relative"
@@ -23,7 +25,7 @@ const CategoryPromoCard = ({ title, subtitle, imgUrl }: CategoryPromoCardProps) 
     >
       <Box position="relative" width="100%" style={{ height: "100%", minHeight: 160 }}>
         <NextImage
-          src={imgUrl}
+          src={imageSrc}
           fill
           alt={title}
           style={{ objectFit: "cover" }}

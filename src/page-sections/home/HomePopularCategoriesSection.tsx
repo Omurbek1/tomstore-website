@@ -34,7 +34,7 @@ export default function HomePopularCategoriesSection({
           >
             <CategoryPromoCard
               title={category.name}
-              imgUrl={category.image ?? ""}
+              imgUrl={category.image || "/assets/images/banners/category-1.png"}
               subtitle={category.description ?? ""}
             />
           </Link>
