@@ -157,7 +157,17 @@ export default function SearchResult({
   );
 
   const handleCategoryChange = useCallback(
-    (category?: string) => updateUrl({ filterCategory: category }),
+    (category?: string) =>
+      updateUrl({
+        filterCategory: category,
+        // Reset all sub-filters when switching category
+        filterBrand: undefined,
+        filterMinPrice: undefined,
+        filterMaxPrice: undefined,
+        filterOnSale: undefined,
+        filterInStock: undefined,
+        filterFeatured: undefined,
+      }),
     [updateUrl],
   );
 

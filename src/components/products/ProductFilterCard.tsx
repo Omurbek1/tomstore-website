@@ -54,9 +54,12 @@ export default function ProductFilterCard({
 }: ProductFilterCardProps) {
   const t = useTranslations("product.filters");
 
-  // Fetch live filter options (pageSize:1 = metadata only, no product list needed)
+  // Fetch filter options WITHOUT the selected category so the full categories list
+  // is always visible regardless of what's currently selected. Brands ARE filtered
+  // by brand selection so users see counts specific to the active brand.
   const { data: catalog } = useStorefrontCatalog({
     ...catalogParams,
+    category: undefined,
     pageSize: 1,
   });
 
