@@ -1,14 +1,18 @@
 import styled from "styled-components";
-import { layout, LayoutProps } from "styled-system";
 import FlexBox from "@component/FlexBox";
 import { isValidProp } from "@utils/utils";
 
 // STYLED COMPONENT
-export const AccordionWrapper = styled.div<LayoutProps>`
+export const AccordionWrapper = styled.div<{ open: boolean }>`
   cursor: pointer;
-  overflow: hidden;
-  transition: height 250ms ease-in-out;
-  ${layout}
+  display: grid;
+  grid-template-rows: auto ${({ open }) => (open ? "1fr" : "0fr")};
+  transition: grid-template-rows 250ms ease-in-out;
+
+  .accordion-content {
+    min-height: 0;
+    overflow: hidden;
+  }
 `;
 
 export const AccordionHeaderWrapper = styled(FlexBox).withConfig({

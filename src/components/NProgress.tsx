@@ -23,24 +23,17 @@ export default function NProgressBar() {
       NProgress.configure({ showSpinner: false, speed: 300, minimum: 0.08 });
 
       const handleAnchorClick = (event: MouseEvent) => {
-        const anchorElement = event.currentTarget as HTMLAnchorElement;
+        const anchorElement = (event.target as Element | null)?.closest<HTMLAnchorElement>("a[href]");
+        if (!anchorElement) return;
         if (anchorElement.target !== "_self" && anchorElement.target?.trim() !== "") return;
         if (anchorElement.hasAttribute("download")) return;
         if (location.href !== anchorElement.href) NProgress.start();
       };
 
-      const attachListeners = () => {
-        document.querySelectorAll("a[href]").forEach((anchor) =>
-          anchor.addEventListener("click", handleAnchorClick),
-        );
-      };
-
-      attachListeners();
-
-      const mutationObserver = new MutationObserver(attachListeners);
-      mutationObserver.observe(document, { childList: true, subtree: true });
+      document.addEventListener("click", handleAnchorClick);
 
       const originalPushState = window.history.pushState.bind(window.history);
+      const originalPushStateRef = window.history.pushState;
       window.history.pushState = new Proxy(originalPushState, {
         apply: (target, thisArg, argArray: PushStateInput) => {
           NProgress.done();
@@ -49,7 +42,8 @@ export default function NProgressBar() {
       });
 
       cleanup = () => {
-        mutationObserver.disconnect();
+        document.removeEventListener("click", handleAnchorClick);
+        window.history.pushState = originalPushStateRef;
         style.remove();
       };
     };
