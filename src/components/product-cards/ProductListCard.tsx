@@ -10,7 +10,6 @@ import Chip from "../Chip";
 import NextImage from "@component/NextImage";
 import Hidden from "../hidden";
 import Rating from "../rating";
-import Grid from "../grid/Grid";
 import Icon from "../icon/Icon";
 import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import FlexBox from "../FlexBox";
@@ -36,12 +35,10 @@ const Wrapper = styled(Card)`
     position: absolute;
   }
   .categories {
+    display: flex;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
-  .categories {
-    display: flex;
     .link {
       font-size: 14px;
       margin-right: 0.5rem;
@@ -60,7 +57,6 @@ const Wrapper = styled(Card)`
     display: flex;
     font-weight: 600;
     margin-top: 0.5rem;
-
     h4 {
       margin: 0px;
       padding-right: 0.5rem;
@@ -96,6 +92,24 @@ const Wrapper = styled(Card)`
     }
     .quick-view {
       display: block;
+    }
+  }
+
+  /* ── Mobile compact layout ── */
+  @media only screen and (max-width: 599px) {
+    .list-image-col {
+      width: 110px;
+      flex: 0 0 110px;
+    }
+    .list-content-col {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+    .list-actions-col {
+      display: none;
+    }
+    .desktop-categories {
+      display: none;
     }
   }
 `;
@@ -152,188 +166,182 @@ export default function ProductListCard({
 
   return (
     <Wrapper overflow="hidden" width="100%" {...props}>
-      <Grid container spacing={1}>
-        <Grid item md={3} sm={4} xs={12}>
-          <Box position="relative">
-            {!!off && (
-              <Chip
-                top="10px"
-                left="10px"
-                p="5px 10px"
-                fontSize="10px"
-                fontWeight="600"
-                bg="primary.main"
-                position="absolute"
-                color="primary.text">
-                {t("saleOff", { percent: off })}
-              </Chip>
-            )}
+      {/* Always horizontal: image | content | actions */}
+      <FlexBox alignItems="stretch">
 
-            <span onClick={toggleDialog}>
-              <Icon color="secondary" variant="small" className="quick-view">
-                eye-alt
-              </Icon>
-            </span>
-
-            <Link
-              href={productHref}
-              onFocus={prefetchProduct}
-              onMouseEnter={prefetchProduct}
+        {/* ── Image ── */}
+        <Box className="list-image-col" position="relative" style={{ width: 200, flexShrink: 0 }}>
+          {!!off && (
+            <Chip
+              top="10px"
+              left="10px"
+              p="5px 10px"
+              fontSize="10px"
+              fontWeight="600"
+              bg="primary.main"
+              position="absolute"
+              color="primary.text"
+              zIndex={1}
             >
-              <NextImage
-                src={imgUrl}
-                alt={title}
-                width={260}
-                height={260}
-                borderRadius="0.5rem"
-                sizes="(max-width: 600px) 100vw, (max-width: 960px) 33vw, 260px"
-                style={{ objectFit: "contain" }}
-              />
-            </Link>
-          </Box>
-        </Grid>
+              {t("saleOff", { percent: off })}
+            </Chip>
+          )}
 
-        <Grid item md={8} sm={8} xs={12}>
-          <FlexBox flexDirection="column" justifyContent="center" height="100%" p="1rem">
-            {!!categories && (
-              <div className="categories">
-                {categories.map((item) => (
-                  <NavLink className="link" href={`/product/search/${item}`} key={item}>
-                    {item}
-                  </NavLink>
-                ))}
-              </div>
-            )}
+          <span onClick={toggleDialog}>
+            <Icon color="secondary" variant="small" className="quick-view">
+              eye-alt
+            </Icon>
+          </span>
 
-            <Link
-              href={productHref}
-              onFocus={prefetchProduct}
-              onMouseEnter={prefetchProduct}
+          <Link href={productHref} onFocus={prefetchProduct} onMouseEnter={prefetchProduct}>
+            <NextImage
+              src={imgUrl}
+              alt={title}
+              width={200}
+              height={200}
+              borderRadius="0.5rem"
+              sizes="(max-width: 599px) 110px, (max-width: 960px) 33vw, 200px"
+              style={{ objectFit: "contain", width: "100%", height: "auto" }}
+            />
+          </Link>
+        </Box>
+
+        {/* ── Content ── */}
+        <Box className="list-content-col" flex="1 1 0" minWidth="0" p="1rem">
+          {!!categories?.length && (
+            <div className="categories desktop-categories">
+              {categories.map((item) => (
+                <NavLink className="link" href={`/product/search/${item}`} key={item}>
+                  {item}
+                </NavLink>
+              ))}
+            </div>
+          )}
+
+          <Link href={productHref} onFocus={prefetchProduct} onMouseEnter={prefetchProduct}>
+            <H5
+              fontWeight="600"
+              my="0.5rem"
+              color="text.primary"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
             >
-              <H5 fontWeight="600" my="0.5rem">
-                {title}
-              </H5>
-            </Link>
+              {title}
+            </H5>
+          </Link>
 
-            <Rating value={rating || 3} outof={5} color="warn" />
+          <Rating value={rating || 3} outof={5} color="warn" />
 
-            <FlexBox mt="0.5rem" mb="1rem" alignItems="center">
-              <H5 fontWeight={600} color="primary.main" mr="0.5rem">
-                {calculateDiscount(price, off ?? 0, locale)}
-              </H5>
-
-              {(off ?? 0) > 0 && (
-                <SemiSpan fontWeight="600">
-                  <del>{formatCurrency(price)}</del>
-                </SemiSpan>
-              )}
-            </FlexBox>
-
-            <Hidden up="sm">
-              <FlexBox
-                height="30px"
-                alignItems="center"
-                flexDirection="row-reverse"
-                justifyContent="space-between">
-                <span
-                  className="favorite-icon"
-                  onClick={() => toggleWishlist({ id, slug, title, price, imgUrl })}
-                  style={{ display: "flex", cursor: "pointer" }}>
-                  {isWishlisted
-                    ? <IconHeartFilled size={16} color={theme.colors.primary.main} />
-                    : <IconHeart size={16} color={theme.colors.gray[600]} />
-                  }
-                </span>
-
-                <FlexBox alignItems="center" flexDirection="row-reverse">
-                  <Button
-                    size="none"
-                    padding="5px"
-                    color="primary"
-                    variant="outlined"
-                    borderColor="primary.light"
-                    onClick={handleCartAmountChange((cartItem?.qty || 0) + 1)}>
-                    <Icon variant="small">plus</Icon>
-                  </Button>
-
-                  {cartItem?.qty && (
-                    <Fragment>
-                      <H5 fontWeight="600" fontSize="15px" mx="0.75rem">
-                        {cartItem.qty}
-                      </H5>
-
-                      <Button
-                        size="none"
-                        padding="5px"
-                        color="primary"
-                        variant="outlined"
-                        borderColor="primary.light"
-                        onClick={handleCartAmountChange(cartItem.qty - 1)}>
-                        <Icon variant="small">minus</Icon>
-                      </Button>
-                    </Fragment>
-                  )}
-                </FlexBox>
-              </FlexBox>
-            </Hidden>
+          <FlexBox mt="0.5rem" alignItems="center" flexWrap="wrap" style={{ gap: "0.25rem" }}>
+            <H5 fontWeight={600} color="primary.main">
+              {calculateDiscount(price, off ?? 0, locale)}
+            </H5>
+            {(off ?? 0) > 0 && (
+              <SemiSpan fontWeight="600" color="text.hint">
+                <del>{formatCurrency(price)}</del>
+              </SemiSpan>
+            )}
           </FlexBox>
-        </Grid>
 
-        <Grid item flex={1} md={1} xs={12}>
-          <FlexBox
-            ml="auto"
-            p="2rem 0rem"
-            width="100%"
-            height="100%"
-            minWidth="30px"
-            alignItems="center"
-            flexDirection="column"
-            justifyContent="space-between">
-            <span
-              className="favorite-icon"
-              onClick={() => toggleWishlist({ id, slug, title, price, imgUrl })}
-              style={{ display: "flex", cursor: "pointer" }}>
-              {isWishlisted
-                ? <IconHeartFilled size={16} color={theme.colors.primary.main} />
-                : <IconHeart size={16} color={theme.colors.gray[600]} />
-              }
-            </span>
+          {/* Cart controls — visible only on mobile (sm+ uses the right-side actions column) */}
+          <Hidden up="sm">
+            <FlexBox mt="0.75rem" alignItems="center" style={{ gap: "0.5rem" }}>
+              <span
+                className="favorite-icon"
+                onClick={() => toggleWishlist({ id, slug, title, price, imgUrl })}
+                style={{ display: "flex", cursor: "pointer" }}
+              >
+                {isWishlisted
+                  ? <IconHeartFilled size={16} color={theme.colors.primary.main} />
+                  : <IconHeart size={16} color={theme.colors.gray[600]} />
+                }
+              </span>
 
-            <FlexBox
-              alignItems="center"
-              className="add-cart"
-              flexDirection={cartItem?.qty ? "column" : "column-reverse"}>
               <Button
                 size="none"
                 padding="5px"
                 color="primary"
                 variant="outlined"
                 borderColor="primary.light"
-                onClick={handleCartAmountChange((cartItem?.qty || 0) + 1)}>
+                onClick={handleCartAmountChange((cartItem?.qty || 0) + 1)}
+              >
                 <Icon variant="small">plus</Icon>
               </Button>
 
               {cartItem?.qty && (
                 <Fragment>
-                  <H5 fontWeight="600" fontSize="15px" m="0.5rem">
-                    {cartItem.qty}
-                  </H5>
-
+                  <H5 fontWeight="600" fontSize="14px">{cartItem.qty}</H5>
                   <Button
                     size="none"
                     padding="5px"
                     color="primary"
                     variant="outlined"
                     borderColor="primary.light"
-                    onClick={handleCartAmountChange(cartItem.qty - 1)}>
+                    onClick={handleCartAmountChange(cartItem.qty - 1)}
+                  >
                     <Icon variant="small">minus</Icon>
                   </Button>
                 </Fragment>
               )}
             </FlexBox>
+          </Hidden>
+        </Box>
+
+        {/* ── Desktop-only actions column ── */}
+        <Box
+          className="list-actions-col"
+          p="1rem 0.75rem"
+          style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between" }}
+        >
+          <span
+            className="favorite-icon"
+            onClick={() => toggleWishlist({ id, slug, title, price, imgUrl })}
+            style={{ display: "flex", cursor: "pointer" }}
+          >
+            {isWishlisted
+              ? <IconHeartFilled size={16} color={theme.colors.primary.main} />
+              : <IconHeart size={16} color={theme.colors.gray[600]} />
+            }
+          </span>
+
+          <FlexBox
+            alignItems="center"
+            className="add-cart"
+            flexDirection={cartItem?.qty ? "column" : "column-reverse"}
+          >
+            <Button
+              size="none"
+              padding="5px"
+              color="primary"
+              variant="outlined"
+              borderColor="primary.light"
+              onClick={handleCartAmountChange((cartItem?.qty || 0) + 1)}
+            >
+              <Icon variant="small">plus</Icon>
+            </Button>
+
+            {cartItem?.qty && (
+              <Fragment>
+                <H5 fontWeight="600" fontSize="15px" m="0.5rem">{cartItem.qty}</H5>
+                <Button
+                  size="none"
+                  padding="5px"
+                  color="primary"
+                  variant="outlined"
+                  borderColor="primary.light"
+                  onClick={handleCartAmountChange(cartItem.qty - 1)}
+                >
+                  <Icon variant="small">minus</Icon>
+                </Button>
+              </Fragment>
+            )}
           </FlexBox>
-        </Grid>
-      </Grid>
+        </Box>
+      </FlexBox>
 
       <ProductQuickView
         open={open}
