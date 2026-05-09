@@ -11,7 +11,7 @@ import { ThemeProvider } from "theme";
 import NProgressBar from "@component/NProgress";
 import { routing } from "@i18n/routing";
 import { Provider } from "@lib/Provider";
-import { DarkModeProvider } from "@context/DarkModeContext";
+import ThemeInitializer from "@component/ThemeInitializer";
 
 type LocaleLayoutProps = PropsWithChildren<{
   params: Promise<{ locale: string }>;
@@ -91,14 +91,13 @@ export default async function LocaleLayout({
     <div>
       <NextIntlClientProvider locale={locale} messages={messages}>
         <StyledComponentsRegistry>
-          <DarkModeProvider>
-            <Provider>
-              <ThemeProvider>
-                {children}
-                <NProgressBar />
-              </ThemeProvider>
-            </Provider>
-          </DarkModeProvider>
+          <ThemeInitializer />
+          <Provider>
+            <ThemeProvider>
+              {children}
+              <NProgressBar />
+            </ThemeProvider>
+          </Provider>
         </StyledComponentsRegistry>
       </NextIntlClientProvider>
     </div>
