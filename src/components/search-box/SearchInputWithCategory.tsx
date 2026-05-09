@@ -2,7 +2,6 @@
 
 import { KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Cascader } from "antd";
-import { AnimatePresence, motion } from "motion/react";
 import { IconChevronDown, IconSearch } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
@@ -23,17 +22,6 @@ type CatalogOption = {
   value: string;
   searchValue: string;
   children?: CatalogOption[];
-};
-
-const dropdownVariants = {
-  hidden: { y: -10, opacity: 0, scale: 0.95 },
-  visible: {
-    y: 0,
-    scale: 1,
-    opacity: 1,
-    transition: { duration: 0.2, easing: [0.25, 0.46, 0.45, 0.94] },
-  },
-  exit: { y: -10, opacity: 0, scale: 0.95, transition: { duration: 0.15 } },
 };
 
 export default function SearchInputWithCategory() {
@@ -179,15 +167,8 @@ export default function SearchInputWithCategory() {
         </div>
       </StyledSearchBox>
 
-      <AnimatePresence>
-        {resultList.length > 0 && (
-          <motion.div
-            exit="exit"
-            initial="hidden"
-            animate="visible"
-            variants={dropdownVariants}
-            style={{ top: "100%", zIndex: 99, width: "100%", position: "absolute" }}
-          >
+      {resultList.length > 0 && (
+        <div className="suggestions-dropdown">
             <Card py="0.5rem" mt="0.25rem" boxShadow="large" borderRadius=".5rem">
               {resultList.map((item) => (
                 <Link href={`/product/${item.slug}`} key={item.id}>
@@ -206,9 +187,8 @@ export default function SearchInputWithCategory() {
                 </Link>
               ))}
             </Card>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </Box>
   );
 }

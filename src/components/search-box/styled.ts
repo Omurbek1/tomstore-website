@@ -34,6 +34,15 @@ const StyledSearchBox = styled.div`
     padding-left: 55px;
     padding-right: 55px;
   }
+
+  + .suggestions-dropdown,
+  .suggestions-dropdown {
+    top: 100%;
+    z-index: 99;
+    width: 100%;
+    position: absolute;
+  }
+
   .category-dropdown,
   .category-cascader {
     position: absolute;
