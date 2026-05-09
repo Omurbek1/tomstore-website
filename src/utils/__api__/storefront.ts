@@ -828,21 +828,23 @@ export const getBlogSlugs = async (): Promise<string[]> => {
 export type StorefrontVacancy = {
   id: string;
   title: string;
-  slug?: string;
-  department?: string;
-  location?: string;
-  employmentType?: string;
-  salary?: string;
-  description?: string;
-  requirements?: string | string[];
-  excerpt?: string;
-  applyUrl?: string;
-  publishedAt?: string;
-  isActive?: boolean;
+  role?: string | null;
+  branchName?: string | null;
+  status?: "open" | "paused" | "closed";
+  headcount?: number;
+  formSlug?: string | null;
+  description?: string | null;
+  requirements?: string | null;
+  salaryText?: string | null;
+  workFormat?: string | null;
+  workSchedule?: string | null;
+  workAddress?: string | null;
+  bannerImageUrl?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type StorefrontVacanciesResponse = {
-  enabled: boolean;
   items: StorefrontVacancy[];
   total: number;
 };
@@ -850,6 +852,7 @@ export type StorefrontVacanciesResponse = {
 export const storefrontVacanciesQueryKeys = {
   all: ["storefront", "vacancies"] as const,
   list: () => [...storefrontVacanciesQueryKeys.all, "list"] as const,
+  detail: (id: string) => [...storefrontVacanciesQueryKeys.all, id] as const,
 };
 
 export const storefrontVacanciesQueryOptions = () =>
@@ -860,10 +863,26 @@ export const storefrontVacanciesQueryOptions = () =>
       storefrontFetch<StorefrontVacanciesResponse>("/storefront/vacancies"),
   });
 
+export const storefrontVacancyQueryOptions = (id: string) =>
+  queryOptions({
+    queryKey: storefrontVacanciesQueryKeys.detail(id),
+    staleTime: STALE_TIME_MS,
+    queryFn: () =>
+      storefrontFetch<StorefrontVacancy>(`/storefront/vacancies/${encodeURIComponent(id)}`),
+  });
+
 export const getVacancies = async (): Promise<StorefrontVacanciesResponse> => {
   try {
     return await getServerQueryClient().fetchQuery(storefrontVacanciesQueryOptions());
   } catch {
-    return { enabled: true, items: [], total: 0 };
+    return { items: [], total: 0 };
+  }
+};
+
+export const getVacancy = async (id: string): Promise<StorefrontVacancy | null> => {
+  try {
+    return await getServerQueryClient().fetchQuery(storefrontVacancyQueryOptions(id));
+  } catch {
+    return null;
   }
 };
