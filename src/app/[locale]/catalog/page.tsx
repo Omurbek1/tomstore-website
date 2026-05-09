@@ -9,19 +9,11 @@ import { getTranslations } from "next-intl/server";
 
 type CatalogRootPageProps = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{
-    q?: string;
-    category?: string;
-    brand?: string;
-    availability?: string;
-    label?: string;
-    sort?: string;
-    minPrice?: string;
-    maxPrice?: string;
-  }>;
 };
 
 import { SITE_URL } from "@lib/siteUrl";
+
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: CatalogRootPageProps): Promise<Metadata> {
   const { locale } = await params;
@@ -47,41 +39,15 @@ export async function generateMetadata({ params }: CatalogRootPageProps): Promis
   };
 }
 
-const toNumberParam = (value?: string) => {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : undefined;
-};
-
-export default async function CatalogRootPage({ params, searchParams }: CatalogRootPageProps) {
-  const [{ locale }, sp] = await Promise.all([params, searchParams]);
-
-  const filterParams = Object.fromEntries(
-    Object.entries({
-      q: sp.q,
-      category: sp.category,
-      brand: sp.brand,
-      availability: sp.availability,
-      label: sp.label,
-      sort: sp.sort,
-      minPrice: toNumberParam(sp.minPrice),
-      maxPrice: toNumberParam(sp.maxPrice),
-    }).filter(([, v]) => v !== undefined && v !== ""),
-  );
+export default async function CatalogRootPage({ params }: CatalogRootPageProps) {
+  const { locale } = await params;
 
   const [t, catalog] = await Promise.all([
     getTranslations({ locale, namespace: "home" }),
-    getSafeStorefrontCatalog({
-      ...filterParams,
-      pageSize: 48,
-      sort: (filterParams.sort as string) || "popular",
-    }),
+    getSafeStorefrontCatalog({ pageSize: 48, sort: "popular" }),
   ]);
 
-  let displayQuery = locale === "en" ? "Catalog" : "Каталог";
-  if (sp.label === "sale") displayQuery = t("flashDeals");
-  else if (sp.label === "new") displayQuery = t("newArrivals");
-  else if (sp.category) displayQuery = sp.category;
-  else if (sp.q) displayQuery = sp.q;
+  const displayQuery = locale === "en" ? "Catalog" : "Каталог";
   const products = catalog?.items.map(mapStorefrontProduct) || [];
   const homeLabel = locale === "en" ? "Home" : locale === "ky" ? "Башкы бет" : "Главная";
   const catalogLabel = locale === "en" ? "Catalog" : "Каталог";
@@ -98,7 +64,7 @@ export default async function CatalogRootPage({ params, searchParams }: CatalogR
             products={products}
             query={displayQuery}
             searchType="text"
-            catalogParams={filterParams}
+            catalogParams={{}}
             initialFilters={catalog?.filters}
           />
         </Suspense>

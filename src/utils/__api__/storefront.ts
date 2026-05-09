@@ -615,7 +615,7 @@ export const getSearchSuggestions = async (q: string): Promise<SearchSuggestion[
     const url = buildStorefrontUrl(
       `/storefront/search/suggestions?q=${encodeURIComponent(q.trim())}`,
     );
-    const response = await fetch(url, { cache: "no-store" });
+    const response = await fetch(url);
     if (!response.ok) return [];
     return response.json();
   } catch {
