@@ -1,8 +1,46 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 
 import { SITE_URL } from "@lib/siteUrl";
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+
+const SITE_DESCRIPTION =
+  "TomStore — интернет-магазин электроники с доставкой по всему Кыргызстану. Ноутбуки, принтеры, ПК, мониторы, гарантия и рассрочка.";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "TomStore — Электроника с доставкой по Кыргызстану",
+    template: "%s | TomStore",
+  },
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    title: "TomStore — Электроника с доставкой по Кыргызстану",
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: "TomStore",
+    type: "website",
+    images: [
+      {
+        url: `${SITE_URL}/assets/images/logo.svg`,
+        width: 800,
+        height: 600,
+        alt: "TomStore",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TomStore — Электроника с доставкой по Кыргызстану",
+    description: SITE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
+};
 
 const organizationSchema = {
   "@context": "https://schema.org",
