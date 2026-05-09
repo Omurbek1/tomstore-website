@@ -3,11 +3,11 @@
 import { Fragment, startTransition, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Drawer } from "antd";
-import { useTheme } from "styled-components";
-import { IconLayoutGrid, IconList } from "@tabler/icons-react";
+import styled, { useTheme } from "styled-components";
+import { IconLayoutGrid, IconList, IconX } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
 
-import styled from "styled-components";
 import Box from "@component/Box";
 import Card from "@component/Card";
 import Select from "@component/Select";
@@ -16,9 +16,15 @@ import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import { IconButton } from "@component/buttons";
 import { H1, Paragraph } from "@component/Typography";
-import { IconX } from "@tabler/icons-react";
-import ProductGridView from "@component/products/ProductGrid";
-import ProductListView from "@component/products/ProductList";
+
+const ProductGridView = dynamic(() => import("@component/products/ProductGrid"), {
+  ssr: false,
+  loading: () => <ProductViewSkeleton />,
+});
+const ProductListView = dynamic(() => import("@component/products/ProductList"), {
+  ssr: false,
+  loading: () => <ProductViewSkeleton />,
+});
 import ProductFilterCard from "@component/products/ProductFilterCard";
 import useWindowSize from "@hook/useWindowSize";
 import Product from "@models/product.model";
@@ -28,6 +34,37 @@ import type {
   StorefrontCatalogFilters,
   StorefrontCatalogParams,
 } from "@utils/__api__/storefront";
+
+function ProductViewSkeleton() {
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        gap: "1.5rem",
+      }}
+    >
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div
+          key={i}
+          style={{
+            borderRadius: 12,
+            height: 380,
+            background: "var(--sk-color, #e8eaf0)",
+            animation: "pulse 1.4s ease-in-out infinite",
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.45} }
+        [data-theme="dark"] { --sk-color: #192036; }
+        @media(prefers-color-scheme:dark) { :root:not([data-theme="light"]) { --sk-color: #192036; } }
+        @media(max-width:1024px) { .pv-sk-grid { grid-template-columns: repeat(2,1fr) !important; } }
+        @media(max-width:599px)  { .pv-sk-grid { grid-template-columns: 1fr !important; } }
+      `}</style>
+    </div>
+  );
+}
 
 const ActiveChip = styled.button`
   display: inline-flex;
