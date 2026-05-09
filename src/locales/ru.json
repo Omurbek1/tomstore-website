@@ -329,6 +329,10 @@
       "priceRange": "Диапазон цен",
       "brands": "Бренды",
       "ratings": "Рейтинг",
+      "resetAll": "Сбросить всё",
+      "activeFilters": "Активные фильтры",
+      "priceFrom": "от",
+      "priceTo": "до",
       "otherOptions": {
         "onSale": "Со скидкой",
         "inStock": "В наличии",

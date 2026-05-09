@@ -7,6 +7,7 @@ import { useTheme } from "styled-components";
 import { IconLayoutGrid, IconList } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
+import styled from "styled-components";
 import Box from "@component/Box";
 import Card from "@component/Card";
 import Select from "@component/Select";
@@ -15,6 +16,7 @@ import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import { IconButton } from "@component/buttons";
 import { H1, Paragraph } from "@component/Typography";
+import { IconX } from "@tabler/icons-react";
 import ProductGridView from "@component/products/ProductGrid";
 import ProductListView from "@component/products/ProductList";
 import ProductFilterCard from "@component/products/ProductFilterCard";
@@ -26,6 +28,46 @@ import type {
   StorefrontCatalogFilters,
   StorefrontCatalogParams,
 } from "@utils/__api__/storefront";
+
+const ActiveChip = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px 4px 12px;
+  border-radius: 20px;
+  border: 1px solid ${({ theme }) => theme.colors.primary.main};
+  background: ${({ theme }) =>
+    theme.isDark ? "rgba(206,22,46,0.12)" : theme.colors.primary.light};
+  color: ${({ theme }) => theme.colors.primary.main};
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+  &:hover {
+    background: ${({ theme }) =>
+      theme.isDark ? "rgba(206,22,46,0.22)" : "#ffd7dc"};
+  }
+`;
+
+const ResetAllBtn = styled.button`
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid ${({ theme }) => theme.colors.text.hint};
+  background: transparent;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s;
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.primary.main};
+    color: ${({ theme }) => theme.colors.primary.main};
+  }
+`;
 
 const SORT_MAP: Record<string, string> = {
   relevance: "popular",
@@ -234,6 +276,29 @@ export default function SearchResult({
     [updateUrl],
   );
 
+  const handleResetAllFilters = useCallback(
+    () =>
+      updateUrl({
+        filterCategory: undefined,
+        filterBrand: undefined,
+        filterMinPrice: undefined,
+        filterMaxPrice: undefined,
+        filterOnSale: undefined,
+        filterInStock: undefined,
+        filterFeatured: undefined,
+      }),
+    [updateUrl],
+  );
+
+  const hasActiveFilters =
+    !!selectedCategory ||
+    !!selectedBrand ||
+    selectedMinPrice !== undefined ||
+    selectedMaxPrice !== undefined ||
+    selectedOnSale ||
+    selectedInStock ||
+    selectedFeatured;
+
   const filterCardProps = {
     catalogParams: liveCatalogParams,
     selectedCategory,
@@ -250,6 +315,7 @@ export default function SearchResult({
     onOnSaleChange: handleOnSaleChange,
     onInStockChange: handleInStockChange,
     onFeaturedChange: handleFeaturedChange,
+    onResetAll: handleResetAllFilters,
   };
 
   const isTablet = width ? width < 1025 : false;
@@ -266,21 +332,23 @@ export default function SearchResult({
         elevation={5}
         flexWrap="wrap"
         borderRadius={12}
-        alignItems="center"
-        justifyContent="space-between"
+        flexDirection="column"
+        style={{ gap: "0.75rem" }}
       >
-        <div>
-          <H1 fontSize="16px" fontWeight="600" mb="0" mt="0" color="text.primary">
-            {t("searchingFor", { query })}
-          </H1>
-          <Paragraph color="text.muted">
-            {isFetchingFirstPage
-              ? "…"
-              : total !== undefined
-                ? t("resultsFound", { count: total })
-                : t("resultsFound", { count: liveProducts.length })}
-          </Paragraph>
-        </div>
+        {/* Top row: title + sort + view */}
+        <FlexBox flexWrap="wrap" alignItems="center" justifyContent="space-between" style={{ gap: "0.5rem" }}>
+          <div>
+            <H1 fontSize="16px" fontWeight="600" mb="0" mt="0" color="text.primary">
+              {t("searchingFor", { query })}
+            </H1>
+            <Paragraph color="text.muted">
+              {isFetchingFirstPage
+                ? "…"
+                : total !== undefined
+                  ? t("resultsFound", { count: total })
+                  : t("resultsFound", { count: liveProducts.length })}
+            </Paragraph>
+          </div>
 
         <FlexBox alignItems="center" flexWrap="wrap" style={{ gap: "0.5rem" }}>
           <Paragraph color="text.muted">{t("sortBy")}</Paragraph>
@@ -334,6 +402,56 @@ export default function SearchResult({
             </Fragment>
           )}
         </FlexBox>
+        </FlexBox>
+
+        {/* ── Active filter chips ── */}
+        {hasActiveFilters && (
+          <FlexBox flexWrap="wrap" alignItems="center" style={{ gap: "0.5rem" }}>
+            {selectedCategory && (
+              <ActiveChip onClick={() => handleCategoryChange(undefined)}>
+                {selectedCategory}
+                <IconX size={12} strokeWidth={2.5} />
+              </ActiveChip>
+            )}
+            {selectedBrand && (
+              <ActiveChip onClick={() => handleBrandChange(undefined)}>
+                {selectedBrand}
+                <IconX size={12} strokeWidth={2.5} />
+              </ActiveChip>
+            )}
+            {(selectedMinPrice !== undefined || selectedMaxPrice !== undefined) && (
+              <ActiveChip onClick={() => handlePriceChange({})}>
+                {selectedMinPrice !== undefined && selectedMaxPrice !== undefined
+                  ? `${selectedMinPrice} — ${selectedMaxPrice}`
+                  : selectedMinPrice !== undefined
+                    ? `${filtersT("priceFrom")} ${selectedMinPrice}`
+                    : `${filtersT("priceTo")} ${selectedMaxPrice}`}
+                <IconX size={12} strokeWidth={2.5} />
+              </ActiveChip>
+            )}
+            {selectedOnSale && (
+              <ActiveChip onClick={() => handleOnSaleChange(false)}>
+                {filtersT("otherOptions.onSale")}
+                <IconX size={12} strokeWidth={2.5} />
+              </ActiveChip>
+            )}
+            {selectedInStock && (
+              <ActiveChip onClick={() => handleInStockChange(false)}>
+                {filtersT("otherOptions.inStock")}
+                <IconX size={12} strokeWidth={2.5} />
+              </ActiveChip>
+            )}
+            {selectedFeatured && (
+              <ActiveChip onClick={() => handleFeaturedChange(false)}>
+                {filtersT("otherOptions.featured")}
+                <IconX size={12} strokeWidth={2.5} />
+              </ActiveChip>
+            )}
+            <ResetAllBtn onClick={handleResetAllFilters}>
+              {filtersT("resetAll")}
+            </ResetAllBtn>
+          </FlexBox>
+        )}
       </FlexBox>
 
       {/* ── Content ── */}

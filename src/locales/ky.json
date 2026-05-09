@@ -329,6 +329,10 @@
       "priceRange": "Баа диапазону",
       "brands": "Брендтер",
       "ratings": "Рейтинг",
+      "resetAll": "Баарын тазалоо",
+      "activeFilters": "Активдүү чыпкалар",
+      "priceFrom": "ден",
+      "priceTo": "го чейин",
       "otherOptions": {
         "onSale": "Арзандатуулар",
         "inStock": "Сатыкта бар",

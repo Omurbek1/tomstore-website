@@ -33,6 +33,7 @@ type ProductFilterCardProps = {
   onOnSaleChange?: (checked: boolean) => void;
   onInStockChange?: (checked: boolean) => void;
   onFeaturedChange?: (checked: boolean) => void;
+  onResetAll?: () => void;
 };
 
 export default function ProductFilterCard({
@@ -51,8 +52,18 @@ export default function ProductFilterCard({
   onOnSaleChange,
   onInStockChange,
   onFeaturedChange,
+  onResetAll,
 }: ProductFilterCardProps) {
   const t = useTranslations("product.filters");
+
+  const hasActiveFilters =
+    !!selectedCategory ||
+    !!selectedBrand ||
+    selectedMinPrice !== undefined ||
+    selectedMaxPrice !== undefined ||
+    !!selectedOnSale ||
+    !!selectedInStock ||
+    !!selectedFeatured;
 
   // Fetch filter options WITHOUT the selected category so the full categories list
   // is always visible regardless of what's currently selected. Brands ARE filtered
@@ -127,6 +138,29 @@ export default function ProductFilterCard({
 
   return (
     <Card p="18px 27px" elevation={5} borderRadius={12}>
+      {/* ── Header: title + reset button ── */}
+      <FlexBox alignItems="center" justifyContent="space-between" mb="16px">
+        <H5 color="text.primary" fontWeight="700">{t("title")}</H5>
+        {hasActiveFilters && onResetAll && (
+          <button
+            onClick={onResetAll}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "12px",
+              fontWeight: 600,
+              color: "var(--reset-btn-color, #CE162E)",
+              padding: "2px 0",
+              textDecoration: "underline",
+              textUnderlineOffset: "2px",
+            }}
+          >
+            {t("resetAll")}
+          </button>
+        )}
+      </FlexBox>
+
       {/* ── Categories ── */}
       <H6 mb="10px" color="text.primary">{t("categories")}</H6>
 
