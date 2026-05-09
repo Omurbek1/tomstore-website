@@ -1,6 +1,6 @@
 "use client";
 
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Link } from "@i18n/navigation";
 import AppLayout from "@component/layout/layout-3";
 import Box from "@component/Box";
@@ -10,102 +10,203 @@ import type { StorefrontVacancy } from "@utils/__api__/storefront";
 
 const CRM_URL = process.env.NEXT_PUBLIC_CRM_URL || "";
 
-// ── Styled ────────────────────────────────────────────────────────────────────
+// ── Animations ────────────────────────────────────────────────────────────────
+
+const fadeUp = keyframes`
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+`;
+
+// ── Banner ────────────────────────────────────────────────────────────────────
 
 const Banner = styled.div<{ $img?: string | null }>`
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  min-height: 200px;
+  min-height: 240px;
   display: flex;
-  align-items: flex-end;
-  padding: 2rem;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem 2.25rem;
   margin-bottom: 2rem;
+  position: relative;
   background: ${({ $img }) =>
     $img
-      ? `linear-gradient(0deg, rgba(15,23,42,0.7), rgba(15,23,42,0.35)), url(${$img}) center/cover`
-      : "linear-gradient(135deg, #0f3460 0%, #16213e 100%)"};
+      ? `url(${$img}) center/cover no-repeat`
+      : "linear-gradient(135deg, #0f3460 0%, #1a1a5e 50%, #16213e 100%)"};
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: ${({ $img }) =>
+      $img
+        ? "linear-gradient(0deg, rgba(10,15,35,0.82) 0%, rgba(10,15,35,0.4) 60%, transparent 100%)"
+        : "linear-gradient(135deg, rgba(99,102,241,0.18) 0%, transparent 60%)"};
+    border-radius: inherit;
+  }
+`;
+
+const BannerContent = styled.div`
+  position: relative;
+  z-index: 1;
 `;
 
 const BannerTitle = styled.h1`
-  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
   font-weight: 800;
   color: #fff;
-  margin: 0 0 0.5rem;
-  line-height: 1.25;
+  margin: 0 0 0.75rem;
+  line-height: 1.2;
 `;
 
 const TagRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 0.5rem;
 `;
 
-const Tag = styled.span<{ $light?: boolean }>`
-  font-size: 12px;
+const BannerTag = styled.span<{ $variant?: "salary" | "format" | "branch" }>`
+  font-size: 13px;
   font-weight: 600;
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: 20px;
-  background: ${({ $light }) => ($light ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.1)")};
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: ${({ $variant }) => {
+    if ($variant === "salary") return "rgba(34, 197, 94, 0.25)";
+    if ($variant === "format") return "rgba(99, 102, 241, 0.3)";
+    return "rgba(255, 255, 255, 0.15)";
+  }};
   color: #fff;
-  backdrop-filter: blur(4px);
 `;
+
+// ── Layout ────────────────────────────────────────────────────────────────────
 
 const Layout2Col = styled.div`
   display: grid;
   grid-template-columns: 1fr 340px;
   gap: 1.5rem;
   align-items: start;
+  animation: ${fadeUp} 0.35s ease;
 
   @media (max-width: 860px) {
     grid-template-columns: 1fr;
   }
 `;
 
+const LeftColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+`;
+
+const StickyRight = styled.div`
+  position: sticky;
+  top: 80px;
+
+  @media (max-width: 860px) {
+    position: static;
+    order: -1;
+  }
+`;
+
+// ── Cards ─────────────────────────────────────────────────────────────────────
+
 const Card = styled.div`
   background: #fff;
   border-radius: 16px;
   padding: 1.75rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
+  border: 1.5px solid #f1f5f9;
 `;
 
 const SectionTitle = styled.h2`
   font-size: 1rem;
   font-weight: 700;
-  color: ${({ theme }) => theme.colors.text.primary};
-  margin: 0 0 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #eee;
+  color: #1f2937;
+  margin: 0 0 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const SectionIcon = styled.span`
+  font-size: 1.1rem;
 `;
 
 const Description = styled.div`
   font-size: 14px;
-  line-height: 1.75;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  line-height: 1.85;
+  color: #4b5563;
   white-space: pre-line;
 `;
 
+// ── Requirements ──────────────────────────────────────────────────────────────
+
 const RequirementList = styled.ul`
   margin: 0;
-  padding-left: 1.25rem;
+  padding: 0;
+  list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.6rem;
 `;
 
 const RequirementItem = styled.li`
   font-size: 14px;
-  color: ${({ theme }) => theme.colors.text.secondary};
-  line-height: 1.5;
+  color: #4b5563;
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+
+  &::before {
+    content: "";
+    display: block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.colors.primary.main};
+    margin-top: 0.45rem;
+    flex-shrink: 0;
+  }
 `;
+
+// ── Info Sidebar ──────────────────────────────────────────────────────────────
 
 const InfoGrid = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0;
 `;
 
 const InfoRow = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid #f1f5f9;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+`;
+
+const InfoRowIcon = styled.div`
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: ${({ theme }) => theme.colors.primary.main}12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+`;
+
+const InfoTexts = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -115,46 +216,95 @@ const InfoLabel = styled.span`
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: ${({ theme }) => theme.colors.text.disabled};
+  letter-spacing: 0.07em;
+  color: #9ca3af;
 `;
 
 const InfoValue = styled.span`
   font-size: 14px;
   font-weight: 500;
-  color: ${({ theme }) => theme.colors.text.primary};
+  color: #1f2937;
+`;
+
+// ── Apply CTA ─────────────────────────────────────────────────────────────────
+
+const ApplyCTA = styled.div`
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1.5px solid #f1f5f9;
 `;
 
 const ApplyButton = styled.a`
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   background: ${({ theme }) => theme.colors.primary.main};
   color: #fff;
   font-weight: 700;
   font-size: 15px;
-  padding: 0.85rem 1.5rem;
+  padding: 0.95rem 1.5rem;
   border-radius: 12px;
   text-decoration: none;
   text-align: center;
-  transition: opacity 0.15s ease;
-  margin-top: 1.25rem;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  cursor: pointer;
 
   &:hover {
-    opacity: 0.88;
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
+const NoFormNote = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 1rem;
+  background: #fefce8;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #92400e;
+  line-height: 1.5;
+`;
+
+// ── Back Link ─────────────────────────────────────────────────────────────────
+
 const BackLink = styled(Link)`
   font-size: 14px;
-  color: ${({ theme }) => theme.colors.primary.main};
+  font-weight: 500;
+  color: #6b7280;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
   margin-bottom: 1.25rem;
+  transition: color 0.15s ease;
 
   &:hover {
-    text-decoration: underline;
+    color: ${({ theme }) => theme.colors.primary.main};
   }
+`;
+
+// ── Headcount Badge ───────────────────────────────────────────────────────────
+
+const HeadcountBadge = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 12px;
+  font-weight: 600;
+  color: #16a34a;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 4px 10px;
+  margin-top: 0.75rem;
 `;
 
 // ── Page ──────────────────────────────────────────────────────────────────────
@@ -171,24 +321,27 @@ export default function VacancyDetailClient({ locale, vacancy: initialVacancy }:
   const isKy = locale === "ky";
 
   const t = {
-    home: isEn ? "Home" : isKy ? "Башкы бет" : "Главная",
-    vacancies: isEn ? "Vacancies" : isKy ? "Вакансиялар" : "Вакансии",
-    back: isEn ? "← All vacancies" : isKy ? "← Бардык вакансиялар" : "← Все вакансии",
-    descTitle: isEn ? "About the position" : isKy ? "Кызмат жөнүндө" : "О должности",
-    reqTitle: isEn ? "Requirements" : isKy ? "Талаптар" : "Требования",
-    salary: isEn ? "Salary" : isKy ? "Эмгек акы" : "Зарплата",
-    format: isEn ? "Work format" : isKy ? "Иш форматы" : "Формат работы",
-    schedule: isEn ? "Schedule" : isKy ? "Иш графиги" : "График",
-    address: isEn ? "Address" : isKy ? "Дарек" : "Адрес",
-    branch: isEn ? "Branch" : isKy ? "Филиал" : "Филиал",
-    role: isEn ? "Role" : isKy ? "Роль" : "Роль",
-    headcount: isEn ? "Open positions" : isKy ? "Ачык орундар" : "Открытых мест",
-    apply: isEn ? "Apply Now" : isKy ? "Арыз берүү" : "Откликнуться",
-    noForm: isEn
-      ? "Application form is not yet set up. Contact us via WhatsApp."
+    home:       isEn ? "Home"      : isKy ? "Башкы бет"   : "Главная",
+    vacancies:  isEn ? "Vacancies" : isKy ? "Вакансиялар" : "Вакансии",
+    back:       isEn ? "All vacancies" : isKy ? "Бардык вакансиялар" : "Все вакансии",
+    about:      isEn ? "About the position" : isKy ? "Кызмат жөнүндө" : "О должности",
+    req:        isEn ? "Requirements" : isKy ? "Талаптар" : "Требования",
+    details:    isEn ? "Details" : isKy ? "Чоо-жайы" : "Детали",
+    salary:     isEn ? "Salary"       : isKy ? "Эмгек акы"   : "Зарплата",
+    format:     isEn ? "Work format"  : isKy ? "Иш форматы"  : "Формат работы",
+    schedule:   isEn ? "Schedule"     : isKy ? "Иш графиги"  : "График",
+    address:    isEn ? "Address"      : isKy ? "Дарек"       : "Адрес",
+    branch:     isEn ? "Branch"       : isKy ? "Филиал"      : "Филиал",
+    role:       isEn ? "Role"         : isKy ? "Роль"        : "Роль",
+    headcount:  isEn ? "Open positions" : isKy ? "Ачык орундар" : "Открытых мест",
+    apply:      isEn ? "Apply Now"    : isKy ? "Арыз берүү" : "Откликнуться",
+    applyArrow: isEn ? "→" : "→",
+    noForm:     isEn
+      ? "The application form is not set up yet. Contact us via WhatsApp to apply."
       : isKy
       ? "Арыз формасы азыр жок. WhatsApp аркылуу байланышыңыз."
-      : "Форма заявки не настроена. Свяжитесь с нами через WhatsApp.",
+      : "Форма заявки не настроена. Свяжитесь с нами через WhatsApp для отклика.",
+    spots:      isEn ? "spots available" : isKy ? "орун бар" : "места доступны",
   };
 
   const requirements = String(vacancy.requirements ?? "")
@@ -199,6 +352,15 @@ export default function VacancyDetailClient({ locale, vacancy: initialVacancy }:
   const applyUrl = vacancy.formSlug && CRM_URL
     ? `${CRM_URL}/hr/form/${vacancy.formSlug}`
     : null;
+
+  const infoRows: Array<{ icon: string; label: string; value: string }> = [
+    vacancy.salaryText   ? { icon: "💰", label: t.salary,   value: vacancy.salaryText }   : null,
+    vacancy.workFormat   ? { icon: "🏠", label: t.format,   value: vacancy.workFormat }   : null,
+    vacancy.workSchedule ? { icon: "🕐", label: t.schedule, value: vacancy.workSchedule } : null,
+    vacancy.workAddress  ? { icon: "📍", label: t.address,  value: vacancy.workAddress }  : null,
+    vacancy.branchName   ? { icon: "🏪", label: t.branch,   value: vacancy.branchName }   : null,
+    vacancy.role         ? { icon: "👤", label: t.role,     value: vacancy.role }         : null,
+  ].filter(Boolean) as Array<{ icon: string; label: string; value: string }>;
 
   return (
     <AppLayout>
@@ -212,31 +374,51 @@ export default function VacancyDetailClient({ locale, vacancy: initialVacancy }:
           locale={locale}
         />
 
+        <BackLink href="/vacancies">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M12 5l-7 7 7 7" />
+          </svg>
+          {t.back}
+        </BackLink>
+
+        {/* Banner */}
         <Banner $img={vacancy.bannerImageUrl}>
-          <div>
+          <BannerContent>
             <BannerTitle>{vacancy.title}</BannerTitle>
             <TagRow>
-              {vacancy.role && <Tag>{vacancy.role}</Tag>}
-              {vacancy.branchName && <Tag>{vacancy.branchName}</Tag>}
-              {vacancy.workFormat && <Tag $light>{vacancy.workFormat}</Tag>}
-              {vacancy.salaryText && <Tag $light>{vacancy.salaryText}</Tag>}
+              {vacancy.workFormat && <BannerTag $variant="format">{vacancy.workFormat}</BannerTag>}
+              {vacancy.salaryText && <BannerTag $variant="salary">{vacancy.salaryText}</BannerTag>}
+              {vacancy.branchName && <BannerTag $variant="branch">{vacancy.branchName}</BannerTag>}
+              {vacancy.role       && <BannerTag>{vacancy.role}</BannerTag>}
             </TagRow>
-          </div>
+            {vacancy.headcount && vacancy.headcount > 0 && (
+              <HeadcountBadge>
+                <span>✓</span>
+                {vacancy.headcount} {t.spots}
+              </HeadcountBadge>
+            )}
+          </BannerContent>
         </Banner>
 
         <Layout2Col>
           {/* Left: description + requirements */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+          <LeftColumn>
             {vacancy.description && (
               <Card>
-                <SectionTitle>{t.descTitle}</SectionTitle>
+                <SectionTitle>
+                  <SectionIcon>📝</SectionIcon>
+                  {t.about}
+                </SectionTitle>
                 <Description>{vacancy.description}</Description>
               </Card>
             )}
 
             {requirements.length > 0 && (
               <Card>
-                <SectionTitle>{t.reqTitle}</SectionTitle>
+                <SectionTitle>
+                  <SectionIcon>✅</SectionIcon>
+                  {t.req}
+                </SectionTitle>
                 <RequirementList>
                   {requirements.map((req, i) => (
                     <RequirementItem key={i}>{req}</RequirementItem>
@@ -244,67 +426,44 @@ export default function VacancyDetailClient({ locale, vacancy: initialVacancy }:
                 </RequirementList>
               </Card>
             )}
-          </div>
+          </LeftColumn>
 
           {/* Right: info + apply */}
-          <Card>
-            <SectionTitle style={{ borderBottomColor: "#e8e8e8" }}>
-              {isEn ? "Details" : isKy ? "Чоо-жайы" : "Детали"}
-            </SectionTitle>
+          <StickyRight>
+            <Card>
+              <SectionTitle>
+                <SectionIcon>📋</SectionIcon>
+                {t.details}
+              </SectionTitle>
 
-            <InfoGrid>
-              {vacancy.salaryText && (
-                <InfoRow>
-                  <InfoLabel>{t.salary}</InfoLabel>
-                  <InfoValue>{vacancy.salaryText}</InfoValue>
-                </InfoRow>
+              {infoRows.length > 0 && (
+                <InfoGrid>
+                  {infoRows.map(({ icon, label, value }) => (
+                    <InfoRow key={label}>
+                      <InfoRowIcon>{icon}</InfoRowIcon>
+                      <InfoTexts>
+                        <InfoLabel>{label}</InfoLabel>
+                        <InfoValue>{value}</InfoValue>
+                      </InfoTexts>
+                    </InfoRow>
+                  ))}
+                </InfoGrid>
               )}
-              {vacancy.workFormat && (
-                <InfoRow>
-                  <InfoLabel>{t.format}</InfoLabel>
-                  <InfoValue>{vacancy.workFormat}</InfoValue>
-                </InfoRow>
-              )}
-              {vacancy.workSchedule && (
-                <InfoRow>
-                  <InfoLabel>{t.schedule}</InfoLabel>
-                  <InfoValue>{vacancy.workSchedule}</InfoValue>
-                </InfoRow>
-              )}
-              {vacancy.workAddress && (
-                <InfoRow>
-                  <InfoLabel>{t.address}</InfoLabel>
-                  <InfoValue>{vacancy.workAddress}</InfoValue>
-                </InfoRow>
-              )}
-              {vacancy.branchName && (
-                <InfoRow>
-                  <InfoLabel>{t.branch}</InfoLabel>
-                  <InfoValue>{vacancy.branchName}</InfoValue>
-                </InfoRow>
-              )}
-              {vacancy.role && (
-                <InfoRow>
-                  <InfoLabel>{t.role}</InfoLabel>
-                  <InfoValue>{vacancy.role}</InfoValue>
-                </InfoRow>
-              )}
-              {vacancy.headcount && vacancy.headcount > 1 && (
-                <InfoRow>
-                  <InfoLabel>{t.headcount}</InfoLabel>
-                  <InfoValue>{vacancy.headcount}</InfoValue>
-                </InfoRow>
-              )}
-            </InfoGrid>
 
-            {applyUrl ? (
-              <ApplyButton href={applyUrl} target="_blank" rel="noopener noreferrer">
-                {t.apply}
-              </ApplyButton>
-            ) : (
-              <p style={{ fontSize: 13, color: "#7d879c", marginTop: "1rem" }}>{t.noForm}</p>
-            )}
-          </Card>
+              <ApplyCTA>
+                {applyUrl ? (
+                  <ApplyButton href={applyUrl} target="_blank" rel="noopener noreferrer">
+                    {t.apply} {t.applyArrow}
+                  </ApplyButton>
+                ) : (
+                  <NoFormNote>
+                    <span style={{ fontSize: "1.1rem", flexShrink: 0 }}>⚠️</span>
+                    <span>{t.noForm}</span>
+                  </NoFormNote>
+                )}
+              </ApplyCTA>
+            </Card>
+          </StickyRight>
         </Layout2Col>
       </Box>
     </AppLayout>
