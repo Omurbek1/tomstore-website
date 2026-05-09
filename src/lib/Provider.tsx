@@ -70,6 +70,12 @@ const Provider: FC<PropsWithChildren> = ({ children }) => {
           Card:   { borderRadiusLG: 16 },
           Input:  { borderRadius: 10 },
           Select: { borderRadius: 10 },
+          Tabs: {
+            itemColor: isDark ? "#a8b4d0" : "#4B566B",
+            itemHoverColor: isDark ? "#e0e6f5" : "#2B3445",
+            itemSelectedColor: isDark ? "#ff6b83" : "#C81E3A",
+            inkBarColor: isDark ? "#ff6b83" : "#C81E3A",
+          },
         },
       }}
     >

@@ -9,7 +9,7 @@ import Box from "@component/Box";
 import FlexBox from "@component/FlexBox";
 import NextImage from "@component/NextImage";
 import { Button } from "@component/buttons";
-import Typography, { H3, H6, SemiSpan } from "@component/Typography";
+import Typography, { H3, SemiSpan } from "@component/Typography";
 import { useChangeCartAmount } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
 import Product from "@models/product.model";
@@ -317,7 +317,9 @@ export default function FrequentlyBought({ baseProduct, products }: Props) {
                 <ProductTitle title={item.title}>{item.title}</ProductTitle>
 
                 <FlexBox alignItems="baseline" flexWrap="wrap" mt="8px" style={{ gap: 6 }}>
-                  <H6 color="success.main">{formatCurrency(item.effectivePrice)}</H6>
+                  <SemiSpan color="success.main" fontWeight="600">
+                    {formatCurrency(item.effectivePrice)}
+                  </SemiSpan>
                   {item.savings > 0 ? (
                     <SemiSpan color="text.muted">
                       <del>{formatCurrency(item.compareAtPrice)}</del>

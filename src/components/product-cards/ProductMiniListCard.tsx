@@ -5,7 +5,7 @@ import Box from "@component/Box";
 import Rating from "@component/rating";
 import FlexBox from "@component/FlexBox";
 import NextImage from "@component/NextImage";
-import { H6, SemiSpan, Small } from "@component/Typography";
+import { SemiSpan, Small } from "@component/Typography";
 import { calculateDiscount, currency } from "@utils/utils";
 import { useLocale } from "next-intl";
 
@@ -61,9 +61,16 @@ export default function ProductMiniListCard(props: ProductMiniListCardProps) {
           <Rating value={rating} outof={5} color="warn" readOnly />
         </Box>
 
-        <H6 className="ellipsis" mb="6px" title={title}>
+        <SemiSpan
+          className="ellipsis"
+          mb="6px"
+          title={title}
+          color="text.primary"
+          display="block"
+          fontWeight="600"
+        >
           {title}
-        </H6>
+        </SemiSpan>
 
         <FlexBox alignItems="center">
           <SemiSpan pr="0.3rem" fontWeight="600" color="primary.main" lineHeight="1">

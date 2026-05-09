@@ -4,7 +4,7 @@ import Card from "@component/Card";
 import FlexBox from "@component/FlexBox";
 import HoverBox from "@component/HoverBox";
 import NextImage from "@component/NextImage";
-import { H6, SemiSpan } from "@component/Typography";
+import { SemiSpan } from "@component/Typography";
 import { calculateDiscount, currency } from "@utils/utils";
 import { useLocale } from "next-intl";
 
@@ -48,9 +48,9 @@ export default function CompactSaleProductCard({
         </SemiSpan>
 
         <FlexBox alignItems="center">
-          <H6 color="primary.main" mr="0.25rem">
+          <SemiSpan color="primary.main" mr="0.25rem" fontWeight="600">
             {calculateDiscount(price, off)}
-          </H6>
+          </SemiSpan>
 
           <SemiSpan>
             <del>{currency(price)}</del>

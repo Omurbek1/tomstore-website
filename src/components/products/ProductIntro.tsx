@@ -13,7 +13,7 @@ import Avatar from "@component/avatar";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
-import { H1, H2, H3, H6, SemiSpan } from "@component/Typography";
+import { H1, H2, H3, SemiSpan } from "@component/Typography";
 import { useCartItemByIdOrSlug, useChangeCartAmount } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
 import { buildProductWhatsAppOrderUrl } from "@utils/whatsappOrder";
@@ -412,7 +412,9 @@ export default function ProductIntro({
 
           <FlexBox alignItems="center" mb="1rem">
             <SemiSpan>{t("brand")}:</SemiSpan>
-            <H6 ml="8px" color="text.primary">{brand || "TOMSTORE"}</H6>
+            <SemiSpan ml="8px" color="text.primary" fontWeight="600">
+              {brand || "TOMSTORE"}
+            </SemiSpan>
           </FlexBox>
 
           <FlexBox alignItems="center" mb="1rem">
@@ -420,7 +422,7 @@ export default function ProductIntro({
             <Box ml="8px" mr="8px">
               <Rating color="warn" value={4} outof={5} />
             </Box>
-            <H6 color="text.primary">(50)</H6>
+            <SemiSpan color="text.primary" fontWeight="600">(50)</SemiSpan>
           </FlexBox>
 
           <Box mb="24px">

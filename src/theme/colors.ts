@@ -139,8 +139,8 @@ export const darkColors: typeof colors = {
   text: {
     primary:   "#e0e6f5",
     secondary: "#8896be",
-    hint:      "#5a6a90",
-    muted:     "#5a6a90",
+    hint:      "#a8b4d0",
+    muted:     "#a8b4d0",
     disabled:  "#222a42",
   },
   body: {
