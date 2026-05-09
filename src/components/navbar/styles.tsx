@@ -9,6 +9,7 @@ const StyledNavbar = styled.div`
   .nav-link {
     font-size: 14px;
     cursor: pointer;
+    color: ${({ theme }) => theme.colors.text.primary};
     &:hover {
       color: ${({ theme }) => theme.colors.primary.main};
     }
@@ -42,7 +43,7 @@ const StyledNavbar = styled.div`
   }
 
   .dropdown-icon {
-    color: ${({ theme }) => theme.colors.text.muted};
+    color: ${({ theme }) => theme.colors.text.secondary};
   }
   @media only screen and (max-width: 900px) {
     display: none;

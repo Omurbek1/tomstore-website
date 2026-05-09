@@ -138,7 +138,7 @@ export default function Navbar({ navListOpen }: NavbarProps) {
                 flex="1 1 0"
                 fontWeight="600"
                 textAlign="left"
-                color="text.muted">
+                color="text.primary">
                 {t("nav.categories")}
               </Typography>
 

@@ -30,7 +30,7 @@ export const MobileCategoryNavStyle = styled.div`
       cursor: pointer;
       border-left: 3px solid transparent;
       transition: border-left 300ms ease-out;
-      background: white;
+      background: ${({ theme }) => theme.colors.body.paper};
     }
     .active {
       background: ${({ theme }) => theme.colors.gray[100]};

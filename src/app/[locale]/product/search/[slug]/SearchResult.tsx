@@ -249,7 +249,7 @@ export default function SearchResult({
         justifyContent="space-between"
       >
         <div>
-          <H1 fontSize="16px" fontWeight="600" mb="0" mt="0">{t("searchingFor", { query })}</H1>
+          <H1 fontSize="16px" fontWeight="600" mb="0" mt="0" color="text.primary">{t("searchingFor", { query })}</H1>
           <Paragraph color="text.muted">
             {isFetching
               ? "…"

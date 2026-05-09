@@ -83,7 +83,7 @@ const ImageWrap = styled.div<{ $compact: boolean }>`
 
 const Title = styled.h3`
   margin: 0 0 0.5rem;
-  color: ${({ theme }) => theme?.colors?.text?.secondary || "#373F50"};
+  color: ${({ theme }) => theme.colors.text.primary};
   display: -webkit-box;
   overflow: hidden;
   font-size: 14px;

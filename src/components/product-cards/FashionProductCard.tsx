@@ -47,7 +47,7 @@ const ItemController = styled("div")(({ theme }) => ({
   bottom: -120,
   display: "flex",
   overflow: "hidden",
-  background: "#fff",
+  background: theme.colors.body.paper,
   position: "absolute",
   flexDirection: "column",
   transition: "bottom 0.3s ease-in-out",
@@ -194,7 +194,7 @@ export default function FashionProductCard({
             fontWeight="600"
             className="title"
             textAlign="center"
-            color="text.secondary">
+            color="text.primary">
             {title}
           </H3>
         </Link>

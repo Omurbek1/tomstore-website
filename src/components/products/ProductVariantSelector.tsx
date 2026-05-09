@@ -300,7 +300,7 @@ const VariantCard = styled.button<{ $selected: boolean }>`
   padding: 14px;
   border: 2px solid ${({ $selected, theme }) => ($selected ? RED : theme.colors.gray[300])};
   border-radius: 16px;
-  background: ${({ $selected }) => ($selected ? RED_LIGHT : "#fff")};
+  background: ${({ $selected, theme }) => ($selected ? RED_LIGHT : theme.colors.body.paper)};
   box-shadow: ${({ theme }) => theme.shadows.small};
   color: inherit;
   cursor: pointer;
@@ -347,7 +347,7 @@ const Chip = styled.button<{ $selected: boolean; $unavailable?: boolean }>`
           : theme.colors.gray[300]};
   border-radius: 12px;
   background: ${({ $selected, $unavailable, theme }) =>
-    $unavailable ? theme.colors.gray[100] : $selected ? RED : "#fff"};
+    $unavailable ? theme.colors.gray[100] : $selected ? RED : theme.colors.body.paper};
   color: ${({ $selected, $unavailable, theme }) =>
     $unavailable
       ? theme.colors.text.disabled

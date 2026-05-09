@@ -28,7 +28,7 @@ export default function CategorySectionHeader({ title, iconName, seeMoreLink }: 
           </Icon>
         )}
 
-        <H2 fontWeight="bold" lineHeight="1">
+        <H2 fontWeight="bold" lineHeight="1" color="text.primary">
           {title}
         </H2>
       </FlexBox>

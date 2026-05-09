@@ -51,6 +51,7 @@ export const StyledCategoryMenuItem = styled.div`
     padding: 0px 1rem;
     align-items: center;
     transition: all 250ms ease-in-out;
+    color: ${({ theme }) => theme.colors.text.primary};
 
     .title {
       padding-left: 0.75rem;

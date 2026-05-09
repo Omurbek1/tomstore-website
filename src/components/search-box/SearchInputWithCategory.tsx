@@ -193,7 +193,7 @@ export default function SearchInputWithCategory() {
                 <Link href={`/product/${item.slug}`} key={item.id}>
                   <MenuItem>
                     <FlexBox flexDirection="column" py="2px">
-                      <Span fontSize="14px" fontWeight={500}>
+                      <Span fontSize="14px" fontWeight={500} color="text.primary">
                         {item.name}
                       </Span>
                       {(item.matchedAttribute || item.category) && (

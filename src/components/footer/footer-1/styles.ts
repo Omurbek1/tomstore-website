@@ -10,8 +10,9 @@ export const StyledLink = styled(Link)`
   cursor: pointer;
   border-radius: 4px;
   padding: 0.3rem 0rem;
-  color: ${({ theme }) => theme.colors.gray[500]};
+  color: rgba(255, 255, 255, 0.65);
+  transition: color 0.15s ease;
   &:hover {
-    color: ${({ theme }) => theme.colors.gray[100]};
+    color: #fff;
   }
 `;

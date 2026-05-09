@@ -1,5 +1,6 @@
 "use client";
 
+import { useTheme } from "styled-components";
 import Box from "@component/Box";
 import FlexBox from "@component/FlexBox";
 import Typography, { H3, H4, SemiSpan } from "@component/Typography";
@@ -84,6 +85,7 @@ function parseDescription(description: string): Section[] {
 }
 
 export default function ProductVariantDetails({ variant }: Props) {
+  const theme = useTheme();
   const description = String(variant.description || "").trim();
   const sections = description ? parseDescription(description) : [];
 
@@ -97,12 +99,16 @@ export default function ProductVariantDetails({ variant }: Props) {
         borderRadius="16px"
         display="inline-flex"
         flexDirection="column"
-        style={{ background: "#F5F3FF", border: "1px solid #DDD6FE", gap: 4 }}
+        style={{
+          background: theme.colors.primary.light,
+          border: `1px solid ${theme.colors.primary.main}`,
+          gap: 4,
+        }}
       >
-        <SemiSpan style={{ fontSize: 11, fontWeight: 700, color: "#7C3AED", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+        <SemiSpan style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }} color="primary.main">
           Выбранная конфигурация
         </SemiSpan>
-        <H3 style={{ color: "#4C1D95", fontSize: 18, margin: 0 }}>
+        <H3 style={{ fontSize: 18, margin: 0 }} color="text.primary">
           {variant.title}
         </H3>
       </Box>
@@ -112,12 +118,13 @@ export default function ProductVariantDetails({ variant }: Props) {
       ) : (
         <Box display="flex" flexDirection="column" style={{ gap: 20 }}>
           {sections.map((section, si) => (
-            <Box key={si} bg="white" borderRadius="12px" shadow={1} p="1.5rem">
+            <Box key={si} bg="body.paper" borderRadius="12px" shadow={1} p="1.5rem">
               {section.title && (
                 <H4
                   mb="1rem"
                   fontSize="13px"
-                  style={{ color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.07em" }}
+                  color="text.primary"
+                  style={{ textTransform: "uppercase", letterSpacing: "0.07em" }}
                 >
                   {section.title}
                 </H4>
@@ -143,11 +150,12 @@ export default function ProductVariantDetails({ variant }: Props) {
                         mb="0.35rem"
                         fontSize="11px"
                         fontWeight={700}
-                        style={{ letterSpacing: "0.06em", textTransform: "uppercase", color: "#9CA3AF" }}
+                        color="text.hint"
+                        style={{ letterSpacing: "0.06em", textTransform: "uppercase" }}
                       >
                         {item.label}
                       </SemiSpan>
-                      <Typography fontWeight={600} color="text.secondary" lineHeight="1.5">
+                      <Typography fontWeight={600} color="text.primary" lineHeight="1.5">
                         {item.value}
                       </Typography>
                     </Box>
@@ -167,8 +175,12 @@ export default function ProductVariantDetails({ variant }: Props) {
                         justifyContent="center"
                         borderRadius="999px"
                         style={{
-                          background: section.icon === "check" ? "#DCFCE7" : "#DBEAFE",
-                          color: section.icon === "check" ? "#16A34A" : "#2563EB",
+                          background: section.icon === "check"
+                            ? theme.colors.success.light
+                            : "rgba(78, 151, 253, 0.15)",
+                          color: section.icon === "check"
+                            ? theme.colors.success.main
+                            : theme.colors.blue.main,
                           fontSize: 13,
                           fontWeight: 700,
                           marginTop: 1,
@@ -176,7 +188,7 @@ export default function ProductVariantDetails({ variant }: Props) {
                       >
                         {section.icon === "check" ? "✓" : "•"}
                       </FlexBox>
-                      <Typography color="text.secondary" lineHeight="1.6" style={{ fontSize: 14 }}>
+                      <Typography color="text.primary" lineHeight="1.6" style={{ fontSize: 14 }}>
                         {text}
                       </Typography>
                     </FlexBox>

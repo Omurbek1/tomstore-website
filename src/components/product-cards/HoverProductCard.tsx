@@ -67,16 +67,16 @@ const HoverButtonBox = styled("div")({
   }
 });
 
-const ImageBox = styled("div")({
+const ImageBox = styled("div")(({ theme }) => ({
   opacity: 1,
   padding: "44px 40px",
-  background: "#F5F5F5",
-  transition: "all .3s ease"
-});
+  background: theme.colors.gray[200],
+  transition: "all .3s ease",
+}));
 
 const ItemController = styled("div")(({ theme }) => ({
   display: "flex",
-  background: "#fff",
+  background: theme.colors.body.paper,
   overflow: "hidden",
   borderRadius: "5px",
   boxShadow: theme.shadows[2],
@@ -86,9 +86,9 @@ const ItemController = styled("div")(({ theme }) => ({
     display: "flex",
     padding: "6px 12px",
     alignItems: "center",
-    "&:hover": { cursor: "pointer", background: "#f3f5f9" }
+    "&:hover": { cursor: "pointer", background: theme.colors.gray[200] },
   },
-  "& svg": { fontSize: 22, color: theme.colors.gray[600] }
+  "& svg": { fontSize: 22, color: theme.colors.gray[600] },
 }));
 
 const ContentWrapper = styled("div")({
@@ -215,7 +215,7 @@ export default function HoverProductCard({
             fontSize="14px"
             fontWeight="600"
             className="title"
-            color="text.secondary">
+            color="text.primary">
             {title}
           </H3>
         </Link>

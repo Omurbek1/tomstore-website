@@ -14,7 +14,7 @@ const MenuItem = styled.div.withConfig({
   align-items: center;
   padding: 0.5rem 1rem;
   word-break: break-all;
-  color: ${({ theme }) => theme.colors.text.secondary};
+  color: ${({ theme }) => theme.colors.text.primary};
   &:hover {
     color: ${({ theme }) => theme.colors.primary.main};
     background-color: ${({ theme }) => theme.colors.gray[100]};

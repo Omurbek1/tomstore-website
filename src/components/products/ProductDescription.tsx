@@ -1,3 +1,6 @@
+"use client";
+
+import { useTheme } from "styled-components";
 import { useTranslations } from "next-intl";
 import Box from "@component/Box";
 import FlexBox from "@component/FlexBox";
@@ -167,6 +170,7 @@ const structureRows = (product?: Product): StructuredRows => {
 
 export default function ProductDescription({ product, selectedVariant }: Props) {
   const t = useTranslations("product");
+  const theme = useTheme();
 
   const variantHasContent =
     selectedVariant &&
@@ -205,31 +209,31 @@ export default function ProductDescription({ product, selectedVariant }: Props) 
           display="inline-flex"
           alignItems="center"
           style={{
-            background: "#F3E8FF",
-            border: "1px solid #DDD6FE",
+            background: theme.colors.primary.light,
+            border: `1px solid ${theme.colors.primary.main}`,
             gap: 8,
           }}
         >
-          <span style={{ fontSize: 13, fontWeight: 700, color: "#7C3AED" }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: theme.colors.primary.main }}>
             {selectedVariant!.title}
           </span>
-          <SemiSpan style={{ fontSize: 12, color: "#8B5CF6" }}>
+          <SemiSpan style={{ fontSize: 12 }} color="text.hint">
             — описание и характеристики этого варианта
           </SemiSpan>
         </Box>
       )}
-      <Box bg="white" borderRadius="8px" shadow={1} p="1.5rem" mb="1.5rem">
-        <H3 mb="1rem">{t("descriptionTab")}</H3>
+      <Box bg="body.paper" borderRadius="8px" shadow={1} p="1.5rem" mb="1.5rem">
+        <H3 mb="1rem" color="text.primary">{t("descriptionTab")}</H3>
         {description ? (
           hasHtmlDescription ? (
             <Box
-              color="text.secondary"
+              color="text.primary"
               lineHeight="1.8"
               dangerouslySetInnerHTML={{ __html: description }}
             />
           ) : (
             <Typography
-              color="text.secondary"
+              color="text.primary"
               lineHeight="1.8"
               style={{ whiteSpace: "pre-line" }}
             >
@@ -244,8 +248,8 @@ export default function ProductDescription({ product, selectedVariant }: Props) 
       </Box>
 
       {hasStructuredRows ? (
-        <Box bg="white" borderRadius="8px" shadow={1} p="1.5rem">
-          <H3 mb="1.25rem">{t("specification")}</H3>
+        <Box bg="body.paper" borderRadius="8px" shadow={1} p="1.5rem">
+          <H3 mb="1.25rem" color="text.primary">{t("specification")}</H3>
 
           {structuredRows.specs.length > 0 ? (
             <Box
@@ -267,6 +271,7 @@ export default function ProductDescription({ product, selectedVariant }: Props) 
                     mb="0.5rem"
                     fontSize="11px"
                     fontWeight={700}
+                    color="text.hint"
                     style={{
                       letterSpacing: "0.08em",
                       textTransform: "uppercase",
@@ -274,7 +279,7 @@ export default function ProductDescription({ product, selectedVariant }: Props) 
                   >
                     {row.name}
                   </SemiSpan>
-                  <Typography fontWeight={600} color="text.secondary" lineHeight="1.6">
+                  <Typography fontWeight={600} color="text.primary" lineHeight="1.6">
                     {row.value}
                   </Typography>
                 </Box>
@@ -284,7 +289,7 @@ export default function ProductDescription({ product, selectedVariant }: Props) 
 
           {structuredRows.useCases.length > 0 ? (
             <Box mt="1.5rem">
-              <H4 mb="0.75rem" fontSize="14px" color="text.secondary">
+              <H4 mb="0.75rem" fontSize="14px" color="text.primary">
                 Лучше всего подходит
               </H4>
               <FlexBox flexWrap="wrap" m="-0.25rem">
@@ -314,7 +319,7 @@ export default function ProductDescription({ product, selectedVariant }: Props) 
 
           {structuredRows.highlights.length > 0 ? (
             <Box mt="1.5rem">
-              <H4 mb="0.75rem" fontSize="14px" color="text.secondary">
+              <H4 mb="0.75rem" fontSize="14px" color="text.primary">
                 Ключевые преимущества
               </H4>
               <Box display="grid" gridGap="10px">
@@ -326,7 +331,7 @@ export default function ProductDescription({ product, selectedVariant }: Props) 
                     borderColor="gray.300"
                     borderRadius="16px"
                     p="0.875rem"
-                    bg="gray.white"
+                    bg="body.paper"
                   >
                     <FlexBox
                       width="24px"
@@ -341,7 +346,7 @@ export default function ProductDescription({ product, selectedVariant }: Props) 
                     >
                       ✓
                     </FlexBox>
-                    <Typography color="text.secondary" lineHeight="1.6">
+                    <Typography color="text.primary" lineHeight="1.6">
                       {item}
                     </Typography>
                   </FlexBox>

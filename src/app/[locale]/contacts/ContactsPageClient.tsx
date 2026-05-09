@@ -44,7 +44,7 @@ const ContactCard = styled.a`
   gap: 0.75rem;
   padding: 2rem 1.5rem;
   border-radius: 14px;
-  background: #fff;
+  background: ${({ theme }) => theme.colors.body.paper};
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
   border: 2px solid transparent;
   text-decoration: none;
@@ -94,7 +94,7 @@ const SectionTitle = styled.h2`
 const HoursTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: ${({ theme }) => theme.colors.body.paper};
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
@@ -179,7 +179,7 @@ function LazyMap({ title }: { title: string }) {
 }
 
 const FaqItem = styled.div`
-  background: #fff;
+  background: ${({ theme }) => theme.colors.body.paper};
   border-radius: 12px;
   padding: 1.25rem 1.5rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);

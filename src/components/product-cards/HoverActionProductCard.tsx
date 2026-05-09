@@ -56,7 +56,7 @@ const HoverWrapper = styled(FlexBox)(({ theme }) => ({
   margin: "auto",
   overflow: "hidden",
   borderRadius: "5px",
-  background: "#fff",
+  background: theme.colors.body.paper,
   alignItems: "center",
   position: "absolute",
   flexDirection: "column",
@@ -71,7 +71,7 @@ const HoverWrapper = styled(FlexBox)(({ theme }) => ({
     padding: "10px 0px",
     alignItems: "center",
     justifyContent: "center",
-    "&:hover": { cursor: "pointer", background: "#f3f5f9" }
+    "&:hover": { cursor: "pointer", background: theme.colors.gray[200] },
   },
   "& a": {
     width: "100%",
@@ -79,8 +79,8 @@ const HoverWrapper = styled(FlexBox)(({ theme }) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    "&:hover": { cursor: "pointer", background: "#f3f5f9" }
-  }
+    "&:hover": { cursor: "pointer", background: theme.colors.gray[200] },
+  },
 }));
 
 const StyledChip = styled(Chip)(({ theme }) => ({
@@ -197,7 +197,7 @@ export default function HoverActionProductCard(props: HoverActionProductCardProp
               fontSize="14px"
               fontWeight="600"
               className="title"
-              color="text.secondary">
+              color="text.primary">
               {title}
             </H3>
           </Link>

@@ -12,40 +12,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-
-const styles = {
-  backdrop: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    zIndex: 1200,
-    display: "flex",
-  } as CSSProperties,
-
-  container: (
-    width: number,
-    position: "left" | "right",
-    scroll: boolean,
-  ): CSSProperties => ({
-    position: "fixed",
-    top: 0,
-    bottom: 0,
-    [position]: 0,
-    width: `min(${width}px, 100vw)`,
-    backgroundColor: "white",
-    boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-    zIndex: 1201,
-    overflowY: scroll ? "auto" : "hidden",
-  }),
-
-  content: {
-    height: "100%",
-    padding: "1rem",
-  } as CSSProperties,
-};
+import { useDarkMode } from "@context/DarkModeContext";
 
 // ==============================================================
 interface SidenavProps {
@@ -71,25 +38,40 @@ export default function Sidenav({
   position = "right",
 }: SidenavProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const { isDark } = useDarkMode();
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  useEffect(() => { setIsMounted(true); }, []);
 
   const handleModalContentClick = useCallback((e: MouseEvent<HTMLElement>) => {
     e.stopPropagation();
   }, []);
 
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
   }, [open]);
+
+  const backdrop: CSSProperties = {
+    position: "fixed",
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    zIndex: 1200,
+    display: "flex",
+  };
+
+  const container: CSSProperties = {
+    position: "fixed",
+    top: 0, bottom: 0,
+    [position]: 0,
+    width: `min(${width}px, 100vw)`,
+    backgroundColor: isDark ? "#10141f" : "#ffffff",
+    boxShadow: isDark
+      ? "0 0 40px rgba(0, 0, 0, 0.7)"
+      : "0 0 10px rgba(0, 0, 0, 0.2)",
+    borderLeft: isDark ? "1px solid #1e2235" : "none",
+    zIndex: 1201,
+    overflowY: scroll ? "auto" : "hidden",
+  };
 
   const backdropVariants = {
     hidden: { opacity: 0 },
@@ -98,18 +80,10 @@ export default function Sidenav({
   };
 
   const sidenavVariants = {
-    hidden: {
-      opacity: 0,
-      x: position === "right" ? width : -width,
-    },
+    hidden: { opacity: 0, x: position === "right" ? width : -width },
     visible: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        type: "spring" as const,
-        damping: 30,
-        stiffness: 300,
-      },
+      x: 0, opacity: 1,
+      transition: { type: "spring" as const, damping: 30, stiffness: 300 },
     },
     exit: {
       x: position === "right" ? width : -width,
@@ -123,7 +97,7 @@ export default function Sidenav({
       {open && (
         <motion.div
           onClick={onClose}
-          style={styles.backdrop}
+          style={backdrop}
           className={className}
           exit="exit"
           initial="hidden"
@@ -132,7 +106,7 @@ export default function Sidenav({
           transition={{ duration: 0.2 }}
         >
           <motion.div
-            style={styles.container(width, position, scroll)}
+            style={container}
             variants={sidenavVariants}
             role="dialog"
             aria-modal="true"

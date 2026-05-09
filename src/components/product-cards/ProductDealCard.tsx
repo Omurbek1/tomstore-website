@@ -46,7 +46,7 @@ const Wrapper = styled.div`
 
     h4 {
       margin: 0 0 0.5rem;
-      color: ${({ theme }) => theme.colors.text.secondary};
+      color: ${({ theme }) => theme.colors.text.primary};
     }
 
     .price {

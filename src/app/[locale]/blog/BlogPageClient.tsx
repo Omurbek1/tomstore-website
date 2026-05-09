@@ -31,7 +31,7 @@ const PostCard = styled(Link)`
   height: 100%;
   border-radius: 16px;
   overflow: hidden;
-  background: #fff;
+  background: ${({ theme }) => theme.colors.body.paper};
   box-shadow: 0 2px 12px rgba(0,0,0,0.07);
   text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -295,7 +295,7 @@ const TopicPill = styled.span<{ $i: number }>`
 
 const CatalogBtn = styled(Link)`
   display: inline-block;
-  background: #fff;
+  background: ${({ theme }) => theme.colors.body.paper};
   color: #0f3460;
   font-weight: 700;
   font-size: 15px;

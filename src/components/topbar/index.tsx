@@ -25,6 +25,7 @@ import { Small } from "../Typography";
 import { StyledTopbar } from "./styles";
 import { LANGUAGES, CURRENCIES } from "./data";
 import type { FlagCode, LanguageOption } from "./data";
+import ThemeToggle from "@component/ThemeToggle";
 
 const PHONE_DISPLAY = "0508 724 365";
 const PHONE_RAW = "+996508724365";
@@ -103,9 +104,12 @@ const DropCard = styled.div`
   top: calc(100% + 6px);
   left: 0;
   width: 210px;
-  background: #ffffff;
+  background: ${({ theme }) => theme.colors.body.paper};
+  border: 1px solid ${({ theme }) => theme.colors.gray[300]};
   border-radius: 16px;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: ${({ theme }) => theme.isDark
+    ? "0 12px 36px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4)"
+    : "0 12px 36px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08)"};
   overflow: hidden;
   z-index: 9999;
   animation: ${dropIn} 0.17s ease;
@@ -164,12 +168,12 @@ const DropAction = styled.a<{ $wa?: boolean }>`
   padding: 12px 6px;
   text-decoration: none;
   cursor: pointer;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid ${({ theme }) => theme.colors.gray[300]};
   transition: background 0.13s;
 
-  &:first-child { border-right: 1px solid #f0f0f0; }
-  &:hover { background: #f7f7f7; }
-  &:active { background: #efefef; }
+  &:first-child { border-right: 1px solid ${({ theme }) => theme.colors.gray[300]}; }
+  &:hover { background: ${({ theme }) => theme.colors.gray[200]}; }
+  &:active { background: ${({ theme }) => theme.colors.gray[300]}; }
 
   .ic {
     width: 36px;
@@ -192,7 +196,7 @@ const DropAction = styled.a<{ $wa?: boolean }>`
   .lbl {
     font-size: 11px;
     font-weight: 600;
-    color: #222;
+    color: ${({ theme }) => theme.colors.text.primary};
   }
 `;
 
@@ -357,6 +361,7 @@ function TopbarContent() {
         {/* Mobile left: phone dropdown only */}
         <div className="mobile-left">
           <PhoneDropdown />
+          <ThemeToggle />
         </div>
 
         {/* Desktop right */}
@@ -393,6 +398,8 @@ function TopbarContent() {
           >
             <IconBrandInstagram size={18} stroke={1.5} />
           </a>
+
+          <ThemeToggle />
         </div>
       </Container>
     </StyledTopbar>

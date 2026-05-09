@@ -10,8 +10,6 @@ import type { StorefrontVacancy } from "@utils/__api__/storefront";
 
 const CRM_URL = process.env.NEXT_PUBLIC_CRM_URL || "";
 
-// ── Animations ────────────────────────────────────────────────────────────────
-
 const fadeUp = keyframes`
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -40,7 +38,7 @@ const Banner = styled.div<{ $img?: string | null }>`
     inset: 0;
     background: ${({ $img }) =>
       $img
-        ? "linear-gradient(0deg, rgba(10,15,35,0.82) 0%, rgba(10,15,35,0.4) 60%, transparent 100%)"
+        ? "linear-gradient(0deg, rgba(8,11,18,0.88) 0%, rgba(8,11,18,0.45) 55%, transparent 100%)"
         : "linear-gradient(135deg, rgba(99,102,241,0.18) 0%, transparent 60%)"};
     border-radius: inherit;
   }
@@ -80,6 +78,20 @@ const BannerTag = styled.span<{ $variant?: "salary" | "format" | "branch" }>`
   color: #fff;
 `;
 
+const HeadcountBadge = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 12px;
+  font-weight: 600;
+  color: #28dc64;
+  background: rgba(40, 220, 100, 0.18);
+  border: 1px solid rgba(40, 220, 100, 0.35);
+  border-radius: 8px;
+  padding: 4px 10px;
+  margin-top: 0.75rem;
+`;
+
 // ── Layout ────────────────────────────────────────────────────────────────────
 
 const Layout2Col = styled.div`
@@ -113,37 +125,33 @@ const StickyRight = styled.div`
 // ── Cards ─────────────────────────────────────────────────────────────────────
 
 const Card = styled.div`
-  background: #fff;
+  background: ${({ theme }) => theme.colors.body.paper};
   border-radius: 16px;
   padding: 1.75rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
-  border: 1.5px solid #f1f5f9;
+  border: 1.5px solid ${({ theme }) => theme.colors.gray[300]};
+  box-shadow: ${({ theme }) => theme.isDark
+    ? "0 2px 12px rgba(0,0,0,0.4)"
+    : "0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)"};
 `;
 
 const SectionTitle = styled.h2`
   font-size: 1rem;
   font-weight: 700;
-  color: #1f2937;
+  color: ${({ theme }) => theme.colors.text.primary};
   margin: 0 0 1.25rem;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid #f1f5f9;
+  border-bottom: 2px solid ${({ theme }) => theme.colors.gray[300]};
   display: flex;
   align-items: center;
   gap: 0.5rem;
 `;
 
-const SectionIcon = styled.span`
-  font-size: 1.1rem;
-`;
-
 const Description = styled.div`
   font-size: 14px;
   line-height: 1.85;
-  color: #4b5563;
+  color: ${({ theme }) => theme.colors.text.secondary};
   white-space: pre-line;
 `;
-
-// ── Requirements ──────────────────────────────────────────────────────────────
 
 const RequirementList = styled.ul`
   margin: 0;
@@ -156,7 +164,7 @@ const RequirementList = styled.ul`
 
 const RequirementItem = styled.li`
   font-size: 14px;
-  color: #4b5563;
+  color: ${({ theme }) => theme.colors.text.secondary};
   line-height: 1.6;
   display: flex;
   align-items: flex-start;
@@ -179,7 +187,6 @@ const RequirementItem = styled.li`
 const InfoGrid = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0;
 `;
 
 const InfoRow = styled.div`
@@ -187,18 +194,16 @@ const InfoRow = styled.div`
   align-items: flex-start;
   gap: 0.85rem;
   padding: 0.85rem 0;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray[300]};
 
-  &:last-of-type {
-    border-bottom: none;
-  }
+  &:last-of-type { border-bottom: none; }
 `;
 
 const InfoRowIcon = styled.div`
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: ${({ theme }) => theme.colors.primary.main}12;
+  background: ${({ theme }) => theme.colors.primary.light};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -217,13 +222,13 @@ const InfoLabel = styled.span`
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #9ca3af;
+  color: ${({ theme }) => theme.colors.text.hint};
 `;
 
 const InfoValue = styled.span`
   font-size: 14px;
   font-weight: 500;
-  color: #1f2937;
+  color: ${({ theme }) => theme.colors.text.primary};
 `;
 
 // ── Apply CTA ─────────────────────────────────────────────────────────────────
@@ -231,7 +236,7 @@ const InfoValue = styled.span`
 const ApplyCTA = styled.div`
   margin-top: 1.25rem;
   padding-top: 1.25rem;
-  border-top: 1.5px solid #f1f5f9;
+  border-top: 1.5px solid ${({ theme }) => theme.colors.gray[300]};
 `;
 
 const ApplyButton = styled.a`
@@ -250,14 +255,8 @@ const ApplyButton = styled.a`
   transition: opacity 0.15s ease, transform 0.15s ease;
   cursor: pointer;
 
-  &:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
+  &:hover { opacity: 0.9; transform: translateY(-1px); }
+  &:active { transform: translateY(0); }
 `;
 
 const NoFormNote = styled.div`
@@ -265,11 +264,11 @@ const NoFormNote = styled.div`
   align-items: flex-start;
   gap: 0.65rem;
   padding: 1rem;
-  background: #fefce8;
-  border: 1px solid #fde68a;
+  background: ${({ theme }) => theme.isDark ? "rgba(250,200,40,0.1)" : "#fefce8"};
+  border: 1px solid ${({ theme }) => theme.isDark ? "rgba(250,200,40,0.25)" : "#fde68a"};
   border-radius: 10px;
   font-size: 13px;
-  color: #92400e;
+  color: ${({ theme }) => theme.isDark ? "#f0c040" : "#92400e"};
   line-height: 1.5;
 `;
 
@@ -278,7 +277,7 @@ const NoFormNote = styled.div`
 const BackLink = styled(Link)`
   font-size: 14px;
   font-weight: 500;
-  color: #6b7280;
+  color: ${({ theme }) => theme.colors.text.hint};
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -286,25 +285,7 @@ const BackLink = styled(Link)`
   margin-bottom: 1.25rem;
   transition: color 0.15s ease;
 
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary.main};
-  }
-`;
-
-// ── Headcount Badge ───────────────────────────────────────────────────────────
-
-const HeadcountBadge = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 12px;
-  font-weight: 600;
-  color: #16a34a;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: 8px;
-  padding: 4px 10px;
-  margin-top: 0.75rem;
+  &:hover { color: ${({ theme }) => theme.colors.primary.main}; }
 `;
 
 // ── Page ──────────────────────────────────────────────────────────────────────
@@ -321,27 +302,25 @@ export default function VacancyDetailClient({ locale, vacancy: initialVacancy }:
   const isKy = locale === "ky";
 
   const t = {
-    home:       isEn ? "Home"      : isKy ? "Башкы бет"   : "Главная",
-    vacancies:  isEn ? "Vacancies" : isKy ? "Вакансиялар" : "Вакансии",
-    back:       isEn ? "All vacancies" : isKy ? "Бардык вакансиялар" : "Все вакансии",
-    about:      isEn ? "About the position" : isKy ? "Кызмат жөнүндө" : "О должности",
-    req:        isEn ? "Requirements" : isKy ? "Талаптар" : "Требования",
-    details:    isEn ? "Details" : isKy ? "Чоо-жайы" : "Детали",
-    salary:     isEn ? "Salary"       : isKy ? "Эмгек акы"   : "Зарплата",
-    format:     isEn ? "Work format"  : isKy ? "Иш форматы"  : "Формат работы",
-    schedule:   isEn ? "Schedule"     : isKy ? "Иш графиги"  : "График",
-    address:    isEn ? "Address"      : isKy ? "Дарек"       : "Адрес",
-    branch:     isEn ? "Branch"       : isKy ? "Филиал"      : "Филиал",
-    role:       isEn ? "Role"         : isKy ? "Роль"        : "Роль",
-    headcount:  isEn ? "Open positions" : isKy ? "Ачык орундар" : "Открытых мест",
-    apply:      isEn ? "Apply Now"    : isKy ? "Арыз берүү" : "Откликнуться",
-    applyArrow: isEn ? "→" : "→",
-    noForm:     isEn
+    home:      isEn ? "Home"      : isKy ? "Башкы бет"   : "Главная",
+    vacancies: isEn ? "Vacancies" : isKy ? "Вакансиялар" : "Вакансии",
+    back:      isEn ? "All vacancies" : isKy ? "Бардык вакансиялар" : "Все вакансии",
+    about:     isEn ? "About the position" : isKy ? "Кызмат жөнүндө" : "О должности",
+    req:       isEn ? "Requirements" : isKy ? "Талаптар" : "Требования",
+    details:   isEn ? "Details"  : isKy ? "Чоо-жайы" : "Детали",
+    salary:    isEn ? "Salary"   : isKy ? "Эмгек акы"  : "Зарплата",
+    format:    isEn ? "Work format" : isKy ? "Иш форматы" : "Формат работы",
+    schedule:  isEn ? "Schedule"   : isKy ? "Иш графиги" : "График",
+    address:   isEn ? "Address"    : isKy ? "Дарек"      : "Адрес",
+    branch:    isEn ? "Branch"     : isKy ? "Филиал"     : "Филиал",
+    role:      isEn ? "Role"       : isKy ? "Роль"       : "Роль",
+    apply:     isEn ? "Apply Now"  : isKy ? "Арыз берүү" : "Откликнуться",
+    noForm:    isEn
       ? "The application form is not set up yet. Contact us via WhatsApp to apply."
       : isKy
       ? "Арыз формасы азыр жок. WhatsApp аркылуу байланышыңыз."
       : "Форма заявки не настроена. Свяжитесь с нами через WhatsApp для отклика.",
-    spots:      isEn ? "spots available" : isKy ? "орун бар" : "места доступны",
+    spots: isEn ? "spots available" : isKy ? "орун бар" : "места доступны",
   };
 
   const requirements = String(vacancy.requirements ?? "")
@@ -381,7 +360,6 @@ export default function VacancyDetailClient({ locale, vacancy: initialVacancy }:
           {t.back}
         </BackLink>
 
-        {/* Banner */}
         <Banner $img={vacancy.bannerImageUrl}>
           <BannerContent>
             <BannerTitle>{vacancy.title}</BannerTitle>
@@ -392,33 +370,22 @@ export default function VacancyDetailClient({ locale, vacancy: initialVacancy }:
               {vacancy.role       && <BannerTag>{vacancy.role}</BannerTag>}
             </TagRow>
             {vacancy.headcount && vacancy.headcount > 0 && (
-              <HeadcountBadge>
-                <span>✓</span>
-                {vacancy.headcount} {t.spots}
-              </HeadcountBadge>
+              <HeadcountBadge>✓ {vacancy.headcount} {t.spots}</HeadcountBadge>
             )}
           </BannerContent>
         </Banner>
 
         <Layout2Col>
-          {/* Left: description + requirements */}
           <LeftColumn>
             {vacancy.description && (
               <Card>
-                <SectionTitle>
-                  <SectionIcon>📝</SectionIcon>
-                  {t.about}
-                </SectionTitle>
+                <SectionTitle>📝 {t.about}</SectionTitle>
                 <Description>{vacancy.description}</Description>
               </Card>
             )}
-
             {requirements.length > 0 && (
               <Card>
-                <SectionTitle>
-                  <SectionIcon>✅</SectionIcon>
-                  {t.req}
-                </SectionTitle>
+                <SectionTitle>✅ {t.req}</SectionTitle>
                 <RequirementList>
                   {requirements.map((req, i) => (
                     <RequirementItem key={i}>{req}</RequirementItem>
@@ -428,14 +395,9 @@ export default function VacancyDetailClient({ locale, vacancy: initialVacancy }:
             )}
           </LeftColumn>
 
-          {/* Right: info + apply */}
           <StickyRight>
             <Card>
-              <SectionTitle>
-                <SectionIcon>📋</SectionIcon>
-                {t.details}
-              </SectionTitle>
-
+              <SectionTitle>📋 {t.details}</SectionTitle>
               {infoRows.length > 0 && (
                 <InfoGrid>
                   {infoRows.map(({ icon, label, value }) => (
@@ -449,11 +411,10 @@ export default function VacancyDetailClient({ locale, vacancy: initialVacancy }:
                   ))}
                 </InfoGrid>
               )}
-
               <ApplyCTA>
                 {applyUrl ? (
                   <ApplyButton href={applyUrl} target="_blank" rel="noopener noreferrer">
-                    {t.apply} {t.applyArrow}
+                    {t.apply} →
                   </ApplyButton>
                 ) : (
                   <NoFormNote>

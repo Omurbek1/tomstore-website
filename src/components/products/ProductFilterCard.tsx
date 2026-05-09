@@ -128,7 +128,7 @@ export default function ProductFilterCard({
   return (
     <Card p="18px 27px" elevation={5} borderRadius={12}>
       {/* ── Categories ── */}
-      <H6 mb="10px">{t("categories")}</H6>
+      <H6 mb="10px" color="text.primary">{t("categories")}</H6>
 
       {categories.length === 0 ? (
         <SemiSpan color="text.muted" fontSize="0.8rem">—</SemiSpan>
@@ -140,9 +140,9 @@ export default function ProductFilterCard({
             name="category"
             value={item.slug}
             checked={selectedCategory === item.slug}
-            color="secondary"
+            color="primary"
             label={
-              <SemiSpan color="inherit">
+              <SemiSpan color="text.primary">
                 {item.name} ({item.totalProducts})
               </SemiSpan>
             }
@@ -154,7 +154,7 @@ export default function ProductFilterCard({
       <Divider mt="18px" mb="24px" />
 
       {/* ── Price range ── */}
-      <H6 mb="16px">{t("priceRange")}</H6>
+      <H6 mb="16px" color="text.primary">{t("priceRange")}</H6>
       <FlexBox justifyContent="space-between" alignItems="center" style={{ gap: "0.5rem" }}>
         <TextField
           placeholder={filters?.minPrice ? String(filters.minPrice) : "0"}
@@ -178,7 +178,7 @@ export default function ProductFilterCard({
       <Divider my="24px" />
 
       {/* ── Brands ── */}
-      <H6 mb="16px">{t("brands")}</H6>
+      <H6 mb="16px" color="text.primary">{t("brands")}</H6>
 
       {brands.length === 0 ? (
         <SemiSpan color="text.muted" fontSize="0.8rem">—</SemiSpan>
@@ -190,9 +190,9 @@ export default function ProductFilterCard({
             name="brand"
             value={item.slug}
             checked={selectedBrand === item.slug}
-            color="secondary"
+            color="primary"
             label={
-              <SemiSpan color="inherit">
+              <SemiSpan color="text.primary">
                 {item.name} ({item.totalProducts})
               </SemiSpan>
             }
@@ -211,8 +211,8 @@ export default function ProductFilterCard({
           name={item}
           value={item}
           checked={getOtherChecked(item)}
-          color="secondary"
-          label={<SemiSpan color="inherit">{t(`otherOptions.${item}`)}</SemiSpan>}
+          color="primary"
+          label={<SemiSpan color="text.primary">{t(`otherOptions.${item}`)}</SemiSpan>}
           onChange={handleOtherChange(item)}
         />
       ))}

@@ -288,7 +288,7 @@ export default function FrequentlyBought({ baseProduct, products }: Props) {
         style={{ gap: 10 }}
       >
         <Box>
-          <H3 mb="4px">{t("frequentlyBought")}</H3>
+          <H3 mb="4px" color="text.primary">{t("frequentlyBought")}</H3>
           <SemiSpan color="text.muted">{t("bundleHint")}</SemiSpan>
         </Box>
       </FlexBox>

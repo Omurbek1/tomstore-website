@@ -5,7 +5,6 @@ import styled, { keyframes } from "styled-components";
 import { useRouter } from "@i18n/navigation";
 import AppLayout from "@component/layout/layout-3";
 import Box from "@component/Box";
-import Grid from "@component/grid/Grid";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
 import { useVacancies } from "@hook/useVacancies";
 import type { StorefrontVacanciesResponse, StorefrontVacancy } from "@utils/__api__/storefront";
@@ -66,20 +65,8 @@ const HeroStats = styled.div`
 
 const HeroStat = styled.div`
   text-align: center;
-
-  strong {
-    display: block;
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: #fff;
-  }
-
-  span {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.65);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
+  strong { display: block; font-size: 1.35rem; font-weight: 800; color: #fff; }
+  span   { font-size: 12px; color: rgba(255, 255, 255, 0.65); text-transform: uppercase; letter-spacing: 0.06em; }
 `;
 
 // ── Search ────────────────────────────────────────────────────────────────────
@@ -89,12 +76,12 @@ const SearchWrapper = styled.div`
   margin-bottom: 1.25rem;
 `;
 
-const SearchIcon = styled.div`
+const SearchIconWrap = styled.div`
   position: absolute;
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #9ca3af;
+  color: ${({ theme }) => theme.colors.gray[600]};
   display: flex;
   align-items: center;
   pointer-events: none;
@@ -103,17 +90,15 @@ const SearchIcon = styled.div`
 const SearchInput = styled.input`
   width: 100%;
   padding: 0.85rem 1rem 0.85rem 2.85rem;
-  border: 1.5px solid #e5e7eb;
+  border: 1.5px solid ${({ theme }) => theme.colors.gray[400]};
   border-radius: 12px;
   font-size: 15px;
-  color: #1f2937;
-  background: #fff;
+  color: ${({ theme }) => theme.colors.text.primary};
+  background: ${({ theme }) => theme.colors.body.paper};
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   box-sizing: border-box;
 
-  &::placeholder {
-    color: #9ca3af;
-  }
+  &::placeholder { color: ${({ theme }) => theme.colors.gray[600]}; }
 
   &:focus {
     outline: none;
@@ -127,7 +112,7 @@ const ClearSearchBtn = styled.button`
   right: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  background: #e5e7eb;
+  background: ${({ theme }) => theme.colors.gray[300]};
   border: none;
   border-radius: 50%;
   width: 22px;
@@ -136,14 +121,12 @@ const ClearSearchBtn = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #6b7280;
+  color: ${({ theme }) => theme.colors.gray[700]};
   font-size: 13px;
   line-height: 1;
   padding: 0;
 
-  &:hover {
-    background: #d1d5db;
-  }
+  &:hover { background: ${({ theme }) => theme.colors.gray[400]}; }
 `;
 
 // ── Filters ───────────────────────────────────────────────────────────────────
@@ -159,7 +142,7 @@ const FiltersRow = styled.div`
 const FilterGroupLabel = styled.span`
   font-size: 12px;
   font-weight: 600;
-  color: #9ca3af;
+  color: ${({ theme }) => theme.colors.gray[600]};
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-right: 0.25rem;
@@ -171,10 +154,11 @@ const FilterChip = styled.button<{ $active: boolean }>`
   padding: 0.35rem 0.9rem;
   border-radius: 20px;
   border: 1.5px solid ${({ $active, theme }) =>
-    $active ? theme.colors.primary.main : "#e5e7eb"};
+    $active ? theme.colors.primary.main : theme.colors.gray[400]};
   background: ${({ $active, theme }) =>
-    $active ? theme.colors.primary.main : "#fff"};
-  color: ${({ $active }) => ($active ? "#fff" : "#374151")};
+    $active ? theme.colors.primary.main : theme.colors.body.paper};
+  color: ${({ $active, theme }) =>
+    $active ? "#fff" : theme.colors.text.primary};
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
@@ -190,23 +174,21 @@ const ClearFiltersBtn = styled.button`
   font-size: 12px;
   font-weight: 600;
   color: #ef4444;
-  background: #fef2f2;
-  border: 1.5px solid #fecaca;
+  background: ${({ theme }) => theme.isDark ? "rgba(239,68,68,0.12)" : "#fef2f2"};
+  border: 1.5px solid ${({ theme }) => theme.isDark ? "rgba(239,68,68,0.3)" : "#fecaca"};
   border-radius: 20px;
   padding: 0.3rem 0.8rem;
   cursor: pointer;
   transition: all 0.15s ease;
   margin-left: 0.5rem;
 
-  &:hover {
-    background: #fee2e2;
-  }
+  &:hover { background: ${({ theme }) => theme.isDark ? "rgba(239,68,68,0.2)" : "#fee2e2"}; }
 `;
 
-const Divider = styled.div`
+const FilterDivider = styled.div`
   width: 1px;
   height: 20px;
-  background: #e5e7eb;
+  background: ${({ theme }) => theme.colors.gray[300]};
   margin: 0 0.25rem;
 `;
 
@@ -223,22 +205,18 @@ const ToolbarRow = styled.div`
 
 const ResultInfo = styled.div`
   font-size: 14px;
-  color: #6b7280;
-
-  strong {
-    color: #1f2937;
-    font-weight: 700;
-  }
+  color: ${({ theme }) => theme.colors.text.hint};
+  strong { color: ${({ theme }) => theme.colors.text.primary}; font-weight: 700; }
 `;
 
 const SortSelect = styled.select`
   font-size: 13px;
   font-weight: 500;
   padding: 0.45rem 2rem 0.45rem 0.85rem;
-  border: 1.5px solid #e5e7eb;
+  border: 1.5px solid ${({ theme }) => theme.colors.gray[400]};
   border-radius: 10px;
-  background: #fff;
-  color: #374151;
+  background: ${({ theme }) => theme.colors.body.paper};
+  color: ${({ theme }) => theme.colors.text.primary};
   cursor: pointer;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239ca3af' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
@@ -252,24 +230,24 @@ const SortSelect = styled.select`
   }
 `;
 
-// ── Vacancy Card ──────────────────────────────────────────────────────────────
+// ── Card ──────────────────────────────────────────────────────────────────────
 
 const CardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.25rem;
 
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr;
-  }
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
 `;
 
 const VacancyCard = styled.article`
-  background: #fff;
+  background: ${({ theme }) => theme.colors.body.paper};
   border-radius: 16px;
   padding: 1.5rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
-  border: 1.5px solid #f1f5f9;
+  border: 1.5px solid ${({ theme }) => theme.colors.gray[300]};
+  box-shadow: ${({ theme }) => theme.isDark
+    ? "0 2px 12px rgba(0,0,0,0.4)"
+    : "0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)"};
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -279,8 +257,10 @@ const VacancyCard = styled.article`
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-    border-color: ${({ theme }) => theme.colors.primary.main}44;
+    box-shadow: ${({ theme }) => theme.isDark
+      ? "0 12px 40px rgba(0,0,0,0.6)"
+      : "0 8px 32px rgba(0,0,0,0.12)"};
+    border-color: ${({ theme }) => theme.colors.primary.main}66;
   }
 `;
 
@@ -295,7 +275,7 @@ const CardIcon = styled.div`
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: ${({ theme }) => theme.colors.primary.main}18;
+  background: ${({ theme }) => theme.colors.primary.light};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -308,8 +288,8 @@ const NewBadge = styled.span`
   font-weight: 700;
   padding: 3px 8px;
   border-radius: 6px;
-  background: #dcfce7;
-  color: #16a34a;
+  background: ${({ theme }) => theme.isDark ? "rgba(40,220,100,0.15)" : "#dcfce7"};
+  color: ${({ theme }) => theme.isDark ? "#28dc64" : "#16a34a"};
   text-transform: uppercase;
   letter-spacing: 0.05em;
 `;
@@ -317,7 +297,7 @@ const NewBadge = styled.span`
 const CardTitle = styled.h2`
   font-size: 1rem;
   font-weight: 700;
-  color: #1f2937;
+  color: ${({ theme }) => theme.colors.text.primary};
   margin: 0;
   line-height: 1.35;
 `;
@@ -328,28 +308,28 @@ const TagRow = styled.div`
   gap: 0.35rem;
 `;
 
-const Tag = styled.span<{ $variant?: "format" | "branch" | "role" | "salary" }>`
+const Tag = styled.span<{ $variant?: "format" | "branch" | "salary" | "role" }>`
   font-size: 11px;
   font-weight: 600;
   padding: 3px 9px;
   border-radius: 6px;
   background: ${({ $variant, theme }) => {
-    if ($variant === "format") return theme.colors.primary.main + "18";
-    if ($variant === "salary") return "#f0fdf4";
-    if ($variant === "branch") return "#fefce8";
-    return "#f3f4f6";
+    if ($variant === "format") return theme.colors.primary.light;
+    if ($variant === "salary") return theme.isDark ? "rgba(40,220,100,0.15)" : "#f0fdf4";
+    if ($variant === "branch") return theme.isDark ? "rgba(250,200,40,0.12)" : "#fefce8";
+    return theme.colors.gray[200];
   }};
   color: ${({ $variant, theme }) => {
     if ($variant === "format") return theme.colors.primary.main;
-    if ($variant === "salary") return "#16a34a";
-    if ($variant === "branch") return "#854d0e";
-    return "#6b7280";
+    if ($variant === "salary") return theme.isDark ? "#28dc64" : "#16a34a";
+    if ($variant === "branch") return theme.isDark ? "#f0c040" : "#854d0e";
+    return theme.colors.text.hint;
   }};
 `;
 
 const CardExcerpt = styled.p`
   font-size: 13px;
-  color: #6b7280;
+  color: ${({ theme }) => theme.colors.text.hint};
   margin: 0;
   line-height: 1.6;
   display: -webkit-box;
@@ -365,7 +345,7 @@ const CardFooter = styled.div`
   justify-content: space-between;
   margin-top: auto;
   padding-top: 0.75rem;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid ${({ theme }) => theme.colors.gray[300]};
 `;
 
 const ViewBtn = styled.span`
@@ -379,7 +359,7 @@ const ViewBtn = styled.span`
 
 const CardDate = styled.span`
   font-size: 12px;
-  color: #9ca3af;
+  color: ${({ theme }) => theme.colors.gray[600]};
 `;
 
 // ── Empty State ───────────────────────────────────────────────────────────────
@@ -387,26 +367,21 @@ const CardDate = styled.span`
 const EmptyState = styled.div`
   text-align: center;
   padding: 4rem 2rem;
-  background: #f8fafc;
+  background: ${({ theme }) => theme.colors.gray[100]};
   border-radius: 16px;
-  border: 1.5px dashed #e2e8f0;
-`;
-
-const EmptyIcon = styled.div`
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  border: 1.5px dashed ${({ theme }) => theme.colors.gray[300]};
 `;
 
 const EmptyTitle = styled.h2`
   font-size: 1.15rem;
   font-weight: 700;
-  color: #374151;
+  color: ${({ theme }) => theme.colors.text.primary};
   margin: 0 0 0.5rem;
 `;
 
 const EmptyText = styled.p`
   font-size: 14px;
-  color: #9ca3af;
+  color: ${({ theme }) => theme.colors.text.hint};
   margin: 0 0 1rem;
 `;
 
@@ -450,12 +425,9 @@ function formatDate(dateStr?: string, locale?: string) {
   if (!dateStr) return "";
   try {
     return new Intl.DateTimeFormat(locale === "en" ? "en-US" : "ru-RU", {
-      day: "numeric",
-      month: "short",
+      day: "numeric", month: "short",
     }).format(new Date(dateStr));
-  } catch {
-    return "";
-  }
+  } catch { return ""; }
 }
 
 function roleIcon(role?: string | null): string {
@@ -503,18 +475,14 @@ function VacancyCardItem({ vacancy, locale, onClick, delay }: {
         {vacancy.workFormat && <Tag $variant="format">{vacancy.workFormat}</Tag>}
         {vacancy.salaryText && <Tag $variant="salary">{vacancy.salaryText}</Tag>}
         {vacancy.branchName && <Tag $variant="branch">{vacancy.branchName}</Tag>}
-        {vacancy.role && <Tag>{vacancy.role}</Tag>}
+        {vacancy.role        && <Tag $variant="role">{vacancy.role}</Tag>}
       </TagRow>
 
-      {vacancy.description && (
-        <CardExcerpt>{vacancy.description}</CardExcerpt>
-      )}
+      {vacancy.description && <CardExcerpt>{vacancy.description}</CardExcerpt>}
 
       <CardFooter>
         <ViewBtn>{detailLabel}</ViewBtn>
-        {vacancy.createdAt && (
-          <CardDate>{formatDate(vacancy.createdAt, locale)}</CardDate>
-        )}
+        {vacancy.createdAt && <CardDate>{formatDate(vacancy.createdAt, locale)}</CardDate>}
       </CardFooter>
     </VacancyCard>
   );
@@ -531,43 +499,49 @@ export default function VacanciesPageClient({ locale, data: initialData }: Props
   const { data } = useVacancies(initialData);
   const router = useRouter();
 
-  const [search, setSearch] = useState("");
-  const [sortKey, setSortKey] = useState<SortKey>("newest");
+  const [search,       setSearch]       = useState("");
+  const [sortKey,      setSortKey]      = useState<SortKey>("newest");
   const [activeFormat, setActiveFormat] = useState<string | null>(null);
-  const [activeRole, setActiveRole] = useState<string | null>(null);
+  const [activeRole,   setActiveRole]   = useState<string | null>(null);
   const [activeBranch, setActiveBranch] = useState<string | null>(null);
 
   const isEn = locale === "en";
   const isKy = locale === "ky";
 
   const t = {
-    home:          isEn ? "Home"         : isKy ? "Башкы бет"       : "Главная",
-    page:          isEn ? "Vacancies"    : isKy ? "Вакансиялар"     : "Вакансии",
-    heroTitle:     isEn ? "Join the TomStore Team" : isKy ? "TomStore командасына кошулуңуз" : "Присоединяйтесь к команде TomStore",
-    heroDesc:      isEn
+    home:    isEn ? "Home"      : isKy ? "Башкы бет"   : "Главная",
+    page:    isEn ? "Vacancies" : isKy ? "Вакансиялар" : "Вакансии",
+    heroTitle: isEn ? "Join the TomStore Team" : isKy ? "TomStore командасына кошулуңуз" : "Присоединяйтесь к команде TomStore",
+    heroDesc:  isEn
       ? "We're growing and looking for talented people to help deliver the best electronics experience in Kyrgyzstan."
       : isKy
       ? "Биз өсүп жатабыз жана Кыргызстанда эң мыкты электроника соодасын жасоого жардам бере турган таланттуу адамдарды издейбиз."
       : "Мы растём и ищем талантливых людей, которые помогут создать лучший опыт покупки электроники в Кыргызстане.",
-    openPositions: isEn ? "open positions" : isKy ? "ачык вакансия"  : "открытых вакансий",
-    branches:      isEn ? "branches"      : isKy ? "филиал"          : "филиала",
+    openPositions: isEn ? "open positions" : isKy ? "ачык вакансия" : "открытых вакансий",
+    branches:      isEn ? "branches"       : isKy ? "филиал"        : "филиала",
     searchPlaceholder: isEn ? "Search vacancies…" : isKy ? "Вакансияларды издөө…" : "Поиск вакансий…",
     filterFormat:  isEn ? "Format:"  : isKy ? "Формат:"  : "Формат:",
     filterRole:    isEn ? "Role:"    : isKy ? "Роль:"    : "Роль:",
     filterBranch:  isEn ? "Branch:"  : isKy ? "Филиал:"  : "Филиал:",
-    clearAll:      isEn ? "Clear filters" : isKy ? "Тазалоо" : "Сбросить",
+    clearAll:      isEn ? "Clear filters" : isKy ? "Тазалоо"   : "Сбросить",
     sortLabel:     isEn ? "Sort:"    : isKy ? "Сорттоо:" : "Сортировка:",
     sortNewest:    isEn ? "Newest first"  : isKy ? "Жаңысы биринчи" : "Сначала новые",
     sortOldest:    isEn ? "Oldest first"  : isKy ? "Эскиси биринчи" : "Сначала старые",
-    sortAz:        isEn ? "A → Z"    : isKy ? "А → Я" : "А → Я",
+    sortAz:        isEn ? "A → Z"    : isKy ? "А → Я"   : "А → Я",
     sortSalary:    isEn ? "By salary": isKy ? "Эмгек акы боюнча" : "По зарплате",
-    found:         isEn ? "Found"    : isKy ? "Табылды" : "Найдено",
+    found:         isEn ? "Found"    : isKy ? "Табылды"  : "Найдено",
     results:       isEn ? "vacancies": isKy ? "вакансия" : "вакансий",
-    emptyFiltered: isEn ? "No vacancies match your filters" : isKy ? "Фильтрлерге ылайык вакансия жок" : "Нет вакансий по вашим фильтрам",
-    emptyAll:      isEn ? "No open positions right now" : isKy ? "Азыр ачык вакансиялар жок" : "Сейчас нет открытых вакансий",
-    emptyFilteredSub: isEn ? "Try changing filters or search query." : isKy ? "Фильтрлерди же издөөнү өзгөртүп көрүңүз." : "Попробуйте изменить фильтры или запрос поиска.",
-    emptyAllSub:   isEn ? "We're always looking for great people. Send your CV via WhatsApp." : isKy ? "Биз дайыма жакшы адамдарды издейбиз." : "Мы всегда в поиске. Отправьте резюме нам в WhatsApp.",
-    reset:         isEn ? "Reset filters" : isKy ? "Тазалоо" : "Сбросить фильтры",
+    emptyFiltered: isEn ? "No vacancies match your filters"
+      : isKy ? "Фильтрлерге ылайык вакансия жок" : "Нет вакансий по вашим фильтрам",
+    emptyAll: isEn ? "No open positions right now"
+      : isKy ? "Азыр ачык вакансиялар жок" : "Сейчас нет открытых вакансий",
+    emptyFilteredSub: isEn ? "Try changing filters or search query."
+      : isKy ? "Фильтрлерди же издөөнү өзгөртүп көрүңүз."
+      : "Попробуйте изменить фильтры или запрос поиска.",
+    emptyAllSub: isEn ? "We're always looking for great people. Send your CV via WhatsApp."
+      : isKy ? "Биз дайыма жакшы адамдарды издейбиз."
+      : "Мы всегда в поиске. Отправьте резюме нам в WhatsApp.",
+    reset: isEn ? "Reset filters" : isKy ? "Тазалоо" : "Сбросить фильтры",
   };
 
   const allItems = data?.items ?? [];
@@ -580,10 +554,7 @@ export default function VacanciesPageClient({ locale, data: initialData }: Props
   const hasActiveFilters = !!search || !!activeFormat || !!activeRole || !!activeBranch;
 
   const clearFilters = useCallback(() => {
-    setSearch("");
-    setActiveFormat(null);
-    setActiveRole(null);
-    setActiveBranch(null);
+    setSearch(""); setActiveFormat(null); setActiveRole(null); setActiveBranch(null);
   }, []);
 
   const filtered = useMemo(() => {
@@ -608,18 +579,13 @@ export default function VacanciesPageClient({ locale, data: initialData }: Props
   const toggleFilter = useCallback((
     value: string,
     current: string | null,
-    setter: (v: string | null) => void
-  ) => {
-    setter(current === value ? null : value);
-  }, []);
+    setter: (v: string | null) => void,
+  ) => { setter(current === value ? null : value); }, []);
 
   return (
     <AppLayout>
       <Box pt="20px" pb="60px">
-        <Breadcrumbs
-          items={[{ label: t.home, href: "/" }, { label: t.page }]}
-          locale={locale}
-        />
+        <Breadcrumbs items={[{ label: t.home, href: "/" }, { label: t.page }]} locale={locale} />
 
         {/* Hero */}
         <HeroSection>
@@ -646,12 +612,11 @@ export default function VacanciesPageClient({ locale, data: initialData }: Props
 
         {/* Search */}
         <SearchWrapper>
-          <SearchIcon>
+          <SearchIconWrap>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
+              <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
             </svg>
-          </SearchIcon>
+          </SearchIconWrap>
           <SearchInput
             type="search"
             placeholder={t.searchPlaceholder}
@@ -670,49 +635,31 @@ export default function VacanciesPageClient({ locale, data: initialData }: Props
               <>
                 <FilterGroupLabel>{t.filterFormat}</FilterGroupLabel>
                 {formats.map((fmt) => (
-                  <FilterChip
-                    key={fmt}
-                    $active={activeFormat === fmt}
-                    onClick={() => toggleFilter(fmt, activeFormat, setActiveFormat)}
-                  >
-                    {fmt}
-                  </FilterChip>
+                  <FilterChip key={fmt} $active={activeFormat === fmt}
+                    onClick={() => toggleFilter(fmt, activeFormat, setActiveFormat)}>{fmt}</FilterChip>
                 ))}
               </>
             )}
-
             {roles.length > 0 && (
               <>
-                {formats.length > 0 && <Divider />}
+                {formats.length > 0 && <FilterDivider />}
                 <FilterGroupLabel>{t.filterRole}</FilterGroupLabel>
                 {roles.map((role) => (
-                  <FilterChip
-                    key={role}
-                    $active={activeRole === role}
-                    onClick={() => toggleFilter(role, activeRole, setActiveRole)}
-                  >
-                    {role}
-                  </FilterChip>
+                  <FilterChip key={role} $active={activeRole === role}
+                    onClick={() => toggleFilter(role, activeRole, setActiveRole)}>{role}</FilterChip>
                 ))}
               </>
             )}
-
             {branches.length > 1 && (
               <>
-                {(formats.length > 0 || roles.length > 0) && <Divider />}
+                {(formats.length > 0 || roles.length > 0) && <FilterDivider />}
                 <FilterGroupLabel>{t.filterBranch}</FilterGroupLabel>
                 {branches.map((branch) => (
-                  <FilterChip
-                    key={branch}
-                    $active={activeBranch === branch}
-                    onClick={() => toggleFilter(branch, activeBranch, setActiveBranch)}
-                  >
-                    {branch}
-                  </FilterChip>
+                  <FilterChip key={branch} $active={activeBranch === branch}
+                    onClick={() => toggleFilter(branch, activeBranch, setActiveBranch)}>{branch}</FilterChip>
                 ))}
               </>
             )}
-
             {hasActiveFilters && (
               <ClearFiltersBtn onClick={clearFilters}>{t.clearAll}</ClearFiltersBtn>
             )}
@@ -722,20 +669,13 @@ export default function VacanciesPageClient({ locale, data: initialData }: Props
         {/* Toolbar */}
         <ToolbarRow>
           <ResultInfo>
-            {hasActiveFilters ? (
-              <>
-                {t.found}: <strong>{sorted.length}</strong> {t.results}
-              </>
-            ) : (
-              <strong>
-                {allItems.length > 0 ? `${allItems.length} ${t.results}` : ""}
-              </strong>
-            )}
+            {hasActiveFilters
+              ? <>{t.found}: <strong>{sorted.length}</strong> {t.results}</>
+              : allItems.length > 0 && <strong>{allItems.length} {t.results}</strong>}
           </ResultInfo>
-
           {allItems.length > 1 && (
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <span style={{ fontSize: 13, color: "#9ca3af" }}>{t.sortLabel}</span>
+              <span style={{ fontSize: 13 }}>{t.sortLabel}</span>
               <SortSelect value={sortKey} onChange={(e) => setSortKey(e.target.value as SortKey)}>
                 <option value="newest">{t.sortNewest}</option>
                 <option value="oldest">{t.sortOldest}</option>
@@ -749,12 +689,10 @@ export default function VacanciesPageClient({ locale, data: initialData }: Props
         {/* Results */}
         {sorted.length === 0 ? (
           <EmptyState>
-            <EmptyIcon>{hasActiveFilters ? "🔎" : "📋"}</EmptyIcon>
+            <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>{hasActiveFilters ? "🔎" : "📋"}</div>
             <EmptyTitle>{hasActiveFilters ? t.emptyFiltered : t.emptyAll}</EmptyTitle>
             <EmptyText>{hasActiveFilters ? t.emptyFilteredSub : t.emptyAllSub}</EmptyText>
-            {hasActiveFilters && (
-              <ResetLink onClick={clearFilters}>{t.reset}</ResetLink>
-            )}
+            {hasActiveFilters && <ResetLink onClick={clearFilters}>{t.reset}</ResetLink>}
           </EmptyState>
         ) : (
           <CardGrid>

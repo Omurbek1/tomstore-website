@@ -4,6 +4,10 @@ const StyledSearchBox = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  background: ${({ theme }) => theme.colors.body.paper};
+  border: 1px solid ${({ theme }) => theme.colors.text.disabled};
+  border-radius: 8px;
+  overflow: hidden;
 
   .search-icon {
     position: absolute;
@@ -17,7 +21,10 @@ const StyledSearchBox = styled.div`
     padding-left: 3rem;
     padding-right: 13.75rem;
     height: 44px;
-    border-radius: 8px;
+    border-radius: 0;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
   }
   .search-button {
     position: absolute;
@@ -54,7 +61,7 @@ const StyledSearchBox = styled.div`
     }
 
     .ant-select-selection-item {
-      color: ${({ theme }) => theme.colors.text.hint};
+      color: ${({ theme }) => theme.colors.text.primary};
       font-size: 14px;
       font-weight: 600;
       line-height: 42px !important;
@@ -62,7 +69,7 @@ const StyledSearchBox = styled.div`
 
     .ant-select-arrow {
       right: 1rem;
-      color: ${({ theme }) => theme.colors.text.hint};
+      color: ${({ theme }) => theme.colors.text.secondary};
     }
   }
 

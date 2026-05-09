@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useCallback, useState } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 
 import Box from "../Box";
 import Card from "../Card";
@@ -53,7 +53,7 @@ const Wrapper = styled(Card)`
   h4 {
     text-align: left;
     margin: 0.5rem 0px;
-    color: ${({ theme }) => theme.colors.text.secondary};
+    color: ${({ theme }) => theme.colors.text.primary};
   }
 
   .price {
@@ -128,6 +128,7 @@ export default function ProductListCard({
   ...props
 }: ProductListCardProps) {
   const locale = useLocale();
+  const theme = useTheme();
   const formatCurrency = useCurrency();
   const t = useTranslations("product");
   const router = useRouter();
@@ -239,8 +240,8 @@ export default function ProductListCard({
                   onClick={() => toggleWishlist({ id, slug, title, price, imgUrl })}
                   style={{ display: "flex", cursor: "pointer" }}>
                   {isWishlisted
-                    ? <IconHeartFilled size={16} color="#D23F57" />
-                    : <IconHeart size={16} color="#aaa" />
+                    ? <IconHeartFilled size={16} color={theme.colors.primary.main} />
+                    : <IconHeart size={16} color={theme.colors.gray[600]} />
                   }
                 </span>
 
@@ -293,8 +294,8 @@ export default function ProductListCard({
               onClick={() => toggleWishlist({ id, slug, title, price, imgUrl })}
               style={{ display: "flex", cursor: "pointer" }}>
               {isWishlisted
-                ? <IconHeartFilled size={16} color="#D23F57" />
-                : <IconHeart size={16} color="#aaa" />
+                ? <IconHeartFilled size={16} color={theme.colors.primary.main} />
+                : <IconHeart size={16} color={theme.colors.gray[600]} />
               }
             </span>
 

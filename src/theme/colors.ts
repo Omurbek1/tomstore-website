@@ -116,3 +116,68 @@ export const colors = {
   primary: primaryColor,
   secondary: secondaryColor
 };
+
+// ── Dark mode palette ──────────────────────────────────────────────────────────
+// Premium deep-space dark for an electronics store.
+export const darkColors: typeof colors = {
+  dark: { main: "#e0e6f5" },
+  paste,
+  marron,
+  blue,
+  gray: {
+    900: "#e0e6f5",   // main text (inverted)
+    800: "#a8b4d0",   // paragraph
+    700: "#6a7898",   // low-priority text
+    600: "#4a5572",
+    500: "#303854",
+    400: "#222a42",   // border
+    300: "#192036",   // divider
+    200: "#141a2f",   // subtle surface / input bg
+    100: "#0e1225",   // elevated surface
+    white: "#ffffff",
+  },
+  text: {
+    primary:   "#e0e6f5",
+    secondary: "#8896be",
+    hint:      "#5a6a90",
+    muted:     "#5a6a90",
+    disabled:  "#222a42",
+  },
+  body: {
+    default: "#080b12",  // ultra-deep background
+    paper:   "#10141f",  // card / header background
+    text:    "#e0e6f5",
+  },
+  primary: {
+    ...primaryColor,
+    light: "rgba(200, 30, 58, 0.18)",
+  },
+  secondary: {
+    light: "rgba(6, 9, 18, 0.5)",
+    main:  "#060912",   // topbar – near-black with blue tint
+    dark:  "#030508",
+    text:  "#ffffff",
+    900:   "#02030a",
+    100:   "#141a2f",
+  },
+  error: {
+    main:  "#ff4d6a",
+    light: "rgba(255, 77, 106, 0.18)",
+    text:  "#e0e6f5",
+  },
+  warn: {
+    main: "#FFCD4E",
+    text: "#e0e6f5",
+  },
+  success: {
+    main:  "rgba(40, 220, 100, 1)",
+    light: "rgba(40, 220, 100, 0.15)",
+    text:  "#e0e6f5",
+  },
+  default: {
+    main:  "#e0e6f5",
+    dark:  "#e0e6f5",
+    text:  "#e0e6f5",
+    light: "#8896be",
+  },
+};

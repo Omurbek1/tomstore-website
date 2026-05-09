@@ -284,7 +284,7 @@ export default function ProductGridCard({
                   textAlign="left"
                   fontWeight="600"
                   className="title"
-                  color="text.secondary"
+                  color="text.primary"
                   style={{
                     display: "-webkit-box",
                     WebkitLineClamp: 2,

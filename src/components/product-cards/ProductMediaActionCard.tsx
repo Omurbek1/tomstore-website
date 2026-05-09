@@ -21,13 +21,13 @@ import { useLocale } from "next-intl";
 const CardBox = styled(Box)(({ theme }) => ({
   borderRadius: "3px",
   transition: "all 0.3s",
-  backgroundColor: "white",
-  border: `1px solid ${theme.colors.gray[100]}`,
+  backgroundColor: theme.colors.body.paper,
+  border: `1px solid ${theme.colors.gray[300]}`,
   "&:hover": {
-    border: "1px solid #000",
+    border: `1px solid ${theme.colors.gray[700]}`,
     "& .product-actions": { right: 5 },
     "& .product-img": { transform: "scale(1.1)" }
-  }
+  },
 }));
 
 const CardMedia = styled(Box)({

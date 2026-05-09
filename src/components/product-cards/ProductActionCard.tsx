@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Fragment, useCallback, useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { IconEye, IconHeart, IconHeartFilled, IconMinus, IconPlus } from "@tabler/icons-react";
 
 import Box from "@component/Box";
@@ -129,6 +129,7 @@ export default function ProductActionCard({
   images
 }: ProductActionCardProps) {
     const locale = useLocale();
+  const theme = useTheme();
   const changeCartAmount = useChangeCartAmount();
   const toggleWishlist = useToggleWishlist();
   const isWishlisted = useIsWishlisted(id);
@@ -185,7 +186,7 @@ export default function ProductActionCard({
             aria-label={isWishlisted ? `Remove ${title} from wishlist` : `Add ${title} to wishlist`}
             title={isWishlisted ? `Remove ${title} from wishlist` : `Add ${title} to wishlist`}
           >
-            {isWishlisted ? <IconHeartFilled size={18} color="#D23F57" /> : <IconHeart size={18} />}
+            {isWishlisted ? <IconHeartFilled size={18} color={theme.colors.primary.main} /> : <IconHeart size={18} />}
           </IconButton>
         </FlexBox>
 

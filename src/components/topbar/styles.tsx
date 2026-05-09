@@ -147,4 +147,13 @@ export const StyledTopbar = styled.div`
       transform: scale(1.15);
     }
   }
+
+  /* Theme toggle spacing */
+  .topbar-right > button {
+    margin-left: 8px;
+  }
+
+  .mobile-left > button {
+    margin-left: 4px;
+  }
 `;

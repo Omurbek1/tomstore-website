@@ -37,7 +37,7 @@ const HeroDesc = styled.p`
 `;
 
 const StatCard = styled.div`
-  background: #fff;
+  background: ${({ theme }) => theme.colors.body.paper};
   border-radius: 14px;
   padding: 2rem 1.5rem;
   text-align: center;
@@ -78,7 +78,7 @@ const AdvantageCard = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  background: #fff;
+  background: ${({ theme }) => theme.colors.body.paper};
   border-radius: 14px;
   padding: 1.5rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
@@ -145,7 +145,7 @@ const CtaSubtitle = styled.p`
 
 const CtaButton = styled(Link)`
   display: inline-block;
-  background: #fff;
+  background: ${({ theme }) => theme.colors.body.paper};
   color: #0f3460;
   font-weight: 700;
   font-size: 15px;

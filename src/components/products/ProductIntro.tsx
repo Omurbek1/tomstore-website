@@ -408,7 +408,7 @@ export default function ProductIntro({
         </Grid>
 
         <Grid item md={6} xs={12} alignItems="center">
-          <H1 mb="1rem">{displayTitle}</H1>
+          <H1 mb="1rem" color="text.primary">{displayTitle}</H1>
 
           <FlexBox alignItems="center" mb="1rem">
             <SemiSpan>{t("brand")}:</SemiSpan>
@@ -424,7 +424,7 @@ export default function ProductIntro({
           </FlexBox>
 
           <Box mb="24px">
-            <H2 color="#D32F2F" mb="4px" lineHeight="1">
+            <H2 color="primary.main" mb="4px" lineHeight="1">
               {formatCurrency(displayPrice)}
             </H2>
             {displayOldPrice && displayOldPrice > displayPrice ? (
@@ -464,7 +464,6 @@ export default function ProductIntro({
                 size="large"
                 color="primary"
                 variant="contained"
-                style={{ backgroundColor: "#D32F2F" }}
                 onClick={handleCartAmountChange(1)}>
                 В корзину
               </Button>
@@ -475,7 +474,6 @@ export default function ProductIntro({
                   size="large"
                   color="primary"
                   variant="outlined"
-                  style={{ borderColor: "#D32F2F", color: "#D32F2F" }}
                   onClick={handleCartAmountChange(cartItem?.qty - 1)}>
                   <IconMinus size={22} />
                 </Button>
@@ -489,7 +487,6 @@ export default function ProductIntro({
                   size="large"
                   color="primary"
                   variant="outlined"
-                  style={{ borderColor: "#D32F2F", color: "#D32F2F" }}
                   onClick={handleCartAmountChange(cartItem?.qty + 1)}>
                   <IconPlus size={22} />
                 </Button>
@@ -501,10 +498,6 @@ export default function ProductIntro({
               size="large"
               color="primary"
               variant="outlined"
-              style={{
-                borderColor: "#D32F2F",
-                color: "#D32F2F",
-              }}
               {...{
                 href: whatsappOrderHref,
                 target: "_blank",
@@ -527,7 +520,7 @@ const MainMediaBox = styled(FlexBox)<{ $aspectRatio?: string }>`
   overflow: hidden;
   border-radius: 16px;
   justify-content: center;
-  background: #f8f8f8;
+  background: ${({ theme }) => theme.colors.gray[200]};
   ${({ $aspectRatio }) =>
     $aspectRatio && $aspectRatio !== "none"
       ? `aspect-ratio: ${$aspectRatio};`
@@ -541,9 +534,9 @@ const ThumbBox = styled.button<{ $active: boolean }>`
   width: 70px;
   height: 70px;
   padding: 3px;
-  border: 2px solid ${({ $active, theme }) => ($active ? "#D32F2F" : theme.colors.gray[300])};
+  border: 2px solid ${({ $active, theme }) => ($active ? theme.colors.primary.main : theme.colors.gray[300])};
   border-radius: 10px;
-  background: #fff;
+  background: ${({ theme }) => theme.colors.body.paper};
   cursor: pointer;
   overflow: hidden;
   transition: border-color 150ms ease;
@@ -553,7 +546,7 @@ const VideoThumbBox = styled.button<{ $active: boolean }>`
   flex: 0 0 70px;
   width: 70px;
   height: 70px;
-  border: 2px solid ${({ $active }) => ($active ? "#D32F2F" : "#ddd")};
+  border: 2px solid ${({ $active, theme }) => ($active ? theme.colors.primary.main : theme.colors.gray[300])};
   border-radius: 10px;
   background: #111;
   cursor: pointer;
@@ -627,7 +620,7 @@ const PlayButtonCircle = styled.div`
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
   transition: transform 200ms ease, background 200ms ease;
 
-  &:hover { background: #D32F2F; }
+  &:hover { background: ${({ theme }) => theme.colors.primary.main}; }
 `;
 
 // ── Instagram embed via official embed.js ────────────────────────────────────

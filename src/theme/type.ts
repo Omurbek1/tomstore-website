@@ -21,4 +21,5 @@ export interface ThemeOption {
   colors: Colors;
   shadows: Shadows;
   breakpoints: Breakpoints;
+  isDark?: boolean;
 }
