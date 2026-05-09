@@ -822,3 +822,48 @@ export const getBlogSlugs = async (): Promise<string[]> => {
     return [];
   }
 };
+
+// ─── Vacancies ────────────────────────────────────────────────────────────────
+
+export type StorefrontVacancy = {
+  id: string;
+  title: string;
+  slug?: string;
+  department?: string;
+  location?: string;
+  employmentType?: string;
+  salary?: string;
+  description?: string;
+  requirements?: string | string[];
+  excerpt?: string;
+  applyUrl?: string;
+  publishedAt?: string;
+  isActive?: boolean;
+};
+
+export type StorefrontVacanciesResponse = {
+  enabled: boolean;
+  items: StorefrontVacancy[];
+  total: number;
+};
+
+export const storefrontVacanciesQueryKeys = {
+  all: ["storefront", "vacancies"] as const,
+  list: () => [...storefrontVacanciesQueryKeys.all, "list"] as const,
+};
+
+export const storefrontVacanciesQueryOptions = () =>
+  queryOptions({
+    queryKey: storefrontVacanciesQueryKeys.list(),
+    staleTime: STALE_TIME_MS,
+    queryFn: () =>
+      storefrontFetch<StorefrontVacanciesResponse>("/storefront/vacancies"),
+  });
+
+export const getVacancies = async (): Promise<StorefrontVacanciesResponse> => {
+  try {
+    return await getServerQueryClient().fetchQuery(storefrontVacanciesQueryOptions());
+  } catch {
+    return { enabled: true, items: [], total: 0 };
+  }
+};
