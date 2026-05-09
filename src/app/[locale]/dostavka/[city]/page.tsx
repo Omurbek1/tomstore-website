@@ -11,6 +11,7 @@ import cities, { getCityBySlug } from "@data/cities";
 import styled from "styled-components";
 
 import { SITE_URL } from "@lib/siteUrl";
+import { buildFallbackMetadata } from "@lib/seoMetadata";
 
 type Props = { params: Promise<{ locale: string; city: string }> };
 
@@ -21,7 +22,15 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, city: citySlug } = await params;
   const city = getCityBySlug(citySlug);
-  if (!city) return {};
+  if (!city) {
+    return buildFallbackMetadata({
+      locale,
+      path: `/dostavka/${citySlug}`,
+      title: "Доставка TomStore по Кыргызстану",
+      description:
+        "Доставка электроники TomStore по Кыргызстану. Ноутбуки, принтеры, ПК и мониторы с гарантией и рассрочкой.",
+    });
+  }
 
   const cityName = locale === "ky" ? city.nameKy : locale === "en" ? city.nameEn : city.nameRu;
   const inCity = locale === "en" ? `in ${city.nameEn}` : locale === "ky" ? `${city.nameKy}га` : city.inRu;

@@ -21,6 +21,7 @@ import { getSafeStorefrontCatalog, mapStorefrontProduct } from "@utils/__api__/s
 import styled from "styled-components";
 
 import { SITE_URL } from "@lib/siteUrl";
+import { buildFallbackMetadata } from "@lib/seoMetadata";
 
 type Props = {
   params: Promise<{ locale: string; region: string; district: string; category: string }>;
@@ -39,7 +40,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const cat      = getGeoCategory(rSlug)!;
     const district = getDistrict(dSlug, catSlug); // dSlug=region, catSlug=district
     const region   = getRegion(dSlug);
-    if (!cat || !district || !region) return {};
+    if (!cat || !district || !region) {
+      return buildFallbackMetadata({
+        locale,
+        path: `/${rSlug}/${dSlug}/${catSlug}`,
+        title: "TomStore — каталог электроники",
+        description:
+          "Каталог электроники TomStore с доставкой по Кыргызстану. Ноутбуки, принтеры, ПК, мониторы, гарантия и рассрочка.",
+      });
+    }
     const title = locale === "en"
       ? `Buy ${cat.nameEn} in ${district.nameEn}, ${region.nameEn} — TomStore`
       : locale === "ky" ? `${district.nameKy}га ${cat.nameKy} — TomStore`
@@ -55,7 +64,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const district = getDistrict(rSlug, dSlug);
   const region   = getRegion(rSlug);
   const cat      = getGeoCategory(catSlug);
-  if (!district || !region || !cat) return {};
+  if (!district || !region || !cat) {
+    return buildFallbackMetadata({
+      locale,
+      path: `/${rSlug}/${dSlug}/${catSlug}`,
+      title: "TomStore — каталог электроники",
+      description:
+        "Каталог электроники TomStore с доставкой по Кыргызстану. Ноутбуки, принтеры, ПК, мониторы, гарантия и рассрочка.",
+    });
+  }
 
   const catName   = locale === "en" ? cat.nameEn   : locale === "ky" ? cat.nameKy   : cat.nameRu;
   const dName     = locale === "en" ? district.nameEn : locale === "ky" ? district.nameKy : district.nameRu;

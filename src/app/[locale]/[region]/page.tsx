@@ -11,6 +11,7 @@ import { ALL_REGIONS, GEO_CATEGORIES, getRegion } from "@data/geo";
 import styled from "styled-components";
 
 import { SITE_URL } from "@lib/siteUrl";
+import { buildFallbackMetadata } from "@lib/seoMetadata";
 
 type Props = { params: Promise<{ locale: string; region: string }> };
 
@@ -21,7 +22,15 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, region: regionSlug } = await params;
   const region = getRegion(regionSlug);
-  if (!region) return {};
+  if (!region) {
+    return buildFallbackMetadata({
+      locale,
+      path: `/${regionSlug}`,
+      title: "TomStore — доставка электроники по Кыргызстану",
+      description:
+        "TomStore доставляет ноутбуки, принтеры, компьютеры и мониторы по всем регионам Кыргызстана. Гарантия и рассрочка.",
+    });
+  }
 
   const regionName = locale === "ky" ? region.nameKy : locale === "en" ? region.nameEn : region.nameRu;
   const url = `${SITE_URL}/${locale}/${regionSlug}`;

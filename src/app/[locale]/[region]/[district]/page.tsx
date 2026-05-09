@@ -11,6 +11,7 @@ import { ALL_REGIONS, GEO_CATEGORIES, MAJOR_CITIES, getRegion, getDistrict, getG
 import styled from "styled-components";
 
 import { SITE_URL } from "@lib/siteUrl";
+import { buildFallbackMetadata } from "@lib/seoMetadata";
 
 type Props = { params: Promise<{ locale: string; region: string; district: string }> };
 
@@ -39,7 +40,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (isCategorySlug(rSlug)) {
     const cat  = getGeoCategory(rSlug)!;
     const city = getMajorCity(dSlug);
-    if (!city) return {};
+    if (!city) {
+      return buildFallbackMetadata({
+        locale,
+        path: `/${rSlug}/${dSlug}`,
+        title: "TomStore — доставка электроники по Кыргызстану",
+        description:
+          "TomStore доставляет электронику по Кыргызстану. Ноутбуки, принтеры, ПК и мониторы с гарантией и рассрочкой.",
+      });
+    }
     const catName = locale === "en" ? cat.nameEn : locale === "ky" ? cat.nameKy : cat.nameRu;
     const title =
       locale === "en" ? `Buy ${cat.nameEn} in ${city.nameEn} — TomStore`
@@ -55,7 +64,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Pattern 1: /[region]/[district]
   const district = getDistrict(rSlug, dSlug);
   const region   = getRegion(rSlug);
-  if (!district || !region) return {};
+  if (!district || !region) {
+    return buildFallbackMetadata({
+      locale,
+      path: `/${rSlug}/${dSlug}`,
+      title: "TomStore — доставка электроники по Кыргызстану",
+      description:
+        "TomStore доставляет ноутбуки, принтеры, компьютеры и мониторы по всем регионам Кыргызстана. Гарантия и рассрочка.",
+    });
+  }
 
   const regionName = locale === "ky" ? region.nameKy : locale === "en" ? region.nameEn : region.nameRu;
 

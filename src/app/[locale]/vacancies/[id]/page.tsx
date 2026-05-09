@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getVacancy } from "@utils/__api__/storefront";
 import { SITE_URL } from "@lib/siteUrl";
+import { buildFallbackMetadata } from "@lib/seoMetadata";
 import VacancyDetailClient from "./VacancyDetailClient";
 
 type Props = { params: Promise<{ locale: string; id: string }> };
@@ -9,7 +10,15 @@ type Props = { params: Promise<{ locale: string; id: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, id } = await params;
   const vacancy = await getVacancy(id);
-  if (!vacancy) return {};
+  if (!vacancy) {
+    return buildFallbackMetadata({
+      locale,
+      path: `/vacancies/${id}`,
+      title: "Вакансии TomStore",
+      description:
+        "Открытые вакансии TomStore в магазине электроники. Работа в Бишкеке, развитие, команда и актуальные позиции.",
+    });
+  }
 
   const url = `${SITE_URL}/${locale}/vacancies/${id}`;
   const title = `${vacancy.title} — TomStore`;

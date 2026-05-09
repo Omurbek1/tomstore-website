@@ -10,6 +10,7 @@ import ProductPageClient from "@component/products/ProductPageClient";
 import ProductJsonLd from "@component/seo/ProductJsonLd";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
 import { categoryNameToCatalogPath } from "@utils/categoryPath";
+import { buildFallbackMetadata } from "@lib/seoMetadata";
 
 export const revalidate = 60;
 
@@ -62,7 +63,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     };
   } catch {
-    return {};
+    return buildFallbackMetadata({
+      locale,
+      path: `/product/${slug}`,
+      title: "Товар TomStore",
+      description:
+        "Купить электронику в TomStore с доставкой по Кыргызстану. Ноутбуки, принтеры, ПК, мониторы, гарантия и рассрочка.",
+    });
   }
 }
 

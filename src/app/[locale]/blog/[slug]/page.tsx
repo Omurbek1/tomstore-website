@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getBlogPost, getBlogSlugs, buildStorefrontImageUrl } from "@utils/__api__/storefront";
 import BlogPostPageClient from "./BlogPostPageClient";
+import { buildFallbackMetadata } from "@lib/seoMetadata";
 
 import { SITE_URL } from "@lib/siteUrl";
 
@@ -15,7 +16,16 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const post = await getBlogPost(slug);
-  if (!post) return {};
+  if (!post) {
+    return buildFallbackMetadata({
+      locale,
+      path: `/blog/${slug}`,
+      title: "Блог TomStore",
+      description:
+        "Статьи TomStore об электронике, ноутбуках, принтерах, компьютерах, доставке, гарантии и выборе техники.",
+      type: "article",
+    });
+  }
 
   const url = `${SITE_URL}/${locale}/blog/${slug}`;
 
