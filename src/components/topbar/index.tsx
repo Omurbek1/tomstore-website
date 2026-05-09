@@ -361,7 +361,6 @@ function TopbarContent() {
         {/* Mobile left: phone dropdown only */}
         <div className="mobile-left">
           <PhoneDropdown />
-          <ThemeToggle />
         </div>
 
         {/* Desktop right */}

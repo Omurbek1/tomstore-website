@@ -21,6 +21,7 @@ const StyledHeroBannerCard = styled.div`
       margin-top: 0px;
       line-height: 1.2;
       margin-bottom: 1.35rem;
+      color: ${({ theme }) => theme.colors.text.primary};
     }
   }
 
@@ -62,6 +63,7 @@ const StyledHeroBannerCard = styled.div`
       .title {
         font-size: 22px;
         margin-bottom: 0.75rem;
+        color: ${({ theme }) => theme.colors.text.primary};
       }
       p, span {
         font-size: 13px;
@@ -153,7 +155,7 @@ export default function HeroBannerCard({
     <StyledHeroBannerCard>
       <div className="content">
         <h1 className="title">{title}</h1>
-        <Typography color="secondary.main" mb="1.35rem">
+        <Typography color="text.secondary" mb="1.35rem">
           {description}
         </Typography>
 

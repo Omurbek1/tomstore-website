@@ -38,7 +38,7 @@ export default async function Footer2() {
 
         <Grid container spacing={6}>
           <Grid item md={6} sm={6} xs={12}>
-            <Paragraph mb="1.25rem" color="gray.500" maxWidth="370px">
+            <Paragraph mb="1.25rem" maxWidth="370px" style={{ color: "rgba(255,255,255,0.65)" }}>
               {t("description")}
             </Paragraph>
 
