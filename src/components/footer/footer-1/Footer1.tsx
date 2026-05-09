@@ -21,7 +21,7 @@ const ABOUT_LINK_HREFS: Record<string, string> = {
   blog: "/blog",
   terms: "/contacts",
   privacy: "/contacts",
-  careers: "/contacts",
+  careers: "/vacancies",
 };
 
 const CUSTOMER_CARE_HREFS: Record<string, string> = {
