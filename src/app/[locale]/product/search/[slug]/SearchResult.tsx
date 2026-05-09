@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Drawer } from "antd";
 import { useTheme } from "styled-components";
 import { IconLayoutGrid, IconList } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import styled from "styled-components";
 import Box from "@component/Box";
@@ -101,6 +101,7 @@ export default function SearchResult({
   const filtersT = useTranslations("product.filters");
   const query = decodeURIComponent(rawQuery || "");
 
+  const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -276,19 +277,11 @@ export default function SearchResult({
     [updateUrl],
   );
 
-  const handleResetAllFilters = useCallback(
-    () =>
-      updateUrl({
-        filterCategory: undefined,
-        filterBrand: undefined,
-        filterMinPrice: undefined,
-        filterMaxPrice: undefined,
-        filterOnSale: undefined,
-        filterInStock: undefined,
-        filterFeatured: undefined,
-      }),
-    [updateUrl],
-  );
+  const handleResetAllFilters = useCallback(() => {
+    startTransition(() => {
+      router.push(`/${locale}/catalog`);
+    });
+  }, [locale, router]);
 
   const hasActiveFilters =
     !!selectedCategory ||
