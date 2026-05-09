@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, startTransition, useCallback, useState } from "react";
+import { Fragment, startTransition, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Drawer } from "antd";
 import { useTheme } from "styled-components";
@@ -20,7 +20,7 @@ import ProductListView from "@component/products/ProductList";
 import ProductFilterCard from "@component/products/ProductFilterCard";
 import useWindowSize from "@hook/useWindowSize";
 import Product from "@models/product.model";
-import { useStorefrontProducts } from "@hook/useStorefrontCatalog";
+import { useInfiniteStorefrontProducts } from "@hook/useStorefrontCatalog";
 import { useRouter, usePathname } from "next/navigation";
 import type {
   StorefrontCatalogFilters,
@@ -93,7 +93,7 @@ export default function SearchResult({
   const selectedInStock = searchParams.get("filterInStock") === "1";
   const selectedFeatured = searchParams.get("filterFeatured") === "1";
 
-  // ── URL updater (startTransition keeps UI responsive during navigation) ─
+  // ── URL updater ─────────────────────────────────────────────────────────
   const updateUrl = useCallback(
     (updates: Record<string, string | undefined>) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -113,33 +113,55 @@ export default function SearchResult({
   );
 
   // ── Live catalog params ─────────────────────────────────────────────────
-  // Base: page context (search query or category slug)
   const baseParams: StorefrontCatalogParams =
     catalogParams ?? (searchType === "category" ? { category: query } : { q: query });
 
-  // Apply user-selected filters on top of base context using conditional spreads
-  // so we never override base values with undefined
   const liveCatalogParams: StorefrontCatalogParams = {
     ...baseParams,
     ...(selectedCategory !== undefined ? { category: selectedCategory } : {}),
     ...(selectedBrand !== undefined ? { brand: selectedBrand } : {}),
     ...(selectedMinPrice !== undefined ? { minPrice: selectedMinPrice } : {}),
     ...(selectedMaxPrice !== undefined ? { maxPrice: selectedMaxPrice } : {}),
-    // onSale and featured both map to the "label" param — mutually exclusive
     ...(selectedOnSale
       ? { label: "sale" }
       : selectedFeatured
         ? { label: "hit" }
         : {}),
     ...(selectedInStock ? { availability: "in_stock" } : {}),
-    pageSize: 48,
     sort: SORT_MAP[sortKey] ?? "popular",
   };
 
-  const { data: liveProducts = products, isFetching } = useStorefrontProducts(
-    liveCatalogParams,
-    products,
-  );
+  const {
+    data,
+    isFetching,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteStorefrontProducts(liveCatalogParams, products);
+
+  const liveProducts = data?.pages.flatMap((p) => p.items) ?? products;
+  const liveFilters = data?.pages[0]?.filters ?? initialFilters;
+  const total = data?.pages[0]?.total;
+
+  // ── Infinite scroll sentinel ─────────────────────────────────────────────
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { rootMargin: "300px" },
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   // ── Handlers ────────────────────────────────────────────────────────────
   const sortOptions = [
@@ -160,7 +182,6 @@ export default function SearchResult({
     (category?: string) =>
       updateUrl({
         filterCategory: category,
-        // Reset all sub-filters when switching category
         filterBrand: undefined,
         filterMinPrice: undefined,
         filterMaxPrice: undefined,
@@ -213,7 +234,6 @@ export default function SearchResult({
     [updateUrl],
   );
 
-  // ── Shared filter card props (used for both desktop sidebar and mobile drawer) ─
   const filterCardProps = {
     catalogParams: liveCatalogParams,
     selectedCategory,
@@ -223,7 +243,7 @@ export default function SearchResult({
     selectedOnSale,
     selectedInStock,
     selectedFeatured,
-    initialFilters,
+    initialFilters: liveFilters,
     onCategoryChange: handleCategoryChange,
     onBrandChange: handleBrandChange,
     onPriceChange: handlePriceChange,
@@ -234,10 +254,11 @@ export default function SearchResult({
 
   const isTablet = width ? width < 1025 : false;
   const showDesktopFilters = !isTablet;
+  const isFetchingFirstPage = isFetching && !isFetchingNextPage;
 
   return (
     <Fragment>
-      {/* ── Toolbar: title + sort + view toggle ── */}
+      {/* ── Toolbar ── */}
       <FlexBox
         as={Card}
         mb="55px"
@@ -249,11 +270,15 @@ export default function SearchResult({
         justifyContent="space-between"
       >
         <div>
-          <H1 fontSize="16px" fontWeight="600" mb="0" mt="0" color="text.primary">{t("searchingFor", { query })}</H1>
+          <H1 fontSize="16px" fontWeight="600" mb="0" mt="0" color="text.primary">
+            {t("searchingFor", { query })}
+          </H1>
           <Paragraph color="text.muted">
-            {isFetching
+            {isFetchingFirstPage
               ? "…"
-              : t("resultsFound", { count: liveProducts.length })}
+              : total !== undefined
+                ? t("resultsFound", { count: total })
+                : t("resultsFound", { count: liveProducts.length })}
           </Paragraph>
         </div>
 
@@ -271,22 +296,14 @@ export default function SearchResult({
 
           <Paragraph color="text.muted">{t("view")}</Paragraph>
 
-          <IconButton
-            onClick={toggleView("grid", updateUrl)}
-            aria-label="Grid view"
-            title="Grid view"
-          >
+          <IconButton onClick={toggleView("grid", updateUrl)} aria-label="Grid view" title="Grid view">
             <IconLayoutGrid
               size={22}
               color={view === "grid" ? theme.colors.primary.main : "currentColor"}
             />
           </IconButton>
 
-          <IconButton
-            onClick={toggleView("list", updateUrl)}
-            aria-label="List view"
-            title="List view"
-          >
+          <IconButton onClick={toggleView("list", updateUrl)} aria-label="List view" title="List view">
             <IconList
               size={22}
               color={view === "list" ? theme.colors.primary.main : "currentColor"}
@@ -319,7 +336,7 @@ export default function SearchResult({
         </FlexBox>
       </FlexBox>
 
-      {/* ── Content: sidebar + product list ── */}
+      {/* ── Content ── */}
       <Grid container spacing={6}>
         {showDesktopFilters && (
           <Grid item lg={3} xs={12}>
@@ -328,14 +345,34 @@ export default function SearchResult({
         )}
 
         <Grid item lg={showDesktopFilters ? 9 : 12} xs={12}>
-          {/* Subtle opacity fade while fetching new results */}
-          <div style={{ opacity: isFetching ? 0.55 : 1, transition: "opacity 0.25s ease" }}>
+          <div style={{ opacity: isFetchingFirstPage ? 0.55 : 1, transition: "opacity 0.25s ease" }}>
             {view === "grid" ? (
               <ProductGridView products={liveProducts} />
             ) : (
               <ProductListView products={liveProducts} />
             )}
           </div>
+
+          {/* Infinite scroll sentinel */}
+          <div ref={sentinelRef} style={{ height: 1 }} />
+
+          {/* Loading next page indicator */}
+          {isFetchingNextPage && (
+            <FlexBox justifyContent="center" py="2rem">
+              <Paragraph color="text.muted">
+                {liveProducts.length} / {total ?? "…"}
+              </Paragraph>
+            </FlexBox>
+          )}
+
+          {/* End of results */}
+          {!hasNextPage && liveProducts.length > 0 && !isFetchingFirstPage && (
+            <FlexBox justifyContent="center" py="2rem">
+              <Paragraph color="text.muted" fontSize="13px">
+                {liveProducts.length} / {total ?? liveProducts.length}
+              </Paragraph>
+            </FlexBox>
+          )}
         </Grid>
       </Grid>
     </Fragment>

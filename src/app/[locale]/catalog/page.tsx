@@ -44,7 +44,7 @@ export default async function CatalogRootPage({ params }: CatalogRootPageProps) 
 
   const [t, catalog] = await Promise.all([
     getTranslations({ locale, namespace: "home" }),
-    getSafeStorefrontCatalog({ pageSize: 48, sort: "popular" }),
+    getSafeStorefrontCatalog({ pageSize: 24, sort: "popular" }),
   ]);
 
   const displayQuery = locale === "en" ? "Catalog" : "Каталог";

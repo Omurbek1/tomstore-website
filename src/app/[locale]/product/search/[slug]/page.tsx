@@ -34,7 +34,7 @@ export default async function ProductSearchResult({ params, searchParams }: Prop
   // "category" type is kept for potential future direct category URLs.
   const catalogParam = type === "category" ? { category: query } : { q: query };
 
-  const products = await getProducts({ ...catalogParam, pageSize: 48, sort: "popular" });
+  const products = await getProducts({ ...catalogParam, pageSize: 24, sort: "popular" });
 
   return (
     <Box pt="20px">

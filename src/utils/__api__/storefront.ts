@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { QueryClient, queryOptions } from "@tanstack/react-query";
+import { QueryClient, queryOptions, infiniteQueryOptions } from "@tanstack/react-query";
 
 const safeDecode = (v: string) => { try { return decodeURIComponent(v); } catch { return v; } };
 import Brand from "@models/Brand.model";
@@ -478,6 +478,36 @@ export const storefrontProductsQueryOptions = (
       storefrontFetch<StorefrontCatalogResponse>(
         buildCatalogPath(normalizedParams),
       ).then((catalog) => catalog.items.map(mapStorefrontProduct)),
+  });
+};
+
+export type StorefrontInfinitePage = {
+  items: Product[];
+  nextPage: number | undefined;
+  total: number;
+  totalPages: number;
+  filters: StorefrontCatalogResponse["filters"] | undefined;
+};
+
+export const storefrontInfiniteCatalogQueryOptions = (
+  params: StorefrontCatalogParams = {},
+) => {
+  const normalizedParams = normalizeQueryParams({ pageSize: 24, ...params });
+  return infiniteQueryOptions({
+    queryKey: [...storefrontQueryKeys.catalog(normalizedParams), "infinite"] as const,
+    staleTime: STALE_TIME_MS,
+    initialPageParam: 1,
+    queryFn: ({ pageParam }): Promise<StorefrontInfinitePage> =>
+      storefrontFetch<StorefrontCatalogResponse>(
+        buildCatalogPath({ ...normalizedParams, page: pageParam as number }),
+      ).then((catalog) => ({
+        items: catalog.items.map(mapStorefrontProduct),
+        nextPage: catalog.page < catalog.totalPages ? catalog.page + 1 : undefined,
+        total: catalog.total,
+        totalPages: catalog.totalPages,
+        filters: catalog.filters,
+      })),
+    getNextPageParam: (lastPage) => lastPage.nextPage,
   });
 };
 

@@ -1,43 +1,71 @@
-import { Fragment } from "react";
+"use client";
 
-import FlexBox from "@component/FlexBox";
-import Pagination from "@component/pagination";
-import { SemiSpan } from "@component/Typography";
+import { useEffect, useRef, useState } from "react";
+import { useWindowVirtualizer } from "@tanstack/react-virtual";
 import { ProductListCard } from "@component/product-cards";
 import Product from "@models/product.model";
-import { useTranslations } from "next-intl";
 
-// ==========================================================
 interface Props {
   products: Product[];
 }
-// ==========================================================
+
+const ITEM_GAP = "1.25rem";
+const ESTIMATED_ITEM_HEIGHT = 200;
 
 export default function ProductListView({ products }: Props) {
-  const t = useTranslations("common");
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scrollMargin, setScrollMargin] = useState(0);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      setScrollMargin(containerRef.current.offsetTop);
+    }
+  }, []);
+
+  const virtualizer = useWindowVirtualizer({
+    count: products.length,
+    estimateSize: () => ESTIMATED_ITEM_HEIGHT,
+    overscan: 3,
+    scrollMargin,
+  });
+
+  const virtualItems = virtualizer.getVirtualItems();
 
   return (
-    <Fragment>
-      {products.map((item) => (
-        <ProductListCard
-          mb="1.25rem"
-          id={item.id}
-          key={item.id}
-          slug={item.slug}
-          price={item.price}
-          title={item.title}
-          off={item.discount}
-          rating={item.rating}
-          images={item.images??[]}
-          imgUrl={item.thumbnail}
-          categories={item.categories}
-        />
-      ))}
-
-      <FlexBox flexWrap="wrap" justifyContent="space-between" alignItems="center" mt="32px">
-        <SemiSpan>{t("productsShown", { count: products.length })}</SemiSpan>
-        <Pagination pageCount={10} />
-      </FlexBox>
-    </Fragment>
+    <div ref={containerRef}>
+      <div style={{ height: virtualizer.getTotalSize(), position: "relative", width: "100%" }}>
+        {virtualItems.map((virtualItem) => {
+          const product = products[virtualItem.index];
+          return (
+            <div
+              key={virtualItem.key}
+              data-index={virtualItem.index}
+              ref={virtualizer.measureElement}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                transform: `translateY(${virtualItem.start - scrollMargin}px)`,
+              }}
+            >
+              <div style={{ paddingBottom: ITEM_GAP }}>
+                <ProductListCard
+                  id={product.id}
+                  slug={product.slug}
+                  price={product.price}
+                  title={product.title}
+                  off={product.discount}
+                  rating={product.rating}
+                  images={product.images ?? []}
+                  imgUrl={product.thumbnail}
+                  categories={product.categories}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }

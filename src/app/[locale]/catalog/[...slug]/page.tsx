@@ -140,7 +140,7 @@ export default async function CatalogPage({ params }: CatalogPageProps) {
       ? { q: candidates[0] }
       : { q: fallbackQuery };
   const [catalog, t] = await Promise.all([
-    getSafeStorefrontCatalog({ ...catalogParams, pageSize: 48, sort: "popular" }),
+    getSafeStorefrontCatalog({ ...catalogParams, pageSize: 24, sort: "popular" }),
     getTranslations({ locale }),
   ]);
   const products = catalog?.items.map(mapStorefrontProduct) || [];
