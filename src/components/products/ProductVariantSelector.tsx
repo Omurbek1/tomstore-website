@@ -122,7 +122,7 @@ export default function ProductVariantSelector({ product, selectedVariant, onSel
     <VariantGrid $single={!showConfig}>
       {/* ── Варианты (cards) ── */}
       <Card p="20px" borderRadius="16px" boxShadow="small">
-        <H5 mb="16px">Варианты покупки</H5>
+        <H5 mb="16px" color="text.primary">Варианты покупки</H5>
         <VariantList>
           {variants.map((variant) => {
             const isSelected = variant.id === selectedVariant.id;
@@ -135,7 +135,7 @@ export default function ProductVariantSelector({ product, selectedVariant, onSel
               >
                 <FlexBox justifyContent="space-between" alignItems="flex-start" style={{ gap: 12 }}>
                   <Box minWidth={0}>
-                    <H6 mb="2px">{variant.title}</H6>
+                    <H6 mb="2px" color="text.primary">{variant.title}</H6>
                     {variant.warehouse && (
                       <Small display="block" color="text.muted" mt="4px">
                         {variant.warehouse}
@@ -143,7 +143,7 @@ export default function ProductVariantSelector({ product, selectedVariant, onSel
                     )}
                   </Box>
                   <Box textAlign="right" flexShrink={0}>
-                    <H6 color={RED}>{formatCurrency(Number(variant.price))}</H6>
+                    <H6 color="primary.main">{formatCurrency(Number(variant.price))}</H6>
                     <ChooseBadge $selected={isSelected}>
                       {isSelected ? "Выбрано" : "Выбрать"}
                     </ChooseBadge>
@@ -158,13 +158,13 @@ export default function ProductVariantSelector({ product, selectedVariant, onSel
       {/* ── Конфигурация (chips) ── */}
       {showConfig && (
         <Card p="20px" borderRadius="16px" boxShadow="small">
-          <H5 mb="16px">Конфигурация</H5>
+          <H5 mb="16px" color="text.primary">Конфигурация</H5>
           <FilterList>
             {visibleFilters.map((f) => {
               const currentVal = selectedVariant[f.key];
               return (
                 <Box key={f.key}>
-                  <H6 mb="10px">{f.title}</H6>
+                  <H6 mb="10px" color="text.primary">{f.title}</H6>
                   <ChipRow>
                     {options[f.key].map((val) => {
                       const selected = String(currentVal) === String(val);
@@ -193,7 +193,7 @@ export default function ProductVariantSelector({ product, selectedVariant, onSel
               )?.value;
               return (
                 <Box key={name}>
-                  <H6 mb="10px">{name}</H6>
+                  <H6 mb="10px" color="text.primary">{name}</H6>
                   <ChipRow>
                     {values.map((val) => {
                       const selected = currentAttrVal === val;
@@ -276,9 +276,6 @@ function findBestVariantByAttr(
 
 // ── Styled components ──────────────────────────────────────────────────────────
 
-const RED = "#D32F2F";
-const RED_LIGHT = "#FFEBEE";
-
 const VariantGrid = styled.div<{ $single?: boolean }>`
   display: grid;
   grid-template-columns: ${({ $single }) => ($single ? "1fr" : "minmax(0,1fr) minmax(0,1fr)")};
@@ -298,9 +295,9 @@ const VariantList = styled.div`
 const VariantCard = styled.button<{ $selected: boolean }>`
   width: 100%;
   padding: 14px;
-  border: 2px solid ${({ $selected, theme }) => ($selected ? RED : theme.colors.gray[300])};
+  border: 2px solid ${({ $selected, theme }) => ($selected ? theme.colors.primary.main : theme.colors.gray[300])};
   border-radius: 16px;
-  background: ${({ $selected, theme }) => ($selected ? RED_LIGHT : theme.colors.body.paper)};
+  background: ${({ $selected, theme }) => ($selected ? theme.colors.primary.light : theme.colors.body.paper)};
   box-shadow: ${({ theme }) => theme.shadows.small};
   color: inherit;
   cursor: pointer;
@@ -317,8 +314,8 @@ const ChooseBadge = styled.span<{ $selected: boolean }>`
   margin-top: 8px;
   padding: 0 12px;
   border-radius: 999px;
-  background: ${({ $selected }) => ($selected ? RED : RED_LIGHT)};
-  color: ${({ $selected }) => ($selected ? "#fff" : RED)};
+  background: ${({ $selected, theme }) => ($selected ? theme.colors.primary.main : theme.colors.primary.light)};
+  color: ${({ $selected, theme }) => ($selected ? theme.colors.primary.text : theme.colors.primary.main)};
   font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
@@ -343,16 +340,16 @@ const Chip = styled.button<{ $selected: boolean; $unavailable?: boolean }>`
       $unavailable
         ? theme.colors.gray[200]
         : $selected
-          ? RED
+          ? theme.colors.primary.main
           : theme.colors.gray[300]};
   border-radius: 12px;
   background: ${({ $selected, $unavailable, theme }) =>
-    $unavailable ? theme.colors.gray[100] : $selected ? RED : theme.colors.body.paper};
+    $unavailable ? theme.colors.gray[100] : $selected ? theme.colors.primary.main : theme.colors.body.paper};
   color: ${({ $selected, $unavailable, theme }) =>
     $unavailable
       ? theme.colors.text.disabled
       : $selected
-        ? "#fff"
+        ? theme.colors.primary.text
         : theme.colors.text.primary};
   cursor: ${({ $unavailable }) => ($unavailable ? "not-allowed" : "pointer")};
   font-family: inherit;

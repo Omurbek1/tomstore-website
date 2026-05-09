@@ -412,7 +412,7 @@ export default function ProductIntro({
 
           <FlexBox alignItems="center" mb="1rem">
             <SemiSpan>{t("brand")}:</SemiSpan>
-            <H6 ml="8px">{brand || "TOMSTORE"}</H6>
+            <H6 ml="8px" color="text.primary">{brand || "TOMSTORE"}</H6>
           </FlexBox>
 
           <FlexBox alignItems="center" mb="1rem">
@@ -420,7 +420,7 @@ export default function ProductIntro({
             <Box ml="8px" mr="8px">
               <Rating color="warn" value={4} outof={5} />
             </Box>
-            <H6>(50)</H6>
+            <H6 color="text.primary">(50)</H6>
           </FlexBox>
 
           <Box mb="24px">
@@ -478,7 +478,7 @@ export default function ProductIntro({
                   <IconMinus size={22} />
                 </Button>
 
-                <H3 fontWeight="600" mx="20px">
+                <H3 fontWeight="600" mx="20px" color="text.primary">
                   {cartItem?.qty.toString().padStart(2, "0")}
                 </H3>
 
