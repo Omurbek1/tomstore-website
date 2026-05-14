@@ -13,7 +13,7 @@ export default function useScroll(height = 60) {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    window.addEventListener("scroll", scrollListener);
+    window.addEventListener("scroll", scrollListener, { passive: true });
     return () => {
       window.removeEventListener("scroll", scrollListener);
     };

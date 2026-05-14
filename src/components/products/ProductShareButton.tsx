@@ -166,6 +166,16 @@ export default function ProductShareButton({ title, text, slug }: Props) {
       setMenuPosition({ top: nextTop, left: nextLeft });
     };
 
+    // Defer geometry reads to the next frame so they don't force synchronous layout
+    let rafId: number | null = null;
+    const scheduleUpdate = () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        updateMenuPosition();
+        rafId = null;
+      });
+    };
+
     const handlePointerDown = (event: MouseEvent) => {
       const target = event.target as Node;
       if (
@@ -186,14 +196,15 @@ export default function ProductShareButton({ title, text, slug }: Props) {
 
     document.addEventListener("mousedown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("resize", updateMenuPosition);
-    window.addEventListener("scroll", updateMenuPosition, true);
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("scroll", scheduleUpdate, { passive: true, capture: true });
 
     return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("resize", updateMenuPosition);
-      window.removeEventListener("scroll", updateMenuPosition, true);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("scroll", scheduleUpdate, { capture: true });
     };
   }, [isOpen]);
 
