@@ -120,6 +120,13 @@
     "productsShown": "{count, plural, one {# товар көрсөтүлдү} other {# товар көрсөтүлдү}}",
     "shopsShown": "{count, plural, one {# дүкөн көрсөтүлдү} other {# дүкөн көрсөтүлдү}}"
   },
+  "notFound": {
+    "title": "Барак табылган жок",
+    "description": "Барак жок болушу мүмкүн же сиз туура эмес шилтеме аркылуу өттүңүз.",
+    "goBack": "Артка",
+    "goHome": "Башкы бетке",
+    "catalog": "Каталогго өтүү"
+  },
   "metadata": {
     "login": {
       "title": "Кирүү | TomStore",

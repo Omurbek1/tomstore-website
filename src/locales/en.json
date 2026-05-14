@@ -120,6 +120,13 @@
     "productsShown": "{count, plural, one {Showing # product} other {Showing # products}}",
     "shopsShown": "{count, plural, one {Showing # shop} other {Showing # shops}}"
   },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page may have been removed or you followed an incorrect link.",
+    "goBack": "Go Back",
+    "goHome": "Go to Home",
+    "catalog": "Browse Catalog"
+  },
   "metadata": {
     "login": {
       "title": "Login | TomStore",
