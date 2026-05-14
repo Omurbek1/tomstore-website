@@ -5,8 +5,8 @@ export default function Logo() {
     <Image
       src="/assets/images/logo.svg"
       alt="TomStore"
-      width={140}
-      height={40}
+      width={240}
+      height={240}
       priority
       unoptimized
       className="site-logo"

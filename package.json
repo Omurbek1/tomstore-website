@@ -17,7 +17,6 @@
     "@tanstack/react-virtual": "^3.13.24",
     "antd": "^6.3.5",
     "axios": "^1.8.4",
-    "axios-mock-adapter": "^2.1.0",
     "chart.js": "^4.4.8",
     "clsx": "^2.1.1",
     "country-flag-icons": "^1.6.15",
