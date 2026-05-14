@@ -343,8 +343,8 @@ function TopbarContent() {
             <NextImage
               src="/assets/images/logo.svg"
               alt="Tomstore"
-              width={112}
-              height={32}
+              width={128}
+              height={36}
               unoptimized
             />
           </div>

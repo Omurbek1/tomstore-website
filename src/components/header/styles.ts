@@ -15,9 +15,9 @@ const StyledHeader = styled.header`
   }
 
   .site-logo {
-    width: 132px;
-    height: 38px;
-    max-width: 132px;
+    width: 152px;
+    height: 44px;
+    max-width: 152px;
   }
 
 
@@ -45,9 +45,9 @@ const StyledHeader = styled.header`
   /* ── Tablet (≤900px): single row, smaller logo, hide extras ── */
   @media only screen and (max-width: 900px) {
     .site-logo {
-      width: 120px;
-      height: 34px;
-      max-width: 120px;
+      width: 136px;
+      height: 40px;
+      max-width: 136px;
     }
 
     .logo {
@@ -113,9 +113,9 @@ const StyledHeader = styled.header`
     }
 
     .site-logo {
-      width: 108px;
-      height: 30px;
-      max-width: 108px;
+      width: 120px;
+      height: 34px;
+      max-width: 120px;
     }
   }
 `;
