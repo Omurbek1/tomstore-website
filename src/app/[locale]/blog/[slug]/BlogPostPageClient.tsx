@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import AppLayout from "@component/layout/layout-3";
+import AppLayout from "@component/layout/main-layout";
 import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
 import { H1, H4, Paragraph } from "@component/Typography";

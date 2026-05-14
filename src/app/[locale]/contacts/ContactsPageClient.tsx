@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AppLayout from "@component/layout/layout-3";
+import AppLayout from "@component/layout/main-layout";
 import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
 import { H1, H2, H3, Paragraph } from "@component/Typography";

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import AppLayout from "@component/layout/layout-3";
+import AppLayout from "@component/layout/main-layout";
 import Box from "@component/Box";
 import SearchResult from "../../product/search/[slug]/SearchResult";
 import Breadcrumbs from "@component/seo/Breadcrumbs";

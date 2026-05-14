@@ -2,7 +2,7 @@
 
 import styled, { keyframes } from "styled-components";
 import { Link } from "@i18n/navigation";
-import AppLayout from "@component/layout/layout-3";
+import AppLayout from "@component/layout/main-layout";
 import Box from "@component/Box";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
 import { useVacancy } from "@hook/useVacancies";

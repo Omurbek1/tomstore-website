@@ -2,7 +2,7 @@ import { PropsWithChildren } from "react";
 import StyledComponentsRegistry from "@lib/registry";
 import { ThemeProvider } from "theme";
 import { Provider } from "@lib/Provider";
-import AppLayout from "@component/layout/layout-3";
+import AppLayout from "@component/layout/main-layout";
 
 export const dynamic = "force-dynamic";
 

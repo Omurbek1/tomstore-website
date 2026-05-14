@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import AppLayout from "@component/layout/layout-3";
+import AppLayout from "@component/layout/main-layout";
 import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
 import Breadcrumbs from "@component/seo/Breadcrumbs";

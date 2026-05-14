@@ -52,7 +52,7 @@ export default function MegaMenu3({
           )}
         </FlexBox>
 
-        <Link href="/sale-page-2">
+        <Link href="/deals">
           <Grid
             container
             spacing={0}

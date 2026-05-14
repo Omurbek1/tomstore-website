@@ -5,8 +5,8 @@ const navbarNavigations = [
       {
         title: "Sale Page",
         child: [
-          { title: "Version 1", url: "/sale-page-1" },
-          { title: "Version 2", url: "/sale-page-2" }
+          { title: "Version 1", url: "/flash-deals" },
+          { title: "Version 2", url: "/deals" }
         ]
       },
       {
