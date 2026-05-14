@@ -18,7 +18,7 @@ const CategoryPromoCard = ({
   imgUrl,
   priority = false,
 }: CategoryPromoCardProps) => {
-  const imageSrc = imgUrl || "/assets/images/banners/category-1.png";
+  const imageSrc = imgUrl || "/assets/images/banners/category-1.webp";
 
   return (
     <Card

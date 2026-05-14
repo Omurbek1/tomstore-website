@@ -34,11 +34,11 @@ export default function Avatar({
     <StyledAvatar size={size} {...props}>
       {showImg && (
         <NextImage
-          src={src || "/assets/images/products/iphone-xi.png"}
+          src={src || "/assets/images/products/iphone-xi.webp"}
           alt={alt}
           fill
           sizes={`${size}px`}
-          fallbackSrc="/assets/images/products/iphone-xi.png"
+          fallbackSrc="/assets/images/products/iphone-xi.webp"
           style={{ objectFit: "cover" }}
         />
       )}

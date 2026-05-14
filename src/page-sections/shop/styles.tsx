@@ -15,7 +15,7 @@ export const ShopIntroWrapper = styled(Card)`
   }
   .cover-image {
     height: 202px;
-    background-image: url(/assets/images/banners/shop-cover.png);
+    background-image: url(/assets/images/banners/shop-cover.webp);
     background-size: cover;
     background-position: center;
   }
@@ -39,7 +39,7 @@ export const ShopCard1Wrapper = styled(Card)<ShopWrapperProps>`
         rgba(${convertHexToRGB(colors.gray[900])}, 0.8),
         rgba(${convertHexToRGB(colors.gray[900])}, 0.8)
       ),
-      url(${(props) => props.coverImgUrl || "/assets/images/banners/cycle.png"});
+      url(${(props) => props.coverImgUrl || "/assets/images/banners/cycle.webp"});
     background-size: cover;
     background-position: center;
     color: white;

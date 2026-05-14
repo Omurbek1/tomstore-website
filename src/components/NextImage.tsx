@@ -14,7 +14,7 @@ type NextImageProps = ImageProps &
   };
 // ==============================================================
 
-const PLACEHOLDER_IMAGE = "/assets/images/products/iphone-xi.png";
+const PLACEHOLDER_IMAGE = "/assets/images/products/iphone-xi.webp";
 const StyledImage = styled(Image)<NextImageProps>(
   ({ fill }) => (fill ? {} : { width: "100%", height: "auto" }),
   compose(space, borderRadius)

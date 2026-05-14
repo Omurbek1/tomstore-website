@@ -69,7 +69,7 @@ export default function AccountSettings() {
           position="relative"
           style={{
             background:
-              "url(/assets/images/banners/banner-10.png) center/cover",
+              "url(/assets/images/banners/banner-10.webp) center/cover",
           }}
         >
           <Box
@@ -83,7 +83,7 @@ export default function AccountSettings() {
               size={80}
               border="4px solid"
               borderColor="gray.100"
-              src="/assets/images/faces/propic(9).png"
+              src="/assets/images/faces/propic(9).webp"
             />
 
             <Box ml="-32px" zIndex={1}>

@@ -219,19 +219,19 @@ export const ticketList = [
 
 export const messageList = [
   {
-    imgUrl: "/assets/images/faces/face-7.jpg",
+    imgUrl: "/assets/images/faces/face-7.webp",
     name: "Esther Howard",
     date: "2020-12-14T08:39:58.219Z",
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ipsum velit amet, aliquam massa tellus. Condimentum sit at pharetra, congue. Sit mattis amet nec pharetra odio. Interdum lorem vestibulum et amet et duis placerat. Ac mattis massa duis mi tellus sed. Mus eget in fames urna, ornare nunc, tincidunt tincidunt interdum. Amet aliquet pharetra rhoncus scelerisque pulvinar dictumst at sit. Neque tempor tellus ac nullam. Etiam massa tempor eu risus fusce aliquam.",
   },
   {
-    imgUrl: "/assets/images/faces/10.jpg",
+    imgUrl: "/assets/images/faces/10.webp",
     name: "Ralph Edwards",
     date: "2021-01-05T05:39:58.219Z",
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ipsum velit amet, aliquam massa tellus. Condimentum sit at pharetra, congue. Sit mattis amet nec pharetra odio. Interdum lorem vestibulum et amet et duis placerat.",
   },
   {
-    imgUrl: "/assets/images/faces/face-7.jpg",
+    imgUrl: "/assets/images/faces/face-7.webp",
     name: "Esther Howard",
     date: "2021-01-14T08:39:58.219Z",
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nunc, lectus mi ornare. Bibendum proin euismod nibh tellus, phasellus.",

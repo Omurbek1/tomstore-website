@@ -105,7 +105,7 @@ function normalizeProductPayload(payload: any) {
     oldPrice: payload.oldPrice || null,
     discount: payload.discount || 0,
     rating: payload.rating || 4,
-    thumbnail: payload.thumbnail || payload.images?.[0] || "/assets/images/products/iphone-xi.png",
+    thumbnail: payload.thumbnail || payload.images?.[0] || "/assets/images/products/iphone-xi.webp",
     images: Array.isArray(payload.images) ? payload.images : [],
     categories: Array.isArray(payload.categories) ? payload.categories : [],
     published: payload.published ?? true,

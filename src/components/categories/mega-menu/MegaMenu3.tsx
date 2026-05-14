@@ -10,7 +10,7 @@ import Typography, { H3, SemiSpan, Small } from "@component/Typography";
 import { StyledMegaMenu1 } from "./styles";
 import { MegaMenu3Props } from "./type";
 
-import bagImage from "../../../../public/assets/images/products/paper-bag.png";
+import bagImage from "../../../../public/assets/images/products/paper-bag.webp";
 
 export default function MegaMenu3({
   data: { categories, rightImage },

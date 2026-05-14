@@ -36,7 +36,7 @@ export default function CompactSaleProductCard({
       <Link href={`/${locale}/product/${slug}`}>
         <HoverBox mb="0.75rem" borderRadius={8} overflow="hidden">
           <NextImage
-            src={imgUrl || "/assets/images/products/Rectangle 116.png"}
+            src={imgUrl || "/assets/images/products/Rectangle 116.webp"}
             width={500}
             height={500}
             alt="tomstore"

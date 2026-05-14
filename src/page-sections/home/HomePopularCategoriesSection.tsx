@@ -43,7 +43,7 @@ export default function HomePopularCategoriesSection({
           >
             <CategoryPromoCard
               title={category.name}
-              imgUrl={category.image || "/assets/images/banners/category-1.png"}
+              imgUrl={category.image || "/assets/images/banners/category-1.webp"}
               subtitle={category.description ?? ""}
               priority={index === 0}
             />

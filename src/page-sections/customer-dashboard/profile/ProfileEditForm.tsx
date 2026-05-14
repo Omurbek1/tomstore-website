@@ -40,7 +40,7 @@ export default function ProfileEditForm({ user }: { user: User }) {
   return (
     <>
       <FlexBox alignItems="flex-end" mb="22px">
-        <Avatar src="/assets/images/faces/ralph.png" size={64} borderRadius={12} />
+        <Avatar src="/assets/images/faces/ralph.webp" size={64} borderRadius={12} />
 
         <Box ml="-20px" zIndex={1}>
           <label htmlFor="profile-image">

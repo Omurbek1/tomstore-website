@@ -18,19 +18,19 @@ export const orders = [
     tax: 0,
     items: [
       {
-        product_img: "/assets/images/products/Automotive/2.Audi2017.png",
+        product_img: "/assets/images/products/Automotive/2.Audi2017.webp",
         product_name: "Budi 2017",
         product_price: 226,
         product_quantity: 4,
       },
       {
-        product_img: "/assets/images/products/Automotive/3.Tesla2015.png",
+        product_img: "/assets/images/products/Automotive/3.Tesla2015.webp",
         product_name: "Resla 2015",
         product_price: 101,
         product_quantity: 4,
       },
       {
-        product_img: "/assets/images/products/Automotive/4.Porsche2018.png",
+        product_img: "/assets/images/products/Automotive/4.Porsche2018.webp",
         product_name: "Xorsche 2018",
         product_price: 241,
         product_quantity: 4,
@@ -63,19 +63,19 @@ export const orders = [
     tax: 0,
     items: [
       {
-        product_img: "/assets/images/products/Automotive/2.Audi2017.png",
+        product_img: "/assets/images/products/Automotive/2.Audi2017.webp",
         product_name: "Budi 2017",
         product_price: 226,
         product_quantity: 4,
       },
       {
-        product_img: "/assets/images/products/Automotive/3.Tesla2015.png",
+        product_img: "/assets/images/products/Automotive/3.Tesla2015.webp",
         product_name: "Resla 2015",
         product_price: 101,
         product_quantity: 4,
       },
       {
-        product_img: "/assets/images/products/Automotive/4.Porsche2018.png",
+        product_img: "/assets/images/products/Automotive/4.Porsche2018.webp",
         product_name: "Xorsche 2018",
         product_price: 241,
         product_quantity: 4,
@@ -108,19 +108,19 @@ export const orders = [
     tax: 0,
     items: [
       {
-        product_img: "/assets/images/products/Automotive/2.Audi2017.png",
+        product_img: "/assets/images/products/Automotive/2.Audi2017.webp",
         product_name: "Budi 2017",
         product_price: 226,
         product_quantity: 4,
       },
       {
-        product_img: "/assets/images/products/Automotive/3.Tesla2015.png",
+        product_img: "/assets/images/products/Automotive/3.Tesla2015.webp",
         product_name: "Resla 2015",
         product_price: 101,
         product_quantity: 4,
       },
       {
-        product_img: "/assets/images/products/Automotive/4.Porsche2018.png",
+        product_img: "/assets/images/products/Automotive/4.Porsche2018.webp",
         product_name: "Xorsche 2018",
         product_price: 241,
         product_quantity: 4,
@@ -153,19 +153,19 @@ export const orders = [
     tax: 0,
     items: [
       {
-        product_img: "/assets/images/products/Automotive/2.Audi2017.png",
+        product_img: "/assets/images/products/Automotive/2.Audi2017.webp",
         product_name: "Budi 2017",
         product_price: 226,
         product_quantity: 4,
       },
       {
-        product_img: "/assets/images/products/Automotive/3.Tesla2015.png",
+        product_img: "/assets/images/products/Automotive/3.Tesla2015.webp",
         product_name: "Resla 2015",
         product_price: 101,
         product_quantity: 4,
       },
       {
-        product_img: "/assets/images/products/Automotive/4.Porsche2018.png",
+        product_img: "/assets/images/products/Automotive/4.Porsche2018.webp",
         product_name: "Xorsche 2018",
         product_price: 241,
         product_quantity: 4,
@@ -198,19 +198,19 @@ export const orders = [
     tax: 0,
     items: [
       {
-        product_img: "/assets/images/products/Automotive/2.Audi2017.png",
+        product_img: "/assets/images/products/Automotive/2.Audi2017.webp",
         product_name: "Budi 2017",
         product_price: 226,
         product_quantity: 4,
       },
       {
-        product_img: "/assets/images/products/Automotive/3.Tesla2015.png",
+        product_img: "/assets/images/products/Automotive/3.Tesla2015.webp",
         product_name: "Resla 2015",
         product_price: 101,
         product_quantity: 4,
       },
       {
-        product_img: "/assets/images/products/Automotive/4.Porsche2018.png",
+        product_img: "/assets/images/products/Automotive/4.Porsche2018.webp",
         product_name: "Xorsche 2018",
         product_price: 241,
         product_quantity: 4,

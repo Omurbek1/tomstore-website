@@ -34,42 +34,42 @@ export const serviceList = [
 
 export const dealOfTheWeekList = [
   {
-    imgUrl: "/assets/images/products/rayban.png",
+    imgUrl: "/assets/images/products/rayban.webp",
     brand: "Say Ban Sunglass",
     off: 50
   },
   {
-    imgUrl: "/assets/images/products/nike.png",
+    imgUrl: "/assets/images/products/nike.webp",
     brand: "Yike Shoe Air Max",
     off: 30
   },
   {
-    imgUrl: "/assets/images/products/apple-watch.png",
+    imgUrl: "/assets/images/products/apple-watch.webp",
     brand: "Air Jordan",
     off: 40
   },
   {
-    imgUrl: "/assets/images/products/perfume.png",
+    imgUrl: "/assets/images/products/perfume.webp",
     brand: "Perfume",
     off: 20
   },
   {
-    imgUrl: "/assets/images/products/rayban.png",
+    imgUrl: "/assets/images/products/rayban.webp",
     brand: "Say Ban Sunglass",
     off: 50
   },
   {
-    imgUrl: "/assets/images/products/nike.png",
+    imgUrl: "/assets/images/products/nike.webp",
     brand: "Yike Shoe Air Max",
     off: 30
   },
   {
-    imgUrl: "/assets/images/products/apple-watch.png",
+    imgUrl: "/assets/images/products/apple-watch.webp",
     brand: "Air Jordan",
     off: 40
   },
   {
-    imgUrl: "/assets/images/products/perfume.png",
+    imgUrl: "/assets/images/products/perfume.webp",
     brand: "Perfume",
     off: 20
   }
@@ -80,19 +80,19 @@ export const hotDealsData = [
     id: 1,
     expireDate: "Dec 5, 2024",
     productName: "Apple Watch Series 4 (Black)",
-    imgUrl: "/assets/images/products/xiaomi-watch.png"
+    imgUrl: "/assets/images/products/xiaomi-watch.webp"
   },
   {
     id: 2,
     expireDate: "Dec 5, 2024",
     productName: "Apple Watch Series 4 (Black)",
-    imgUrl: "/assets/images/products/xiaomi-watch.png"
+    imgUrl: "/assets/images/products/xiaomi-watch.webp"
   },
   {
     id: 3,
     expireDate: "Dec 5, 2024",
     productName: "Apple Watch Series 4 (Black)",
-    imgUrl: "/assets/images/products/xiaomi-watch.png"
+    imgUrl: "/assets/images/products/xiaomi-watch.webp"
   }
 ];
 
@@ -123,8 +123,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-4.png",
-      profilePicture: "/assets/images/faces/propic(3).png",
+      coverPicture: "/assets/images/banners/banner-4.webp",
+      profilePicture: "/assets/images/faces/propic(3).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -138,10 +138,10 @@ export const products = [
     size: null,
     colors: [],
     discount: 25,
-    thumbnail: "/assets/images/products/chair-and-clothes.png",
+    thumbnail: "/assets/images/products/chair-and-clothes.webp",
     images: [
-      "/assets/images/products/chair-and-clothes.png",
-      "/assets/images/products/chair-and-clothes.png"
+      "/assets/images/products/chair-and-clothes.webp",
+      "/assets/images/products/chair-and-clothes.webp"
     ],
     categories: [],
     status: null,
@@ -174,8 +174,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-7.png",
-      profilePicture: "/assets/images/faces/propic(6).png",
+      coverPicture: "/assets/images/banners/banner-7.webp",
+      profilePicture: "/assets/images/faces/propic(6).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -189,8 +189,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 15,
-    thumbnail: "/assets/images/products/t-shirt3.png",
-    images: ["/assets/images/products/t-shirt3.png", "/assets/images/products/t-shirt3.png"],
+    thumbnail: "/assets/images/products/t-shirt3.webp",
+    images: ["/assets/images/products/t-shirt3.webp", "/assets/images/products/t-shirt3.webp"],
     categories: [],
     status: null,
     reviews: [],
@@ -222,8 +222,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/cycle.png",
-      profilePicture: "/assets/images/faces/propic.png",
+      coverPicture: "/assets/images/banners/cycle.webp",
+      profilePicture: "/assets/images/faces/propic.webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -237,8 +237,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 28,
-    thumbnail: "/assets/images/products/t-shirt4.png",
-    images: ["/assets/images/products/t-shirt4.png", "/assets/images/products/t-shirt4.png"],
+    thumbnail: "/assets/images/products/t-shirt4.webp",
+    images: ["/assets/images/products/t-shirt4.webp", "/assets/images/products/t-shirt4.webp"],
     categories: [],
     status: null,
     reviews: [],
@@ -270,8 +270,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-4.png",
-      profilePicture: "/assets/images/faces/propic(3).png",
+      coverPicture: "/assets/images/banners/banner-4.webp",
+      profilePicture: "/assets/images/faces/propic(3).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -285,8 +285,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 21,
-    thumbnail: "/assets/images/products/t-shirt5.png",
-    images: ["/assets/images/products/t-shirt5.png", "/assets/images/products/t-shirt5.png"],
+    thumbnail: "/assets/images/products/t-shirt5.webp",
+    images: ["/assets/images/products/t-shirt5.webp", "/assets/images/products/t-shirt5.webp"],
     categories: [],
     status: null,
     reviews: [],
@@ -318,8 +318,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-5.png",
-      profilePicture: "/assets/images/faces/propic(4).png",
+      coverPicture: "/assets/images/banners/banner-5.webp",
+      profilePicture: "/assets/images/faces/propic(4).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -333,10 +333,10 @@ export const products = [
     size: null,
     colors: [],
     discount: 25,
-    thumbnail: "/assets/images/products/chair-and-clothes.png",
+    thumbnail: "/assets/images/products/chair-and-clothes.webp",
     images: [
-      "/assets/images/products/chair-and-clothes.png",
-      "/assets/images/products/chair-and-clothes.png"
+      "/assets/images/products/chair-and-clothes.webp",
+      "/assets/images/products/chair-and-clothes.webp"
     ],
     categories: [],
     status: null,
@@ -369,8 +369,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-8.png",
-      profilePicture: "/assets/images/faces/propic(7).png",
+      coverPicture: "/assets/images/banners/banner-8.webp",
+      profilePicture: "/assets/images/faces/propic(7).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -384,8 +384,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 21,
-    thumbnail: "/assets/images/products/t-shirt4.png",
-    images: ["/assets/images/products/t-shirt4.png", "/assets/images/products/t-shirt4.png"],
+    thumbnail: "/assets/images/products/t-shirt4.webp",
+    images: ["/assets/images/products/t-shirt4.webp", "/assets/images/products/t-shirt4.webp"],
     categories: [],
     status: null,
     reviews: [],
@@ -420,8 +420,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-7.png",
-      profilePicture: "/assets/images/faces/propic(6).png",
+      coverPicture: "/assets/images/banners/banner-7.webp",
+      profilePicture: "/assets/images/faces/propic(6).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -435,8 +435,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 28,
-    thumbnail: "/assets/images/products/t-shirt3.png",
-    images: ["/assets/images/products/t-shirt3.png", "/assets/images/products/t-shirt3.png"],
+    thumbnail: "/assets/images/products/t-shirt3.webp",
+    images: ["/assets/images/products/t-shirt3.webp", "/assets/images/products/t-shirt3.webp"],
     categories: [],
     status: null,
     reviews: [],
@@ -471,8 +471,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-8.png",
-      profilePicture: "/assets/images/faces/propic(7).png",
+      coverPicture: "/assets/images/banners/banner-8.webp",
+      profilePicture: "/assets/images/faces/propic(7).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -486,8 +486,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 15,
-    thumbnail: "/assets/images/products/t-shirt5.png",
-    images: ["/assets/images/products/t-shirt5.png", "/assets/images/products/t-shirt5.png"],
+    thumbnail: "/assets/images/products/t-shirt5.webp",
+    images: ["/assets/images/products/t-shirt5.webp", "/assets/images/products/t-shirt5.webp"],
     categories: [],
     status: null,
     reviews: [],
@@ -522,8 +522,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-6.png",
-      profilePicture: "/assets/images/faces/propic(5).png",
+      coverPicture: "/assets/images/banners/banner-6.webp",
+      profilePicture: "/assets/images/faces/propic(5).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -537,10 +537,10 @@ export const products = [
     size: null,
     colors: [],
     discount: 19,
-    thumbnail: "/assets/images/products/chair-and-clothes.png",
+    thumbnail: "/assets/images/products/chair-and-clothes.webp",
     images: [
-      "/assets/images/products/chair-and-clothes.png",
-      "/assets/images/products/chair-and-clothes.png"
+      "/assets/images/products/chair-and-clothes.webp",
+      "/assets/images/products/chair-and-clothes.webp"
     ],
     categories: [],
     status: null,
@@ -576,8 +576,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-8.png",
-      profilePicture: "/assets/images/faces/propic(7).png",
+      coverPicture: "/assets/images/banners/banner-8.webp",
+      profilePicture: "/assets/images/faces/propic(7).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -591,8 +591,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 21,
-    thumbnail: "/assets/images/products/t-shirt3.png",
-    images: ["/assets/images/products/t-shirt3.png", "/assets/images/products/t-shirt3.png"],
+    thumbnail: "/assets/images/products/t-shirt3.webp",
+    images: ["/assets/images/products/t-shirt3.webp", "/assets/images/products/t-shirt3.webp"],
     categories: [],
     status: null,
     reviews: [],
@@ -628,8 +628,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-5.png",
-      profilePicture: "/assets/images/faces/propic(4).png",
+      coverPicture: "/assets/images/banners/banner-5.webp",
+      profilePicture: "/assets/images/faces/propic(4).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -643,10 +643,10 @@ export const products = [
     size: null,
     colors: [],
     discount: 8,
-    thumbnail: "/assets/images/products/imagegoggles.png",
+    thumbnail: "/assets/images/products/imagegoggles.webp",
     images: [
-      "/assets/images/products/imagegoggles.png",
-      "/assets/images/products/imagegoggles.png"
+      "/assets/images/products/imagegoggles.webp",
+      "/assets/images/products/imagegoggles.webp"
     ],
     categories: [],
     status: null,
@@ -682,8 +682,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-4.png",
-      profilePicture: "/assets/images/faces/propic(3).png",
+      coverPicture: "/assets/images/banners/banner-4.webp",
+      profilePicture: "/assets/images/faces/propic(3).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -697,10 +697,10 @@ export const products = [
     size: null,
     colors: [],
     discount: 8,
-    thumbnail: "/assets/images/products/lipstick (2).png",
+    thumbnail: "/assets/images/products/lipstick (2).webp",
     images: [
-      "/assets/images/products/lipstick (2).png",
-      "/assets/images/products/lipstick (2).png"
+      "/assets/images/products/lipstick (2).webp",
+      "/assets/images/products/lipstick (2).webp"
     ],
     categories: [],
     status: null,
@@ -736,8 +736,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-3.png",
-      profilePicture: "/assets/images/faces/propic(2).png",
+      coverPicture: "/assets/images/banners/banner-3.webp",
+      profilePicture: "/assets/images/faces/propic(2).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -751,8 +751,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 10,
-    thumbnail: "/assets/images/products/bgwatch.png",
-    images: ["/assets/images/products/bgwatch.png", "/assets/images/products/bgwatch.png"],
+    thumbnail: "/assets/images/products/bgwatch.webp",
+    images: ["/assets/images/products/bgwatch.webp", "/assets/images/products/bgwatch.webp"],
     categories: [],
     status: null,
     reviews: [],
@@ -787,8 +787,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/cycle.png",
-      profilePicture: "/assets/images/faces/propic.png",
+      coverPicture: "/assets/images/banners/cycle.webp",
+      profilePicture: "/assets/images/faces/propic.webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -802,10 +802,10 @@ export const products = [
     size: null,
     colors: [],
     discount: 5,
-    thumbnail: "/assets/images/products/lipstick (1).png",
+    thumbnail: "/assets/images/products/lipstick (1).webp",
     images: [
-      "/assets/images/products/lipstick (1).png",
-      "/assets/images/products/lipstick (1).png"
+      "/assets/images/products/lipstick (1).webp",
+      "/assets/images/products/lipstick (1).webp"
     ],
     categories: [],
     status: null,
@@ -841,8 +841,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/cycle.png",
-      profilePicture: "/assets/images/faces/propic.png",
+      coverPicture: "/assets/images/banners/cycle.webp",
+      profilePicture: "/assets/images/faces/propic.webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -856,10 +856,10 @@ export const products = [
     size: null,
     colors: [],
     discount: 7,
-    thumbnail: "/assets/images/products/lipstick (4).png",
+    thumbnail: "/assets/images/products/lipstick (4).webp",
     images: [
-      "/assets/images/products/lipstick (4).png",
-      "/assets/images/products/lipstick (4).png"
+      "/assets/images/products/lipstick (4).webp",
+      "/assets/images/products/lipstick (4).webp"
     ],
     categories: [],
     status: null,
@@ -895,8 +895,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-5.png",
-      profilePicture: "/assets/images/faces/propic(4).png",
+      coverPicture: "/assets/images/banners/banner-5.webp",
+      profilePicture: "/assets/images/faces/propic(4).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -910,10 +910,10 @@ export const products = [
     size: null,
     colors: [],
     discount: 6,
-    thumbnail: "/assets/images/products/lipstick (3).png",
+    thumbnail: "/assets/images/products/lipstick (3).webp",
     images: [
-      "/assets/images/products/lipstick (3).png",
-      "/assets/images/products/lipstick (3).png"
+      "/assets/images/products/lipstick (3).webp",
+      "/assets/images/products/lipstick (3).webp"
     ],
     categories: [],
     status: null,
@@ -949,8 +949,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner.png",
-      profilePicture: "/assets/images/faces/propic(1).png",
+      coverPicture: "/assets/images/banners/banner.webp",
+      profilePicture: "/assets/images/faces/propic(1).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -964,8 +964,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 10,
-    thumbnail: "/assets/images/products/bgwatch.png",
-    images: ["/assets/images/products/bgwatch.png", "/assets/images/products/bgwatch.png"],
+    thumbnail: "/assets/images/products/bgwatch.webp",
+    images: ["/assets/images/products/bgwatch.webp", "/assets/images/products/bgwatch.webp"],
     categories: [],
     status: null,
     reviews: [],
@@ -1000,8 +1000,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-3.png",
-      profilePicture: "/assets/images/faces/propic(2).png",
+      coverPicture: "/assets/images/banners/banner-3.webp",
+      profilePicture: "/assets/images/faces/propic(2).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -1015,10 +1015,10 @@ export const products = [
     size: null,
     colors: [],
     discount: 7,
-    thumbnail: "/assets/images/products/lipstick (4).png",
+    thumbnail: "/assets/images/products/lipstick (4).webp",
     images: [
-      "/assets/images/products/lipstick (4).png",
-      "/assets/images/products/lipstick (4).png"
+      "/assets/images/products/lipstick (4).webp",
+      "/assets/images/products/lipstick (4).webp"
     ],
     categories: [],
     status: null,
@@ -1055,8 +1055,8 @@ export const products = [
   //     phone: "(613) 343-9004",
   //     address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
   //     verified: false,
-  //     coverPicture: "/assets/images/banners/banner-8.png",
-  //     profilePicture: "/assets/images/faces/propic(7).png",
+  //     coverPicture: "/assets/images/banners/banner-8.webp",
+  //     profilePicture: "/assets/images/faces/propic(7).webp",
   //     socialLinks: {
   //       facebook: null,
   //       youtube: null,
@@ -1070,10 +1070,10 @@ export const products = [
   //   size: null,
   //   colors: [],
   //   discount: 56,
-  //   thumbnail: "/assets/images/products/long-product.png",
+  //   thumbnail: "/assets/images/products/long-product.webp",
   //   images: [
-  //     "/assets/images/products/long-product.png",
-  //     "/assets/images/products/long-product.png",
+  //     "/assets/images/products/long-product.webp",
+  //     "/assets/images/products/long-product.webp",
   //   ],
   //   categories: [],
   //   status: null,
@@ -1109,8 +1109,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-5.png",
-      profilePicture: "/assets/images/faces/propic(4).png",
+      coverPicture: "/assets/images/banners/banner-5.webp",
+      profilePicture: "/assets/images/faces/propic(4).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -1124,8 +1124,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 23,
-    thumbnail: "/assets/images/products/shoe.png",
-    images: ["/assets/images/products/shoe.png", "/assets/images/products/shoe.png"],
+    thumbnail: "/assets/images/products/shoe.webp",
+    images: ["/assets/images/products/shoe.webp", "/assets/images/products/shoe.webp"],
     categories: [],
     status: null,
     reviews: [],
@@ -1160,8 +1160,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-5.png",
-      profilePicture: "/assets/images/faces/propic(4).png",
+      coverPicture: "/assets/images/banners/banner-5.webp",
+      profilePicture: "/assets/images/faces/propic(4).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -1175,8 +1175,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 42,
-    thumbnail: "/assets/images/products/t-shirt3.png",
-    images: ["/assets/images/products/t-shirt3.png", "/assets/images/products/t-shirt3.png"],
+    thumbnail: "/assets/images/products/t-shirt3.webp",
+    images: ["/assets/images/products/t-shirt3.webp", "/assets/images/products/t-shirt3.webp"],
     categories: [],
     status: null,
     reviews: [],
@@ -1211,8 +1211,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-8.png",
-      profilePicture: "/assets/images/faces/propic(7).png",
+      coverPicture: "/assets/images/banners/banner-8.webp",
+      profilePicture: "/assets/images/faces/propic(7).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -1226,8 +1226,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 39,
-    thumbnail: "/assets/images/products/t-shirt4.png",
-    images: ["/assets/images/products/t-shirt4.png", "/assets/images/products/t-shirt4.png"],
+    thumbnail: "/assets/images/products/t-shirt4.webp",
+    images: ["/assets/images/products/t-shirt4.webp", "/assets/images/products/t-shirt4.webp"],
     categories: [],
     status: null,
     reviews: [],
@@ -1262,8 +1262,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-5.png",
-      profilePicture: "/assets/images/faces/propic(4).png",
+      coverPicture: "/assets/images/banners/banner-5.webp",
+      profilePicture: "/assets/images/faces/propic(4).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -1277,8 +1277,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 24,
-    thumbnail: "/assets/images/products/t-shirt5.png",
-    images: ["/assets/images/products/t-shirt5.png", "/assets/images/products/t-shirt5.png"],
+    thumbnail: "/assets/images/products/t-shirt5.webp",
+    images: ["/assets/images/products/t-shirt5.webp", "/assets/images/products/t-shirt5.webp"],
     categories: [],
     status: null,
     reviews: [],
@@ -1313,8 +1313,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-8.png",
-      profilePicture: "/assets/images/faces/propic(7).png",
+      coverPicture: "/assets/images/banners/banner-8.webp",
+      profilePicture: "/assets/images/faces/propic(7).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -1328,10 +1328,10 @@ export const products = [
     size: null,
     colors: [],
     discount: 56,
-    thumbnail: "/assets/images/products/chair-and-clothes.png",
+    thumbnail: "/assets/images/products/chair-and-clothes.webp",
     images: [
-      "/assets/images/products/chair-and-clothes.png",
-      "/assets/images/products/chair-and-clothes.png"
+      "/assets/images/products/chair-and-clothes.webp",
+      "/assets/images/products/chair-and-clothes.webp"
     ],
     categories: [],
     status: null,
@@ -1367,8 +1367,8 @@ export const products = [
       phone: "(613) 343-9004",
       address: "845 N. Stonybrook Ave. Tonawanda, NY 14210, Denmark",
       verified: false,
-      coverPicture: "/assets/images/banners/banner-7.png",
-      profilePicture: "/assets/images/faces/propic(6).png",
+      coverPicture: "/assets/images/banners/banner-7.webp",
+      profilePicture: "/assets/images/faces/propic(6).webp",
       socialLinks: {
         facebook: null,
         youtube: null,
@@ -1382,8 +1382,8 @@ export const products = [
     size: null,
     colors: [],
     discount: 54,
-    thumbnail: "/assets/images/products/t-shirt4.png",
-    images: ["/assets/images/products/t-shirt4.png", "/assets/images/products/t-shirt4.png"],
+    thumbnail: "/assets/images/products/t-shirt4.webp",
+    images: ["/assets/images/products/t-shirt4.webp", "/assets/images/products/t-shirt4.webp"],
     categories: [],
     status: null,
     reviews: [],

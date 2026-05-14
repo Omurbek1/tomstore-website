@@ -5,7 +5,7 @@ const demoUser: User = {
   id: "demo-user",
   email: "customer@tomstore.kg",
   phone: "+996 555 000 000",
-  avatar: "/assets/images/faces/ralph.png",
+  avatar: "/assets/images/faces/ralph.webp",
   password: "",
   dateOfBirth: new Date("1995-01-01"),
   verified: true,

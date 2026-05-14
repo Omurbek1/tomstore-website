@@ -136,7 +136,7 @@ interface Props {
 // ===============================================
 
 const isExternalUrl = (href?: string) => /^https?:\/\//.test(String(href || ""));
-const HERO_FALLBACK_IMAGE = "/assets/images/banners/banner.png";
+const HERO_FALLBACK_IMAGE = "/assets/images/banners/banner.webp";
 
 export default function HeroBannerCard({
   title,
