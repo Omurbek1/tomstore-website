@@ -1,6 +1,6 @@
 "use client";
 import { Fragment, useState } from "react";
-import Image from "next/image";
+import { ShoppingBag } from "lucide-react";
 import styled from "styled-components";
 import { useTranslations } from "next-intl";
 // GLOBAL CUSTOM COMPONENTS
@@ -57,13 +57,7 @@ export default function Cart() {
         flexDirection="column"
         justifyContent="center"
         py="4rem">
-        <Image
-          src="/assets/images/logos/shopping-bag.svg"
-          width={120}
-          height={120}
-          alt="empty cart"
-          unoptimized
-        />
+        <ShoppingBag size={120} strokeWidth={1} color="var(--color-primary, #D23F57)" />
         <Paragraph mt="1.5rem" color="text.muted" textAlign="center" maxWidth="280px" fontSize="16px">
           Your cart is empty. Add some products to continue shopping.
         </Paragraph>

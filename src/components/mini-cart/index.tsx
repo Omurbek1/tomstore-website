@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { ShoppingBag } from "lucide-react";
 import { Fragment } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@i18n/navigation";
@@ -65,13 +65,7 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
             flexDirection="column"
             justifyContent="center"
             height="calc(100% - 80px)">
-            <Image
-              src="/assets/images/logos/shopping-bag.svg"
-              width={90}
-              height={90}
-              alt="empty cart"
-              unoptimized
-            />
+            <ShoppingBag size={90} strokeWidth={1} color="var(--color-primary, #D23F57)" />
             <Paragraph mt="1rem" color="text.muted" textAlign="center" maxWidth="200px">
               {t("emptyCart")}
             </Paragraph>
