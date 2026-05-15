@@ -21,7 +21,7 @@ export default function ShopIntroCard() {
           mr="37px"
           border="4px solid"
           borderColor="gray.100"
-          src="/assets/images/faces/propic.webp"
+          src=""
         />
 
         <div className="description-holder">

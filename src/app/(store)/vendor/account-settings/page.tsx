@@ -83,7 +83,7 @@ export default function AccountSettings() {
               size={80}
               border="4px solid"
               borderColor="gray.100"
-              src="/assets/images/faces/propic(9).webp"
+              src=""
             />
 
             <Box ml="-32px" zIndex={1}>

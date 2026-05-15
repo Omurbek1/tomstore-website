@@ -109,7 +109,7 @@ export default function ProductReview() {
 const commentList = [
   {
     name: "Jannie Schumm",
-    imgUrl: "/assets/images/faces/7.webp",
+    imgUrl: "",
     rating: 4.7,
     date: "2021-02-14",
     comment:
@@ -117,7 +117,7 @@ const commentList = [
   },
   {
     name: "Joe Kenan",
-    imgUrl: "/assets/images/faces/6.webp",
+    imgUrl: "",
     rating: 4.7,
     date: "2019-08-10",
     comment:
@@ -125,7 +125,7 @@ const commentList = [
   },
   {
     name: "Jenifer Tulio",
-    imgUrl: "/assets/images/faces/8.webp",
+    imgUrl: "",
     rating: 4.7,
     date: "2021-02-05",
     comment:
