@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import GoogleAnalytics from "@component/GoogleAnalytics";
 
 import { SITE_URL } from "@lib/siteUrl";
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
@@ -134,6 +135,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
+        <GoogleAnalytics />
         <AntdRegistry>{children}</AntdRegistry>
       </body>
     </html>
