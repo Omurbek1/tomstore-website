@@ -117,7 +117,7 @@ export default function Navbar({ navListOpen }: NavbarProps) {
           )}
         />
 
-        <FlexBox alignItems="center" gap="1.5rem">
+        <FlexBox alignItems="center"  style={{ gap: "1.5rem" }}>
           {navbarNavigations.map((nav) => (
             <NavItem key={nav.title} nav={nav} isRoot />
           ))}
