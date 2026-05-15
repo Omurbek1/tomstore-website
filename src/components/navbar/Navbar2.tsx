@@ -77,7 +77,7 @@ export default function Navbar2(_props: NavbarProps) {
   return (
     <StyledNavbar>
       <Container display="flex" justifyContent="space-between" alignItems="center" height="100%">
-        <FlexBox alignItems="center" gap="1.5rem">
+        <FlexBox alignItems="center" style={{ gap: "1.5rem" }}>
           {navbarNavigations.map((nav) => (
             <NavItem key={nav.title} nav={nav} isRoot />
           ))}
