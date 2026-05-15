@@ -18,7 +18,6 @@ import Categories from "../categories/Categories";
 import StyledNavbar from "./styles";
 import navbarNavigations from "@data/navbarNavigations";
 
-// ==============================================================
 interface Nav {
   title: string;
   url?: string;
@@ -28,51 +27,37 @@ interface Nav {
 }
 
 type NavbarProps = { navListOpen?: boolean };
-// ==============================================================
 
 const NavItem = ({ nav, isRoot = false }: { nav: Nav; isRoot?: boolean }) => {
   const href = nav.url || "/";
   const childList = nav.child || [];
 
-  const renderBadgeOrSpan = (title: string) =>
-    nav.badge ? (
-      <Badge style={{ marginRight: "0px" }} title={nav.badge}>
-        {title}
-      </Badge>
-    ) : (
-      <Span className="nav-link">{title}</Span>
+  const label = nav.badge ? (
+    <Badge style={{ marginRight: "0px" }} title={nav.badge}>
+      {nav.title}
+    </Badge>
+  ) : (
+    <Span className="nav-link">{nav.title}</Span>
+  );
+
+  if (nav.url && nav.extLink) {
+    return (
+      <NavLink href={href} target="_blank" className="nav-link" rel="noopener noreferrer">
+        {label}
+      </NavLink>
     );
+  }
 
-  const renderExternalLink = () => (
-    <NavLink
-      href={href}
-      key={nav.title}
-      target="_blank"
-      className="nav-link"
-      rel="noopener noreferrer">
-      {renderBadgeOrSpan(nav.title)}
-    </NavLink>
-  );
-
-  const renderInternalLink = () => (
-    <NavLink className={isRoot ? "nav-link" : ""} href={href} key={nav.title}>
-      {isRoot ? renderBadgeOrSpan(nav.title) : <MenuItem>{renderBadgeOrSpan(nav.title)}</MenuItem>}
-    </NavLink>
-  );
-
-  const renderNestedMenu = () => {
+  if (nav.child) {
     if (isRoot) {
       return (
-        <FlexBox
-          className="root"
-          position="relative"
-          flexDirection="column"
-          alignItems="center"
-          key={nav.title}>
-          {renderBadgeOrSpan(nav.title)}
+        <FlexBox className="root" position="relative" flexDirection="column" alignItems="center">
+          {label}
           <div className="root-child">
             <Card borderRadius={8} mt="1.25rem" py="0.5rem" boxShadow="large" minWidth="230px">
-              <NestedNav list={childList} />
+              {childList.map((child) => (
+                <NavItem key={child.title} nav={child} />
+              ))}
             </Card>
           </div>
         </FlexBox>
@@ -80,39 +65,31 @@ const NavItem = ({ nav, isRoot = false }: { nav: Nav; isRoot?: boolean }) => {
     }
 
     return (
-      <Box className="parent" position="relative" minWidth="230px" key={nav.title}>
+      <Box className="parent" position="relative" minWidth="230px">
         <MenuItem color="gray.700" style={{ display: "flex", justifyContent: "space-between" }}>
-          {renderBadgeOrSpan(nav.title)}
+          {label}
           <IconChevronRight stroke={1.5} size={16} />
         </MenuItem>
-
         <Box className="child" pl="0.5rem">
           <Card py="0.5rem" borderRadius={8} boxShadow="large" minWidth="230px">
-            <NestedNav list={childList} />
+            {childList.map((child) => (
+              <NavItem key={child.title} nav={child} />
+            ))}
           </Card>
         </Box>
       </Box>
     );
-  };
+  }
 
-  if (nav.url && nav.extLink) return renderExternalLink();
-  if (nav.child) return renderNestedMenu();
-  if (nav.url) return renderInternalLink();
+  if (nav.url) {
+    return (
+      <NavLink className={isRoot ? "nav-link" : ""} href={href}>
+        {isRoot ? label : <MenuItem>{label}</MenuItem>}
+      </NavLink>
+    );
+  }
+
   return null;
-};
-
-const NestedNav = ({ list, isRoot = false }: { list: Nav[]; isRoot?: boolean }) => {
-  return (
-    <>
-      {list?.map((nav) => (
-        <NavItem key={nav.title} nav={nav} isRoot={isRoot} />
-      ))}
-    </>
-  );
-};
-
-const renderNestedNav = (list: Nav[], isRoot = false) => {
-  return <NestedNav list={list} isRoot={isRoot} />;
 };
 
 export default function Navbar({ navListOpen }: NavbarProps) {
@@ -132,21 +109,19 @@ export default function Navbar({ navListOpen }: NavbarProps) {
               background="body.default"
               onClick={handleOpen}>
               <IconCategoryFilled stroke={1.5} size={18} color={theme.colors.primary.main} />
-
-              <Typography
-                ml="10px"
-                flex="1 1 0"
-                fontWeight="600"
-                textAlign="left"
-                color="text.primary">
+              <Typography ml="10px" flex="1 1 0" fontWeight="600" textAlign="left" color="text.primary">
                 {t("nav.categories")}
               </Typography>
-
               <IconChevronDown className="dropdown-icon" size={18} stroke={1.5} />
             </Button>
           )}
         />
 
+        <FlexBox alignItems="center" gap="1.5rem">
+          {navbarNavigations.map((nav) => (
+            <NavItem key={nav.title} nav={nav} isRoot />
+          ))}
+        </FlexBox>
       </Container>
     </StyledNavbar>
   );

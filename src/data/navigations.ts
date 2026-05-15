@@ -266,7 +266,6 @@ const navigations: NavigationItem[] = [
     },
   },
 
-  // 🔥 ВАЖНО ДЛЯ ПРОДАЖ
   {
     id: "sale",
     icon: "gift-1",
