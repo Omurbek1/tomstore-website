@@ -69,7 +69,7 @@ export default function AccountSettings() {
           position="relative"
           style={{
             background:
-              "url(/assets/images/banners/banner-10.webp) center/cover",
+              "url(/assets/images/banners/hero-fallback.webp) center/cover",
           }}
         >
           <Box

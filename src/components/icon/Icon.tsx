@@ -49,10 +49,14 @@ import {
   IconSofa,
   IconTable,
   IconTemperature,
+  IconBulb,
+  IconMedal,
+  IconSparkles,
   IconThumbUp,
   IconToolsKitchen2,
   IconTrendingUp,
   IconTruck,
+  IconUsersGroup,
   IconWheat
 } from "@tabler/icons-react";
 import {
@@ -136,6 +140,10 @@ const LIBRARY_ICONS: Record<string, ComponentType<any>> = {
   "face-mask": IconFaceMask,
   fashion: IconHanger,
   "feedback-thumbs-up": IconThumbUp,
+  "Group": IconUsersGroup,
+  light: IconBulb,
+  "new-product-1": IconSparkles,
+  "ranking-1": IconMedal,
   "feeding-bottle": IconBabyBottle,
   fish: IconFish,
   flower: IconFlower,
