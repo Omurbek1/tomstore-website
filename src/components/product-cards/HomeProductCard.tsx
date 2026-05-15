@@ -16,7 +16,7 @@ type HomeProductCardProps = {
   sizes?: string;
 };
 
-const PRODUCT_IMAGE_FALLBACK = "/assets/images/products/iphone-xi.webp";
+const PRODUCT_IMAGE_FALLBACK = "/assets/images/products/placeholder.webp";
 
 export default function HomeProductCard({
   slug,

@@ -30,7 +30,7 @@ const ORDER_ITEMS = [
     name: "Nike React Phantom Run Flyknit 2",
     price: 145,
     quantity: 3,
-    image: "/assets/images/products/imagetree.webp",
+    image: "/assets/images/products/plant.webp",
     properties: "Black, L"
   },
   {
@@ -38,7 +38,7 @@ const ORDER_ITEMS = [
     name: "Adidas Ultraboost 21",
     price: 180,
     quantity: 1,
-    image: "/assets/images/products/bgearphone.webp",
+    image: "/assets/images/products/earphone.webp",
     properties: "White/Grey, M"
   },
   {
@@ -46,7 +46,7 @@ const ORDER_ITEMS = [
     name: "Puma RS-X³ Puzzle",
     price: 110,
     quantity: 2,
-    image: "/assets/images/products/shoes-2.webp",
+    image: "/assets/images/products/shoes.webp",
     properties: "Blue/Orange, XL"
   }
 ];

@@ -306,7 +306,7 @@ export default function FrequentlyBought({ baseProduct, products }: Props) {
             <BundleCard key={item.id} href={`/${locale}/product/${item.slug}`}>
               <ProductImageBox>
                 <NextImage
-                  src={item.thumbnail || "/assets/images/products/Rectangle 116.webp"}
+                  src={item.thumbnail || "/assets/images/products/placeholder.webp"}
                   width={160}
                   height={160}
                   alt={item.title}

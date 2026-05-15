@@ -106,7 +106,7 @@ export default function ProductDealCard({ ...props }: ProductDealCardProps) {
       <div className="image-holder">
         <div className="sale-chip">50% off</div>
         <Image
-          src="/assets/images/products/macbook.webp"
+          src="/assets/images/products/laptop.webp"
           alt="golden-watch"
           width={300}
           height={300}

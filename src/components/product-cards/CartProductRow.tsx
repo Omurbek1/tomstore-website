@@ -81,7 +81,7 @@ export default function CartProductRow({
         alt={name}
         width={140}
         height={140}
-        src={imgUrl || "/assets/images/products/iphone-xi.webp"}
+        src={imgUrl || "/assets/images/products/placeholder.webp"}
       />
 
       <FlexBox

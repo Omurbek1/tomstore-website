@@ -22,7 +22,7 @@ import ProductShareButton from "./ProductShareButton";
 import ProductVariantSelector from "./ProductVariantSelector";
 
 const EMPTY_VARIANTS: ProductVariant[] = [];
-const PRODUCT_IMAGE_FALLBACK = "/assets/images/products/iphone-xi.webp";
+const PRODUCT_IMAGE_FALLBACK = "/assets/images/products/placeholder.webp";
 
 // ========================================
 interface Props {

@@ -39,7 +39,7 @@ const buildHomeBrands = (
       name: brand.name,
       slug: brand.slug || brand.name,
       type: "brand",
-      image: linkedProduct?.thumbnail || "/assets/images/products/iphone-xi.webp",
+      image: linkedProduct?.thumbnail || "/assets/images/products/placeholder.webp",
     };
   });
 

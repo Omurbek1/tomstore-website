@@ -176,7 +176,7 @@ export const EMPTY_STOREFRONT_HOME: StorefrontHomeResponse = {
   brands: [],
 };
 
-const PLACEHOLDER_IMAGE = "/assets/images/products/iphone-xi.webp";
+const PLACEHOLDER_IMAGE = "/assets/images/products/placeholder.webp";
 const DEFAULT_BACKEND_URL = "http://127.0.0.1:3000";
 const REVALIDATE_SECONDS = 60;
 const STALE_TIME_MS = REVALIDATE_SECONDS * 1000;

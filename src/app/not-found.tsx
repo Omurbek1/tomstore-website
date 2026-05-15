@@ -19,7 +19,7 @@ export default function NotFound() {
       flexDirection="column"
       justifyContent="center">
       <Image
-        src="/assets/images/illustrations/404.svg"
+        src="/assets/images/illustrations/not-found.svg"
         alt="Not found"
         width={320}
         height={240}
