@@ -135,7 +135,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
-        <GoogleAnalytics />
         <AntdRegistry>{children}</AntdRegistry>
       </body>
     </html>

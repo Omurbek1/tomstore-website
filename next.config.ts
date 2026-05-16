@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "127.0.0.1", port: "3000", pathname: "/uploads/**" },
       { protocol: "http", hostname: "localhost", port: "3000", pathname: "/uploads/**" },
       { protocol: "https", hostname: "**", pathname: "/uploads/**" },
+      // Cloudflare R2 public URLs
+      { protocol: "https", hostname: "*.r2.dev", pathname: "/**" },
+      { protocol: "https", hostname: "pub-*.r2.dev", pathname: "/**" },
     ],
   },
   compiler: {
