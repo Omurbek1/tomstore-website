@@ -129,6 +129,7 @@ export async function POST(
         ContentType: file.type as AllowedMimeType,
         ContentLength: buffer.length,
         CacheControl: "public, max-age=31536000, immutable",
+        ContentDisposition: "inline",
       }),
     );
 
