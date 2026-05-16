@@ -561,12 +561,12 @@ export default function VacanciesPageClient({ locale, data: initialData }: Props
     let items = allItems;
     const q = search.trim().toLowerCase();
     if (q) {
-      items = items.filter(v =>
-        v.title.toLowerCase().includes(q) ||
-        (v.description ?? "").toLowerCase().includes(q) ||
-        (v.role ?? "").toLowerCase().includes(q) ||
-        (v.branchName ?? "").toLowerCase().includes(q)
-      );
+      const tokens = q.split(/\s+/);
+      items = items.filter(v => {
+        const haystack = [v.title, v.description, v.role, v.branchName]
+          .filter(Boolean).join(" ").toLowerCase();
+        return tokens.every(t => haystack.includes(t));
+      });
     }
     if (activeFormat) items = items.filter(v => v.workFormat === activeFormat);
     if (activeRole)   items = items.filter(v => v.role === activeRole);
