@@ -12,15 +12,15 @@ const gray = {
 };
 
 const textColor = {
-  hint: gray[700],
-  muted: gray[700],
+  hint: gray[600],
+  muted: gray[600],
   primary: gray[900],
   disabled: gray[400],
-  secondary: gray[800]
+  secondary: gray[700]
 };
 
 const bodyColor = {
-  default: "#f8f9fa",
+  default: "#f5f6f9",
   paper: gray["white"],
   text: textColor.primary
 };
@@ -125,59 +125,61 @@ export const darkColors: typeof colors = {
   marron,
   blue,
   gray: {
-    900: "#e0e6f5",   // main text (inverted)
-    800: "#a8b4d0",   // paragraph
-    700: "#6a7898",   // low-priority text
+    900: "#eaf0ff",   // main text — cool white
+    800: "#b0bdd8",   // paragraph
+    700: "#6e7fa0",   // low-priority text
     600: "#4a5572",
-    500: "#303854",
-    400: "#222a42",   // border
-    300: "#192036",   // divider
-    200: "#141a2f",   // subtle surface / input bg
-    100: "#0e1225",   // elevated surface
+    500: "#323c58",
+    400: "#252e46",   // border
+    300: "#1c2338",   // divider
+    200: "#141c30",   // subtle surface / input bg
+    100: "#0c1220",   // deeply elevated
     white: "#ffffff",
   },
   text: {
-    primary:   "#e0e6f5",
-    secondary: "#8896be",
-    hint:      "#a8b4d0",
-    muted:     "#a8b4d0",
-    disabled:  "#222a42",
+    primary:   "#eaf0ff",
+    secondary: "#8fa3cc",
+    hint:      "#6e7fa0",
+    muted:     "#6e7fa0",
+    disabled:  "#252e46",
   },
   body: {
-    default: "#080b12",  // ultra-deep background
-    paper:   "#10141f",  // card / header background
-    text:    "#e0e6f5",
+    default: "#070c18",  // ultra-deep navy-black
+    paper:   "#0f1525",  // card / header surface
+    text:    "#eaf0ff",
   },
   primary: {
     ...primaryColor,
-    light: "rgba(200, 30, 58, 0.18)",
+    light:  "rgba(200, 30, 58, 0.20)",
+    100:    "rgba(200, 30, 58, 0.10)",
+    200:    "rgba(200, 30, 58, 0.16)",
   },
   secondary: {
-    light: "rgba(6, 9, 18, 0.5)",
-    main:  "#060912",   // topbar – near-black with blue tint
+    light: "rgba(5, 8, 20, 0.55)",
+    main:  "#05080f",   // topbar — near-black with blue tint
     dark:  "#030508",
     text:  "#ffffff",
-    900:   "#02030a",
-    100:   "#141a2f",
+    900:   "#020408",
+    100:   "#141c30",
   },
   error: {
     main:  "#ff4d6a",
     light: "rgba(255, 77, 106, 0.18)",
-    text:  "#e0e6f5",
+    text:  "#eaf0ff",
   },
   warn: {
-    main: "#FFCD4E",
-    text: "#e0e6f5",
+    main: "#ffd233",
+    text: "#eaf0ff",
   },
   success: {
-    main:  "rgba(40, 220, 100, 1)",
-    light: "rgba(40, 220, 100, 0.15)",
-    text:  "#e0e6f5",
+    main:  "rgba(32, 214, 96, 1)",
+    light: "rgba(32, 214, 96, 0.14)",
+    text:  "#eaf0ff",
   },
   default: {
-    main:  "#e0e6f5",
-    dark:  "#e0e6f5",
-    text:  "#e0e6f5",
-    light: "#8896be",
+    main:  "#eaf0ff",
+    dark:  "#eaf0ff",
+    text:  "#eaf0ff",
+    light: "#8fa3cc",
   },
 };

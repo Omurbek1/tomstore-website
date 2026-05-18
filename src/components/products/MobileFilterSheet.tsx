@@ -92,11 +92,7 @@ const Chip = styled.button<{ $active?: boolean }>`
           ? "rgba(255,255,255,0.15)"
           : "rgba(0,0,0,0.12)"};
   background: ${({ theme, $active }) =>
-    $active
-      ? theme.isDark
-        ? "rgba(206,22,46,0.18)"
-        : "#fff0f2"
-      : "transparent"};
+    $active ? theme.colors.primary.light : "transparent"};
   color: ${({ theme, $active }) =>
     $active ? theme.colors.primary.main : theme.colors.text.primary};
   &:active {
@@ -155,8 +151,7 @@ const PriceInput = styled.input`
   border: 1.5px solid
     ${({ theme }) =>
       theme.isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.12)"};
-  background: ${({ theme }) =>
-    theme.isDark ? "rgba(255,255,255,0.04)" : "#f7f8fa"};
+  background: ${({ theme }) => theme.colors.gray[200]};
   color: ${({ theme }) => theme.colors.text.primary};
   font-size: 14px;
   font-weight: 500;
@@ -169,8 +164,7 @@ const PriceInput = styled.input`
   }
   &:focus {
     border-color: ${({ theme }) => theme.colors.primary.main};
-    background: ${({ theme }) =>
-      theme.isDark ? "rgba(206,22,46,0.08)" : "#fff8f9"};
+    background: ${({ theme }) => theme.colors.primary.light};
   }
 `;
 
@@ -206,7 +200,7 @@ const ToggleSwitch = styled.div<{ $active?: boolean }>`
   height: 26px;
   border-radius: 13px;
   background: ${({ theme, $active }) =>
-    $active ? theme.colors.primary.main : theme.isDark ? "rgba(255,255,255,0.15)" : "#d1d5db"};
+    $active ? theme.colors.primary.main : theme.colors.gray[400]};
   position: relative;
   flex-shrink: 0;
   transition: background 0.2s;
@@ -216,7 +210,7 @@ const ToggleSwitch = styled.div<{ $active?: boolean }>`
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #fff;
+    background: ${({ theme }) => theme.colors.gray.white};
     top: 3px;
     left: ${({ $active }) => ($active ? "23px" : "3px")};
     transition: left 0.2s;
@@ -240,7 +234,7 @@ const ApplyBtn = styled.button`
   border-radius: 14px;
   border: none;
   background: ${({ theme }) => theme.colors.primary.main};
-  color: #fff;
+  color: ${({ theme }) => theme.colors.primary.text};
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
