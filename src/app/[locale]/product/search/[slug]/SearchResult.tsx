@@ -248,11 +248,7 @@ const MobileFilterBtn = styled.button<{ $active?: boolean }>`
             ? "rgba(255,255,255,0.14)"
             : "rgba(0,0,0,0.12)"};
     background: ${({ theme, $active }) =>
-      $active
-        ? theme.isDark
-          ? "rgba(206,22,46,0.16)"
-          : "#fff0f2"
-        : "transparent"};
+      $active ? theme.colors.primary.light : "transparent"};
     color: ${({ theme, $active }) =>
       $active ? theme.colors.primary.main : theme.colors.text.primary};
     font-size: 13px;
