@@ -18,19 +18,14 @@ export default function ProductListView({ products }: Props) {
 
   const measure = () => {
     if (!containerRef.current) return;
-    const top = containerRef.current.getBoundingClientRect().top + window.scrollY;
+    const top = Math.round(containerRef.current.getBoundingClientRect().top + window.scrollY);
     setScrollMargin(top);
   };
 
   useEffect(() => {
     measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(document.body);
     window.addEventListener("resize", measure);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
-    };
+    return () => window.removeEventListener("resize", measure);
   }, []);
 
   useLayoutEffect(() => {

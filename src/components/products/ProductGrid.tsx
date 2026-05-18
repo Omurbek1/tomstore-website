@@ -20,23 +20,18 @@ export default function ProductGridView({ products }: Props) {
 
   const measure = () => {
     if (!containerRef.current) return;
-    const top = containerRef.current.getBoundingClientRect().top + window.scrollY;
+    // Round to integer — float precision causes tiny diffs that trigger constant re-renders
+    const top = Math.round(containerRef.current.getBoundingClientRect().top + window.scrollY);
     setScrollMargin(top);
   };
 
-  // Re-measure on mount, resize, and any body layout change
   useEffect(() => {
     measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(document.body);
     window.addEventListener("resize", measure);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
-    };
+    return () => window.removeEventListener("resize", measure);
   }, []);
 
-  // Re-measure after each filter (products prop change) once the DOM settles
+  // Re-measure after each filter so stale scrollMargin never causes blank rows
   useLayoutEffect(() => {
     measure();
   }, [products]);
