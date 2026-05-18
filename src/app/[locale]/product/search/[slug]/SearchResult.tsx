@@ -138,92 +138,6 @@ const ChipsScrollRow = styled.div`
   }
 `;
 
-const MobileBottomBar = styled.div`
-  display: none;
-  @media (max-width: 1024px) {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 900;
-    background: ${({ theme }) => theme.colors.body.paper};
-    border-top: 1px solid
-      ${({ theme }) =>
-        theme.isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)"};
-    box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.08);
-    padding: 10px 12px;
-    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-    gap: 8px;
-  }
-`;
-
-const MobileBarBtn = styled.button<{ $accent?: boolean }>`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 11px 10px;
-  border-radius: 12px;
-  border: 1.5px solid
-    ${({ theme, $accent }) =>
-      $accent
-        ? theme.colors.primary.main
-        : theme.isDark
-          ? "rgba(255,255,255,0.12)"
-          : "rgba(0,0,0,0.1)"};
-  background: ${({ theme, $accent }) =>
-    $accent
-      ? theme.isDark
-        ? "rgba(206,22,46,0.15)"
-        : theme.colors.primary.light
-      : "transparent"};
-  color: ${({ theme, $accent }) =>
-    $accent ? theme.colors.primary.main : theme.colors.text.primary};
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
-  overflow: hidden;
-  min-width: 0;
-`;
-
-const MobileViewToggle = styled.div`
-  display: flex;
-  border-radius: 12px;
-  border: 1.5px solid
-    ${({ theme }) =>
-      theme.isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.1)"};
-  overflow: hidden;
-  flex-shrink: 0;
-`;
-
-const MobileViewBtn = styled.button<{ $active?: boolean }>`
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-right: 1px solid
-    ${({ theme }) =>
-      theme.isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)"};
-  background: ${({ theme, $active }) =>
-    $active
-      ? theme.isDark
-        ? "rgba(206,22,46,0.15)"
-        : theme.colors.primary.light
-      : "transparent"};
-  color: ${({ theme, $active }) =>
-    $active ? theme.colors.primary.main : theme.colors.text.secondary};
-  cursor: pointer;
-  transition: all 0.15s;
-  &:last-child {
-    border-right: none;
-  }
-`;
 
 const FilterCountBadge = styled.span`
   display: inline-flex;
@@ -241,11 +155,77 @@ const FilterCountBadge = styled.span`
   margin-left: 2px;
 `;
 
-const MobileContentSpacer = styled.div`
+/* Sort + view toggle row — visible on mobile only, sits above the product list */
+const MobileSortViewBar = styled.div`
   display: none;
   @media (max-width: 1024px) {
-    display: block;
-    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+`;
+
+const MobileSortBtn = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px 7px 10px;
+  border-radius: 10px;
+  border: 1px solid
+    ${({ theme }) =>
+      theme.isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.09)"};
+  background: transparent;
+  color: ${({ theme }) => theme.colors.text.secondary};
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 0;
+  flex: 1;
+  max-width: 220px;
+`;
+
+const MobileSortLabel = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  text-align: left;
+`;
+
+const MobileViewToggleInline = styled.div`
+  display: flex;
+  border-radius: 10px;
+  border: 1px solid
+    ${({ theme }) =>
+      theme.isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.09)"};
+  overflow: hidden;
+  flex-shrink: 0;
+`;
+
+const MobileViewBtnInline = styled.button<{ $active?: boolean }>`
+  width: 36px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-right: 1px solid
+    ${({ theme }) =>
+      theme.isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.07)"};
+  background: ${({ theme, $active }) =>
+    $active
+      ? theme.isDark
+        ? "rgba(206,22,46,0.14)"
+        : theme.colors.primary.light
+      : "transparent"};
+  color: ${({ theme, $active }) =>
+    $active ? theme.colors.primary.main : theme.colors.text.hint};
+  cursor: pointer;
+  transition: all 0.15s;
+  &:last-child {
+    border-right: none;
   }
 `;
 
@@ -794,6 +774,22 @@ export default function SearchResult({
         )}
 
         <Grid item lg={showDesktopFilters ? 9 : 12} xs={12}>
+          {/* Sort + view toggle — mobile only, above product list */}
+          <MobileSortViewBar>
+            <MobileSortBtn onClick={() => setSortDrawerOpen(true)}>
+              <IconArrowsSort size={14} />
+              <MobileSortLabel>{currentSortLabel ?? t("sortBy")}</MobileSortLabel>
+            </MobileSortBtn>
+            <MobileViewToggleInline>
+              <MobileViewBtnInline $active={view === "grid"} onClick={toggleView("grid", updateUrl)}>
+                <IconLayoutGrid size={16} />
+              </MobileViewBtnInline>
+              <MobileViewBtnInline $active={view === "list"} onClick={toggleView("list", updateUrl)}>
+                <IconList size={16} />
+              </MobileViewBtnInline>
+            </MobileViewToggleInline>
+          </MobileSortViewBar>
+
           <div
             style={{
               opacity: isFetchingFirstPage ? 0.55 : 1,
@@ -827,33 +823,6 @@ export default function SearchResult({
         </Grid>
       </Grid>
 
-      {/* Spacer so Drawer isn't hidden behind the sticky bottom bar */}
-      <MobileContentSpacer />
-
-      {/* ── Mobile sticky bottom bar (Sort + View only) ── */}
-      <MobileBottomBar>
-        <MobileBarBtn onClick={() => setSortDrawerOpen(true)}>
-          <IconArrowsSort size={17} />
-          <span
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              maxWidth: 110,
-            }}
-          >
-            {currentSortLabel ?? t("sortBy")}
-          </span>
-        </MobileBarBtn>
-
-        <MobileViewToggle>
-          <MobileViewBtn $active={view === "grid"} onClick={toggleView("grid", updateUrl)}>
-            <IconLayoutGrid size={18} />
-          </MobileViewBtn>
-          <MobileViewBtn $active={view === "list"} onClick={toggleView("list", updateUrl)}>
-            <IconList size={18} />
-          </MobileViewBtn>
-        </MobileViewToggle>
-      </MobileBottomBar>
 
       {/* ── Full-screen filter modal (mobile) ── */}
       {isTablet && drawerOpen && (
