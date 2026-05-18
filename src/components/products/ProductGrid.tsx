@@ -19,9 +19,26 @@ export default function ProductGridView({ products }: Props) {
   const [scrollMargin, setScrollMargin] = useState(0);
 
   useEffect(() => {
-    if (containerRef.current) {
-      setScrollMargin(containerRef.current.offsetTop);
-    }
+    const update = () => {
+      if (!containerRef.current) return;
+      // getBoundingClientRect + scrollY gives the absolute page position
+      // regardless of any ancestor transforms or layout changes (e.g. filter chips)
+      const top = containerRef.current.getBoundingClientRect().top + window.scrollY;
+      setScrollMargin(top);
+    };
+
+    update();
+
+    // Re-measure whenever the document body changes size (filter chips appearing,
+    // accordion sections collapsing, etc. all change body height)
+    const ro = new ResizeObserver(update);
+    ro.observe(document.body);
+    window.addEventListener("resize", update);
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
   }, []);
 
   const columns = !width ? 3 : width < 1025 ? 2 : 3;

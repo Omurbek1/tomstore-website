@@ -17,9 +17,22 @@ export default function ProductListView({ products }: Props) {
   const [scrollMargin, setScrollMargin] = useState(0);
 
   useEffect(() => {
-    if (containerRef.current) {
-      setScrollMargin(containerRef.current.offsetTop);
-    }
+    const update = () => {
+      if (!containerRef.current) return;
+      const top = containerRef.current.getBoundingClientRect().top + window.scrollY;
+      setScrollMargin(top);
+    };
+
+    update();
+
+    const ro = new ResizeObserver(update);
+    ro.observe(document.body);
+    window.addEventListener("resize", update);
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
   }, []);
 
   const virtualizer = useWindowVirtualizer({
