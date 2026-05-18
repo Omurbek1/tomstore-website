@@ -11,6 +11,7 @@ import {
   IconCheck,
   IconFilter,
   IconArrowsSort,
+  IconSearch,
 } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
@@ -23,6 +24,7 @@ import FlexBox from "@component/FlexBox";
 import { IconButton } from "@component/buttons";
 import { H1, Paragraph } from "@component/Typography";
 import ProductFilterCard from "@component/products/ProductFilterCard";
+import MobileFilterSheet from "@component/products/MobileFilterSheet";
 import useWindowSize from "@hook/useWindowSize";
 import Product from "@models/product.model";
 import { useInfiniteStorefrontProducts } from "@hook/useStorefrontCatalog";
@@ -243,8 +245,106 @@ const MobileContentSpacer = styled.div`
   display: none;
   @media (max-width: 1024px) {
     display: block;
-    height: 76px;
+    height: 68px;
   }
+`;
+
+/* Filter button that appears inside the toolbar on mobile (right side) */
+const MobileFilterBtn = styled.button<{ $active?: boolean }>`
+  display: none;
+  @media (max-width: 1024px) {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    border: 1.5px solid
+      ${({ theme, $active }) =>
+        $active
+          ? theme.colors.primary.main
+          : theme.isDark
+            ? "rgba(255,255,255,0.14)"
+            : "rgba(0,0,0,0.12)"};
+    background: ${({ theme, $active }) =>
+      $active
+        ? theme.isDark
+          ? "rgba(206,22,46,0.16)"
+          : "#fff0f2"
+        : "transparent"};
+    color: ${({ theme, $active }) =>
+      $active ? theme.colors.primary.main : theme.colors.text.primary};
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+`;
+
+/* Full-screen filter modal (mobile only, slides up from bottom) */
+const FilterModal = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: ${({ theme }) => theme.colors.body.paper};
+  display: flex;
+  flex-direction: column;
+  animation: fmUp 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  @keyframes fmUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+`;
+
+const FilterModalHead = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 56px;
+  flex-shrink: 0;
+  border-bottom: 1px solid
+    ${({ theme }) =>
+      theme.isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)"};
+`;
+
+const FilterModalTitle = styled.span`
+  font-size: 17px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text.primary};
+`;
+
+const FilterModalClose = styled.button`
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: ${({ theme }) =>
+    theme.isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"};
+  color: ${({ theme }) => theme.colors.text.primary};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  &:active {
+    background: ${({ theme }) =>
+      theme.isDark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.1)"};
+  }
+`;
+
+const FilterModalBody = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
 `;
 
 const SortOptionItem = styled.button<{ $active?: boolean }>`
@@ -530,6 +630,16 @@ export default function SearchResult({
   const isFetchingFirstPage = isFetching && !isFetchingNextPage;
   const currentSortLabel = sortOptions.find((o) => o.value === sortKey)?.label;
 
+  // Lock body scroll when filter modal is open on mobile
+  useEffect(() => {
+    if (drawerOpen && isTablet) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [drawerOpen, isTablet]);
+
   const drawerBg = theme.colors.body.paper;
   const drawerBorder = theme.isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.06)";
 
@@ -552,11 +662,24 @@ export default function SearchResult({
           justifyContent="space-between"
           style={{ gap: "0.5rem" }}
         >
-          <div>
-            <H1 fontSize="16px" fontWeight="600" mb="0" mt="0" color="text.primary">
-              {t("searchingFor", { query })}
-            </H1>
-            <Paragraph color="text.muted">
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <FlexBox alignItems="center" style={{ gap: 6 }}>
+              <IconSearch
+                size={15}
+                style={{ flexShrink: 0, opacity: 0.45 }}
+              />
+              <H1
+                fontSize="15px"
+                fontWeight="600"
+                mb="0"
+                mt="0"
+                color="text.primary"
+                style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+              >
+                {query}
+              </H1>
+            </FlexBox>
+            <Paragraph color="text.muted" fontSize="13px">
               {isFetchingFirstPage
                 ? "…"
                 : total !== undefined
@@ -564,6 +687,18 @@ export default function SearchResult({
                   : t("resultsFound", { count: liveProducts.length })}
             </Paragraph>
           </div>
+
+          {/* Mobile: filter button on the right */}
+          <MobileFilterBtn
+            $active={hasActiveFilters}
+            onClick={() => setDrawerOpen(true)}
+          >
+            <IconFilter size={14} />
+            {filtersT("title")}
+            {activeFilterCount > 0 && (
+              <FilterCountBadge>{activeFilterCount}</FilterCountBadge>
+            )}
+          </MobileFilterBtn>
 
           {/* Desktop-only sort + view controls */}
           <DesktopSortRow>
@@ -692,19 +827,11 @@ export default function SearchResult({
         </Grid>
       </Grid>
 
-      {/* Spacer so content isn't hidden behind the sticky bottom bar */}
+      {/* Spacer so Drawer isn't hidden behind the sticky bottom bar */}
       <MobileContentSpacer />
 
-      {/* ── Mobile sticky bottom bar ── */}
+      {/* ── Mobile sticky bottom bar (Sort + View only) ── */}
       <MobileBottomBar>
-        <MobileBarBtn $accent={hasActiveFilters} onClick={() => setDrawerOpen(true)}>
-          <IconFilter size={17} />
-          {filtersT("title")}
-          {activeFilterCount > 0 && (
-            <FilterCountBadge>{activeFilterCount}</FilterCountBadge>
-          )}
-        </MobileBarBtn>
-
         <MobileBarBtn onClick={() => setSortDrawerOpen(true)}>
           <IconArrowsSort size={17} />
           <span
@@ -728,37 +855,36 @@ export default function SearchResult({
         </MobileViewToggle>
       </MobileBottomBar>
 
-      {/* ── Filter bottom sheet ── */}
-      <Drawer
-        placement="bottom"
-        height="82vh"
-        open={drawerOpen}
-        title={filtersT("title")}
-        onClose={() => setDrawerOpen(false)}
-        destroyOnHidden
-        styles={{
-          wrapper: {
-            borderRadius: "20px 20px 0 0",
-            overflow: "hidden",
-          },
-          body: {
-            padding: 16,
-            background: drawerBg,
-            overflowY: "auto",
-          },
-          header: {
-            background: drawerBg,
-            borderBottom: `1px solid ${drawerBorder}`,
-          },
-        }}
-      >
-        <ProductFilterCard {...filterCardProps} />
-      </Drawer>
+      {/* ── Full-screen filter modal (mobile) ── */}
+      {isTablet && drawerOpen && (
+        <FilterModal>
+          <FilterModalHead>
+            <FilterModalTitle>
+              {filtersT("title")}
+              {activeFilterCount > 0 && (
+                <FilterCountBadge style={{ marginLeft: 8 }}>
+                  {activeFilterCount}
+                </FilterCountBadge>
+              )}
+            </FilterModalTitle>
+            <FilterModalClose onClick={() => setDrawerOpen(false)}>
+              <IconX size={18} strokeWidth={2.5} />
+            </FilterModalClose>
+          </FilterModalHead>
+          <FilterModalBody>
+            <MobileFilterSheet
+              {...filterCardProps}
+              total={total}
+              onClose={() => setDrawerOpen(false)}
+            />
+          </FilterModalBody>
+        </FilterModal>
+      )}
 
       {/* ── Sort bottom sheet ── */}
       <Drawer
         placement="bottom"
-        height={320}
+        size={320}
         open={sortDrawerOpen}
         title={t("sortBy")}
         onClose={() => setSortDrawerOpen(false)}
