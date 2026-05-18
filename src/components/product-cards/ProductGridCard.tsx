@@ -157,6 +157,7 @@ interface ProductGridCardProps extends CardProps {
   rating: number;
   images: string[] | undefined;
   id: string | number;
+  priority?: boolean;
 }
 // =======================================================================
 
@@ -169,6 +170,7 @@ export default function ProductGridCard({
   imgUrl,
   images,
   rating = 4,
+  priority = false,
   ...props
 }: ProductGridCardProps) {
   const theme = useTheme();
@@ -262,6 +264,7 @@ export default function ProductGridCard({
               width={277}
               src={imgUrl}
               height={270}
+              priority={priority}
               optimizedWidth={560}
               sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 277px"
               style={{ objectFit: "contain" }}

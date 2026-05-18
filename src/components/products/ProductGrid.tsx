@@ -90,6 +90,7 @@ export default function ProductGridView({ products }: Props) {
                   images={product.images ?? []}
                   imgUrl={product.thumbnail}
                   rating={product.rating || 4}
+                  priority={virtualRow.index < 2}
                 />
               ))}
             </div>
