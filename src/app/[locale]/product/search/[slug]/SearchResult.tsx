@@ -4,27 +4,24 @@ import { Fragment, startTransition, useCallback, useEffect, useRef, useState } f
 import { useSearchParams } from "next/navigation";
 import { Drawer } from "antd";
 import styled, { useTheme } from "styled-components";
-import { IconLayoutGrid, IconList, IconX } from "@tabler/icons-react";
+import {
+  IconLayoutGrid,
+  IconList,
+  IconX,
+  IconCheck,
+  IconFilter,
+  IconArrowsSort,
+} from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 
 import Box from "@component/Box";
 import Card from "@component/Card";
 import Select from "@component/Select";
-import Icon from "@component/icon/Icon";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import { IconButton } from "@component/buttons";
 import { H1, Paragraph } from "@component/Typography";
-
-const ProductGridView = dynamic(() => import("@component/products/ProductGrid"), {
-  ssr: false,
-  loading: () => <ProductViewSkeleton />,
-});
-const ProductListView = dynamic(() => import("@component/products/ProductList"), {
-  ssr: false,
-  loading: () => <ProductViewSkeleton />,
-});
 import ProductFilterCard from "@component/products/ProductFilterCard";
 import useWindowSize from "@hook/useWindowSize";
 import Product from "@models/product.model";
@@ -35,21 +32,24 @@ import type {
   StorefrontCatalogParams,
 } from "@utils/__api__/storefront";
 
+const ProductGridView = dynamic(() => import("@component/products/ProductGrid"), {
+  ssr: false,
+  loading: () => <ProductViewSkeleton />,
+});
+const ProductListView = dynamic(() => import("@component/products/ProductList"), {
+  ssr: false,
+  loading: () => <ProductViewSkeleton />,
+});
+
 function ProductViewSkeleton() {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
-        gap: "1.5rem",
-      }}
-    >
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1rem" }}>
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
           style={{
             borderRadius: 12,
-            height: 380,
+            height: 320,
             background: "var(--sk-color, #e8eaf0)",
             animation: "pulse 1.4s ease-in-out infinite",
           }}
@@ -59,12 +59,13 @@ function ProductViewSkeleton() {
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.45} }
         [data-theme="dark"] { --sk-color: #192036; }
         @media(prefers-color-scheme:dark) { :root:not([data-theme="light"]) { --sk-color: #192036; } }
-        @media(max-width:1024px) { .pv-sk-grid { grid-template-columns: repeat(2,1fr) !important; } }
-        @media(max-width:599px)  { .pv-sk-grid { grid-template-columns: 1fr !important; } }
+        @media(min-width:1025px) { .pv-sk { grid-template-columns: repeat(3,1fr) !important; } }
       `}</style>
     </div>
   );
 }
+
+// ── Styled ─────────────────────────────────────────────────────────────────────
 
 const ActiveChip = styled.button`
   display: inline-flex;
@@ -80,6 +81,7 @@ const ActiveChip = styled.button`
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
   transition: background 0.15s;
   &:hover {
     background: ${({ theme }) =>
@@ -99,12 +101,180 @@ const ResetAllBtn = styled.button`
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
   transition: border-color 0.15s, color 0.15s;
   &:hover {
     border-color: ${({ theme }) => theme.colors.primary.main};
     color: ${({ theme }) => theme.colors.primary.main};
   }
 `;
+
+const DesktopSortRow = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  @media (max-width: 1024px) {
+    display: none;
+  }
+`;
+
+const ChipsScrollRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  @media (max-width: 1024px) {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+`;
+
+const MobileBottomBar = styled.div`
+  display: none;
+  @media (max-width: 1024px) {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 900;
+    background: ${({ theme }) => theme.colors.body.paper};
+    border-top: 1px solid
+      ${({ theme }) =>
+        theme.isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)"};
+    box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.08);
+    padding: 10px 12px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    gap: 8px;
+  }
+`;
+
+const MobileBarBtn = styled.button<{ $accent?: boolean }>`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 10px;
+  border-radius: 12px;
+  border: 1.5px solid
+    ${({ theme, $accent }) =>
+      $accent
+        ? theme.colors.primary.main
+        : theme.isDark
+          ? "rgba(255,255,255,0.12)"
+          : "rgba(0,0,0,0.1)"};
+  background: ${({ theme, $accent }) =>
+    $accent
+      ? theme.isDark
+        ? "rgba(206,22,46,0.15)"
+        : theme.colors.primary.light
+      : "transparent"};
+  color: ${({ theme, $accent }) =>
+    $accent ? theme.colors.primary.main : theme.colors.text.primary};
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 0;
+`;
+
+const MobileViewToggle = styled.div`
+  display: flex;
+  border-radius: 12px;
+  border: 1.5px solid
+    ${({ theme }) =>
+      theme.isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.1)"};
+  overflow: hidden;
+  flex-shrink: 0;
+`;
+
+const MobileViewBtn = styled.button<{ $active?: boolean }>`
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-right: 1px solid
+    ${({ theme }) =>
+      theme.isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)"};
+  background: ${({ theme, $active }) =>
+    $active
+      ? theme.isDark
+        ? "rgba(206,22,46,0.15)"
+        : theme.colors.primary.light
+      : "transparent"};
+  color: ${({ theme, $active }) =>
+    $active ? theme.colors.primary.main : theme.colors.text.secondary};
+  cursor: pointer;
+  transition: all 0.15s;
+  &:last-child {
+    border-right: none;
+  }
+`;
+
+const FilterCountBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: ${({ theme }) => theme.colors.primary.main};
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  margin-left: 2px;
+`;
+
+const MobileContentSpacer = styled.div`
+  display: none;
+  @media (max-width: 1024px) {
+    display: block;
+    height: 76px;
+  }
+`;
+
+const SortOptionItem = styled.button<{ $active?: boolean }>`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 4px;
+  border: none;
+  border-bottom: 1px solid
+    ${({ theme }) =>
+      theme.isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"};
+  background: transparent;
+  color: ${({ theme, $active }) =>
+    $active ? theme.colors.primary.main : theme.colors.text.primary};
+  font-size: 15px;
+  font-weight: ${({ $active }) => ($active ? "600" : "400")};
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s;
+  &:last-child {
+    border-bottom: none;
+  }
+  &:active {
+    background: ${({ theme }) =>
+      theme.isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)"};
+  }
+`;
+
+// ── Constants ─────────────────────────────────────────────────────────────────
 
 const SORT_MAP: Record<string, string> = {
   relevance: "popular",
@@ -116,6 +286,8 @@ const SORT_MAP: Record<string, string> = {
 const SORT_KEY_BY_BACKEND_VALUE: Record<string, string> = Object.fromEntries(
   Object.entries(SORT_MAP).map(([key, value]) => [value, key]),
 );
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 type Props = {
   products: Product[];
@@ -144,8 +316,9 @@ export default function SearchResult({
   const searchParams = useSearchParams();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [sortDrawerOpen, setSortDrawerOpen] = useState(false);
 
-  // ── Filter state from URL ───────────────────────────────────────────────
+  // ── Filter state from URL ──────────────────────────────────────────────────
   const view = (searchParams.get("view") as "grid" | "list") || "grid";
 
   const sortKey =
@@ -173,7 +346,7 @@ export default function SearchResult({
   const selectedInStock = searchParams.get("filterInStock") === "1";
   const selectedFeatured = searchParams.get("filterFeatured") === "1";
 
-  // ── URL updater ─────────────────────────────────────────────────────────
+  // ── URL updater ────────────────────────────────────────────────────────────
   const updateUrl = useCallback(
     (updates: Record<string, string | undefined>) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -192,7 +365,7 @@ export default function SearchResult({
     [router, pathname, searchParams],
   );
 
-  // ── Live catalog params ─────────────────────────────────────────────────
+  // ── Live catalog params ────────────────────────────────────────────────────
   const baseParams: StorefrontCatalogParams =
     catalogParams ?? (searchType === "category" ? { category: query } : { q: query });
 
@@ -211,25 +384,19 @@ export default function SearchResult({
     sort: SORT_MAP[sortKey] ?? "popular",
   };
 
-  const {
-    data,
-    isFetching,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage,
-  } = useInfiniteStorefrontProducts(liveCatalogParams, products);
+  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    useInfiniteStorefrontProducts(liveCatalogParams, products);
 
   const liveProducts = data?.pages.flatMap((p) => p.items) ?? products;
   const liveFilters = data?.pages[0]?.filters ?? initialFilters;
   const total = data?.pages[0]?.total;
 
-  // ── Infinite scroll sentinel ─────────────────────────────────────────────
+  // ── Infinite scroll sentinel ───────────────────────────────────────────────
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -238,12 +405,11 @@ export default function SearchResult({
       },
       { rootMargin: "300px" },
     );
-
     observer.observe(el);
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  // ── Handlers ────────────────────────────────────────────────────────────
+  // ── Sort options ───────────────────────────────────────────────────────────
   const sortOptions = [
     { label: t("sortOptions.relevance"), value: "relevance" },
     { label: t("sortOptions.date"), value: "date" },
@@ -251,6 +417,7 @@ export default function SearchResult({
     { label: t("sortOptions.priceHighToLow"), value: "priceHighToLow" },
   ];
 
+  // ── Handlers ──────────────────────────────────────────────────────────────
   const handleSortChange = useCallback(
     (option: { value: string } | null) => {
       if (option) updateUrl({ filterSort: option.value });
@@ -329,6 +496,16 @@ export default function SearchResult({
     selectedInStock ||
     selectedFeatured;
 
+  const activeFilterCount = [
+    !!selectedCategory,
+    !!selectedBrand,
+    selectedMinPrice !== undefined,
+    selectedMaxPrice !== undefined,
+    selectedOnSale,
+    selectedInStock,
+    selectedFeatured,
+  ].filter(Boolean).length;
+
   const filterCardProps = {
     catalogParams: liveCatalogParams,
     selectedCategory,
@@ -351,22 +528,30 @@ export default function SearchResult({
   const isTablet = width ? width < 1025 : false;
   const showDesktopFilters = !isTablet;
   const isFetchingFirstPage = isFetching && !isFetchingNextPage;
+  const currentSortLabel = sortOptions.find((o) => o.value === sortKey)?.label;
+
+  const drawerBg = theme.colors.body.paper;
+  const drawerBorder = theme.isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.06)";
 
   return (
     <Fragment>
       {/* ── Toolbar ── */}
       <FlexBox
         as={Card}
-        mb="55px"
-        p="1.25rem"
+        mb="1.25rem"
+        p="1rem 1.25rem"
         elevation={5}
         flexWrap="wrap"
         borderRadius={12}
         flexDirection="column"
         style={{ gap: "0.75rem" }}
       >
-        {/* Top row: title + sort + view */}
-        <FlexBox flexWrap="wrap" alignItems="center" justifyContent="space-between" style={{ gap: "0.5rem" }}>
+        <FlexBox
+          flexWrap="wrap"
+          alignItems="center"
+          justifyContent="space-between"
+          style={{ gap: "0.5rem" }}
+        >
           <div>
             <H1 fontSize="16px" fontWeight="600" mb="0" mt="0" color="text.primary">
               {t("searchingFor", { query })}
@@ -380,63 +565,44 @@ export default function SearchResult({
             </Paragraph>
           </div>
 
-        <FlexBox alignItems="center" flexWrap="wrap" style={{ gap: "0.5rem" }}>
-          <Paragraph color="text.muted">{t("sortBy")}</Paragraph>
-
-          <Box minWidth="160px">
-            <Select
-              placeholder={t("sortPlaceholder")}
-              value={sortOptions.find((o) => o.value === sortKey)}
-              options={sortOptions}
-              onChange={handleSortChange}
-            />
-          </Box>
-
-          <Paragraph color="text.muted">{t("view")}</Paragraph>
-
-          <IconButton onClick={toggleView("grid", updateUrl)} aria-label="Grid view" title="Grid view">
-            <IconLayoutGrid
-              size={22}
-              color={view === "grid" ? theme.colors.primary.main : "currentColor"}
-            />
-          </IconButton>
-
-          <IconButton onClick={toggleView("list", updateUrl)} aria-label="List view" title="List view">
-            <IconList
-              size={22}
-              color={view === "list" ? theme.colors.primary.main : "currentColor"}
-            />
-          </IconButton>
-
-          {isTablet && (
-            <Fragment>
-              <IconButton
-                onClick={() => setDrawerOpen(true)}
-                aria-label={filtersT("title")}
-                title={filtersT("title")}
-              >
-                <Icon>options</Icon>
-              </IconButton>
-
-              <Drawer
-                placement="left"
-                size={320}
-                open={drawerOpen}
-                title={filtersT("title")}
-                onClose={() => setDrawerOpen(false)}
-                destroyOnHidden
-                styles={{ body: { padding: 16, background: theme.colors.body.paper } }}
-              >
-                <ProductFilterCard {...filterCardProps} />
-              </Drawer>
-            </Fragment>
-          )}
-        </FlexBox>
+          {/* Desktop-only sort + view controls */}
+          <DesktopSortRow>
+            <Paragraph color="text.muted">{t("sortBy")}</Paragraph>
+            <Box minWidth="160px">
+              <Select
+                placeholder={t("sortPlaceholder")}
+                value={sortOptions.find((o) => o.value === sortKey)}
+                options={sortOptions}
+                onChange={handleSortChange}
+              />
+            </Box>
+            <Paragraph color="text.muted">{t("view")}</Paragraph>
+            <IconButton
+              onClick={toggleView("grid", updateUrl)}
+              aria-label="Grid view"
+              title="Grid view"
+            >
+              <IconLayoutGrid
+                size={22}
+                color={view === "grid" ? theme.colors.primary.main : "currentColor"}
+              />
+            </IconButton>
+            <IconButton
+              onClick={toggleView("list", updateUrl)}
+              aria-label="List view"
+              title="List view"
+            >
+              <IconList
+                size={22}
+                color={view === "list" ? theme.colors.primary.main : "currentColor"}
+              />
+            </IconButton>
+          </DesktopSortRow>
         </FlexBox>
 
-        {/* ── Active filter chips ── */}
+        {/* Active filter chips — horizontal scroll on mobile */}
         {hasActiveFilters && (
-          <FlexBox flexWrap="wrap" alignItems="center" style={{ gap: "0.5rem" }}>
+          <ChipsScrollRow>
             {selectedCategory && (
               <ActiveChip onClick={() => handleCategoryChange(undefined)}>
                 {selectedCategory}
@@ -480,7 +646,7 @@ export default function SearchResult({
             <ResetAllBtn onClick={handleResetAllFilters}>
               {filtersT("resetAll")}
             </ResetAllBtn>
-          </FlexBox>
+          </ChipsScrollRow>
         )}
       </FlexBox>
 
@@ -493,7 +659,12 @@ export default function SearchResult({
         )}
 
         <Grid item lg={showDesktopFilters ? 9 : 12} xs={12}>
-          <div style={{ opacity: isFetchingFirstPage ? 0.55 : 1, transition: "opacity 0.25s ease" }}>
+          <div
+            style={{
+              opacity: isFetchingFirstPage ? 0.55 : 1,
+              transition: "opacity 0.25s ease",
+            }}
+          >
             {view === "grid" ? (
               <ProductGridView products={liveProducts} />
             ) : (
@@ -501,10 +672,8 @@ export default function SearchResult({
             )}
           </div>
 
-          {/* Infinite scroll sentinel */}
           <div ref={sentinelRef} style={{ height: 1 }} />
 
-          {/* Loading next page indicator */}
           {isFetchingNextPage && (
             <FlexBox justifyContent="center" py="2rem">
               <Paragraph color="text.muted">
@@ -513,7 +682,6 @@ export default function SearchResult({
             </FlexBox>
           )}
 
-          {/* End of results */}
           {!hasNextPage && liveProducts.length > 0 && !isFetchingFirstPage && (
             <FlexBox justifyContent="center" py="2rem">
               <Paragraph color="text.muted" fontSize="13px">
@@ -523,6 +691,107 @@ export default function SearchResult({
           )}
         </Grid>
       </Grid>
+
+      {/* Spacer so content isn't hidden behind the sticky bottom bar */}
+      <MobileContentSpacer />
+
+      {/* ── Mobile sticky bottom bar ── */}
+      <MobileBottomBar>
+        <MobileBarBtn $accent={hasActiveFilters} onClick={() => setDrawerOpen(true)}>
+          <IconFilter size={17} />
+          {filtersT("title")}
+          {activeFilterCount > 0 && (
+            <FilterCountBadge>{activeFilterCount}</FilterCountBadge>
+          )}
+        </MobileBarBtn>
+
+        <MobileBarBtn onClick={() => setSortDrawerOpen(true)}>
+          <IconArrowsSort size={17} />
+          <span
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: 110,
+            }}
+          >
+            {currentSortLabel ?? t("sortBy")}
+          </span>
+        </MobileBarBtn>
+
+        <MobileViewToggle>
+          <MobileViewBtn $active={view === "grid"} onClick={toggleView("grid", updateUrl)}>
+            <IconLayoutGrid size={18} />
+          </MobileViewBtn>
+          <MobileViewBtn $active={view === "list"} onClick={toggleView("list", updateUrl)}>
+            <IconList size={18} />
+          </MobileViewBtn>
+        </MobileViewToggle>
+      </MobileBottomBar>
+
+      {/* ── Filter bottom sheet ── */}
+      <Drawer
+        placement="bottom"
+        height="82vh"
+        open={drawerOpen}
+        title={filtersT("title")}
+        onClose={() => setDrawerOpen(false)}
+        destroyOnHidden
+        styles={{
+          wrapper: {
+            borderRadius: "20px 20px 0 0",
+            overflow: "hidden",
+          },
+          body: {
+            padding: 16,
+            background: drawerBg,
+            overflowY: "auto",
+          },
+          header: {
+            background: drawerBg,
+            borderBottom: `1px solid ${drawerBorder}`,
+          },
+        }}
+      >
+        <ProductFilterCard {...filterCardProps} />
+      </Drawer>
+
+      {/* ── Sort bottom sheet ── */}
+      <Drawer
+        placement="bottom"
+        height={320}
+        open={sortDrawerOpen}
+        title={t("sortBy")}
+        onClose={() => setSortDrawerOpen(false)}
+        destroyOnHidden
+        styles={{
+          wrapper: {
+            borderRadius: "20px 20px 0 0",
+            overflow: "hidden",
+          },
+          body: {
+            padding: "4px 16px 16px",
+            background: drawerBg,
+          },
+          header: {
+            background: drawerBg,
+            borderBottom: `1px solid ${drawerBorder}`,
+          },
+        }}
+      >
+        {sortOptions.map((option) => (
+          <SortOptionItem
+            key={option.value}
+            $active={sortKey === option.value}
+            onClick={() => {
+              handleSortChange(option);
+              setSortDrawerOpen(false);
+            }}
+          >
+            {option.label}
+            {sortKey === option.value && <IconCheck size={18} strokeWidth={2.5} />}
+          </SortOptionItem>
+        ))}
+      </Drawer>
     </Fragment>
   );
 }

@@ -5,10 +5,9 @@ import AppLayout from "@component/layout/main-layout";
 import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
 import { H1, H2, H3, Paragraph } from "@component/Typography";
-import Card from "@component/Card";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
 import cities, { getCityBySlug } from "@data/cities";
-import styled from "styled-components";
+import { CategoryCard } from "./CityPageStyles";
 
 import { SITE_URL } from "@lib/siteUrl";
 import { buildFallbackMetadata } from "@lib/seoMetadata";
@@ -97,27 +96,6 @@ const Badge = styled.div`
   display: flex;
   align-items: center;
   gap: 0.4rem;
-`;
-
-const CategoryCard = styled(Card)`
-  padding: 1.25rem;
-  text-align: center;
-  text-decoration: none;
-  display: block;
-  transition: box-shadow 150ms ease, transform 150ms ease;
-
-  &:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    transform: translateY(-2px);
-  }
-
-  .icon { font-size: 2rem; margin-bottom: 0.5rem; }
-
-  .label {
-    font-size: 14px;
-    font-weight: 600;
-    color: ${({ theme }) => theme.colors.text.primary};
-  }
 `;
 
 const FaqItem = styled.details`

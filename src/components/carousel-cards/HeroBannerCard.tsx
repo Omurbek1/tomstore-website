@@ -1,3 +1,5 @@
+"use client";
+
 import styled from "styled-components";
 import { Link } from "@i18n/navigation";
 import Typography from "@component/Typography";

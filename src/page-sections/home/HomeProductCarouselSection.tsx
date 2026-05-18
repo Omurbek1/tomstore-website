@@ -1,3 +1,5 @@
+"use client";
+
 import Box from "@component/Box";
 import styled from "styled-components";
 import HomeProductCard from "@component/product-cards/HomeProductCard";

@@ -10,8 +10,8 @@ interface Props {
   products: Product[];
 }
 
-const ROW_GAP = "1.5rem";
-const ESTIMATED_ROW_HEIGHT = 460;
+const ROW_GAP = "1rem";
+const ESTIMATED_ROW_HEIGHT = 400;
 
 export default function ProductGridView({ products }: Props) {
   const width = useWindowSize();
@@ -24,7 +24,7 @@ export default function ProductGridView({ products }: Props) {
     }
   }, []);
 
-  const columns = !width ? 3 : width < 600 ? 1 : width < 1025 ? 2 : 3;
+  const columns = !width ? 3 : width < 1025 ? 2 : 3;
 
   const rows = useMemo<Product[][]>(() => {
     const result: Product[][] = [];

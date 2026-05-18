@@ -2,7 +2,7 @@
 
 import styled from "styled-components";
 import Container from "@component/Container";
-import { HeroBannerCard } from "@component/carousel-cards";
+import HeroBannerCard from "@component/carousel-cards/HeroBannerCard";
 import type { StorefrontHeroCarouselItem } from "@utils/__api__/storefront";
 
 type HomeHeroSectionProps = {

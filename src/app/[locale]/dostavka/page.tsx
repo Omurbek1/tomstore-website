@@ -4,10 +4,9 @@ import AppLayout from "@component/layout/main-layout";
 import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
 import { H1, H2, Paragraph } from "@component/Typography";
-import Card from "@component/Card";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
 import cities from "@data/cities";
-import styled from "styled-components";
+import { CityCard } from "./DostavkaStyles";
 
 import { SITE_URL } from "@lib/siteUrl";
 
@@ -46,43 +45,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: { title, description, url, type: "website" },
   };
 }
-
-const CityCard = styled(Card)`
-  padding: 1.25rem;
-  text-decoration: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: box-shadow 150ms ease;
-
-  &:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  }
-
-  .left { flex: 1; }
-
-  .city-name {
-    font-size: 15px;
-    font-weight: 600;
-    color: ${({ theme }) => theme.colors.text.primary};
-  }
-
-  .region {
-    font-size: 12px;
-    color: ${({ theme }) => theme.colors.text.muted};
-    margin-top: 2px;
-  }
-
-  .days {
-    font-size: 12px;
-    font-weight: 600;
-    color: ${({ theme }) => theme.colors.primary.main};
-    background: ${({ theme }) => theme.colors.primary.light};
-    padding: 3px 10px;
-    border-radius: 12px;
-    white-space: nowrap;
-  }
-`;
 
 const ServiceSchema = ({
   locale,

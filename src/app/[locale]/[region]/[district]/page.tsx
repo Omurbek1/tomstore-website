@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import AppLayout from "@component/layout/main-layout";
 import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
 import { H1, H2, H3, Paragraph } from "@component/Typography";
-import Card from "@component/Card";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
 import { ALL_REGIONS, GEO_CATEGORIES, MAJOR_CITIES, getRegion, getDistrict, getGeoCategory, getMajorCity, isCategorySlug } from "@data/geo";
-import styled from "styled-components";
+import { CategoryCard, SettlementLink } from "./DistrictStyles";
 
 import { SITE_URL } from "@lib/siteUrl";
 import { buildFallbackMetadata } from "@lib/seoMetadata";
@@ -119,23 +117,6 @@ const BadgeRow = styled.div`
 const Badge = styled.div`
   background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
   border-radius: 20px; padding: 0.4rem 1rem; font-size: 13px; color: #fff;
-`;
-
-const CategoryCard = styled(Card)`
-  padding: 1.5rem 1.25rem; text-align: center; text-decoration: none; display: block;
-  transition: box-shadow 150ms ease, transform 150ms ease;
-  &:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); transform: translateY(-2px); }
-  .icon  { font-size: 2.2rem; margin-bottom: 0.5rem; }
-  .name  { font-size: 14px; font-weight: 600; color: ${({ theme }) => theme.colors.text.primary}; }
-  .hint  { font-size: 12px; color: ${({ theme }) => theme.colors.text.muted}; margin-top: 4px; }
-`;
-
-const SettlementLink = styled(Link)`
-  display: block; padding: 0.6rem 1rem; border-radius: 8px; text-decoration: none;
-  font-size: 14px; font-weight: 500; color: ${({ theme }) => theme.colors.text.secondary};
-  background: ${({ theme }) => theme.colors.gray[100]};
-  transition: background 150ms ease;
-  &:hover { background: ${({ theme }) => theme.colors.primary.light}; color: ${({ theme }) => theme.colors.primary.main}; }
 `;
 
 const FaqItem = styled.details`
