@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useWindowVirtualizer } from "@tanstack/react-virtual";
 import { ProductGridCard } from "@component/product-cards";
 import Product from "@models/product.model";
@@ -18,28 +18,28 @@ export default function ProductGridView({ products }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollMargin, setScrollMargin] = useState(0);
 
+  const measure = () => {
+    if (!containerRef.current) return;
+    const top = containerRef.current.getBoundingClientRect().top + window.scrollY;
+    setScrollMargin(top);
+  };
+
+  // Re-measure on mount, resize, and any body layout change
   useEffect(() => {
-    const update = () => {
-      if (!containerRef.current) return;
-      // getBoundingClientRect + scrollY gives the absolute page position
-      // regardless of any ancestor transforms or layout changes (e.g. filter chips)
-      const top = containerRef.current.getBoundingClientRect().top + window.scrollY;
-      setScrollMargin(top);
-    };
-
-    update();
-
-    // Re-measure whenever the document body changes size (filter chips appearing,
-    // accordion sections collapsing, etc. all change body height)
-    const ro = new ResizeObserver(update);
+    measure();
+    const ro = new ResizeObserver(measure);
     ro.observe(document.body);
-    window.addEventListener("resize", update);
-
+    window.addEventListener("resize", measure);
     return () => {
       ro.disconnect();
-      window.removeEventListener("resize", update);
+      window.removeEventListener("resize", measure);
     };
   }, []);
+
+  // Re-measure after each filter (products prop change) once the DOM settles
+  useLayoutEffect(() => {
+    measure();
+  }, [products]);
 
   const columns = !width ? 3 : width < 1025 ? 2 : 3;
 
@@ -54,7 +54,7 @@ export default function ProductGridView({ products }: Props) {
   const virtualizer = useWindowVirtualizer({
     count: rows.length,
     estimateSize: () => ESTIMATED_ROW_HEIGHT,
-    overscan: 2,
+    overscan: 5,
     scrollMargin,
   });
 

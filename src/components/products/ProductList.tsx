@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useWindowVirtualizer } from "@tanstack/react-virtual";
 import { ProductListCard } from "@component/product-cards";
 import Product from "@models/product.model";
@@ -16,29 +16,31 @@ export default function ProductListView({ products }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollMargin, setScrollMargin] = useState(0);
 
+  const measure = () => {
+    if (!containerRef.current) return;
+    const top = containerRef.current.getBoundingClientRect().top + window.scrollY;
+    setScrollMargin(top);
+  };
+
   useEffect(() => {
-    const update = () => {
-      if (!containerRef.current) return;
-      const top = containerRef.current.getBoundingClientRect().top + window.scrollY;
-      setScrollMargin(top);
-    };
-
-    update();
-
-    const ro = new ResizeObserver(update);
+    measure();
+    const ro = new ResizeObserver(measure);
     ro.observe(document.body);
-    window.addEventListener("resize", update);
-
+    window.addEventListener("resize", measure);
     return () => {
       ro.disconnect();
-      window.removeEventListener("resize", update);
+      window.removeEventListener("resize", measure);
     };
   }, []);
+
+  useLayoutEffect(() => {
+    measure();
+  }, [products]);
 
   const virtualizer = useWindowVirtualizer({
     count: products.length,
     estimateSize: () => ESTIMATED_ITEM_HEIGHT,
-    overscan: 3,
+    overscan: 5,
     scrollMargin,
   });
 
