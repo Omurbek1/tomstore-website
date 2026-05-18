@@ -7,9 +7,10 @@ import { H1, H2, H3, Paragraph } from "@component/Typography";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
 import { ALL_REGIONS, GEO_CATEGORIES, getRegion } from "@data/geo";
 import { DistrictCard, CatLink } from "./RegionStyles";
-
+import { Link } from "@i18n/navigation";
 import { SITE_URL } from "@lib/siteUrl";
 import { buildFallbackMetadata } from "@lib/seoMetadata";
+import { styled } from "styled-components";
 
 type Props = { params: Promise<{ locale: string; region: string }> };
 

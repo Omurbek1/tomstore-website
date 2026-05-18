@@ -11,6 +11,8 @@ import { CategoryCard } from "./CityPageStyles";
 
 import { SITE_URL } from "@lib/siteUrl";
 import { buildFallbackMetadata } from "@lib/seoMetadata";
+import { styled } from "styled-components";
+import Card from "../../../../components/Card";
 
 type Props = { params: Promise<{ locale: string; city: string }> };
 

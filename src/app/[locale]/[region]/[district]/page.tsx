@@ -7,10 +7,10 @@ import { H1, H2, H3, Paragraph } from "@component/Typography";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
 import { ALL_REGIONS, GEO_CATEGORIES, MAJOR_CITIES, getRegion, getDistrict, getGeoCategory, getMajorCity, isCategorySlug } from "@data/geo";
 import { CategoryCard, SettlementLink } from "./DistrictStyles";
-
+import styled from "styled-components";
 import { SITE_URL } from "@lib/siteUrl";
 import { buildFallbackMetadata } from "@lib/seoMetadata";
-
+import { Link } from "@i18n/navigation";
 type Props = { params: Promise<{ locale: string; region: string; district: string }> };
 
 export function generateStaticParams() {

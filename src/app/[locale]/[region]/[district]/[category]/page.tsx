@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import styled from "styled-components";
 import AppLayout from "@component/layout/main-layout";
 import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
