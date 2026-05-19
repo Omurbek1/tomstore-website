@@ -20,6 +20,7 @@ import { buildProductWhatsAppOrderUrl } from "@utils/whatsappOrder";
 import Product, { ProductVariant } from "@models/product.model";
 import ProductShareButton from "./ProductShareButton";
 import ProductVariantSelector from "./ProductVariantSelector";
+import { getMediumUrl } from "@lib/imageVariants";
 
 const EMPTY_VARIANTS: ProductVariant[] = [];
 const PRODUCT_IMAGE_FALLBACK = "/assets/images/products/placeholder.webp";
@@ -344,10 +345,10 @@ export default function ProductIntro({
                       <NextImage
                         width={800}
                         height={800}
-                        src={activeImage}
+                        src={getMediumUrl(activeImage) || activeImage}
+                        fallbackSrc={activeImage !== PRODUCT_IMAGE_FALLBACK ? activeImage : PRODUCT_IMAGE_FALLBACK}
                         alt={displayTitle}
-                        fallbackSrc={PRODUCT_IMAGE_FALLBACK}
-                        quality={80}
+                        quality={85}
                         sizes="(max-width: 768px) 100vw, 50vw"
                         priority
                         fetchPriority="high"

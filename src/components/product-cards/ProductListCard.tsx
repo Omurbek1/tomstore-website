@@ -23,6 +23,7 @@ import { calculateDiscount } from "@utils/utils";
 import useCurrency from "@hook/useCurrency";
 import { useLocale, useTranslations } from "next-intl";
 import { usePrefetchStorefrontProduct } from "@hook/useStorefrontCatalog";
+import { getThumbUrl } from "@lib/imageVariants";
 
 // STYLED COMPONENT
 const Wrapper = styled(Card)`
@@ -195,12 +196,13 @@ export default function ProductListCard({
 
           <Link href={productHref} onFocus={prefetchProduct} onMouseEnter={prefetchProduct}>
             <NextImage
-              src={imgUrl}
+              src={getThumbUrl(imgUrl) || imgUrl}
+              fallbackSrc={imgUrl}
               alt={title}
               width={200}
               height={200}
               borderRadius="0.5rem"
-              sizes="(max-width: 599px) 110px, (max-width: 960px) 33vw, 200px"
+              sizes="(max-width: 599px) 110px, (max-width: 960px) 25vw, 200px"
               style={{ objectFit: "contain", width: "100%", height: "auto" }}
             />
           </Link>

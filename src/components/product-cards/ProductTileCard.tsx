@@ -10,6 +10,7 @@ import NextImage from "@component/NextImage";
 import useCurrency from "@hook/useCurrency";
 import { useLocale } from "next-intl";
 import { usePrefetchStorefrontProduct } from "@hook/useStorefrontCatalog";
+import { getThumbUrl } from "@lib/imageVariants";
 
 // ========================================================
 interface ProductTileCardProps {
@@ -40,7 +41,8 @@ export default function ProductTileCard({ imgUrl, title, price, slug }: ProductT
     >
       <ImageBox borderRadius={8} mb="0.5rem" display="flex">
         <NextImage
-          src={imgUrl}
+          src={getThumbUrl(imgUrl) || imgUrl}
+          fallbackSrc={imgUrl}
           width={181}
           height={181}
           alt={title}

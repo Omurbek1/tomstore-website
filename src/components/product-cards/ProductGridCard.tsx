@@ -29,6 +29,7 @@ import useCurrency from "@hook/useCurrency";
 import { deviceSize } from "@utils/constants";
 import { useLocale, useTranslations } from "next-intl";
 import { usePrefetchStorefrontProduct } from "@hook/useStorefrontCatalog";
+import { getThumbUrl } from "@lib/imageVariants";
 
 // STYLED COMPONENT
 const Wrapper = styled(Card)`
@@ -262,11 +263,11 @@ export default function ProductGridCard({
             <NextImage
               alt={title}
               width={277}
-              src={imgUrl}
+              src={getThumbUrl(imgUrl) || imgUrl}
+              fallbackSrc={imgUrl}
               height={270}
               priority={priority}
-              optimizedWidth={560}
-              sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 277px"
+              sizes="(max-width: 600px) 50vw, (max-width: 960px) 33vw, 277px"
               style={{ objectFit: "contain" }}
             />
           </Link>
