@@ -222,6 +222,17 @@ const buildStorefrontUrl = (path: string) => {
 export const resolveStorefrontMediaUrl = (value?: string | null) => {
   const url = String(value || "").trim();
   if (!url) return undefined;
+  try {
+    const parsedUrl = new URL(url);
+    if (
+      parsedUrl.hostname.toLowerCase().startsWith("encrypted-tbn") &&
+      parsedUrl.hostname.toLowerCase().endsWith(".gstatic.com")
+    ) {
+      return undefined;
+    }
+  } catch {
+    // Relative URLs are handled below.
+  }
   if (url.startsWith("/uploads/")) return `/api${url}`;
   if (url.startsWith("uploads/")) return `/api/${url}`;
   if (

@@ -21,8 +21,12 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**", pathname: "/uploads/**" },
       // Cloudflare R2 public URLs (any subdomain)
       { protocol: "https", hostname: "*.r2.dev", pathname: "/**" },
-      // Any HTTPS domain (for custom R2 domains and CDN)
-      { protocol: "https", hostname: "**", pathname: "/**" },
+      // Tomstore CDN/custom media domains
+      { protocol: "https", hostname: "cdn.tomstore.kg", pathname: "/**" },
+      { protocol: "https", hostname: "*.tomstore.kg", pathname: "/**" },
+      // Video preview thumbnails only
+      { protocol: "https", hostname: "img.youtube.com", pathname: "/**" },
+      { protocol: "https", hostname: "i.ytimg.com", pathname: "/**" },
     ],
   },
   compiler: {
