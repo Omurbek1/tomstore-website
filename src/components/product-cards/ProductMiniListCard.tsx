@@ -54,7 +54,7 @@ export default function ProductMiniListCard(props: ProductMiniListCardProps) {
     <Link href={`/${locale}/product/${slug}`}>
       <StyledProductCard>
         <Box mb="1rem" className="image-holder">
-          <NextImage src={imgUrl} width={150} height={150} alt="tomstore" />
+          <NextImage src={imgUrl} width={150} height={150} alt="tomstore" sizes="150px" />
         </Box>
 
         <Box mb="0.5rem">

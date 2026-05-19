@@ -191,7 +191,7 @@ export default function ProductActionCard({
         </FlexBox>
 
         <Link href={`/${locale}/product/${slug}`}>
-          <NextImage src={imgUrl} width={100} height={100} alt={title} />
+          <NextImage src={imgUrl} width={100} height={100} alt={title} sizes="100px" />
         </Link>
       </div>
 

@@ -9,13 +9,20 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
+    // Sizes for product cards (thumbnail range) and medium views
+    imageSizes: [64, 128, 256, 320, 480],
+    // Sizes for hero/full-width images
+    deviceSizes: [640, 828, 1080, 1280, 1920],
+    // Cache optimized images for 30 days
+    minimumCacheTTL: 2592000,
     remotePatterns: [
       { protocol: "http", hostname: "127.0.0.1", port: "3000", pathname: "/uploads/**" },
       { protocol: "http", hostname: "localhost", port: "3000", pathname: "/uploads/**" },
       { protocol: "https", hostname: "**", pathname: "/uploads/**" },
-      // Cloudflare R2 public URLs
+      // Cloudflare R2 public URLs (any subdomain)
       { protocol: "https", hostname: "*.r2.dev", pathname: "/**" },
-      { protocol: "https", hostname: "pub-*.r2.dev", pathname: "/**" },
+      // Any HTTPS domain (for custom R2 domains and CDN)
+      { protocol: "https", hostname: "**", pathname: "/**" },
     ],
   },
   compiler: {
