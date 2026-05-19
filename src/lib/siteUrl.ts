@@ -1,4 +1,4 @@
-const CANONICAL_ORIGIN = "https://tomstore-website.vercel.app";
+const CANONICAL_ORIGIN = "https://tomstore.kg";
 
 const raw = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/+$/, "");
 

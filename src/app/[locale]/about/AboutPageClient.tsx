@@ -182,7 +182,7 @@ function OrgSchema({ locale }: { locale: string }) {
     email: "support@tomstore.com",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Калык Акиев 66, ТЦ Весна, 3-этаж, С47",
+      streetAddress: "Калык Акиев 66, ТЦ Весна, 3-й этаж, С47",
       addressLocality: "Бишкек",
       addressCountry: "KG",
     },

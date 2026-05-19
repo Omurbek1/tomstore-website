@@ -173,7 +173,7 @@ function LazyMap({ title }: { title: string }) {
     <MapPlaceholder onClick={() => setLoaded(true)} aria-label={title}>
       <span className="pin">📍</span>
       <span>{title}</span>
-      <span className="hint">ТЦ Весна, Калык Акиев 66, Бишкек</span>
+      <span className="hint">ТЦ Весна, Калык Акиев 66, 3-й этаж, С47, Бишкек</span>
     </MapPlaceholder>
   );
 }
@@ -226,7 +226,7 @@ function ContactSchema({ locale }: { locale: string }) {
       email: "support@tomstore.com",
       address: {
         "@type": "PostalAddress",
-        streetAddress: "Калык Акиев 66, ТЦ Весна, 3-этаж, С47",
+        streetAddress: "Калык Акиев 66, ТЦ Весна, 3-й этаж, С47",
         addressLocality: "Бишкек",
         addressCountry: "KG",
       },
@@ -372,19 +372,10 @@ export default function ContactsPageClient({ locale }: { locale: string }) {
       ];
 
   const hours = isEn
-    ? [
-        { day: "Monday – Saturday", time: "09:00 – 19:00" },
-        { day: "Sunday", time: "10:00 – 17:00" },
-      ]
+    ? [{ day: "Every day, no days off", time: "09:00 – 19:00" }]
     : isKy
-    ? [
-        { day: "Дүйшөмбү – Ишемби", time: "09:00 – 19:00" },
-        { day: "Жекшемби", time: "10:00 – 17:00" },
-      ]
-    : [
-        { day: "Понедельник – Суббота", time: "09:00 – 19:00" },
-        { day: "Воскресенье", time: "10:00 – 17:00" },
-      ];
+    ? [{ day: "Күн сайын, дем алыш күнсүз", time: "09:00 – 19:00" }]
+    : [{ day: "Ежедневно, без выходных", time: "09:00 – 19:00" }];
 
   const faqs = isEn
     ? [
@@ -423,7 +414,7 @@ export default function ContactsPageClient({ locale }: { locale: string }) {
         },
         {
           q: "Можно ли приехать в магазин и получить консультацию?",
-          a: "Конечно! Наши консультанты с радостью помогут вам лично: Калык Акиев 66, ТЦ Весна, 3-этаж, С47, Бишкек.",
+          a: "Конечно! Наши консультанты с радостью помогут вам лично: Калык Акиев 66, ТЦ Весна, 3-й этаж, С47, Бишкек.",
         },
         {
           q: "Есть ли поддержка корпоративных и оптовых заказов?",
@@ -494,7 +485,7 @@ export default function ContactsPageClient({ locale }: { locale: string }) {
                     ? "Kalyk Akiev 66, Vesna Mall, 3rd floor, C47, Bishkek"
                     : isKy
                     ? "Калык Акиев 66, Весна СБ, 3-кабат, С47, Бишкек"
-                    : "Калык Акиев 66, ТЦ Весна, 3-этаж, С47, Бишкек"}
+                    : "Калык Акиев 66, ТЦ Весна, 3-й этаж, С47, Бишкек"}
                 </td>
               </tr>
             </tbody>

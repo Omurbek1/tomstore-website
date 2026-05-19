@@ -3,6 +3,8 @@ import { getProductSlugs, getBlogList } from "@utils/__api__/storefront";
 import navigations from "@data/navigations";
 import cities from "@data/cities";
 import { ALL_REGIONS, GEO_CATEGORIES, MAJOR_CITIES } from "@data/geo";
+import { getFiltersForCategory } from "@data/productFilters";
+import { NATIONAL_CITY_PAGES, NATIONAL_CATEGORY_PAGES } from "@data/nationalSeo";
 
 import { SITE_URL } from "@lib/siteUrl";
 const LOCALES = ["ru", "en", "ky"] as const;
@@ -109,6 +111,61 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         alternates: { languages: Object.fromEntries(LOCALES.map((l) => [l, `${SITE_URL}/${l}/${cat.slug}/${city.slug}`])) },
       });
     }
+  }
+
+  // Filter SEO pages: /noutbuki/rtx-4050, /noutbuki/hp, etc.
+  for (const cat of GEO_CATEGORIES) {
+    const filters = getFiltersForCategory(cat.slug);
+    for (const filter of filters) {
+      entries.push({
+        url: `${SITE_URL}/ru/${cat.slug}/${filter.slug}`,
+        lastModified: now,
+        changeFrequency: "weekly",
+        priority: 0.85,
+        alternates: {
+          languages: Object.fromEntries(
+            LOCALES.map((l) => [l, `${SITE_URL}/${l}/${cat.slug}/${filter.slug}`]),
+          ),
+        },
+      });
+    }
+  }
+
+  // National hub page
+  entries.push({
+    url: `${SITE_URL}/ru/kyrgyzstan`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.95,
+    alternates: {
+      languages: Object.fromEntries(LOCALES.map((l) => [l, `${SITE_URL}/${l}/kyrgyzstan`])),
+    },
+  });
+
+  // National city hub pages
+  for (const cityPage of NATIONAL_CITY_PAGES) {
+    entries.push({
+      url: `${SITE_URL}/ru/${cityPage.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: cityPage.isCapital ? 0.92 : 0.88,
+      alternates: {
+        languages: Object.fromEntries(LOCALES.map((l) => [l, `${SITE_URL}/${l}/${cityPage.slug}`])),
+      },
+    });
+  }
+
+  // National category pages
+  for (const catPage of NATIONAL_CATEGORY_PAGES) {
+    entries.push({
+      url: `${SITE_URL}/ru/${catPage.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.90,
+      alternates: {
+        languages: Object.fromEntries(LOCALES.map((l) => [l, `${SITE_URL}/${l}/${catPage.slug}`])),
+      },
+    });
   }
 
   // City delivery pages

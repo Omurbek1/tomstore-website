@@ -2,24 +2,39 @@ import type { MetadataRoute } from "next";
 
 import { SITE_URL } from "@lib/siteUrl";
 
+const PRIVATE_PATHS = [
+  "/api/",
+  "/cart",
+  "/checkout",
+  "/payment",
+  "/orders",
+  "/profile",
+  "/address",
+  "/payment-methods",
+  "/support-tickets",
+  "/vendor/",
+];
+
+const LOCALES = ["ru", "en", "ky"] as const;
+
 export default function robots(): MetadataRoute.Robots {
+  const disallow = [
+    ...PRIVATE_PATHS,
+    ...LOCALES.flatMap((locale) =>
+      PRIVATE_PATHS.map((path) => `/${locale}${path}`),
+    ),
+  ];
+
   return {
     rules: [
       {
         userAgent: "*",
-        allow: "/",
-        disallow: [
-          "/api/",
-          "/cart",
-          "/checkout",
-          "/payment",
-          "/orders",
-          "/profile",
-          "/address",
-          "/payment-methods",
-          "/support-tickets",
-          "/vendor/",
-        ],
+        allow: ["/", "/*.js", "/*.css"],
+        disallow,
+      },
+      {
+        userAgent: "Googlebot-Image",
+        allow: ["/assets/", "/_next/"],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

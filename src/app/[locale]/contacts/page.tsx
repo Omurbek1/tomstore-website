@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import ContactsPageClient from "./ContactsPageClient";
-
+import OrganizationJsonLd from "@component/seo/OrganizationJsonLd";
 import { SITE_URL } from "@lib/siteUrl";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -18,10 +18,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : "Контакты — TomStore Бишкек";
 
   const description = isEn
-    ? "TomStore contacts: phone +996 508 724 365, WhatsApp, Instagram @tomstore.kg. Address: Kalyk Akiev 66, Vesna Mall, Bishkek. Working hours: Mon–Sat 09:00–19:00."
+    ? "TomStore contacts: phone +996 508 724 365, WhatsApp, Instagram @tomstore.kg. Address: Kalyk Akiev 66, Vesna Mall, 3rd floor, C47, Bishkek. Open every day, no days off, 09:00–19:00."
     : isKy
-    ? "TomStore байланышы: телефон +996 508 724 365, WhatsApp, Instagram @tomstore.kg. Дарек: Калык Акиев 66, Весна СБ, Бишкек. Иш убактысы: Дш–Иш 09:00–19:00."
-    : "Контакты TomStore: телефон +996 508 724 365, WhatsApp, Instagram @tomstore.kg. Адрес: Калык Акиев 66, ТЦ Весна, Бишкек. Режим работы: Пн–Сб 09:00–19:00.";
+    ? "TomStore байланышы: телефон +996 508 724 365, WhatsApp, Instagram @tomstore.kg. Дарек: Калык Акиев 66, ТЦ Весна, 3-кабат, С47, Бишкек. Иш убактысы: күн сайын, дем алыш күнсүз, 09:00–19:00."
+    : "Контакты TomStore: телефон +996 508 724 365, WhatsApp, Instagram @tomstore.kg. Адрес: Калык Акиев 66, ТЦ Весна, 3-й этаж, С47, Бишкек. Работаем ежедневно, без выходных, 09:00–19:00.";
 
   return {
     title,
@@ -40,5 +40,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ContactsPage({ params }: Props) {
   const { locale } = await params;
-  return <ContactsPageClient locale={locale} />;
+  return (
+    <>
+      <OrganizationJsonLd />
+      <ContactsPageClient locale={locale} />
+    </>
+  );
 }

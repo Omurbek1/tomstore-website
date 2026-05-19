@@ -16,7 +16,7 @@ const categoryFaqs: Record<string, LocaleFaqs> = {
       {
         question: "Есть ли рассрочка на ноутбуки в TomStore?",
         answer:
-          "Да, все ноутбуки доступны в рассрочку на 3, 6 и 12 месяцев без переплат через партнёрские банки. Для оформления нужен только паспорт гражданина КР.",
+          "Да! Рассрочка от 3 до 12 месяцев — с банком и без банка. Оформляйте онлайн на TomStore.kg — никуда ехать не надо. Или в магазине (ТЦ Весна, 3-й этаж, С47) по телефону +996-508-724-365. Для банковской рассрочки нужен только паспорт.",
       },
       {
         question: "Какая гарантия на ноутбуки?",
@@ -38,7 +38,7 @@ const categoryFaqs: Record<string, LocaleFaqs> = {
       {
         question: "Is installment payment available at TomStore?",
         answer:
-          "Yes, all laptops are available on 3, 6, and 12-month installment plans with no markup through our partner banks. Only a Kyrgyz passport is required.",
+          "Yes! Installment from 3 to 12 months — with bank or without bank. Apply online at TomStore.kg — no need to visit the store. Or in-store (Vesna Mall, 3rd floor, C47) or call +996-508-724-365. Only a Kyrgyz passport is required.",
       },
       {
         question: "What warranty comes with laptops?",

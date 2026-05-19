@@ -35,13 +35,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale = "ru" } = await params;
   try {
     const { product } = await getProductBySlug(slug);
-    const title = product.title;
-    const description =
-      product.shortDescription ||
-      product.description ||
-      `${title} — купить в Бишкеке с доставкой. Гарантия, рассрочка. TomStore.`;
-    const image = product.thumbnail;
+    const name = product.title;
     const url = `${SITE_URL}/${locale}/product/${slug}`;
+    const image = product.thumbnail;
+
+    const title =
+      locale === "en"
+        ? `Buy ${name} in Kyrgyzstan | TomStore`
+        : locale === "ky"
+        ? `${name} сатып алуу Кыргызстанда | TomStore`
+        : `Купить ${name} в Кыргызстане | TomStore`;
+
+    const priceStr =
+      product.price && locale !== "en"
+        ? ` Цена ${product.price.toLocaleString("ru")} сом.`
+        : "";
+
+    const description =
+      locale === "en"
+        ? `${name} — buy in Kyrgyzstan with delivery nationwide. Warranty, installment plans. TomStore.kg`
+        : locale === "ky"
+        ? `${name} — Кыргызстанда сатып алуу. Кепилдик, бөлүп төлөө, бүтүндөй өлкөгө жеткирүү. TomStore.kg`
+        : product.shortDescription ||
+          `${name} цена в Кыргызстане.${priceStr} Доставка по Кыргызстану, рассрочка, гарантия. Купить в TomStore.kg`;
 
     return {
       title,
@@ -52,6 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           ru: `${SITE_URL}/ru/product/${slug}`,
           en: `${SITE_URL}/en/product/${slug}`,
           ky: `${SITE_URL}/ky/product/${slug}`,
+          "x-default": `${SITE_URL}/ru/product/${slug}`,
         },
       },
       openGraph: {
@@ -59,16 +76,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         description,
         url,
         type: "website",
-        images: image ? [{ url: image, alt: title }] : [],
+        images: image ? [{ url: image, alt: name, width: 800, height: 600 }] : [],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: image ? [image] : [],
       },
     };
   } catch {
     return buildFallbackMetadata({
       locale,
       path: `/product/${slug}`,
-      title: "Товар TomStore",
+      title:
+        locale === "en"
+          ? "Buy Electronics in Bishkek | TomStore"
+          : "Купить электронику в Бишкеке | TomStore",
       description:
-        "Купить электронику в TomStore с доставкой по Кыргызстану. Ноутбуки, принтеры, ПК, мониторы, гарантия и рассрочка.",
+        locale === "en"
+          ? "Buy electronics at TomStore with delivery across Kyrgyzstan. Laptops, printers, PCs, monitors. Warranty and installment."
+          : "Купить электронику в TomStore с доставкой по Кыргызстану. Ноутбуки, принтеры, ПК, мониторы, гарантия и рассрочка.",
     });
   }
 }
@@ -99,7 +127,7 @@ export default async function ProductDetails({ params }: Props) {
 
   return (
     <>
-      <ProductJsonLd product={product} slug={slug} />
+      <ProductJsonLd product={product} slug={slug} locale={locale} />
       <Breadcrumbs items={breadcrumbs} locale={locale} />
       <ProductPageClient
         product={product}

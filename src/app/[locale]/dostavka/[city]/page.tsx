@@ -298,7 +298,7 @@ export default async function CityPage({ params }: Props) {
         name: `Как купить ноутбук ${inCity} от TomStore?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `Оформите заказ на сайте TomStore, выберите доставку. Курьер привезёт ноутбук ${inCity} за ${city.deliveryDays}. Доступны гарантия и рассрочка без переплат.`,
+          text: `Оформите заказ на сайте TomStore, выберите доставку. Курьер привезёт ноутбук ${inCity} за ${city.deliveryDays}. Гарантия и рассрочка от 3 до 12 мес. с банком и без банка: +996-508-724-365.`,
         },
       },
       {

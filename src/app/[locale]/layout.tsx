@@ -47,6 +47,14 @@ export async function generateMetadata({
     },
     description,
     metadataBase: new URL(SITE_URL),
+    alternates: {
+      languages: {
+        ru: `${SITE_URL}/ru`,
+        en: `${SITE_URL}/en`,
+        ky: `${SITE_URL}/ky`,
+        "x-default": `${SITE_URL}/ru`,
+      },
+    },
     openGraph: {
       siteName: "TomStore",
       locale: locale === "en" ? "en_US" : locale === "ky" ? "ky_KG" : "ru_RU",
@@ -56,17 +64,27 @@ export async function generateMetadata({
           url: `${SITE_URL}/assets/images/logo.svg`,
           width: 800,
           height: 600,
-          alt: "TomStore",
+          alt: "TomStore — Электроника в Бишкеке",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
+      site: "@tomstorekg",
     },
     robots: {
       index: true,
       follow: true,
-      googleBot: { index: true, follow: true },
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "",
     },
   };
 }

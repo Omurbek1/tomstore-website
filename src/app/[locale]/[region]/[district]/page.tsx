@@ -6,11 +6,13 @@ import Grid from "@component/grid/Grid";
 import { H1, H2, H3, Paragraph } from "@component/Typography";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
 import { ALL_REGIONS, GEO_CATEGORIES, MAJOR_CITIES, getRegion, getDistrict, getGeoCategory, getMajorCity, isCategorySlug } from "@data/geo";
+import { getProductFilter, getFiltersForCategory } from "@data/productFilters";
 import { CategoryCard, SettlementLink } from "./DistrictStyles";
 import styled from "styled-components";
 import { SITE_URL } from "@lib/siteUrl";
 import { buildFallbackMetadata } from "@lib/seoMetadata";
 import { Link } from "@i18n/navigation";
+import { getSafeStorefrontCatalog, mapStorefrontProduct } from "@utils/__api__/storefront";
 type Props = { params: Promise<{ locale: string; region: string; district: string }> };
 
 export function generateStaticParams() {
@@ -27,6 +29,13 @@ export function generateStaticParams() {
       combos.push({ region: cat.slug, district: city.slug });
     }
   }
+  // Pattern 3: /[category]/[filter]  →  /noutbuki/rtx-4050
+  for (const cat of GEO_CATEGORIES) {
+    const filters = getFiltersForCategory(cat.slug);
+    for (const f of filters) {
+      combos.push({ region: cat.slug, district: f.slug });
+    }
+  }
   return combos;
 }
 
@@ -34,11 +43,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, region: rSlug, district: dSlug } = await params;
   const url = `${SITE_URL}/${locale}/${rSlug}/${dSlug}`;
 
-  // Pattern 2: /[category]/[city]
+  // Pattern 2: /[category]/[city]  OR  Pattern 3: /[category]/[filter]
   if (isCategorySlug(rSlug)) {
     const cat  = getGeoCategory(rSlug)!;
     const city = getMajorCity(dSlug);
+
+    // Pattern 3: /[category]/[filter]  →  /noutbuki/rtx-4050
     if (!city) {
+      const filter = getProductFilter(rSlug, dSlug);
+      if (filter) {
+        const title   = locale === "en" ? filter.titleEn : filter.titleRu;
+        const description = locale === "en" ? filter.descriptionEn : filter.descriptionRu;
+        return {
+          title,
+          description,
+          alternates: {
+            canonical: url,
+            languages: {
+              ru: `${SITE_URL}/ru/${rSlug}/${dSlug}`,
+              en: `${SITE_URL}/en/${rSlug}/${dSlug}`,
+              ky: `${SITE_URL}/ky/${rSlug}/${dSlug}`,
+              "x-default": `${SITE_URL}/ru/${rSlug}/${dSlug}`,
+            },
+          },
+          openGraph: { title, description, url, type: "website" },
+        };
+      }
       return buildFallbackMetadata({
         locale,
         path: `/${rSlug}/${dSlug}`,
@@ -136,6 +166,160 @@ const FaqItem = styled.details`
 export default async function DistrictPage({ params }: Props) {
   const { locale, region: rSlug, district: dSlug } = await params;
 
+  // ── Pattern 3: /[category]/[filter]  e.g. /noutbuki/rtx-4050 ──────────────
+  if (isCategorySlug(rSlug) && !getMajorCity(dSlug)) {
+    const filter = getProductFilter(rSlug, dSlug);
+    if (!filter) notFound();
+
+    const isEn = locale === "en";
+    const cat  = getGeoCategory(rSlug)!;
+    const h1   = isEn ? filter.h1En : filter.h1Ru;
+    const seoText = isEn ? filter.seoTextEn : filter.seoTextRu;
+    const homeLabel = isEn ? "Home" : "Главная";
+    const catName   = isEn ? cat.nameEn : cat.nameRu;
+
+    const catalog = await getSafeStorefrontCatalog({ q: filter.apiQuery, pageSize: 12 });
+    const products = (catalog?.items ?? []).map(mapStorefrontProduct);
+
+    const faqItems = isEn
+      ? [
+          { q: `Where to buy ${filter.nameEn} laptops in Bishkek?`, a: `TomStore is the best place to buy ${filter.nameEn} laptops in Bishkek. Wide selection, official warranty, installment, and fast delivery across Kyrgyzstan.` },
+          { q: `What is the price of ${filter.nameEn} laptops in Bishkek?`, a: `${filter.nameEn} laptop prices in Bishkek start from 15,000 KGS. Check the current prices on the TomStore catalog page.` },
+          { q: `Is installment available for ${filter.nameEn} laptops?`, a: `Yes! All ${filter.nameEn} laptops at TomStore are available on installment 3–12 months — with bank or without bank. Call: +996-508-724-365.` },
+        ]
+      : [
+          { q: `Где купить ноутбук ${filter.nameRu} в Бишкеке?`, a: `TomStore — лучшее место для покупки ноутбука ${filter.nameRu} в Бишкеке. Большой выбор, официальная гарантия, рассрочка и быстрая доставка по Кыргызстану.` },
+          { q: `Сколько стоит ноутбук с ${filter.nameRu} в Бишкеке?`, a: `Цены на ноутбуки с ${filter.nameRu} в Бишкеке начинаются от 15 000 сом. Актуальные цены смотрите в каталоге TomStore.` },
+          { q: `Доступна ли рассрочка на ноутбуки с ${filter.nameRu}?`, a: `Да! Рассрочка от 3 до 12 месяцев — с банком и без банка — на все ноутбуки с ${filter.nameRu}. Звоните: +996-508-724-365.` },
+          { q: `Есть ли гарантия на ноутбуки с ${filter.nameRu}?`, a: `Да, все ноутбуки с ${filter.nameRu} в TomStore продаются с официальной гарантией производителя. Гарантийное обслуживание в сервис-центрах Бишкека.` },
+        ];
+
+    const faqSchema = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqItems.map(({ q, a }) => ({
+        "@type": "Question",
+        name: q,
+        acceptedAnswer: { "@type": "Answer", text: a },
+      })),
+    };
+
+    const FilterSeoBox = styled.section`
+      background: ${({ theme }) => theme.colors.gray[100]}; border-radius: 12px;
+      padding: 1.75rem; margin-bottom: 2rem;
+      h2 { font-size: 17px; font-weight: 700; margin-bottom: 0.75rem; }
+      p { font-size: 14px; line-height: 1.75; color: ${({ theme }) => theme.colors.text.secondary}; }
+    `;
+
+    const FilterHero = styled.section`
+      background: linear-gradient(135deg, #1a237e 0%, #283593 60%, #1565c0 100%);
+      border-radius: 16px; padding: 2.5rem 2rem; margin-bottom: 2rem; color: #fff;
+      h1 { color: #fff; margin-bottom: 0.5rem; }
+      p { color: rgba(255,255,255,0.88); font-size: 15px; line-height: 1.6; margin: 0; }
+    `;
+
+    const BadgeRow = styled.div`display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem;`;
+    const Badge    = styled.div`background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 0.4rem 1rem; font-size: 13px; color: #fff;`;
+
+    const ProductGrid = styled.div`
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem;
+      a { display: block; border: 1px solid ${({ theme }) => theme.colors.gray[200]}; border-radius: 12px; padding: 0.75rem; text-decoration: none; color: inherit;
+        img { width: 100%; height: 140px; object-fit: contain; border-radius: 8px; margin-bottom: 0.5rem; }
+        .title { font-size: 12px; font-weight: 600; margin-bottom: 0.25rem; line-height: 1.4; }
+        .price { font-size: 14px; font-weight: 700; color: ${({ theme }) => theme.colors.primary.main}; }
+      }
+    `;
+
+    return (
+      <AppLayout>
+        <Box pt="20px" pb="60px">
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+
+          <Breadcrumbs
+            items={[
+              { label: homeLabel, href: "/" },
+              { label: catName, href: `/${rSlug}` },
+              { label: filter.nameRu },
+            ]}
+            locale={locale}
+          />
+
+          <FilterHero>
+            <H1 fontSize="26px">{h1}</H1>
+            <p>{seoText.slice(0, 200)}…</p>
+            <BadgeRow>
+              <Badge>✅ {isEn ? "Official warranty" : "Официальная гарантия"}</Badge>
+              <Badge>💳 {isEn ? "Installment" : "Рассрочка"}</Badge>
+              <Badge>🚚 {isEn ? "Delivery across KG" : "Доставка по КР"}</Badge>
+              <Badge>📍 {isEn ? "Vesna Mall, 3rd floor, C47" : "ТЦ Весна, 3-й этаж, С47"}</Badge>
+            </BadgeRow>
+          </FilterHero>
+
+          {products.length > 0 && (
+            <Box mb="2rem">
+              <H2 fontSize="18px" mb="1rem">
+                {isEn ? `${filter.nameEn} Laptops — Available Now` : `Ноутбуки ${filter.nameRu} — в наличии`}
+              </H2>
+              <ProductGrid>
+                {products.slice(0, 12).map((p: any) => (
+                  <Link key={p.id} href={`/${locale}/product/${p.slug}`}>
+                    {p.imgUrl && (
+                      <img src={p.imgUrl} alt={`${p.title} в Бишкеке`} loading="lazy" />
+                    )}
+                    <div className="title">{p.title}</div>
+                    <div className="price">{p.price?.toLocaleString()} {isEn ? "$" : "сом"}</div>
+                  </Link>
+                ))}
+              </ProductGrid>
+              <Box textAlign="center">
+                <Link
+                  href={`/${locale}${cat.catalogPath}`}
+                  style={{ fontSize: 14, color: "#1565c0", fontWeight: 600, textDecoration: "none" }}
+                >
+                  {isEn ? `View all ${catName.toLowerCase()} →` : `Смотреть все ${cat.nameRu.toLowerCase()} →`}
+                </Link>
+              </Box>
+            </Box>
+          )}
+
+          <FilterSeoBox>
+            <h2>{isEn ? `About ${filter.nameEn} Laptops` : `О ноутбуках ${filter.nameRu}`}</h2>
+            <p>{seoText}</p>
+          </FilterSeoBox>
+
+          <H2 fontSize="18px" mb="1rem">
+            {isEn ? "Frequently Asked Questions" : "Частые вопросы"}
+          </H2>
+          <Box mb="2rem">
+            {faqItems.map((item, i) => (
+              <FaqItem key={i}>
+                <summary>{item.q}</summary>
+                <div className="answer">{item.a}</div>
+              </FaqItem>
+            ))}
+          </Box>
+
+          <H3 fontSize="14px" mb="0.75rem" color="text.muted">
+            {isEn ? `Other ${catName} filters` : `Другие фильтры ${cat.nameRu}`}
+          </H3>
+          <Box display="flex" flexWrap="wrap" style={{ gap: "0.5rem" }}>
+            {getFiltersForCategory(rSlug)
+              .filter((f) => f.slug !== dSlug)
+              .map((f) => (
+                <Link
+                  key={f.slug}
+                  href={`/${locale}/${rSlug}/${f.slug}`}
+                  style={{ fontSize: 13, color: "#1565c0", textDecoration: "none", background: "#e8f0fe", borderRadius: 12, padding: "4px 12px" }}
+                >
+                  {isEn ? f.nameEn : f.nameRu}
+                </Link>
+              ))}
+          </Box>
+        </Box>
+      </AppLayout>
+    );
+  }
+
   // ── Pattern 2: /[category]/[city]  e.g. /noutbuki/bishkek ─────────────────
   if (isCategorySlug(rSlug)) {
     const cat  = getGeoCategory(rSlug)!;
@@ -159,17 +343,17 @@ export default async function DistrictPage({ params }: Props) {
       ? `TomStore delivers ${cat.nameEn.toLowerCase()} to ${city.nameEn} (${city.regionRu}) in ${city.deliveryDays}. Official warranty, installment plans, secure online payment.`
       : isKy
       ? `TomStore ${city.nameKy}га (${city.regionRu}) ${city.deliveryDays} ичинде ${cat.nameKy.toLowerCase()} жеткирет. Кепилдик, бөлүп төлөө.`
-      : `TomStore доставляет ${cat.nameRu.toLowerCase()} ${city.inRu} (${city.regionRu}) за ${city.deliveryDays}. Официальная гарантия, рассрочка без переплат.`;
+      : `TomStore доставляет ${cat.nameRu.toLowerCase()} ${city.inRu} (${city.regionRu}) за ${city.deliveryDays}. Официальная гарантия, рассрочка 3–12 мес.`;
 
     const faqItems = isEn ? [
       { q: `Does TomStore deliver ${cat.nameEn.toLowerCase()} to ${city.nameEn}?`, a: `Yes! We deliver to ${city.nameEn} in ${city.deliveryDays}. All items come with an official warranty.` },
       { q: `How to order a ${cat.accusRu} for delivery to ${city.nameEn}?`, a: `Choose from our catalog, add to cart, and enter your address in ${city.nameEn}. Delivery in ${city.deliveryDays}.` },
-      { q: `Is installment available in ${city.nameEn}?`, a: `Yes, installment is available throughout Kyrgyzstan including ${city.nameEn}. Call: +996-508-724-365.` },
+      { q: `Is installment available in ${city.nameEn}?`, a: `Yes! Installment from 3 to 12 months — with bank or without bank — in ${city.nameEn}. Call: +996-508-724-365.` },
     ] : [
       { q: `TomStore доставляет ${cat.nameRu.toLowerCase()} ${city.inRu}?`, a: `Да! Доставляем ${city.inRu} за ${city.deliveryDays}. Гарантия на все товары.` },
       { q: `Как заказать ${cat.accusRu} с доставкой ${city.inRu}?`, a: `Добавьте товар в корзину на сайте TomStore и укажите адрес ${city.inRu}. Курьер доставит за ${city.deliveryDays}.` },
       { q: `Какие ${cat.nameRu.toLowerCase()} самые популярные ${city.inRu}?`, a: `Жители ${cityName} чаще выбирают ноутбуки для работы и учёбы, МФУ для дома и принтеры. Бренды: HP, Asus, Acer, Lenovo.` },
-      { q: `Есть ли рассрочка для жителей ${cityName}?`, a: `Да, рассрочка доступна по всему Кыргызстану, включая ${cityName}. Оформление: +996-508-724-365.` },
+      { q: `Есть ли рассрочка для жителей ${cityName}?`, a: `Да! Рассрочка от 3 до 12 месяцев — с банком и без банка — доступна в ${cityName}. Подробнее: +996-508-724-365.` },
     ];
 
     const faqSchema = {
@@ -273,7 +457,7 @@ export default async function DistrictPage({ params }: Props) {
     },
     {
       q: `Is installment available for orders in ${district.nameEn}?`,
-      a: `Yes, installment plans are available for all residents of ${district.nameEn}. We offer interest-free installments. Contact us: +996-508-724-365.`,
+      a: `Yes! Installment from 3 to 12 months — with bank or without bank — for all residents of ${district.nameEn}. Details: +996-508-724-365.`,
     },
   ] : isKy ? [
     {
@@ -295,7 +479,7 @@ export default async function DistrictPage({ params }: Props) {
     },
     {
       q: `Есть ли рассрочка для жителей ${dName}?`,
-      a: `Да, рассрочка доступна для жителей ${dName} и всего ${rName}. Оформление без переплат. Подробности: +996-508-724-365.`,
+      a: `Да! Рассрочка от 3 до 12 месяцев — с банком и без банка — для жителей ${dName} и всего ${rName}. Подробнее: +996-508-724-365.`,
     },
     {
       q: `Какие категории товаров доставляются ${district.inRu}?`,
