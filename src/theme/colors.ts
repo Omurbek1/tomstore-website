@@ -12,8 +12,8 @@ const gray = {
 };
 
 const textColor = {
-  hint: gray[600],
-  muted: gray[600],
+  hint: gray[700],   // #4B566B — 7:1 on white, was gray[600] (#7D879C, 3.5:1 — failed WCAG AA)
+  muted: gray[700],  // #4B566B — 7:1 on white, was gray[600] (#7D879C, 3.5:1 — failed WCAG AA)
   primary: gray[900],
   disabled: gray[400],
   secondary: gray[700]
