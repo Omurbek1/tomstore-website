@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: {
-      canonical: `${SITE_URL}/ru/kyrgyzstan`,
+      canonical: url,
       languages: {
         ru: `${SITE_URL}/ru/kyrgyzstan`,
         en: `${SITE_URL}/en/kyrgyzstan`,

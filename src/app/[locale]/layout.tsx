@@ -47,6 +47,15 @@ export async function generateMetadata({
     },
     description,
     metadataBase: new URL(SITE_URL),
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        ru: "/ru",
+        en: "/en",
+        ky: "/ky",
+        "x-default": "/ru",
+      },
+    },
     openGraph: {
       siteName: "TomStore",
       locale: locale === "en" ? "en_US" : locale === "ky" ? "ky_KG" : "ru_RU",

@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: {
-      canonical: `${SITE_URL}/ru/karakol`,
+      canonical: url,
       languages: {
         ru: `${SITE_URL}/ru/karakol`,
         en: `${SITE_URL}/en/karakol`,
