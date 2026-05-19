@@ -28,6 +28,12 @@ interface Product {
   reviewCount?: number;
   discount: number;
   thumbnail: string;
+  imageSizes?: {
+    thumb?: string;
+    medium?: string;
+    large?: string;
+    original?: string;
+  };
   id: string;
   shop?: Shop;
   brand?: string;

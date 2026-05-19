@@ -34,6 +34,12 @@ type StorefrontProductCard = {
   isNew?: boolean;
   mainImage?: string;
   gallery?: string[];
+  imageSizes?: {
+    thumb?: string;
+    medium?: string;
+    large?: string;
+    original?: string;
+  };
   updatedAt?: string;
   createdAt?: string;
 };
@@ -305,6 +311,22 @@ export const mapStorefrontProduct = (
     .map(buildStorefrontImageUrl)
     .filter(Boolean);
   const images = Array.from(new Set(gallery));
+  const imageSizes = product.imageSizes
+    ? {
+        thumb: buildStorefrontImageUrl(product.imageSizes.thumb),
+        medium: buildStorefrontImageUrl(product.imageSizes.medium),
+        large: buildStorefrontImageUrl(product.imageSizes.large),
+        original: buildStorefrontImageUrl(product.imageSizes.original),
+      }
+    : undefined;
+  const thumbnail = imageSizes?.thumb || images[0] || PLACEHOLDER_IMAGE;
+  const productImages = Array.from(
+    new Set([
+      imageSizes?.medium,
+      imageSizes?.large,
+      ...images,
+    ].filter(Boolean) as string[]),
+  );
 
   return {
     id: product.id,
@@ -317,8 +339,9 @@ export const mapStorefrontProduct = (
       Number(product.oldPrice || 0) || null,
     ),
     rating: 4,
-    thumbnail: images[0] || PLACEHOLDER_IMAGE,
-    images: images.length ? images : [PLACEHOLDER_IMAGE],
+    thumbnail,
+    imageSizes,
+    images: productImages.length ? productImages : [PLACEHOLDER_IMAGE],
     brand: product.brand || undefined,
     status: product.availability?.label,
     shortDescription: product.shortDescription || undefined,
