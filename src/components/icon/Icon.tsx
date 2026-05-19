@@ -49,8 +49,12 @@ import {
   IconSofa,
   IconTable,
   IconTemperature,
+  IconBrandApple,
+  IconBrandGooglePlay,
+  IconBrandInstagram,
   IconBulb,
   IconMedal,
+  IconPhone,
   IconSparkles,
   IconThumbUp,
   IconToolsKitchen2,
@@ -90,6 +94,12 @@ type Props = SpaceProps & ComponentPropsWithRef<"div"> & IconProps;
 // ==============================================================
 
 const LIBRARY_ICONS: Record<string, ComponentType<any>> = {
+  // Brand & contact icons
+  "app-store": IconBrandApple,
+  "instagram": IconBrandInstagram,
+  "phone": IconPhone,
+  "play-store": IconBrandGooglePlay,
+
   // UI icons (lucide)
   "arrow-down-filled": IconChevronDown,
   bag: ShoppingBag,
