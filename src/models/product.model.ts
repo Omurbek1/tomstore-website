@@ -25,6 +25,7 @@ interface Product {
   price: number;
   title: string;
   rating: number;
+  reviewCount?: number;
   discount: number;
   thumbnail: string;
   id: string;
