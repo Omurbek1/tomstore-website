@@ -1,10 +1,11 @@
-const CANONICAL_ORIGIN = "https://tomstore.kg";
+const CANONICAL_ORIGIN = "https://www.tomstore.kg";
 
 const raw = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/+$/, "");
+const normalized = raw === "https://tomstore.kg" ? CANONICAL_ORIGIN : raw;
 
 // Never let a deployment/preview URL leak into canonical tags.
 // Only use the env var if it looks like a real custom domain.
 export const SITE_URL =
-  raw && !raw.includes("vercel.app") && !raw.includes("localhost")
-    ? raw
+  normalized && !normalized.includes("vercel.app") && !normalized.includes("localhost")
+    ? normalized
     : CANONICAL_ORIGIN;
