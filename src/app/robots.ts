@@ -16,6 +16,17 @@ const PRIVATE_PATHS = [
 ];
 
 const LOCALES = ["ru", "en", "ky"] as const;
+const AI_CRAWLER_USER_AGENTS = [
+  "Amazonbot",
+  "Applebot-Extended",
+  "Bytespider",
+  "CCBot",
+  "ClaudeBot",
+  "CloudflareBrowserRenderingCrawler",
+  "Google-Extended",
+  "GPTBot",
+  "meta-externalagent",
+];
 
 export default function robots(): MetadataRoute.Robots {
   const disallow = [
@@ -36,6 +47,10 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "Googlebot-Image",
         allow: ["/assets/", "/_next/"],
       },
+      ...AI_CRAWLER_USER_AGENTS.map((userAgent) => ({
+        userAgent,
+        disallow: ["/"],
+      })),
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,
     host: SITE_URL,
