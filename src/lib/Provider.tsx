@@ -5,6 +5,10 @@ import dynamic from "next/dynamic";
 import { App as AntdApp, ConfigProvider, theme as antdTheme } from "antd";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useDarkMode } from "@context/DarkModeContext";
+import {
+  STOREFRONT_DEFAULT_GC_TIME_MS,
+  STOREFRONT_DEFAULT_STALE_TIME_MS,
+} from "@utils/__api__/storefront";
 
 const ReactQueryDevtools =
   process.env.NODE_ENV === "development"
@@ -22,8 +26,8 @@ const Provider: FC<PropsWithChildren> = ({ children }) => {
         defaultOptions: {
           queries: {
             retry: false,
-            staleTime: 60 * 1000,
-            gcTime: 5 * 60 * 1000,
+            staleTime: STOREFRONT_DEFAULT_STALE_TIME_MS,
+            gcTime: STOREFRONT_DEFAULT_GC_TIME_MS,
             refetchOnWindowFocus: false,
             experimental_prefetchInRender: true,
           },

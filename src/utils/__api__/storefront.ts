@@ -185,8 +185,16 @@ export const EMPTY_STOREFRONT_HOME: StorefrontHomeResponse = {
 const PLACEHOLDER_IMAGE = "/assets/images/products/placeholder.webp";
 const DEFAULT_BACKEND_URL = "http://127.0.0.1:3000";
 const REVALIDATE_SECONDS = 60;
-const STALE_TIME_MS = REVALIDATE_SECONDS * 1000;
-const CATEGORY_STALE_TIME_MS = 10 * 60 * 1000;
+
+// Совпадает с backend in-memory cache (ProductsService.PUBLIC_LIST_TTL_MS = 60_000).
+// Меняй обе константы вместе, иначе клиент будет видеть устаревшие данные дольше, чем нужно.
+export const STOREFRONT_DEFAULT_STALE_TIME_MS = REVALIDATE_SECONDS * 1000;
+export const STOREFRONT_DEFAULT_GC_TIME_MS = 5 * 60 * 1000;
+export const STOREFRONT_CATEGORY_STALE_TIME_MS = 10 * 60 * 1000;
+export const STOREFRONT_CATEGORY_GC_TIME_MS = 30 * 60 * 1000;
+
+const STALE_TIME_MS = STOREFRONT_DEFAULT_STALE_TIME_MS;
+const CATEGORY_STALE_TIME_MS = STOREFRONT_CATEGORY_STALE_TIME_MS;
 
 const trimTrailingSlashes = (value?: string | null) =>
   String(value || "").replace(/\/+$/, "");
@@ -270,6 +278,8 @@ export const storefrontQueryKeys = {
     [...storefrontQueryKeys.all, "catalog", normalizeQueryParams(params)] as const,
   product: (slug: string) => [...storefrontQueryKeys.all, "product", slug] as const,
   slugs: () => [...storefrontQueryKeys.all, "slugs"] as const,
+  searchSuggestions: (q: string) =>
+    [...storefrontQueryKeys.all, "search-suggestions", q.trim().toLowerCase()] as const,
 };
 
 const getServerQueryClient = cache(
@@ -568,7 +578,7 @@ export const storefrontCategoriesQueryOptions = () =>
   queryOptions({
     queryKey: storefrontQueryKeys.categories(),
     staleTime: CATEGORY_STALE_TIME_MS,
-    gcTime: 30 * 60 * 1000,
+    gcTime: STOREFRONT_CATEGORY_GC_TIME_MS,
     queryFn: () =>
       storefrontFetch<StorefrontCategory[]>("/storefront/categories").then(
         (categories) => categories.map(mapStorefrontCategory),
