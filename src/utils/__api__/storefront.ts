@@ -683,11 +683,15 @@ export type SearchSuggestion = {
   matchedAttribute?: string | null;
 };
 
+export const SEARCH_SUGGESTIONS_MIN_LENGTH = 2;
+export const SEARCH_SUGGESTIONS_STALE_TIME_MS = 30_000;
+
 export const getSearchSuggestions = async (q: string): Promise<SearchSuggestion[]> => {
-  if (!q || q.trim().length < 2) return [];
+  const trimmed = String(q || "").trim();
+  if (trimmed.length < SEARCH_SUGGESTIONS_MIN_LENGTH) return [];
   try {
     const url = buildStorefrontUrl(
-      `/storefront/search/suggestions?q=${encodeURIComponent(q.trim())}`,
+      `/storefront/search/suggestions?q=${encodeURIComponent(trimmed)}`,
     );
     const response = await fetch(url);
     if (!response.ok) return [];
@@ -695,6 +699,16 @@ export const getSearchSuggestions = async (q: string): Promise<SearchSuggestion[
   } catch {
     return [];
   }
+};
+
+export const storefrontSearchSuggestionsQueryOptions = (q: string) => {
+  const normalized = q.trim();
+  return queryOptions({
+    queryKey: storefrontQueryKeys.searchSuggestions(normalized),
+    staleTime: SEARCH_SUGGESTIONS_STALE_TIME_MS,
+    queryFn: () => getSearchSuggestions(normalized),
+    enabled: normalized.length >= SEARCH_SUGGESTIONS_MIN_LENGTH,
+  });
 };
 
 export const getStorefrontHome = () =>

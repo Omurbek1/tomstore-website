@@ -1,6 +1,6 @@
 "use client";
 
-import { KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Cascader } from "antd";
 import { IconChevronDown, IconSearch } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
@@ -13,7 +13,7 @@ import { Span } from "@component/Typography";
 import FlexBox from "@component/FlexBox";
 import TextField from "@component/text-field";
 import localizeNavigations from "@utils/localizeNavigations";
-import { getSearchSuggestions, type SearchSuggestion } from "@utils/__api__/storefront";
+import { useSearchSuggestions } from "@hook/useSearchSuggestions";
 import { Link, useRouter } from "@i18n/navigation";
 import StyledSearchBox from "./styled";
 
@@ -29,12 +29,14 @@ export default function SearchInputWithCategory() {
   const allT = useTranslations();
   const t = useTranslations("search");
 
-  const [resultList, setResultList] = useState<SearchSuggestion[]>([]);
   const [query, setQuery] = useState("");
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [categoryPath, setCategoryPath] = useState<string[]>(["all"]);
   // Human-readable label of the selected category (e.g. "Ноутбуки"), used as text query
   const [categoryLabel, setCategoryLabel] = useState("");
-  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const { data: suggestions = [] } = useSearchSuggestions(query);
+  const resultList = suggestionsOpen ? suggestions : [];
 
   const categoryOptions = useMemo<CatalogOption[]>(() => {
     const localizedNavigations = localizeNavigations(navigations, allT);
@@ -63,7 +65,7 @@ export default function SearchInputWithCategory() {
     (text: string) => {
       const q = text.trim();
       if (!q || q === t("categories.all")) return;
-      setResultList([]);
+      setSuggestionsOpen(false);
       router.push(`/product/search/${encodeURIComponent(q)}?type=text` as any);
     },
     [router, t],
@@ -72,18 +74,7 @@ export default function SearchInputWithCategory() {
   const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target?.value ?? "";
     setQuery(value);
-
-    if (debounceTimer.current) clearTimeout(debounceTimer.current);
-
-    if (value.trim().length < 2) {
-      setResultList([]);
-      return;
-    }
-
-    debounceTimer.current = setTimeout(async () => {
-      const suggestions = await getSearchSuggestions(value.trim());
-      setResultList(suggestions);
-    }, 300);
+    setSuggestionsOpen(value.trim().length >= 2);
   }, []);
 
   const handleKeyDown = useCallback(
@@ -114,7 +105,7 @@ export default function SearchInputWithCategory() {
     [query, goToSearch],
   );
 
-  const handleDocumentClick = useCallback(() => setResultList([]), []);
+  const handleDocumentClick = useCallback(() => setSuggestionsOpen(false), []);
 
   useEffect(() => {
     window.addEventListener("click", handleDocumentClick);
@@ -125,10 +116,6 @@ export default function SearchInputWithCategory() {
     const input = document.querySelector<HTMLInputElement>(".category-cascader input");
     input?.setAttribute("aria-label", t("categories.all"));
   }, [t]);
-
-  useEffect(() => {
-    return () => { if (debounceTimer.current) clearTimeout(debounceTimer.current); };
-  }, []);
 
   return (
     <Box
