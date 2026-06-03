@@ -22,6 +22,23 @@ type CatalogPageProps = {
   params: Promise<{ locale: string; slug: string[] }>;
 };
 
+// Пререндер топ-категорий из навигации: страницы отдаются из ISR-кэша,
+// а не рендерятся на лету с ожиданием бэкенда на каждый запрос.
+// Остальные (фильтры/гео/бренды) остаются динамическими (dynamicParams=true по умолчанию).
+export function generateStaticParams(): Array<{ slug: string[] }> {
+  const slugSet = new Set<string>();
+  for (const nav of navigations) {
+    if (nav.href?.startsWith("/catalog/")) slugSet.add(nav.href.slice("/catalog/".length));
+    for (const cat of nav.menuData?.categories || []) {
+      if (cat.href?.startsWith("/catalog/")) slugSet.add(cat.href.slice("/catalog/".length));
+      for (const sub of cat.subCategories || []) {
+        if (sub.href?.startsWith("/catalog/")) slugSet.add(sub.href.slice("/catalog/".length));
+      }
+    }
+  }
+  return Array.from(slugSet).map((path) => ({ slug: path.split("/") }));
+}
+
 const normalizeCatalogSegment = (segment: string) =>
   safeDecodeURIComponent(segment)
     .replace(/[-_]+/g, " ")
