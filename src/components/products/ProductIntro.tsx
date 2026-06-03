@@ -347,7 +347,7 @@ export default function ProductIntro({
                         height={800}
                         src={getMediumUrl(activeImage) || activeImage}
                         fallbackSrc={activeImage !== PRODUCT_IMAGE_FALLBACK ? activeImage : PRODUCT_IMAGE_FALLBACK}
-                        alt={displayTitle}
+                        alt={`${displayTitle} — купить в Бишкеке, TomStore`}
                         quality={85}
                         sizes="(max-width: 768px) 100vw, 50vw"
                         priority

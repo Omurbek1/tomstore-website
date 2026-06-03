@@ -100,10 +100,12 @@ export async function generateMetadata({ params }: CatalogPageProps): Promise<Me
   const { displayQuery } = await resolveCatalogQuery(locale, slug);
   const path = normalizeCatalogPath(slug);
   const url = `${SITE_URL}/${locale}${path}`;
+  // Без суффикса «| TomStore» — его добавит шаблон title из layout (%s | TomStore),
+  // иначе суффикс задвоится.
   const title = displayQuery
     ? locale === "en"
-      ? `${displayQuery} — Buy in Bishkek | TomStore`
-      : `${displayQuery} — купить в Бишкеке | TomStore`
+      ? `${displayQuery} — Buy in Bishkek`
+      : `${displayQuery} — купить в Бишкеке`
     : "TomStore";
   const description =
     locale === "en"
@@ -111,7 +113,9 @@ export async function generateMetadata({ params }: CatalogPageProps): Promise<Me
       : `${displayQuery} по лучшим ценам в Бишкеке. Гарантия, рассрочка, доставка. TomStore.`;
 
   return {
-    title: displayQuery,
+    // Используем собранный выше SEO-title с гео-ключом «купить в Бишкеке»,
+    // а не голое имя категории (раньше здесь по ошибке стоял displayQuery).
+    title,
     description,
     alternates: {
       canonical: url,

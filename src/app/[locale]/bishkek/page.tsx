@@ -4,7 +4,6 @@ import Box from "@component/Box";
 import Grid from "@component/grid/Grid";
 import { H1, H2, H3 } from "@component/Typography";
 import Breadcrumbs from "@component/seo/Breadcrumbs";
-import OrganizationJsonLd from "@component/seo/OrganizationJsonLd";
 import { Link } from "@i18n/navigation";
 import { SITE_URL } from "@lib/siteUrl";
 import { GEO_CATEGORIES } from "@data/geo";
@@ -117,7 +116,7 @@ export default async function BishkekPage({ params }: Props) {
 
   return (
     <AppLayout>
-      <OrganizationJsonLd />
+      {/* OrganizationJsonLd теперь рендерится глобально в корневом app/layout.tsx */}
       <Box pt="20px" pb="60px">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />

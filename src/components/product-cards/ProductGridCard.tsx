@@ -261,7 +261,7 @@ export default function ProductGridCard({
             onMouseEnter={prefetchProduct}
           >
             <NextImage
-              alt={title}
+              alt={`${title} — купить в Бишкеке`}
               width={277}
               src={getThumbUrl(imgUrl) || imgUrl}
               fallbackSrc={imgUrl}

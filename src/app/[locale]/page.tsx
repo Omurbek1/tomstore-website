@@ -3,7 +3,6 @@ import { getTranslations } from "next-intl/server";
 import AppLayout from "@component/layout/layout-1";
 import Navbar from "@component/navbar/Navbar";
 import HomePage from "@sections/home/HomePage";
-import OrganizationJsonLd from "@component/seo/OrganizationJsonLd";
 import WebSiteJsonLd from "@component/seo/WebSiteJsonLd";
 import { SITE_URL } from "@lib/siteUrl";
 
@@ -43,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default function Home() {
   return (
     <AppLayout navbar={<Navbar />}>
-      <OrganizationJsonLd />
+      {/* OrganizationJsonLd теперь рендерится глобально в корневом app/layout.tsx */}
       <WebSiteJsonLd />
       <HomePage />
     </AppLayout>

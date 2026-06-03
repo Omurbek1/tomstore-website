@@ -39,12 +39,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const url = `${SITE_URL}/${locale}/product/${slug}`;
     const image = product.thumbnail;
 
+    // Цена в title (RU): «{название} — купить в Бишкеке за {цена} сом».
+    // Без суффикса «| TomStore» — его добавит шаблон title из layout (%s | TomStore).
+    const priceTitle =
+      product.price && locale === "ru"
+        ? ` за ${product.price.toLocaleString("ru")} сом`
+        : "";
+
     const title =
       locale === "en"
-        ? `Buy ${name} in Kyrgyzstan | TomStore`
+        ? `Buy ${name} in Bishkek`
         : locale === "ky"
-        ? `${name} сатып алуу Кыргызстанда | TomStore`
-        : `Купить ${name} в Кыргызстане | TomStore`;
+        ? `${name} сатып алуу Бишкекте`
+        : `${name} — купить в Бишкеке${priceTitle}`;
 
     const priceStr =
       product.price && locale !== "en"
@@ -91,8 +98,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       path: `/product/${slug}`,
       title:
         locale === "en"
-          ? "Buy Electronics in Bishkek | TomStore"
-          : "Купить электронику в Бишкеке | TomStore",
+          ? "Buy Electronics in Bishkek"
+          : "Купить электронику в Бишкеке",
       description:
         locale === "en"
           ? "Buy electronics at TomStore with delivery across Kyrgyzstan. Laptops, printers, PCs, monitors. Warranty and installment."

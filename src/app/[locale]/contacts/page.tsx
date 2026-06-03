@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import ContactsPageClient from "./ContactsPageClient";
-import OrganizationJsonLd from "@component/seo/OrganizationJsonLd";
 import { SITE_URL } from "@lib/siteUrl";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -42,7 +41,7 @@ export default async function ContactsPage({ params }: Props) {
   const { locale } = await params;
   return (
     <>
-      <OrganizationJsonLd />
+      {/* OrganizationJsonLd теперь рендерится глобально в корневом app/layout.tsx */}
       <ContactsPageClient locale={locale} />
     </>
   );
