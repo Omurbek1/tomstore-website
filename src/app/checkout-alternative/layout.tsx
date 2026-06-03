@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 import StyledComponentsRegistry from "@lib/registry";
 import { ThemeProvider } from "theme";
-import { Provider } from "@lib/Provider";
+import { Provider, AntdProvider } from "@lib/Provider";
 import ShopLayout from "@component/layout/alt-layout";
 
 // This route is served without the [locale] layout wrapper, so it needs
@@ -14,7 +14,10 @@ export default function Layout({ children }: PropsWithChildren) {
     <StyledComponentsRegistry>
       <Provider>
         <ThemeProvider>
-          <ShopLayout showNavbar={false}>{children}</ShopLayout>
+          {/* checkout-alternative использует AntD (CheckoutForm2) — монтируем ConfigProvider */}
+          <AntdProvider>
+            <ShopLayout showNavbar={false}>{children}</ShopLayout>
+          </AntdProvider>
         </ThemeProvider>
       </Provider>
     </StyledComponentsRegistry>

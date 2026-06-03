@@ -18,8 +18,11 @@ const ReactQueryDevtools =
       )
     : null;
 
+// Глобальный провайдер витрины — только React Query, без AntD.
+// AntD вынесен в отдельный <AntdProvider>, который монтируется лишь на
+// маршрутах группы (store) (дашборд/чекаут/вендор), чтобы AntD не попадал
+// в критический бандл страниц витрины (главная/каталог/товар).
 const Provider: FC<PropsWithChildren> = ({ children }) => {
-  const { isDark } = useDarkMode();
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -34,6 +37,18 @@ const Provider: FC<PropsWithChildren> = ({ children }) => {
         },
       }),
   );
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+      {ReactQueryDevtools ? <ReactQueryDevtools /> : null}
+    </QueryClientProvider>
+  );
+};
+
+// AntD ConfigProvider + App. Монтируется только в layout'ах группы (store).
+const AntdProvider: FC<PropsWithChildren> = ({ children }) => {
+  const { isDark } = useDarkMode();
 
   return (
     <ConfigProvider
@@ -144,14 +159,9 @@ const Provider: FC<PropsWithChildren> = ({ children }) => {
         },
       }}
     >
-      <AntdApp>
-        <QueryClientProvider client={queryClient}>
-          {children}
-          {ReactQueryDevtools ? <ReactQueryDevtools /> : null}
-        </QueryClientProvider>
-      </AntdApp>
+      <AntdApp>{children}</AntdApp>
     </ConfigProvider>
   );
 };
 
-export { Provider };
+export { Provider, AntdProvider };

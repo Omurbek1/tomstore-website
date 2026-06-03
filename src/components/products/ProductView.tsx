@@ -1,7 +1,7 @@
 "use client";
 
-import { Fragment, useMemo } from "react";
-import { Tabs } from "antd";
+import { Fragment, useMemo, useState } from "react";
+import styled from "styled-components";
 import { useTranslations } from "next-intl";
 
 import Box from "@component/Box";
@@ -24,6 +24,36 @@ type Props = {
 };
 // ==============================================================
 
+// Лёгкая замена antd <Tabs> на styled-components (чтобы не тянуть AntD на витрину).
+const TabBar = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.gray[200]};
+  margin-bottom: 24px;
+`;
+
+const TabButton = styled.button<{ $active: boolean }>`
+  appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 12px 4px;
+  margin-bottom: -1px;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: ${({ theme, $active }) =>
+    $active ? theme.colors.primary.main : theme.colors.text.secondary};
+  border-bottom: 2px solid
+    ${({ theme, $active }) => ($active ? theme.colors.primary.main : "transparent")};
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary.main};
+  }
+`;
+
 export default function ProductView({
   product,
   shops,
@@ -32,6 +62,7 @@ export default function ProductView({
   selectedVariant,
 }: Props) {
   const t = useTranslations("product");
+  const [activeKey, setActiveKey] = useState("description");
 
   const tabItems = useMemo(() => {
     const items = [
@@ -61,15 +92,28 @@ export default function ProductView({
     return items;
   }, [product, selectedVariant, t]);
 
+  // Активная вкладка с фолбэком (вкладка варианта может появляться/исчезать)
+  const activeItem =
+    tabItems.find((item) => item.key === activeKey) ?? tabItems[0];
+
   return (
     <Fragment>
       <Box mt="80px" mb="50px">
-        <Tabs
-          size="large"
-          defaultActiveKey="description"
-          items={tabItems}
-          tabBarStyle={{ marginBottom: 24 }}
-        />
+        <TabBar role="tablist">
+          {tabItems.map((item) => (
+            <TabButton
+              key={item.key}
+              role="tab"
+              type="button"
+              aria-selected={item.key === activeItem.key}
+              $active={item.key === activeItem.key}
+              onClick={() => setActiveKey(item.key)}
+            >
+              {item.label}
+            </TabButton>
+          ))}
+        </TabBar>
+        <div role="tabpanel">{activeItem.children}</div>
       </Box>
 
       {/* FREQUENTLY BOUGHT TOGETHER PRODUCTS */}

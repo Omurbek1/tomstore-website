@@ -1,11 +1,18 @@
 "use client";
 
 import { KeyboardEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { Cascader } from "antd";
-import { IconChevronDown, IconSearch } from "@tabler/icons-react";
+import dynamic from "next/dynamic";
+import { IconSearch } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
 import navigations from "@data/navigations";
+import type { CatalogOption } from "./CategoryCascader";
+
+// AntD-зависимый Cascader грузится лениво и только на клиенте,
+// чтобы AntD не попадал в критический бандл витрины.
+const CategoryCascader = dynamic(() => import("./CategoryCascader"), {
+  ssr: false,
+});
 import Box from "@component/Box";
 import Card from "@component/Card";
 import MenuItem from "@component/MenuItem";
@@ -16,13 +23,6 @@ import localizeNavigations from "@utils/localizeNavigations";
 import { useSearchSuggestions } from "@hook/useSearchSuggestions";
 import { Link, useRouter } from "@i18n/navigation";
 import StyledSearchBox from "./styled";
-
-type CatalogOption = {
-  label: string;
-  value: string;
-  searchValue: string;
-  children?: CatalogOption[];
-};
 
 export default function SearchInputWithCategory() {
   const router = useRouter();
@@ -138,18 +138,11 @@ export default function SearchInputWithCategory() {
         />
 
         <div className="category-cascader">
-          <Cascader
-            allowClear={false}
-            aria-label={t("categories.all")}
-            changeOnSelect
-            expandTrigger="hover"
+          <CategoryCascader
             options={categoryOptions}
             value={categoryPath}
-            onChange={handleCategoryChange as any}
-            showSearch={{ filter: filterCatalogOptions }}
-            suffixIcon={<IconChevronDown size={18} stroke={1.5} />}
-            displayRender={(labels) => labels[labels.length - 1]}
-            classNames={{ popup: { root: "tomstore-category-cascader-popup" } }}
+            ariaLabel={t("categories.all")}
+            onChange={handleCategoryChange}
           />
         </div>
       </StyledSearchBox>
@@ -182,6 +175,3 @@ export default function SearchInputWithCategory() {
 
 const normalizeCatalogValue = (href: string) =>
   href.replace(/^\/catalog\/?/, "") || "all";
-
-const filterCatalogOptions = (inputValue: string, path: CatalogOption[]): boolean =>
-  path.some((opt) => opt.label.toLowerCase().includes(inputValue.toLowerCase()));

@@ -2,7 +2,6 @@
 
 import { Fragment, startTransition, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Drawer } from "antd";
 import styled, { useTheme } from "styled-components";
 import {
   IconLayoutGrid,
@@ -350,6 +349,50 @@ const SortOptionItem = styled.button<{ $active?: boolean }>`
   }
 `;
 
+// Нижний лист сортировки — лёгкая замена antd <Drawer placement="bottom">,
+// чтобы не тянуть AntD на витрину.
+const SortSheetOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+`;
+
+const SortSheet = styled.div`
+  width: 100%;
+  max-height: 70vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: ${({ theme }) => theme.colors.body.paper};
+  border-radius: 20px 20px 0 0;
+  padding: 4px 16px 16px;
+  animation: sortUp 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  @keyframes sortUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+`;
+
+const SortSheetHead = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  margin-bottom: 4px;
+  font-size: 17px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.text.primary};
+  border-bottom: 1px solid
+    ${({ theme }) =>
+      theme.isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)"};
+`;
+
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const SORT_MAP: Record<string, string> = {
@@ -616,9 +659,6 @@ export default function SearchResult({
     return () => { document.body.style.overflow = ""; };
   }, [drawerOpen, isTablet]);
 
-  const drawerBg = theme.colors.body.paper;
-  const drawerBorder = theme.isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.06)";
-
   return (
     <Fragment>
       {/* ── Toolbar ── */}
@@ -847,42 +887,31 @@ export default function SearchResult({
       )}
 
       {/* ── Sort bottom sheet ── */}
-      <Drawer
-        placement="bottom"
-        size={320}
-        open={sortDrawerOpen}
-        title={t("sortBy")}
-        onClose={() => setSortDrawerOpen(false)}
-        destroyOnHidden
-        styles={{
-          wrapper: {
-            borderRadius: "20px 20px 0 0",
-            overflow: "hidden",
-          },
-          body: {
-            padding: "4px 16px 16px",
-            background: drawerBg,
-          },
-          header: {
-            background: drawerBg,
-            borderBottom: `1px solid ${drawerBorder}`,
-          },
-        }}
-      >
-        {sortOptions.map((option) => (
-          <SortOptionItem
-            key={option.value}
-            $active={sortKey === option.value}
-            onClick={() => {
-              handleSortChange(option);
-              setSortDrawerOpen(false);
-            }}
-          >
-            {option.label}
-            {sortKey === option.value && <IconCheck size={18} strokeWidth={2.5} />}
-          </SortOptionItem>
-        ))}
-      </Drawer>
+      {sortDrawerOpen && (
+        <SortSheetOverlay onClick={() => setSortDrawerOpen(false)}>
+          <SortSheet onClick={(event) => event.stopPropagation()}>
+            <SortSheetHead>
+              {t("sortBy")}
+              <FilterModalClose onClick={() => setSortDrawerOpen(false)}>
+                <IconX size={18} strokeWidth={2.5} />
+              </FilterModalClose>
+            </SortSheetHead>
+            {sortOptions.map((option) => (
+              <SortOptionItem
+                key={option.value}
+                $active={sortKey === option.value}
+                onClick={() => {
+                  handleSortChange(option);
+                  setSortDrawerOpen(false);
+                }}
+              >
+                {option.label}
+                {sortKey === option.value && <IconCheck size={18} strokeWidth={2.5} />}
+              </SortOptionItem>
+            ))}
+          </SortSheet>
+        </SortSheetOverlay>
+      )}
     </Fragment>
   );
 }
