@@ -1,28 +1,7 @@
-"use client";
-
-import Box from "@component/Box";
-import styled from "styled-components";
 import HomeProductCard from "@component/product-cards/HomeProductCard";
 import CategorySectionCreator from "@component/CategorySectionCreator";
 import Product from "@models/product.model";
-
-const ProductGrid = styled(Box)`
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
-
-  @media only screen and (max-width: 959px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  @media only screen and (max-width: 650px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  @media only screen and (max-width: 500px) {
-    grid-template-columns: 1fr;
-  }
-`;
+import styles from "./HomeProductCarouselSection.module.css";
 
 type HomeProductCarouselSectionProps = {
   products: Product[];
@@ -31,6 +10,9 @@ type HomeProductCarouselSectionProps = {
   seeMoreLink: string;
 };
 
+// Серверный компонент: сетка на CSS-модуле вместо styled(Box). Карточки —
+// серверные children, переданные в клиентский CategorySectionCreator, поэтому
+// рендерятся на сервере (0 клиентского JS на товары).
 export default function HomeProductCarouselSection({
   products,
   title,
@@ -43,10 +25,11 @@ export default function HomeProductCarouselSection({
     <CategorySectionCreator
       iconName={iconName}
       title={title}
-      seeMoreLink={seeMoreLink}>
-      <ProductGrid mt="-0.25rem" mb="-0.25rem">
+      seeMoreLink={seeMoreLink}
+    >
+      <div className={styles.grid}>
         {products.slice(0, 8).map((product) => (
-          <Box py="0.25rem" key={product.id} minWidth="0" style={{ minHeight: 410 }}>
+          <div className={styles.cell} key={product.id}>
             <HomeProductCard
               slug={product.slug}
               title={product.title}
@@ -54,9 +37,9 @@ export default function HomeProductCarouselSection({
               imgUrl={product.thumbnail}
               discount={product.discount}
             />
-          </Box>
+          </div>
         ))}
-      </ProductGrid>
+      </div>
     </CategorySectionCreator>
   );
 }

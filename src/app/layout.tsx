@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import "./tokens.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import GoogleAnalytics from "@component/GoogleAnalytics";
 import OrganizationJsonLd from "@component/seo/OrganizationJsonLd";

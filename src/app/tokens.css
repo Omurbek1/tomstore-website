@@ -1,0 +1,19 @@
+/**
+ * CSS-переменные темы — мост для перевода компонентов со styled-components на
+ * статичный CSS без потери тёмной темы. Значения совпадают с src/theme/colors.ts
+ * (светлая) и darkColors (тёмная). Переключение по data-theme, который ставит
+ * src/store/themeStore.ts на <html>.
+ */
+:root {
+  --surface-paper: #ffffff;
+  --text-primary: #2b3445;
+  --color-primary: #c81e3a;
+  --shadow-sm: 0px 1px 3px rgba(3, 0, 71, 0.09);
+}
+
+[data-theme="dark"] {
+  --surface-paper: #0f1525;
+  --text-primary: #eaf0ff;
+  --color-primary: #c81e3a;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
