@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingBag } from "lucide-react";
+import { IconShoppingBag } from "@tabler/icons-react";
 import { Fragment } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@i18n/navigation";
@@ -65,7 +65,7 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
             flexDirection="column"
             justifyContent="center"
             height="calc(100% - 80px)">
-            <ShoppingBag size={90} strokeWidth={1} color="var(--color-primary, #D23F57)" />
+            <IconShoppingBag size={90} stroke={1} color="var(--color-primary, #D23F57)" />
             <Paragraph mt="1rem" color="text.muted" textAlign="center" maxWidth="200px">
               {t("emptyCart")}
             </Paragraph>

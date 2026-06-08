@@ -1,6 +1,6 @@
 "use client";
 import { Fragment, useState } from "react";
-import { ShoppingBag } from "lucide-react";
+import { IconShoppingBag } from "@tabler/icons-react";
 import styled from "styled-components";
 import { useTranslations } from "next-intl";
 // GLOBAL CUSTOM COMPONENTS
@@ -57,7 +57,7 @@ export default function Cart() {
         flexDirection="column"
         justifyContent="center"
         py="4rem">
-        <ShoppingBag size={120} strokeWidth={1} color="var(--color-primary, #D23F57)" />
+        <IconShoppingBag size={120} stroke={1} color="var(--color-primary, #D23F57)" />
         <Paragraph mt="1.5rem" color="text.muted" textAlign="center" maxWidth="280px" fontSize="16px">
           Your cart is empty. Add some products to continue shopping.
         </Paragraph>

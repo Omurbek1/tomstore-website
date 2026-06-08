@@ -26,7 +26,6 @@
     "formik": "^2.4.6",
     "i18next": "^26.0.4",
     "lodash-es": "^4.17.21",
-    "lucide-react": "^1.8.0",
     "motion": "^12.6.0",
     "next": "15.2.8",
     "next-intl": "^4.9.1",
