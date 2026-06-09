@@ -9,7 +9,10 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 const nextConfig: NextConfig = {
   experimental: {
-    optimizePackageImports: ["@tabler/icons-react", "antd", "lucide-react"],
+    optimizePackageImports: ["@tabler/icons-react", "antd"],
+    // Инлайнит CSS маршрута в <head> вместо отдельного <link> — убирает
+    // render-blocking CSS-запрос (~160 мс) и узел из дерева зависимостей.
+    inlineCss: true,
   },
   images: {
     formats: ["image/avif", "image/webp"],
@@ -89,6 +92,20 @@ const nextConfig: NextConfig = {
           {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        // Корневые статик-файлы из /public (favicon, иконки, логотипы, manifest)
+        // — раньше без долгого кэша → Lighthouse «эффективный период хранения
+        // кеша». Матч строго одного сегмента: не задевает /assets и /_next
+        // (у них свои immutable-правила выше). Пути не хешированы → 30 дней.
+        source:
+          "/:file(.+\\.(?:ico|png|jpg|jpeg|gif|svg|webp|avif|woff|woff2|ttf|otf|xml|webmanifest))",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=2592000, stale-while-revalidate=86400",
           },
         ],
       },
