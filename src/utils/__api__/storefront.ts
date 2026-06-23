@@ -305,7 +305,9 @@ const normalizeQueryParams = (
 
 const storefrontFetch = async <T>(path: string): Promise<T> => {
   const response = await fetch(buildStorefrontUrl(path), {
-    next: { revalidate: REVALIDATE_SECONDS },
+    // Тег позволяет мгновенно сбросить весь кэш витрины через revalidateTag
+    // (вызывается из CRM при смене публикации/изменении товара).
+    next: { revalidate: REVALIDATE_SECONDS, tags: ["storefront"] },
   });
 
   if (!response.ok) {
