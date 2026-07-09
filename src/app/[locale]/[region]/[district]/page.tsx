@@ -267,7 +267,7 @@ export default async function DistrictPage({ params }: Props) {
                       <img src={p.imgUrl} alt={`${p.title} в Бишкеке`} loading="lazy" />
                     )}
                     <div className="title">{p.title}</div>
-                    <div className="price">{p.price?.toLocaleString()} {isEn ? "$" : "сом"}</div>
+                    <div className="price">{p.price?.toLocaleString("ru-RU")} {isEn ? "$" : "сом"}</div>
                   </Link>
                 ))}
               </ProductGrid>

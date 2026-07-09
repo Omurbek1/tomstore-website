@@ -8,6 +8,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Card from "@component/Card";
 import { Link, useRouter } from "@i18n/navigation";
 import Order from "@models/order.model";
+import { formatWithSpaceGroups } from "@utils/utils";
 
 type OrderBasePath = "/orders" | "/vendor/orders";
 
@@ -83,7 +84,8 @@ export default function OrdersTable({ orders, basePath }: Props) {
       dataIndex: "totalPrice",
       key: "totalPrice",
       align: "right",
-      render: (totalPrice: Order["totalPrice"]) => priceFormatter.format(totalPrice)
+      render: (totalPrice: Order["totalPrice"]) =>
+        formatWithSpaceGroups(priceFormatter, totalPrice)
     },
     {
       title: t("tables.action"),

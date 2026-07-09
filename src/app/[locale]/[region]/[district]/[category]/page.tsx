@@ -369,7 +369,7 @@ export default async function GeoCategoryPage({ params }: Props) {
                     <div className="body">
                       <div className="pname">{product.title}</div>
                       <div className="price">
-                        {product.price.toLocaleString()} {locale === "en" ? "$" : "сом"}
+                        {product.price.toLocaleString("ru-RU")} {locale === "en" ? "$" : "сом"}
                       </div>
                       <Link
                         href={`/${locale}/product/${product.slug}`}

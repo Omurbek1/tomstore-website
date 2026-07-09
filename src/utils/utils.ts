@@ -92,5 +92,19 @@ export function currency(price: number, fraction: number = 2, locale?: string) {
     minimumFractionDigits: fraction
   });
 
-  return formatCurrency.format(price);
+  return formatWithSpaceGroups(formatCurrency, price);
+}
+
+/**
+ * Форматирует число, ПРИНУДИТЕЛЬНО разделяя тысячи ПРОБЕЛОМ для любой валюты и
+ * локали (правило: 2500000 → 2 500 000). Через formatToParts заменяем только
+ * разделитель групп (type === "group"), сохраняя десятичный разделитель, символ
+ * валюты, знак и т.д. Безопасно для локалей, где запятая — десятичный разделитель
+ * (ru/ky), в отличие от наивного replace(/,/g, " ").
+ */
+export function formatWithSpaceGroups(nf: Intl.NumberFormat, value: number) {
+  return nf
+    .formatToParts(value)
+    .map((part) => (part.type === "group" ? " " : part.value))
+    .join("");
 }

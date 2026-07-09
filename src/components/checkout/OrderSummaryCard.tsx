@@ -2,6 +2,7 @@
 
 import { Button, Card, Divider, Input, List, Space, Typography } from "antd";
 import { useLocale } from "next-intl";
+import { formatWithSpaceGroups } from "@utils/utils";
 
 type OrderLineItem = {
   name: string;
@@ -48,7 +49,8 @@ export default function OrderSummaryCard({
     maximumFractionDigits: 2
   });
 
-  const formatPrice = (value: number | null) => (value == null ? "-" : formatter.format(value));
+  const formatPrice = (value: number | null) =>
+    value == null ? "-" : formatWithSpaceGroups(formatter, value);
 
   return (
     <Card variant='borderless' styles={{ body: { padding: 24 } }} style={{ borderRadius: 12 }}>

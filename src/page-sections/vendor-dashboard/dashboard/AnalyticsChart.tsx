@@ -11,6 +11,7 @@ import {
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import { colors } from "@utils/themeColors";
+import { formatWithSpaceGroups } from "@utils/utils";
 
 ChartJS.register(
   CategoryScale,
@@ -46,7 +47,8 @@ const options: ChartOptions = {
           }
 
           if (context.parsed.y !== null) {
-            label += new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
+            label += formatWithSpaceGroups(
+              new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }),
               context.parsed.y
             );
           }

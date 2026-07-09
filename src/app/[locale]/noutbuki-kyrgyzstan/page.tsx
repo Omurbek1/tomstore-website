@@ -156,7 +156,7 @@ export default async function NoutbukiKyrgyzstanPage({ params }: Props) {
                 <Link key={p.id} href={`/${locale}/product/${p.slug}`}>
                   {p.imgUrl && <img src={p.imgUrl} alt={`${p.title} — купить в Кыргызстане`} loading="lazy" />}
                   <div className="title">{p.title}</div>
-                  <div className="price">{p.price?.toLocaleString()} {isEn ? "$" : "сом"}</div>
+                  <div className="price">{p.price?.toLocaleString("ru-RU")} {isEn ? "$" : "сом"}</div>
                 </Link>
               ))}
             </ProductGrid>
