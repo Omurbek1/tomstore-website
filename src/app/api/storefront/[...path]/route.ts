@@ -14,6 +14,35 @@ const getBackendUrl = () => {
   return url.replace(/\/+$/, "");
 };
 
+// Секрет доверенного прокси (только серверный env). Бэкенд считает лимит
+// витрины по x-storefront-client-ip, а без него доверенный прокси не режет.
+const getProxySecret = () =>
+  String(process.env.STOREFRONT_PROXY_SECRET || process.env.REVALIDATE_SECRET || "").trim();
+
+const getClientIp = (request: NextRequest) => {
+  const raw =
+    request.headers.get("x-forwarded-for")?.split(",")[0] ||
+    request.headers.get("x-real-ip") ||
+    "";
+  const ip = raw.trim();
+  return /^[0-9a-fA-F:.]{2,45}$/.test(ip) ? ip : "";
+};
+
+// Подсказки поиска — по запросу посетителя, кэшем почти не покрываются:
+// для них передаём IP посетителя (лимит per-visitor). Остальные GET идут в
+// общий 60-с кэш fetch — заголовки входят в ключ кэша, IP разбил бы кэш на
+// посетителей, поэтому их шлём только с пометкой прокси (как SSR/ISR).
+const isPerVisitorGet = (path: string[]) => path[0] === "search";
+
+const buildProxyHeaders = (request: NextRequest, withClientIp: boolean) => {
+  const headers: Record<string, string> = {};
+  const secret = getProxySecret();
+  if (secret) headers["x-storefront-proxy"] = secret;
+  const ip = withClientIp ? getClientIp(request) : "";
+  if (ip) headers["x-storefront-client-ip"] = ip;
+  return headers;
+};
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
@@ -25,6 +54,7 @@ export async function GET(
 
   try {
     const response = await fetch(url, {
+      headers: buildProxyHeaders(request, isPerVisitorGet(path)),
       // Тот же тег, что у серверных запросов витрины: /api/revalidate сбрасывает
       // и кэш прокси (цены филиалов на клиенте не застревают на 60 с).
       next: { revalidate: 60, tags: ["storefront"] },
@@ -77,16 +107,13 @@ export async function POST(
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400, headers: NO_STORE });
   }
 
-  const forwardedFor =
-    request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "";
-
   try {
     const response = await fetch(`${getBackendUrl()}/storefront/${joined}`, {
       method: "POST",
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",
-        ...(forwardedFor ? { "X-Forwarded-For": forwardedFor } : {}),
+        ...buildProxyHeaders(request, true),
         "User-Agent": request.headers.get("user-agent") || "tomstore-website",
       },
       body: body || "{}",

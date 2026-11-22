@@ -249,6 +249,21 @@ const buildStorefrontUrl = (path: string) => {
   return `${backendUrl}${normalizedPath}`;
 };
 
+/**
+ * Серверные запросы (SSR/ISR, Vercel) идут к бэкенду с общих IP — без пометки
+ * доверенного прокси упёрлись бы в лимит витрины по IP (429). Секрет только из
+ * серверного env (STOREFRONT_PROXY_SECRET, иначе REVALIDATE_SECRET), в браузер
+ * не попадает: в клиентском бандле эти переменные пустые, и вызов — только
+ * при typeof window === "undefined".
+ */
+export const getStorefrontProxyHeaders = (): Record<string, string> => {
+  if (typeof window !== "undefined") return {};
+  const secret = String(
+    process.env.STOREFRONT_PROXY_SECRET || process.env.REVALIDATE_SECRET || "",
+  ).trim();
+  return secret ? { "x-storefront-proxy": secret } : {};
+};
+
 export const resolveStorefrontMediaUrl = (value?: string | null) => {
   const url = String(value || "").trim();
   if (!url) return undefined;
@@ -342,6 +357,7 @@ const normalizeQueryParams = (
 
 const storefrontFetch = async <T>(path: string): Promise<T> => {
   const response = await fetch(buildStorefrontUrl(path), {
+    headers: getStorefrontProxyHeaders(),
     // Тег позволяет мгновенно сбросить весь кэш витрины через revalidateTag
     // (вызывается из CRM при смене публикации/изменении товара).
     next: { revalidate: REVALIDATE_SECONDS, tags: ["storefront"] },
@@ -853,7 +869,7 @@ export const getSearchSuggestions = async (
     const url = buildStorefrontUrl(
       withBranch(`/storefront/search/suggestions?q=${encodeURIComponent(trimmed)}`, branch),
     );
-    const response = await fetch(url);
+    const response = await fetch(url, { headers: getStorefrontProxyHeaders() });
     if (!response.ok) return [];
     return response.json();
   } catch {
