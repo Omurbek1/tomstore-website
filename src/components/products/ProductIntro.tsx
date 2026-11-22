@@ -17,6 +17,7 @@ import { H1, H2, H3, SemiSpan } from "@component/Typography";
 import { useCartItemByIdOrSlug, useChangeCartAmount } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
 import { buildProductWhatsAppOrderUrl } from "@utils/whatsappOrder";
+import { useStoreWhatsAppPhone } from "@hook/useStoreWhatsAppPhone";
 import Product, { ProductVariant } from "@models/product.model";
 import ProductShareButton from "./ProductShareButton";
 import ProductVariantSelector from "./ProductVariantSelector";
@@ -240,12 +241,14 @@ export default function ProductIntro({
   const cartItem = useCartItemByIdOrSlug(cartId, routerId);
   const shareSlug = slug || routerId;
   const shareText = `${displayTitle}. ${formatCurrency(displayPrice)}`;
+  const whatsappPhone = useStoreWhatsAppPhone();
   const whatsappOrderHref = buildProductWhatsAppOrderUrl({
     title: displayTitle,
     qty: cartItem?.qty || 1,
     priceLabel: formatCurrency(displayPrice),
     slug: shareSlug,
     branchName: priceBranchName || undefined,
+    phone: whatsappPhone,
   });
 
   const handleImageClick = useCallback((ind: number) => () => {

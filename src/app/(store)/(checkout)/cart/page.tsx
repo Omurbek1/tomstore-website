@@ -19,6 +19,7 @@ import { CartProductRow } from "@component/product-cards";
 import { useCartItems, useCartTotal } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
 import { buildCartWhatsAppOrderUrl } from "@utils/whatsappOrder";
+import { useStoreWhatsAppPhone } from "@hook/useStoreWhatsAppPhone";
 import { useBranch } from "@context/BranchContext";
 // CUSTOM DATA
 import countryList from "@data/countryList";
@@ -48,11 +49,13 @@ export default function Cart() {
   const tBranch = useTranslations("branch");
   const { activeBranch, branches } = useBranch();
   const branchName = branches.length > 1 ? activeBranch?.name : undefined;
+  const whatsappPhone = useStoreWhatsAppPhone();
   const whatsappOrderHref = buildCartWhatsAppOrderUrl({
     items: cart,
     totalLabel: formatCurrency(cartTotal),
     comment,
     branchName,
+    phone: whatsappPhone,
   });
 
   if (cart.length === 0) {

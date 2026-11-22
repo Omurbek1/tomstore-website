@@ -1,10 +1,6 @@
 import type { CartItem } from "../store/cart.store";
 import { SITE_URL } from "@lib/siteUrl";
-
-const WHATSAPP_PHONE =
-  process.env.NEXT_PUBLIC_WHATSAPP_PHONE ||
-  process.env.NEXT_PUBLIC_STOREFRONT_WHATSAPP_PHONE ||
-  "";
+import { resolveWhatsAppPhone } from "@lib/storeBrand";
 
 type ProductOrderInput = {
   title: string;
@@ -13,6 +9,8 @@ type ProductOrderInput = {
   slug?: string;
   /** Магазин, по цене которого оформляется заказ. */
   branchName?: string;
+  /** WhatsApp компании из /storefront/config; нет — номер из env сайта. */
+  phone?: string | null;
 };
 
 type CartOrderInput = {
@@ -20,9 +18,8 @@ type CartOrderInput = {
   totalLabel: string;
   comment?: string;
   branchName?: string;
+  phone?: string | null;
 };
-
-const cleanPhone = (phone: string) => phone.replace(/\D/g, "");
 
 const buildProductLink = (slug?: string) => {
   if (!slug) return "";
@@ -30,8 +27,8 @@ const buildProductLink = (slug?: string) => {
   return SITE_URL ? `${SITE_URL}${path}` : path;
 };
 
-export const buildWhatsAppOrderUrl = (message: string) => {
-  const phone = cleanPhone(WHATSAPP_PHONE);
+export const buildWhatsAppOrderUrl = (message: string, configPhone?: string | null) => {
+  const phone = resolveWhatsAppPhone(configPhone);
   const encodedMessage = encodeURIComponent(message);
 
   return phone
@@ -45,6 +42,7 @@ export const buildProductWhatsAppOrderUrl = ({
   priceLabel,
   slug,
   branchName,
+  phone,
 }: ProductOrderInput) => {
   const productLink = buildProductLink(slug);
   const message = [
@@ -61,7 +59,7 @@ export const buildProductWhatsAppOrderUrl = ({
     .filter(Boolean)
     .join("\n");
 
-  return buildWhatsAppOrderUrl(message);
+  return buildWhatsAppOrderUrl(message, phone);
 };
 
 export const buildCartWhatsAppOrderUrl = ({
@@ -69,6 +67,7 @@ export const buildCartWhatsAppOrderUrl = ({
   totalLabel,
   comment,
   branchName,
+  phone,
 }: CartOrderInput) => {
   const lines = items.map((item, index) => {
     const productLink = buildProductLink(item.slug);
@@ -99,5 +98,5 @@ export const buildCartWhatsAppOrderUrl = ({
     .filter(Boolean)
     .join("\n");
 
-  return buildWhatsAppOrderUrl(message);
+  return buildWhatsAppOrderUrl(message, phone);
 };

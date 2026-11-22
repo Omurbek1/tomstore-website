@@ -630,27 +630,61 @@ export type StorefrontConfig = {
   defaultBranchId: string | null;
   /** Домен привязан к одному магазину: выбора магазина нет. */
   lockedBranchId: string | null;
+  /** Название компании сайта (бренд в JSON-LD/сообщениях); null — бэкенд не отдал. */
+  companyName: string | null;
+  /** WhatsApp компании (только цифры); null — берём из env сайта. */
+  whatsappPhone: string | null;
+  supportPhone: string | null;
+  siteUrl: string | null;
+};
+
+const EMPTY_STOREFRONT_CONFIG: StorefrontConfig = {
+  defaultBranchId: null,
+  lockedBranchId: null,
+  companyName: null,
+  whatsappPhone: null,
+  supportPhone: null,
+  siteUrl: null,
+};
+
+const optionalText = (value: unknown): string | null => {
+  const text = typeof value === "string" ? value.trim() : "";
+  return text || null;
+};
+
+const fetchStorefrontConfig = async (): Promise<StorefrontConfig> => {
+  try {
+    const config = await storefrontFetch<{
+      defaultBranchId?: string | null;
+      lockedBranchId?: string | null;
+      companyName?: string | null;
+      whatsappPhone?: string | null;
+      supportPhone?: string | null;
+      siteUrl?: string | null;
+    }>("/storefront/config");
+    return {
+      defaultBranchId: config?.defaultBranchId ? String(config.defaultBranchId) : null,
+      lockedBranchId: config?.lockedBranchId ? String(config.lockedBranchId) : null,
+      companyName: optionalText(config?.companyName),
+      whatsappPhone: optionalText(config?.whatsappPhone),
+      supportPhone: optionalText(config?.supportPhone),
+      siteUrl: optionalText(config?.siteUrl),
+    };
+  } catch {
+    return EMPTY_STOREFRONT_CONFIG;
+  }
 };
 
 export const storefrontConfigQueryOptions = () =>
   queryOptions({
     queryKey: storefrontQueryKeys.config(),
     staleTime: BRANCHES_STALE_TIME_MS,
-    queryFn: async (): Promise<StorefrontConfig> => {
-      try {
-        const config = await storefrontFetch<{
-          defaultBranchId?: string | null;
-          lockedBranchId?: string | null;
-        }>("/storefront/config");
-        return {
-          defaultBranchId: config?.defaultBranchId ? String(config.defaultBranchId) : null,
-          lockedBranchId: config?.lockedBranchId ? String(config.lockedBranchId) : null,
-        };
-      } catch {
-        return { defaultBranchId: null, lockedBranchId: null };
-      }
-    },
+    queryFn: fetchStorefrontConfig,
   });
+
+/** Config витрины для серверных компонентов (SSR/ISR, тег storefront). */
+export const getStorefrontConfig = () =>
+  getServerQueryClient().fetchQuery(storefrontConfigQueryOptions());
 
 export const storefrontCatalogQueryOptions = (
   params: StorefrontCatalogParams = {},

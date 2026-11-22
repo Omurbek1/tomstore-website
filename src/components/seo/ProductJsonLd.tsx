@@ -1,5 +1,7 @@
 import type Product from "@models/product.model";
 import { SITE_URL } from "@lib/siteUrl";
+import { resolveStoreName } from "@lib/storeBrand";
+import { getStorefrontConfig } from "@utils/__api__/storefront";
 
 interface Props {
   product: Product;
@@ -7,7 +9,10 @@ interface Props {
   locale?: string;
 }
 
-export default function ProductJsonLd({ product, slug, locale = "ru" }: Props) {
+export default async function ProductJsonLd({ product, slug, locale = "ru" }: Props) {
+  // Продавец — компания этого сайта (config по хосту деплоя), не всегда TomStore.
+  const config = await getStorefrontConfig().catch(() => null);
+  const storeName = resolveStoreName(config?.companyName);
   const productUrl = `${SITE_URL}/${locale}/product/${slug}`;
   const images = product.images?.length
     ? product.images
@@ -46,7 +51,7 @@ export default function ProductJsonLd({ product, slug, locale = "ru" }: Props) {
     description:
       product.shortDescription ||
       product.description ||
-      `${product.title} — купить в Бишкеке с доставкой по Кыргызстану. TomStore.`,
+      `${product.title} — купить в Бишкеке с доставкой по Кыргызстану. ${storeName}.`,
     image: images,
     sku: String(product.id),
     url: productUrl,
@@ -67,7 +72,7 @@ export default function ProductJsonLd({ product, slug, locale = "ru" }: Props) {
         seller: {
           "@type": "Organization",
           "@id": `${SITE_URL}/#organization`,
-          name: "TomStore",
+          name: storeName,
           url: SITE_URL,
         },
         url: productUrl,
