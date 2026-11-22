@@ -23,7 +23,7 @@ export default function ProductPageClient({
   frequentlyBought: serverFrequentlyBought,
 }: Props) {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(undefined);
-  const { branchParam, branches, defaultBranch } = useBranch();
+  const { branchParam, branches, defaultBranch, activeBranch, locked } = useBranch();
 
   // Сервер отдал цены магазина по умолчанию (страница статическая, ISR).
   // Выбран другой магазин → догружаем товар с ?branch= и подменяем цены.
@@ -36,7 +36,12 @@ export default function ProductPageClient({
   const frequentlyBought = branchPayload?.recommendedProducts.length
     ? branchPayload.recommendedProducts
     : serverFrequentlyBought;
-  const branchPrices = serverProduct.branchPrices ?? [];
+  // Домен одного магазина — в «Ценах по магазинам» только он (список скрыт).
+  const allBranchPrices = serverProduct.branchPrices ?? [];
+  const branchPrices =
+    locked && activeBranch
+      ? allBranchPrices.filter((row) => row.branchId === activeBranch.id)
+      : allBranchPrices;
 
   // Чьи цены сейчас на экране: выбранного магазина (когда пришли) или по умолчанию.
   const shownBranchId = branchPayload ? branchParam : defaultBranch?.id ?? serverProduct.priceBranchId;
@@ -45,7 +50,8 @@ export default function ProductPageClient({
     branchPrices.find((row) => row.branchId === shownBranchId)?.branchName;
   // Место под «Цена для: …» резервируем ещё на сервере (если магазинов >1),
   // чтобы подпись не сдвигала вёрстку после загрузки списка магазинов.
-  const showPriceBranch = branchPrices.length > 1 || branches.length > 1;
+  // Домен одного магазина — подпись остаётся («Цена для: <магазин>»).
+  const showPriceBranch = locked || branchPrices.length > 1 || branches.length > 1;
 
   return (
     <>

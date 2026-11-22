@@ -626,18 +626,28 @@ export const storefrontBranchesQueryOptions = () =>
     },
   });
 
+export type StorefrontConfig = {
+  defaultBranchId: string | null;
+  /** Домен привязан к одному магазину: выбора магазина нет. */
+  lockedBranchId: string | null;
+};
+
 export const storefrontConfigQueryOptions = () =>
   queryOptions({
     queryKey: storefrontQueryKeys.config(),
     staleTime: BRANCHES_STALE_TIME_MS,
-    queryFn: async (): Promise<{ defaultBranchId: string | null }> => {
+    queryFn: async (): Promise<StorefrontConfig> => {
       try {
-        const config = await storefrontFetch<{ defaultBranchId?: string | null }>(
-          "/storefront/config",
-        );
-        return { defaultBranchId: config?.defaultBranchId || null };
+        const config = await storefrontFetch<{
+          defaultBranchId?: string | null;
+          lockedBranchId?: string | null;
+        }>("/storefront/config");
+        return {
+          defaultBranchId: config?.defaultBranchId ? String(config.defaultBranchId) : null,
+          lockedBranchId: config?.lockedBranchId ? String(config.lockedBranchId) : null,
+        };
       } catch {
-        return { defaultBranchId: null };
+        return { defaultBranchId: null, lockedBranchId: null };
       }
     },
   });

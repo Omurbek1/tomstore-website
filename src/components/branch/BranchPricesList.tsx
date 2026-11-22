@@ -18,9 +18,10 @@ type Props = {
 export default function BranchPricesList({ branchPrices }: Props) {
   const t = useTranslations("branch");
   const locale = useLocale();
-  const { activeBranch, defaultBranch, selectBranch, branches } = useBranch();
+  const { activeBranch, defaultBranch, selectBranch, branches, locked } = useBranch();
 
-  if (branchPrices.length < 2) return null;
+  // Домен одного магазина — сравнивать не с чем.
+  if (locked || branchPrices.length < 2) return null;
 
   const activeId = activeBranch?.id ?? defaultBranch?.id;
   const knownBranchIds = new Set(branches.map((branch) => branch.id));

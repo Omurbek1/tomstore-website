@@ -9,11 +9,12 @@ import styles from "./BranchPicker.module.css";
 
 /**
  * Кнопка «Ваш магазин: …» в шапке + список магазинов (на телефоне — нижний
- * лист, на ПК — окно по центру). Нет филиалов (бэкенд их не отдаёт) — кнопки нет.
+ * лист, на ПК — окно по центру). Нет филиалов (бэкенд их не отдаёт) или
+ * домен привязан к одному магазину — кнопки нет.
  */
 export default function BranchPicker() {
   const t = useTranslations("branch");
-  const { branches, activeBranch, defaultBranch, selectBranch } = useBranch();
+  const { branches, activeBranch, defaultBranch, selectBranch, locked } = useBranch();
   const [open, setOpen] = useState(false);
   const listRef = useRef<HTMLUListElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -39,7 +40,8 @@ export default function BranchPicker() {
     };
   }, [open, close]);
 
-  if (branches.length < 2) return null;
+  // Домен одного магазина (lockedBranchId) — выбирать не из чего.
+  if (locked || branches.length < 2) return null;
 
   const handleSelect = (branchId: string) => {
     selectBranch(branchId);

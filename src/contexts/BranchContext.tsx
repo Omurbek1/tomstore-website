@@ -32,6 +32,8 @@ type BranchContextValue = {
   branchParam: string | undefined;
   /** false, пока есть cookie, а список филиалов ещё грузится. */
   resolved: boolean;
+  /** Домен привязан к одному магазину (lockedBranchId): выбора нет. */
+  locked: boolean;
   selectBranch: (branchId: string) => void;
 };
 
@@ -43,6 +45,7 @@ const BranchContext = createContext<BranchContextValue>({
   activeBranch: null,
   branchParam: undefined,
   resolved: true,
+  locked: false,
   selectBranch: () => {},
 });
 
@@ -52,23 +55,37 @@ export function BranchProvider({ children }: PropsWithChildren) {
   const branches = branchesQuery.data ?? EMPTY_BRANCHES;
   const flaggedDefault = branches.find((branch) => branch.isDefault) || null;
 
-  // Флаг isDefault в списке — основной источник; config нужен, только если
-  // бэкенд почему-то не отметил филиал по умолчанию.
+  // config нужен всегда: lockedBranchId (домен одного магазина) есть только
+  // в нём; defaultBranchId — запасной, если бэкенд не отметил isDefault.
   const configQuery = useQuery({
     ...storefrontConfigQueryOptions(),
-    enabled: branches.length > 0 && !flaggedDefault,
+    enabled: branches.length > 0,
   });
   const configDefaultId = configQuery.data?.defaultBranchId || null;
+  const lockedBranchId = configQuery.data?.lockedBranchId || null;
+  const lockedBranch = lockedBranchId
+    ? branches.find((branch) => branch.id === lockedBranchId) || null
+    : null;
+
+  // Магазин закреплён за доменом — чужой магазин из cookie (с другого
+  // домена/до привязки) убираем, иначе цены/корзина шли бы не по тому филиалу.
+  useEffect(() => {
+    if (lockedBranchId && cookieBranchId && cookieBranchId !== lockedBranchId) {
+      writeBranchCookie(null);
+    }
+  }, [cookieBranchId, lockedBranchId]);
 
   const value = useMemo<BranchContextValue>(() => {
     const defaultBranch =
       flaggedDefault ||
       (configDefaultId ? branches.find((branch) => branch.id === configDefaultId) || null : null);
-    const selected = cookieBranchId
-      ? branches.find((branch) => branch.id === cookieBranchId) || null
-      : null;
-    const waitingForDefault = branches.length > 0 && !flaggedDefault && configQuery.isPending;
-    const resolved = !cookieBranchId || (!branchesQuery.isPending && !waitingForDefault);
+    const selected = lockedBranch
+      ? lockedBranch
+      : cookieBranchId
+        ? branches.find((branch) => branch.id === cookieBranchId) || null
+        : null;
+    const waitingForConfig = branches.length > 0 && configQuery.isPending;
+    const resolved = !cookieBranchId || (!branchesQuery.isPending && !waitingForConfig);
     const branchParam =
       resolved && selected && selected.id !== defaultBranch?.id ? selected.id : undefined;
 
@@ -78,7 +95,11 @@ export function BranchProvider({ children }: PropsWithChildren) {
       activeBranch: selected || defaultBranch,
       branchParam,
       resolved,
-      selectBranch: (branchId: string) => writeBranchCookie(branchId),
+      locked: Boolean(lockedBranch),
+      selectBranch: (branchId: string) => {
+        if (lockedBranch) return;
+        writeBranchCookie(branchId);
+      },
     };
   }, [
     branches,
@@ -87,6 +108,7 @@ export function BranchProvider({ children }: PropsWithChildren) {
     configQuery.isPending,
     cookieBranchId,
     flaggedDefault,
+    lockedBranch,
   ]);
 
   return (
