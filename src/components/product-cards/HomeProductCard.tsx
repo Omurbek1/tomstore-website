@@ -1,5 +1,5 @@
 import { Link } from "@i18n/navigation";
-import { currency } from "@utils/utils";
+import BranchPriceText from "@component/branch/BranchPriceText";
 import NextImage from "@component/NextImage";
 import styles from "./HomeProductCard.module.css";
 
@@ -22,6 +22,7 @@ const PRODUCT_IMAGE_FALLBACK = "/assets/images/products/placeholder.webp";
 // презентационная, повторяется десятки раз на главной/каталоге. Перенос стилей
 // в CSS-модуль убирает её клиентский JS и ускоряет гидрацию.
 export default function HomeProductCard({
+  id,
   slug,
   title,
   price,
@@ -66,12 +67,13 @@ export default function HomeProductCard({
         {title}
       </h3>
 
-      <span className={styles.price}>
-        {currency(price, 0, "ru")}
-        {oldPrice && oldPrice > price ? (
-          <del className={styles.oldPrice}>{currency(oldPrice, 0, "ru")}</del>
-        ) : null}
-      </span>
+      <BranchPriceText
+        id={id}
+        price={price}
+        oldPrice={oldPrice}
+        className={styles.price}
+        oldPriceClassName={styles.oldPrice}
+      />
     </Link>
   );
 }

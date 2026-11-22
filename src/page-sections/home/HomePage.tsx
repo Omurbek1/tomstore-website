@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { HomeBranchPriceSync } from "@component/branch/BranchPriceSync";
 import Brand from "@models/Brand.model";
 import Product from "@models/product.model";
 import {
@@ -95,6 +96,7 @@ export default async function HomePage() {
 
   return (
     <main>
+      <HomeBranchPriceSync />
       <HomeHeroSection slides={heroSlides} />
       <HomePopularCategoriesSection
         categories={categories}

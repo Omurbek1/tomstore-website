@@ -8,6 +8,7 @@ import styled, { useTheme } from "styled-components";
 import { IconEye, IconHeart, IconHeartFilled, IconPlus, IconMinus } from "@tabler/icons-react";
 
 import { useCartItemById, useChangeCartAmount } from "@hook/useCart";
+import { useBranch, useBranchPrice } from "@context/BranchContext";
 import { useIsWishlisted, useToggleWishlist } from "@hook/useWishlist";
 
 import Box from "@component/Box";
@@ -166,10 +167,10 @@ interface ProductGridCardProps extends CardProps {
 export default function ProductGridCard({
   id,
   off,
-  oldPrice,
+  oldPrice: baseOldPrice,
   slug,
   title,
-  price,
+  price: basePrice,
   imgUrl,
   images,
   rating = 4,
@@ -188,6 +189,9 @@ export default function ProductGridCard({
   const [open, setOpen] = useState(false);
   const cartItem = useCartItemById(id);
   const productHref = `/${locale}/product/${slug}`;
+  // Цена выбранного магазина (если он не основной и цены уже пришли).
+  const { activeBranch } = useBranch();
+  const { price, oldPrice } = useBranchPrice(id, basePrice, baseOldPrice);
   // `price` — уже цена продажи (со скидкой), повторно скидку НЕ вычитаем.
   const hasOldPrice = !!oldPrice && oldPrice > price;
   const discountPercent = hasOldPrice
@@ -207,9 +211,10 @@ export default function ProductGridCard({
         imgUrl,
         name: title,
         qty: amount,
+        branchId: activeBranch?.id ?? null,
       });
     },
-    [changeCartAmount, id, imgUrl, price, slug, title],
+    [activeBranch?.id, changeCartAmount, id, imgUrl, price, slug, title],
   );
 
   const prefetchProduct = useCallback(() => {

@@ -18,6 +18,8 @@ import {
   isCategorySlug,
 } from "@data/geo";
 import { getSafeStorefrontCatalog, mapStorefrontProduct } from "@utils/__api__/storefront";
+import BranchPriceText from "@component/branch/BranchPriceText";
+import { CatalogBranchPriceSync } from "@component/branch/BranchPriceSync";
 import { ProductCard } from "./CategoryStyles";
 
 import { SITE_URL } from "@lib/siteUrl";
@@ -273,7 +275,8 @@ export default async function GeoCategoryPage({ params }: Props) {
     : `Купить ${cat.nameRu.toLowerCase()} ${district.inRu} — доставка ${district.deliveryDays}`;
 
   // Fetch real products from catalog
-  const catalogData = await getSafeStorefrontCatalog({ category: cat.catalogPath.replace("/catalog/", "") });
+  const branchSyncParams = { category: cat.catalogPath.replace("/catalog/", "") };
+  const catalogData = await getSafeStorefrontCatalog(branchSyncParams);
   const products = (catalogData?.items ?? []).slice(0, 6).map(mapStorefrontProduct);
 
   const seoTexts  = buildSeoText(locale, district, region, cat);
@@ -350,6 +353,7 @@ export default async function GeoCategoryPage({ params }: Props) {
                 ? `Каталогдогу ${cat.nameKy.toLowerCase()}`
                 : `${cat.nameRu} — доступны для заказа`}
             </H2>
+            <CatalogBranchPriceSync params={branchSyncParams} />
             <Grid container spacing={4}>
               {products.map((product: any) => (
                 <Grid item lg={2} sm={4} xs={6} key={product.id}>
@@ -369,7 +373,7 @@ export default async function GeoCategoryPage({ params }: Props) {
                     <div className="body">
                       <div className="pname">{product.title}</div>
                       <div className="price">
-                        {product.price.toLocaleString("ru-RU")} {locale === "en" ? "som" : "сом"}
+                        <BranchPriceText id={product.id} price={product.price} oldPrice={product.oldPrice} />
                       </div>
                       <Link
                         href={`/${locale}/product/${product.slug}`}

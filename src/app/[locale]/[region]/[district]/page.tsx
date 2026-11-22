@@ -13,6 +13,8 @@ import { SITE_URL } from "@lib/siteUrl";
 import { buildFallbackMetadata } from "@lib/seoMetadata";
 import { Link } from "@i18n/navigation";
 import { getSafeStorefrontCatalog, mapStorefrontProduct } from "@utils/__api__/storefront";
+import BranchPriceText from "@component/branch/BranchPriceText";
+import { CatalogBranchPriceSync } from "@component/branch/BranchPriceSync";
 type Props = { params: Promise<{ locale: string; region: string; district: string }> };
 
 export function generateStaticParams() {
@@ -178,7 +180,9 @@ export default async function DistrictPage({ params }: Props) {
     const homeLabel = isEn ? "Home" : "Главная";
     const catName   = isEn ? cat.nameEn : cat.nameRu;
 
-    const catalog = await getSafeStorefrontCatalog({ q: filter.apiQuery, pageSize: 12 });
+    const branchSyncParams = { q: filter.apiQuery, pageSize: 12 };
+
+    const catalog = await getSafeStorefrontCatalog(branchSyncParams);
     const products = (catalog?.items ?? []).map(mapStorefrontProduct);
 
     const faqItems = isEn
@@ -260,6 +264,7 @@ export default async function DistrictPage({ params }: Props) {
               <H2 fontSize="18px" mb="1rem">
                 {isEn ? `${filter.nameEn} Laptops — Available Now` : `Ноутбуки ${filter.nameRu} — в наличии`}
               </H2>
+              <CatalogBranchPriceSync params={branchSyncParams} />
               <ProductGrid>
                 {products.slice(0, 12).map((p: any) => (
                   <Link key={p.id} href={`/${locale}/product/${p.slug}`}>
@@ -267,7 +272,7 @@ export default async function DistrictPage({ params }: Props) {
                       <img src={p.imgUrl} alt={`${p.title} в Бишкеке`} loading="lazy" />
                     )}
                     <div className="title">{p.title}</div>
-                    <div className="price">{p.price?.toLocaleString("ru-RU")} {isEn ? "som" : "сом"}</div>
+                    <div className="price"><BranchPriceText id={p.id} price={p.price} oldPrice={p.oldPrice} /></div>
                   </Link>
                 ))}
               </ProductGrid>

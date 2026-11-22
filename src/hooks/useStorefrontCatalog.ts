@@ -14,6 +14,7 @@ import {
   type StorefrontInfinitePage,
 } from "@utils/__api__/storefront";
 import Product from "@models/product.model";
+import { useBranch } from "@context/BranchContext";
 
 export const useStorefrontHome = () => useQuery(storefrontHomeQueryOptions());
 
@@ -43,9 +44,14 @@ export const useStorefrontProducts = (
 export const useInfiniteStorefrontProducts = (
   params: StorefrontCatalogParams = {},
   initialProducts?: Product[],
-) =>
-  useInfiniteQuery<StorefrontInfinitePage>({
-    ...storefrontInfiniteCatalogQueryOptions(params),
+) => {
+  // Выбран не основной магазин → тот же каталог с ?branch= (цены филиала).
+  // Пока не ясно, какой магазин (cookie есть, список грузится) — не грузим,
+  // показываем серверный список, чтобы не делать лишний запрос.
+  const { branchParam, resolved } = useBranch();
+  return useInfiniteQuery<StorefrontInfinitePage>({
+    ...storefrontInfiniteCatalogQueryOptions({ ...params, branch: branchParam }),
+    enabled: resolved,
     placeholderData: (prev) =>
       prev ??
       (initialProducts?.length
@@ -63,6 +69,7 @@ export const useInfiniteStorefrontProducts = (
           }
         : undefined),
   });
+};
 
 export const useStorefrontProduct = (
   slug: string,
@@ -74,15 +81,32 @@ export const useStorefrontProduct = (
     initialData,
   });
 
+/**
+ * Товар с ценами выбранного магазина. Основной магазин → запроса нет,
+ * используются серверные данные; иначе — ?branch=, а до ответа держим
+ * серверные (без мигания и сдвига вёрстки).
+ */
+export const useBranchStorefrontProduct = (slug: string) => {
+  const { branchParam } = useBranch();
+  return useQuery({
+    ...storefrontProductQueryOptions(slug, branchParam),
+    enabled: Boolean(slug && branchParam),
+    placeholderData: keepPreviousData,
+  });
+};
+
 export const usePrefetchStorefrontProduct = () => {
   const queryClient = useQueryClient();
+  const { branchParam } = useBranch();
 
   return useCallback(
     (slug: string) => {
       if (!slug) return;
-      queryClient.prefetchQuery(storefrontProductQueryOptions(slug));
+      // Без филиала страница товара берёт серверные данные — префетч не нужен
+      // для цен, но кэширует JSON для клиентских переходов (как раньше).
+      queryClient.prefetchQuery(storefrontProductQueryOptions(slug, branchParam));
     },
-    [queryClient],
+    [branchParam, queryClient],
   );
 };
 

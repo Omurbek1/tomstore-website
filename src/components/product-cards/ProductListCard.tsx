@@ -19,7 +19,7 @@ import { H5, SemiSpan } from "../Typography";
 import ProductQuickView from "@component/products/ProductQuickView";
 import { useCartItemById, useChangeCartAmount } from "@hook/useCart";
 import { useIsWishlisted, useToggleWishlist } from "@hook/useWishlist";
-import { calculateDiscount } from "@utils/utils";
+import { useBranch, useBranchPrice } from "@context/BranchContext";
 import useCurrency from "@hook/useCurrency";
 import { useLocale, useTranslations } from "next-intl";
 import { usePrefetchStorefrontProduct } from "@hook/useStorefrontCatalog";
@@ -118,6 +118,8 @@ const Wrapper = styled(Card)`
 // ============================================================================
 type ProductListCardProps = {
   off?: number;
+  /** Цена до скидки; `price` с бэкенда уже со скидкой. */
+  oldPrice?: number | null;
   slug: string;
   title: string;
   price: number;
@@ -133,9 +135,10 @@ type ProductListCardProps = {
 export default function ProductListCard({
   id,
   off,
+  oldPrice: baseOldPrice,
   slug,
   title,
-  price,
+  price: basePrice,
   imgUrl,
   rating,
   images,
@@ -154,6 +157,13 @@ export default function ProductListCard({
   const isWishlisted = useIsWishlisted(id);
   const cartItem = useCartItemById(id);
   const productHref = `/${locale}/product/${slug}`;
+  const { activeBranch } = useBranch();
+  const { price, oldPrice } = useBranchPrice(id, basePrice, baseOldPrice);
+  // `price` — уже цена продажи, скидку повторно не вычитаем.
+  const hasOldPrice = !!oldPrice && oldPrice > price;
+  const discountPercent = hasOldPrice
+    ? Math.round(((oldPrice - price) / oldPrice) * 100)
+    : off || 0;
 
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
   const prefetchProduct = useCallback(() => {
@@ -162,7 +172,15 @@ export default function ProductListCard({
   }, [prefetchProductQuery, productHref, router, slug]);
 
   const handleCartAmountChange = (qty: number) => () => {
-    changeCartAmount({ price, imgUrl, id, qty, slug, name: title });
+    changeCartAmount({
+      price,
+      imgUrl,
+      id,
+      qty,
+      slug,
+      name: title,
+      branchId: activeBranch?.id ?? null,
+    });
   };
 
   return (
@@ -172,7 +190,7 @@ export default function ProductListCard({
 
         {/* ── Image ── */}
         <Box className="list-image-col" position="relative" style={{ width: 200, flexShrink: 0 }}>
-          {!!off && (
+          {!!discountPercent && (
             <Chip
               top="10px"
               left="10px"
@@ -184,7 +202,7 @@ export default function ProductListCard({
               color="primary.text"
               zIndex={1}
             >
-              {t("saleOff", { percent: off })}
+              {t("saleOff", { percent: discountPercent })}
             </Chip>
           )}
 
@@ -240,11 +258,11 @@ export default function ProductListCard({
 
           <FlexBox mt="0.5rem" alignItems="center" flexWrap="wrap" style={{ gap: "0.25rem" }}>
             <H5 fontWeight={600} color="primary.main">
-              {calculateDiscount(price, off ?? 0, locale)}
+              {formatCurrency(price, 0)}
             </H5>
-            {(off ?? 0) > 0 && (
+            {hasOldPrice && (
               <SemiSpan fontWeight="600" color="text.hint">
-                <del>{formatCurrency(price)}</del>
+                <del>{formatCurrency(oldPrice, 0)}</del>
               </SemiSpan>
             )}
           </FlexBox>

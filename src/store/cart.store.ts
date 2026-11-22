@@ -10,6 +10,11 @@ export interface CartItem {
   price: number;
   imgUrl?: string;
   id: string | number;
+  /**
+   * Магазин (филиал), по цене которого лежит позиция. Нет — цена магазина
+   * по умолчанию. При смене магазина корзина переоценивается (CartBranchSync).
+   */
+  branchId?: string | null;
 }
 
 export interface CartState {

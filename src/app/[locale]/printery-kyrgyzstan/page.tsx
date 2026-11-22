@@ -9,6 +9,8 @@ import { SITE_URL } from "@lib/siteUrl";
 import { ALL_REGIONS, MAJOR_CITIES } from "@data/geo";
 import { getNationalCategoryPage } from "@data/nationalSeo";
 import { getSafeStorefrontCatalog, mapStorefrontProduct } from "@utils/__api__/storefront";
+import BranchPriceText from "@component/branch/BranchPriceText";
+import { CatalogBranchPriceSync } from "@component/branch/BranchPriceSync";
 import styled from "styled-components";
 
 export const revalidate = 3600;
@@ -89,7 +91,9 @@ export default async function PrinteryKyrgyzstanPage({ params }: Props) {
   const seoText = isEn ? page.seoTextEn : page.seoTextRu;
   const faqItems = isEn ? page.faqEn : page.faqRu;
 
-  const catalog = await getSafeStorefrontCatalog({ q: page.apiQuery, pageSize: 12 });
+  const branchSyncParams = { q: page.apiQuery, pageSize: 12 };
+
+  const catalog = await getSafeStorefrontCatalog(branchSyncParams);
   const products = (catalog?.items ?? []).map(mapStorefrontProduct);
 
   const faqSchema = {
@@ -134,12 +138,13 @@ export default async function PrinteryKyrgyzstanPage({ params }: Props) {
             <H2 fontSize="18px" mb="1rem">
               {isEn ? "Printers Available Now" : "Принтеры в наличии"}
             </H2>
+            <CatalogBranchPriceSync params={branchSyncParams} />
             <ProductGrid>
               {products.slice(0, 12).map((p: any) => (
                 <Link key={p.id} href={`/${locale}/product/${p.slug}`}>
                   {p.imgUrl && <img src={p.imgUrl} alt={`${p.title} — купить в Кыргызстане`} loading="lazy" />}
                   <div className="title">{p.title}</div>
-                  <div className="price">{p.price?.toLocaleString("ru-RU")} {isEn ? "som" : "сом"}</div>
+                  <div className="price"><BranchPriceText id={p.id} price={p.price} oldPrice={p.oldPrice} /></div>
                 </Link>
               ))}
             </ProductGrid>

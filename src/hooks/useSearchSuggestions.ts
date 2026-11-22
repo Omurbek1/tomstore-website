@@ -6,6 +6,7 @@ import {
   SEARCH_SUGGESTIONS_MIN_LENGTH,
   storefrontSearchSuggestionsQueryOptions,
 } from "@utils/__api__/storefront";
+import { useBranch } from "@context/BranchContext";
 
 const DEFAULT_DEBOUNCE_MS = 300;
 
@@ -26,10 +27,11 @@ export function useSearchSuggestions(
 ) {
   const trimmed = query.trim();
   const debouncedQuery = useDebouncedValue(trimmed, debounceMs);
-  const enabled = debouncedQuery.length >= SEARCH_SUGGESTIONS_MIN_LENGTH;
+  const { branchParam, resolved } = useBranch();
+  const enabled = resolved && debouncedQuery.length >= SEARCH_SUGGESTIONS_MIN_LENGTH;
 
   return useQuery({
-    ...storefrontSearchSuggestionsQueryOptions(debouncedQuery),
+    ...storefrontSearchSuggestionsQueryOptions(debouncedQuery, branchParam),
     enabled,
     placeholderData: enabled ? keepPreviousData : undefined,
   });
