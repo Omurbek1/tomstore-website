@@ -18,6 +18,26 @@ export default function ProductJsonLd({ product, slug, locale = "ru" }: Props) {
   const priceValidUntil = new Date();
   priceValidUntil.setFullYear(priceValidUntil.getFullYear() + 1);
 
+  // Offer — цена магазина по умолчанию (её же видит посетитель без выбора
+  // магазина). Если по магазинам цены разные — добавляем AggregateOffer
+  // с диапазоном low/high. Валюта всегда KGS (конвертации нет).
+  const range = product.priceRange;
+  const branchCount = product.branchPrices?.length || 0;
+  const aggregateOffer =
+    range && range.low > 0 && range.high > range.low
+      ? {
+          "@type": "AggregateOffer",
+          priceCurrency: "KGS",
+          lowPrice: range.low,
+          highPrice: range.high,
+          ...(branchCount > 0 ? { offerCount: branchCount } : {}),
+          availability: product.isInStock
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+          url: productUrl,
+        }
+      : null;
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -34,59 +54,62 @@ export default function ProductJsonLd({ product, slug, locale = "ru" }: Props) {
       brand: { "@type": "Brand", name: product.brand },
     }),
     itemCondition: "https://schema.org/NewCondition",
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "KGS",
-      price: product.price,
-      priceValidUntil: priceValidUntil.toISOString().split("T")[0],
-      availability: product.isInStock
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock",
-      itemCondition: "https://schema.org/NewCondition",
-      seller: {
-        "@type": "Organization",
-        "@id": `${SITE_URL}/#organization`,
-        name: "TomStore",
-        url: SITE_URL,
-      },
-      url: productUrl,
-      shippingDetails: {
-        "@type": "OfferShippingDetails",
-        shippingRate: {
-          "@type": "MonetaryAmount",
-          value: "0",
-          currency: "KGS",
+    offers: [
+      {
+        "@type": "Offer",
+        priceCurrency: "KGS",
+        price: product.price,
+        priceValidUntil: priceValidUntil.toISOString().split("T")[0],
+        availability: product.isInStock
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+        itemCondition: "https://schema.org/NewCondition",
+        seller: {
+          "@type": "Organization",
+          "@id": `${SITE_URL}/#organization`,
+          name: "TomStore",
+          url: SITE_URL,
         },
-        shippingDestination: {
-          "@type": "DefinedRegion",
-          addressCountry: "KG",
-        },
-        deliveryTime: {
-          "@type": "ShippingDeliveryTime",
-          handlingTime: {
-            "@type": "QuantitativeValue",
-            minValue: 0,
-            maxValue: 1,
-            unitCode: "DAY",
+        url: productUrl,
+        shippingDetails: {
+          "@type": "OfferShippingDetails",
+          shippingRate: {
+            "@type": "MonetaryAmount",
+            value: "0",
+            currency: "KGS",
           },
-          transitTime: {
-            "@type": "QuantitativeValue",
-            minValue: 1,
-            maxValue: 4,
-            unitCode: "DAY",
+          shippingDestination: {
+            "@type": "DefinedRegion",
+            addressCountry: "KG",
+          },
+          deliveryTime: {
+            "@type": "ShippingDeliveryTime",
+            handlingTime: {
+              "@type": "QuantitativeValue",
+              minValue: 0,
+              maxValue: 1,
+              unitCode: "DAY",
+            },
+            transitTime: {
+              "@type": "QuantitativeValue",
+              minValue: 1,
+              maxValue: 4,
+              unitCode: "DAY",
+            },
           },
         },
+        hasMerchantReturnPolicy: {
+          "@type": "MerchantReturnPolicy",
+          applicableCountry: "KG",
+          returnPolicyCategory:
+            "https://schema.org/MerchantReturnFiniteReturnWindow",
+          merchantReturnDays: 14,
+          returnMethod: "https://schema.org/ReturnInStore",
+          returnFees: "https://schema.org/FreeReturn",
+        },
       },
-      hasMerchantReturnPolicy: {
-        "@type": "MerchantReturnPolicy",
-        applicableCountry: "KG",
-        returnPolicyCategory:
-          "https://schema.org/MerchantReturnFiniteReturnWindow",
-        merchantReturnDays: 14,
-        returnMethod: "https://schema.org/ReturnInStore",
-        returnFees: "https://schema.org/FreeReturn",
-      },
-    },
+      ...(aggregateOffer ? [aggregateOffer] : []),
+    ],
     ...(product.rating && product.rating > 0
       ? {
           aggregateRating: {

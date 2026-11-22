@@ -11,12 +11,15 @@ type ProductOrderInput = {
   qty?: number;
   priceLabel: string;
   slug?: string;
+  /** Магазин, по цене которого оформляется заказ. */
+  branchName?: string;
 };
 
 type CartOrderInput = {
   items: CartItem[];
   totalLabel: string;
   comment?: string;
+  branchName?: string;
 };
 
 const cleanPhone = (phone: string) => phone.replace(/\D/g, "");
@@ -41,6 +44,7 @@ export const buildProductWhatsAppOrderUrl = ({
   qty = 1,
   priceLabel,
   slug,
+  branchName,
 }: ProductOrderInput) => {
   const productLink = buildProductLink(slug);
   const message = [
@@ -49,6 +53,7 @@ export const buildProductWhatsAppOrderUrl = ({
     `Товар: ${title}`,
     `Количество: ${qty}`,
     `Цена: ${priceLabel}`,
+    branchName ? `Магазин: ${branchName}` : "",
     productLink ? `Ссылка: ${productLink}` : "",
     "",
     "Подскажите наличие и условия доставки.",
@@ -63,6 +68,7 @@ export const buildCartWhatsAppOrderUrl = ({
   items,
   totalLabel,
   comment,
+  branchName,
 }: CartOrderInput) => {
   const lines = items.map((item, index) => {
     const productLink = buildProductLink(item.slug);
@@ -85,6 +91,7 @@ export const buildCartWhatsAppOrderUrl = ({
     ...lines,
     "",
     `Итого: ${totalLabel}`,
+    branchName ? `Магазин: ${branchName}` : "",
     comment ? `Комментарий: ${comment}` : "",
     "",
     "Подскажите наличие и условия доставки.",

@@ -3,6 +3,9 @@
 import { useState } from "react";
 import Shop from "@models/shop.model";
 import Product, { ProductVariant } from "@models/product.model";
+import { useBranch } from "@context/BranchContext";
+import { useBranchStorefrontProduct } from "@hook/useStorefrontCatalog";
+import BranchPricesList from "@component/branch/BranchPricesList";
 import ProductIntro from "./ProductIntro";
 import ProductView from "./ProductView";
 
@@ -14,12 +17,35 @@ type Props = {
 };
 
 export default function ProductPageClient({
-  product,
+  product: serverProduct,
   shops,
-  relatedProducts,
-  frequentlyBought,
+  relatedProducts: serverRelated,
+  frequentlyBought: serverFrequentlyBought,
 }: Props) {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(undefined);
+  const { branchParam, branches, defaultBranch } = useBranch();
+
+  // Сервер отдал цены магазина по умолчанию (страница статическая, ISR).
+  // Выбран другой магазин → догружаем товар с ?branch= и подменяем цены.
+  const branchQuery = useBranchStorefrontProduct(serverProduct.slug);
+  const branchPayload =
+    branchParam && branchQuery.data && !branchQuery.isPlaceholderData ? branchQuery.data : null;
+
+  const product = branchPayload?.product ?? serverProduct;
+  const relatedProducts = branchPayload?.relatedProducts ?? serverRelated;
+  const frequentlyBought = branchPayload?.recommendedProducts.length
+    ? branchPayload.recommendedProducts
+    : serverFrequentlyBought;
+  const branchPrices = serverProduct.branchPrices ?? [];
+
+  // Чьи цены сейчас на экране: выбранного магазина (когда пришли) или по умолчанию.
+  const shownBranchId = branchPayload ? branchParam : defaultBranch?.id ?? serverProduct.priceBranchId;
+  const priceBranchName =
+    branches.find((branch) => branch.id === shownBranchId)?.name ??
+    branchPrices.find((row) => row.branchId === shownBranchId)?.branchName;
+  // Место под «Цена для: …» резервируем ещё на сервере (если магазинов >1),
+  // чтобы подпись не сдвигала вёрстку после загрузки списка магазинов.
+  const showPriceBranch = branchPrices.length > 1 || branches.length > 1;
 
   return (
     <>
@@ -36,6 +62,9 @@ export default function ProductPageClient({
         slug={product.slug}
         videoUrl={product.videoUrl}
         onVariantChange={setSelectedVariant}
+        priceBranchId={shownBranchId ?? null}
+        priceBranchName={showPriceBranch ? priceBranchName ?? "" : undefined}
+        afterPrice={branchPrices.length > 1 ? <BranchPricesList branchPrices={branchPrices} /> : null}
       />
       <ProductView
         product={product}

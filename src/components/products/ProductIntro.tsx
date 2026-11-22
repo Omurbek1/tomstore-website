@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useParams } from "next/navigation";
 import { IconMinus, IconPlus, IconPlayerPlay } from "@tabler/icons-react";
 import styled from "styled-components";
@@ -40,6 +40,12 @@ interface Props {
   variants?: ProductVariant[];
   videoUrl?: string | null;
   onVariantChange?: (variant: ProductVariant | undefined) => void;
+  /** Магазин, чьи цены показаны (для корзины и заказа). */
+  priceBranchId?: string | null;
+  /** «Цена для: …»: undefined — подписи нет; "" — место зарезервировано. */
+  priceBranchName?: string;
+  /** Блок под кнопками (цены по магазинам). */
+  afterPrice?: ReactNode;
 }
 // ========================================
 
@@ -170,9 +176,13 @@ export default function ProductIntro({
   variants: propVariants,
   videoUrl,
   onVariantChange,
+  priceBranchId,
+  priceBranchName,
+  afterPrice,
 }: Props) {
   const param = useParams();
   const t = useTranslations("product");
+  const tBranch = useTranslations("branch");
   const changeCartAmount = useChangeCartAmount();
   const formatCurrency = useCurrency();
   const [selectedImage, setSelectedImage] = useState(0);
@@ -206,10 +216,12 @@ export default function ProductIntro({
     }
 
     setSelectedVariant((current) => {
+      // Берём объект из нового списка (не старый current): после смены
+      // магазина у варианта с тем же id другая цена.
       const next =
-        (current && variants.some((v) => v.id === current.id))
-          ? current
-          : variants.find((v) => v.inStock) || variants[0];
+        (current && variants.find((v) => v.id === current.id)) ||
+        variants.find((v) => v.inStock) ||
+        variants[0];
       onVariantChange?.(next);
       return next;
     });
@@ -233,6 +245,7 @@ export default function ProductIntro({
     qty: cartItem?.qty || 1,
     priceLabel: formatCurrency(displayPrice),
     slug: shareSlug,
+    branchName: priceBranchName || undefined,
   });
 
   const handleImageClick = useCallback((ind: number) => () => {
@@ -256,9 +269,18 @@ export default function ProductIntro({
         name: displayTitle,
         imgUrl: safeDisplayImages[0],
         slug: shareSlug,
+        branchId: priceBranchId ?? null,
       });
     },
-    [cartId, changeCartAmount, displayPrice, displayTitle, safeDisplayImages, shareSlug]
+    [
+      cartId,
+      changeCartAmount,
+      displayPrice,
+      displayTitle,
+      priceBranchId,
+      safeDisplayImages,
+      shareSlug,
+    ]
   );
 
   const selectorProduct = useMemo<Product>(
@@ -436,6 +458,12 @@ export default function ProductIntro({
               </SemiSpan>
             ) : null}
 
+            {priceBranchName !== undefined ? (
+              <SemiSpan display="block" color="text.muted" mt="0.375rem" style={{ minHeight: 20 }}>
+                {priceBranchName ? tBranch("priceFor", { branch: priceBranchName }) : null}
+              </SemiSpan>
+            ) : null}
+
             {labels.length ? (
               <SemiSpan display="block" color="primary.main" mt="0.5rem">
                 {labels
@@ -511,6 +539,8 @@ export default function ProductIntro({
 
             <ProductShareButton title={displayTitle} text={shareText} slug={shareSlug} />
           </FlexBox>
+
+          {afterPrice}
         </Grid>
       </Grid>
     </Box>
