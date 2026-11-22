@@ -1070,6 +1070,24 @@ export type StorefrontRequestResult = {
   total?: number;
 };
 
+/**
+ * Куда слать заказ: напрямую из браузера в бэкенд (лимит 5/мин + 30/ч
+ * считается по IP посетителя, а не по IP сервера сайта — без секрета прокси
+ * все покупатели делили бы один лимит). Компания — по x-storefront-host
+ * (хост сайта в адресной строке). Нет NEXT_PUBLIC_BACKEND_URL — через прокси.
+ */
+export const storefrontRequestTarget = (
+  backendUrl: string = process.env.NEXT_PUBLIC_BACKEND_URL || "",
+  host: string = typeof window !== "undefined" ? window.location.host : "",
+): { url: string; headers: Record<string, string> } => {
+  const base = backendUrl.trim().replace(/\/+$/, "");
+  if (!base) return { url: "/api/storefront/requests", headers: {} };
+  return {
+    url: `${base}/storefront/requests`,
+    headers: host ? { "x-storefront-host": host } : {},
+  };
+};
+
 /** Ошибка отправки: status — HTTP-код (429 — лимит, 400/404 — данные). */
 export class StorefrontRequestError extends Error {
   constructor(
@@ -1083,7 +1101,7 @@ export class StorefrontRequestError extends Error {
 
 /**
  * Отправка заявки/заказа. Цены не передаём — сервер пересчитывает их сам по
- * branchId. Только из браузера (идёт через /api/storefront/requests).
+ * branchId. Только из браузера (см. storefrontRequestTarget).
  * idempotencyKey — один на попытку оформления: повторная отправка той же
  * формы (двойной клик, повтор после сбоя сети) не создаёт второй заказ.
  */
@@ -1091,10 +1109,13 @@ export const submitStorefrontRequest = async (
   payload: StorefrontRequestPayload,
   options: { idempotencyKey?: string } = {},
 ): Promise<StorefrontRequestResult> => {
-  const response = await fetch("/api/storefront/requests", {
+  const target = storefrontRequestTarget();
+  const response = await fetch(target.url, {
     method: "POST",
+    credentials: "omit",
     headers: {
       "Content-Type": "application/json",
+      ...target.headers,
       ...(options.idempotencyKey ? { "Idempotency-Key": options.idempotencyKey } : {}),
     },
     body: JSON.stringify(payload),
