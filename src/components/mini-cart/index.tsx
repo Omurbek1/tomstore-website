@@ -155,7 +155,7 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
         <div className="actions">
           {branchName ? (
             <Typography fontSize="13px" color="text.muted" mb="0.75rem">
-              {tBranch("priceFor", { branch: branchName })}
+              {tBranch("cartPrices", { branch: branchName })}
             </Typography>
           ) : null}
           <Button

@@ -566,15 +566,16 @@
   "branch": {
     "yourStore": "Ваш магазин:",
     "chooseStore": "Выберите магазин",
-    "pickerHint": "Цены и наличие показываем для выбранного магазина",
+    "pickerHint": "Покажем цены и наличие в выбранном магазине",
     "close": "Закрыть",
     "main": "Основной",
-    "priceFor": "Цена для: {branch}",
+    "priceFor": "Цена в магазине: {branch}",
     "pricesInStores": "Цены и наличие в магазинах",
     "inStock": "В наличии",
     "outOfStock": "Нет в наличии",
     "currentStore": "Ваш магазин",
     "pickStore": "Выбрать",
-    "store": "Магазин"
+    "store": "Магазин",
+    "cartPrices": "Цены магазина: {branch}"
   }
 }

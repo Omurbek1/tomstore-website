@@ -127,7 +127,7 @@ export default function Cart() {
 
             {branchName ? (
               <Typography fontSize="13px" color="text.muted" mb="1rem">
-                {tBranch("priceFor", { branch: branchName })}
+                {tBranch("cartPrices", { branch: branchName })}
               </Typography>
             ) : null}
 

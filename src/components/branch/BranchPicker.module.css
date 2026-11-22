@@ -20,6 +20,13 @@
   border-color: var(--color-primary, #c81e3a);
 }
 
+.trigger:focus-visible,
+.close:focus-visible,
+.item:focus-visible {
+  outline: 2px solid var(--color-primary, #c81e3a);
+  outline-offset: 2px;
+}
+
 .triggerText {
   display: flex;
   flex-direction: column;
@@ -107,6 +114,10 @@
   cursor: pointer;
 }
 
+.close:hover {
+  color: var(--color-primary, #c81e3a);
+}
+
 .list {
   margin: 0;
   padding: 4px 12px 16px;
@@ -152,13 +163,16 @@
 
 .itemName {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  overflow-wrap: anywhere;
   gap: 8px;
   font-size: 15px;
   font-weight: 600;
 }
 
 .itemMeta {
+  overflow-wrap: anywhere;
   font-size: 13px;
   color: var(--text-muted, #7d879c);
 }

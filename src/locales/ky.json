@@ -566,15 +566,16 @@
   "branch": {
     "yourStore": "Сиздин дүкөн:",
     "chooseStore": "Дүкөндү тандаңыз",
-    "pickerHint": "Баалар жана бар болушу тандалган дүкөн боюнча көрсөтүлөт",
+    "pickerHint": "Тандалган дүкөндөгү баалар жана бар болушу көрсөтүлөт",
     "close": "Жабуу",
     "main": "Негизги",
-    "priceFor": "Баа: {branch}",
+    "priceFor": "Дүкөндөгү баа: {branch}",
     "pricesInStores": "Дүкөндөрдөгү баалар жана бар болушу",
     "inStock": "Бар",
     "outOfStock": "Жок",
     "currentStore": "Сиздин дүкөн",
     "pickStore": "Тандоо",
-    "store": "Дүкөн"
+    "store": "Дүкөн",
+    "cartPrices": "Дүкөндүн баалары: {branch}"
   }
 }

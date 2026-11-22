@@ -566,15 +566,16 @@
   "branch": {
     "yourStore": "Your store:",
     "chooseStore": "Choose a store",
-    "pickerHint": "Prices and stock are shown for the selected store",
+    "pickerHint": "We will show prices and stock for this store",
     "close": "Close",
     "main": "Main",
-    "priceFor": "Price for: {branch}",
+    "priceFor": "Price at store: {branch}",
     "pricesInStores": "Prices and stock by store",
     "inStock": "In stock",
     "outOfStock": "Out of stock",
     "currentStore": "Your store",
     "pickStore": "Select",
-    "store": "Store"
+    "store": "Store",
+    "cartPrices": "Prices of store: {branch}"
   }
 }
