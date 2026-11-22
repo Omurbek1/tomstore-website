@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { normalizeStorefrontHost, SITE_HOST } from "@lib/siteUrl";
 
 export const revalidate = 60;
 
@@ -34,8 +35,18 @@ const getClientIp = (request: NextRequest) => {
 // посетителей, поэтому их шлём только с пометкой прокси (как SSR/ISR).
 const isPerVisitorGet = (path: string[]) => path[0] === "search";
 
+// Хост сайта, с которого пришёл посетитель: по нему бэкенд выбирает компанию.
+// Host (а не x-forwarded-host) — его ставит платформа, подделать нельзя.
+// Значений хостов единицы → ключ кэша fetch не дробится.
+const getSiteHost = (request: NextRequest) =>
+  normalizeStorefrontHost(request.headers.get("host")) ||
+  normalizeStorefrontHost(request.nextUrl.host) ||
+  SITE_HOST;
+
 const buildProxyHeaders = (request: NextRequest, withClientIp: boolean) => {
   const headers: Record<string, string> = {};
+  const host = getSiteHost(request);
+  if (host) headers["x-storefront-host"] = host;
   const secret = getProxySecret();
   if (secret) headers["x-storefront-proxy"] = secret;
   const ip = withClientIp ? getClientIp(request) : "";

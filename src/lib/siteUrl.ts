@@ -9,3 +9,19 @@ export const SITE_URL =
   normalized && !normalized.includes("vercel.app") && !normalized.includes("localhost")
     ? normalized
     : CANONICAL_ORIGIN;
+
+/**
+ * Хост для бэкенда (x-storefront-host): по нему бэкенд выбирает компанию
+ * витрины. Нижний регистр, без порта; мусор → "".
+ */
+export const normalizeStorefrontHost = (value?: string | null): string => {
+  const host = String(value || "")
+    .split(",")[0]
+    .trim()
+    .toLowerCase()
+    .replace(/:\d+$/, "");
+  return /^[a-z0-9.-]{1,253}$/.test(host) ? host : "";
+};
+
+/** Хост сайта этого деплоя — для SSR/ISR (там нет запроса посетителя). */
+export const SITE_HOST = normalizeStorefrontHost(new URL(SITE_URL).host);

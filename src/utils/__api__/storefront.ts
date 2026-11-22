@@ -6,6 +6,7 @@ import Brand from "@models/Brand.model";
 import Category from "@models/category.model";
 import Product, { ProductVariant } from "@models/product.model";
 import { Meta } from "interfaces";
+import { SITE_HOST } from "@lib/siteUrl";
 
 type StorefrontAvailability = {
   status: string;
@@ -261,7 +262,12 @@ export const getStorefrontProxyHeaders = (): Record<string, string> => {
   const secret = String(
     process.env.STOREFRONT_PROXY_SECRET || process.env.REVALIDATE_SECRET || "",
   ).trim();
-  return secret ? { "x-storefront-proxy": secret } : {};
+  // Компания витрины определяется по хосту. headers() здесь не читаем —
+  // страницы статические (ISR); хост деплоя постоянен, ключ кэша fetch не дробится.
+  const headers: Record<string, string> = {};
+  if (SITE_HOST) headers["x-storefront-host"] = SITE_HOST;
+  if (secret) headers["x-storefront-proxy"] = secret;
+  return headers;
 };
 
 export const resolveStorefrontMediaUrl = (value?: string | null) => {
