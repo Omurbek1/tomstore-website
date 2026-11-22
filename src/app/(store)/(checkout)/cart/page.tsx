@@ -5,14 +5,12 @@ import styled from "styled-components";
 import { useTranslations } from "next-intl";
 // GLOBAL CUSTOM COMPONENTS
 import Box from "@component/Box";
-import Select from "@component/Select";
 import Grid from "@component/grid/Grid";
 import { Card1 } from "@component/Card1";
 import Divider from "@component/Divider";
 import FlexBox from "@component/FlexBox";
 import TextArea from "@component/textarea";
 import { Button } from "@component/buttons";
-import TextField from "@component/text-field";
 import Typography, { Paragraph } from "@component/Typography";
 import { CartProductRow } from "@component/product-cards";
 // CUSTOM HOOK
@@ -21,8 +19,6 @@ import useCurrency from "@hook/useCurrency";
 import { buildCartWhatsAppOrderUrl } from "@utils/whatsappOrder";
 import { useStoreWhatsAppPhone } from "@hook/useStoreWhatsAppPhone";
 import { useBranch } from "@context/BranchContext";
-// CUSTOM DATA
-import countryList from "@data/countryList";
 import { Link } from "@i18n/navigation";
 
 const MobileStickyBar = styled.div`
@@ -88,18 +84,25 @@ export default function Cart() {
             {formatCurrency(cartTotal)}
           </Typography>
         </FlexBox>
-        <Button
-          as="a"
-          variant="contained"
-          color="primary"
-          fullWidth
-          {...{
-            href: whatsappOrderHref,
-            target: "_blank",
-            rel: "noopener noreferrer",
-          }}>
-          {t("sendToWhatsApp")}
-        </Button>
+        <FlexBox style={{ gap: "0.5rem" }}>
+          <Link href="/checkout" style={{ flex: 1 }}>
+            <Button variant="contained" color="primary" fullWidth>
+              {t("checkoutNow")}
+            </Button>
+          </Link>
+          <Button
+            as="a"
+            variant="outlined"
+            color="primary"
+            style={{ flex: 1 }}
+            {...{
+              href: whatsappOrderHref,
+              target: "_blank",
+              rel: "noopener noreferrer",
+            }}>
+            WhatsApp
+          </Button>
+        </FlexBox>
       </MobileStickyBar>
 
       <Grid container spacing={6}>
@@ -156,46 +159,15 @@ export default function Cart() {
               onChange={(event) => setComment(event.target.value)}
             />
 
-            <Divider mb="1rem" />
-
-            <TextField placeholder={t("voucher")} fullWidth />
-
-            <Button variant="outlined" color="primary" mt="1rem" mb="30px" fullWidth>
-              {t("applyVoucher")}
-            </Button>
-
-            <Divider mb="1.5rem" />
-
-            <Typography fontWeight="600" mb="1rem">
-              {t("shippingEstimates")}
-            </Typography>
-
-            <Select
-              mb="1rem"
-              label={t("country")}
-              options={countryList}
-              placeholder={t("selectCountry")}
-              onChange={(e) => console.log(e)}
-            />
-
-            <Select
-              label={t("state")}
-              options={stateList}
-              placeholder={t("selectState")}
-              onChange={(e) => console.log(e)}
-            />
-
-            <Box mt="1rem">
-              <TextField label={t("zipCode")} placeholder="3100" fullWidth />
-            </Box>
-
-            <Button variant="outlined" color="primary" my="1rem" fullWidth>
-              {t("calculateShipping")}
-            </Button>
+            <Link href="/checkout">
+              <Button variant="contained" color="primary" mb="0.75rem" fullWidth>
+                {t("checkoutNow")}
+              </Button>
+            </Link>
 
             <Button
               as="a"
-              variant="contained"
+              variant="outlined"
               color="primary"
               fullWidth
               {...{
@@ -212,7 +184,3 @@ export default function Cart() {
   );
 }
 
-const stateList = [
-  { value: "New York", label: "New York" },
-  { value: "Chicago", label: "Chicago" }
-];

@@ -1039,7 +1039,7 @@ export const getTopProductSlugs = async (): Promise<{ slug: string }[]> => {
 
 // ─── Заявки (POST /storefront/requests через прокси) ────────────────────────
 
-export type StorefrontRequestItem = { productId: string; qty: number };
+export type StorefrontRequestItem = { productId: string; variantId?: string | null; qty: number };
 
 export type StorefrontRequestPayload = {
   type?: "lead" | "order";
@@ -1053,26 +1053,59 @@ export type StorefrontRequestPayload = {
   source?: string;
   channel?: string;
   productUrl?: string;
+  /** Самовывоз из выбранного магазина или доставка. */
+  deliveryType?: "pickup" | "delivery";
+  /** Адрес доставки (deliveryType = "delivery"). */
+  address?: string;
+  /** Ловушка для ботов: всегда пустая строка. */
+  website?: string;
 };
+
+export type StorefrontRequestResult = {
+  ok?: boolean;
+  success?: boolean;
+  /** id сделки в CRM (пусто — заявка не создана). */
+  requestId?: string;
+  dealId?: string;
+  total?: number;
+};
+
+/** Ошибка отправки: status — HTTP-код (429 — лимит, 400/404 — данные). */
+export class StorefrontRequestError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message);
+    this.name = "StorefrontRequestError";
+  }
+}
 
 /**
  * Отправка заявки/заказа. Цены не передаём — сервер пересчитывает их сам по
  * branchId. Только из браузера (идёт через /api/storefront/requests).
+ * idempotencyKey — один на попытку оформления: повторная отправка той же
+ * формы (двойной клик, повтор после сбоя сети) не создаёт второй заказ.
  */
-export const submitStorefrontRequest = async (payload: StorefrontRequestPayload) => {
+export const submitStorefrontRequest = async (
+  payload: StorefrontRequestPayload,
+  options: { idempotencyKey?: string } = {},
+): Promise<StorefrontRequestResult> => {
   const response = await fetch("/api/storefront/requests", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.idempotencyKey ? { "Idempotency-Key": options.idempotencyKey } : {}),
+    },
     body: JSON.stringify(payload),
   });
-  const data = await response.json().catch(() => null);
+  const data: unknown = await response.json().catch(() => null);
   if (!response.ok) {
-    throw new Error(
-      (data && typeof data === "object" && "message" in data && String(data.message)) ||
-        `Request failed: ${response.status}`,
-    );
+    const raw = data && typeof data === "object" && "message" in data ? data.message : null;
+    const message = Array.isArray(raw) ? raw.join(", ") : raw ? String(raw) : "";
+    throw new StorefrontRequestError(message || `Request failed: ${response.status}`, response.status);
   }
-  return data;
+  return (data ?? {}) as StorefrontRequestResult;
 };
 
 // ─── Blog ────────────────────────────────────────────────────────────────────

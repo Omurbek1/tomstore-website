@@ -273,6 +273,8 @@ export default function ProductIntro({
         imgUrl: safeDisplayImages[0],
         slug: shareSlug,
         branchId: priceBranchId ?? null,
+        productId: String(id),
+        variantId: selectedVariant?.id ?? null,
       });
     },
     [
@@ -280,8 +282,10 @@ export default function ProductIntro({
       changeCartAmount,
       displayPrice,
       displayTitle,
+      id,
       priceBranchId,
       safeDisplayImages,
+      selectedVariant?.id,
       shareSlug,
     ]
   );

@@ -1,17 +1,7 @@
-import Grid from "@component/grid/Grid";
-import PaymentForm from "@sections/payment/PaymentForm";
-import PaymentSummary from "@sections/payment/PaymentSummary";
+import { getLocale } from "next-intl/server";
+import { redirect } from "@i18n/navigation";
 
-export default function Checkout() {
-  return (
-    <Grid container flexWrap="wrap-reverse" spacing={6}>
-      <Grid item lg={8} md={8} xs={12}>
-        <PaymentForm />
-      </Grid>
-
-      <Grid item lg={4} md={4} xs={12}>
-        <PaymentSummary />
-      </Grid>
-    </Grid>
-  );
+// Оплаты на сайте нет: заказ оформляется на /checkout и уходит в CRM.
+export default async function Payment() {
+  redirect({ href: "/checkout", locale: await getLocale() });
 }

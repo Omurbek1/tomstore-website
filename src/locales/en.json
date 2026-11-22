@@ -472,6 +472,43 @@
       "total": "Total:",
       "voucher": "Voucher",
       "applyVoucher": "Apply Voucher"
+    },
+    "order": {
+      "title": "Checkout",
+      "contacts": "Contacts",
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "phone": "Phone",
+      "comment": "Order comment",
+      "commentPlaceholder": "Convenient time to call, wishes",
+      "receive": "How to receive",
+      "pickup": "Pickup from store",
+      "delivery": "Delivery",
+      "store": "Store",
+      "storeAddress": "Address: {address}",
+      "address": "Delivery address",
+      "addressPlaceholder": "City, street, building, apartment",
+      "submit": "Place order",
+      "orWhatsApp": "Order via WhatsApp",
+      "backToCart": "Back to cart",
+      "pricesNote": "Prices of the “{store}” store. A manager will call to confirm availability.",
+      "confirmNote": "A manager will call to confirm availability and timing.",
+      "successTitle": "Thank you! Your order is placed",
+      "successNumber": "Request number: {number}",
+      "successText": "A manager will contact you shortly to confirm.",
+      "continueShopping": "Continue shopping",
+      "emptyCart": "Your cart is empty — add products to place an order.",
+      "summaryTitle": "Your order",
+      "total": "Total",
+      "errors": {
+        "required": "This field is required",
+        "phone": "Enter the number as +996 XXX XXX XXX",
+        "address": "Enter the delivery address",
+        "tooMany": "Too many requests in a row. Wait a couple of minutes and try again — or order via WhatsApp.",
+        "unavailable": "Some products are no longer available. Refresh the cart and try again.",
+        "busy": "The order is already being sent — wait a few seconds.",
+        "generic": "Could not send the order. Check your connection and try again."
+      }
     }
   },
   "dashboard": {

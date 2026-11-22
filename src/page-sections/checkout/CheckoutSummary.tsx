@@ -3,42 +3,26 @@
 import { useTranslations } from "next-intl";
 
 import OrderSummaryCard from "@component/checkout/OrderSummaryCard";
-import { useCartItems } from "@hook/useCart";
+import { useCartItems, useCartTotal } from "@hook/useCart";
 
-const TAX_RATE = 0.08;
-
+/**
+ * Состав заказа по ценам выбранного магазина (корзина переоценивается при
+ * смене магазина). Итог — ориентир: сервер пересчитывает цены сам.
+ */
 export default function CheckoutSummary() {
-  const t = useTranslations("checkout.summary");
+  const t = useTranslations("checkout.order");
   const cart = useCartItems();
+  const total = useCartTotal();
 
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
-  const total = subtotal + tax;
-
-  const items = cart.map((item) => ({
-    name: item.name,
-    quantity: item.qty,
-    price: item.price
-  }));
-
-  const rows = [
-    { label: t("subtotal"), value: subtotal },
-    { label: t("shipping"), value: null },
-    { label: t("tax"), value: tax },
-    { label: t("discount"), value: null }
-  ];
+  if (!cart.length) return null;
 
   return (
     <OrderSummaryCard
-      title={t("title")}
-      items={items}
-      rows={rows}
+      title={t("summaryTitle")}
+      items={cart.map((item) => ({ name: item.name, quantity: item.qty, price: item.price }))}
+      rows={[]}
       total={total}
       totalLabel={t("total")}
-      voucher={{
-        placeholder: t("voucher"),
-        buttonLabel: t("applyVoucher")
-      }}
     />
   );
 }

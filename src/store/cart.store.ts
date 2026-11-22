@@ -15,6 +15,10 @@ export interface CartItem {
    * по умолчанию. При смене магазина корзина переоценивается (CartBranchSync).
    */
   branchId?: string | null;
+  /** id товара в CRM (у вида id позиции = id вида). Нет — старая позиция: id. */
+  productId?: string;
+  /** Вид товара (цвет/память) — заказ уходит с ним. */
+  variantId?: string | null;
 }
 
 export interface CartState {
@@ -31,6 +35,8 @@ interface CartStore extends CartState {
   changeCartAmount: (item: CartItem) => void;
   /** Переоценка позиций под выбранный магазин (CartBranchSync). */
   repriceItems: (updates: CartRepriceUpdate[]) => void;
+  /** Очистить корзину (после оформленного заказа). */
+  clearCart: () => void;
 }
 
 const CART_STORAGE_KEY = "tomstore_cart";
@@ -85,6 +91,8 @@ export const useCartStore = create<CartStore>()(
       changeCartAmount: (item) => {
         set((state) => ({ cart: changeCartAmount(state.cart, item) }));
       },
+
+      clearCart: () => set({ cart: [] }),
 
       repriceItems: (updates) => {
         if (!updates.length) return;

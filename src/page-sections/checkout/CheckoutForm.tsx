@@ -1,187 +1,265 @@
 "use client";
 
-import { Button, Checkbox, Col, Form, Input, Row, Select } from "antd";
+import { useState } from "react";
+import { Alert, Button, Form, Input, Radio, Result, Select } from "antd";
 import { useTranslations } from "next-intl";
 
 import { Card1 } from "@component/Card1";
-import countryList from "@data/countryList";
 import Typography from "@component/Typography";
-import { useRouter } from "@i18n/navigation";
+import { Link } from "@i18n/navigation";
+import { useBranch } from "@context/BranchContext";
+import { useCartItems, useCartTotal, useClearCart } from "@hook/useCart";
+import useCurrency from "@hook/useCurrency";
+import { useStoreWhatsAppPhone } from "@hook/useStoreWhatsAppPhone";
+import { StorefrontRequestError, submitStorefrontRequest } from "@utils/__api__/storefront";
+import { formatKgPhone, isValidKgPhone, toKgE164 } from "@utils/phoneKg";
+import { buildCartWhatsAppOrderUrl } from "@utils/whatsappOrder";
 
-type CheckoutFormValues = {
-  shipping_name: string;
-  shipping_email: string;
-  shipping_contact: string;
-  shipping_company: string;
-  shipping_zip: string;
-  shipping_country: string;
-  shipping_address1: string;
-  shipping_address2: string;
-  billing_name: string;
-  billing_email: string;
-  billing_contact: string;
-  billing_company: string;
-  billing_zip: string;
-  billing_country: string;
-  billing_address1: string;
-  billing_address2: string;
-  same_as_shipping: boolean;
+type CheckoutValues = {
+  name: string;
+  phone: string;
+  comment: string;
+  deliveryType: "pickup" | "delivery";
+  address: string;
+  /** Ловушка для ботов: скрыто от людей, должно остаться пустым. */
+  website: string;
 };
 
-const COUNTRY_OPTIONS = countryList.map((item) => ({ label: item.label, value: item.value }));
-
-const initialValues: CheckoutFormValues = {
-  shipping_name: "",
-  shipping_email: "",
-  shipping_contact: "",
-  shipping_company: "",
-  shipping_zip: "",
-  shipping_country: "US",
-  shipping_address1: "",
-  shipping_address2: "",
-
-  billing_name: "",
-  billing_email: "",
-  billing_contact: "",
-  billing_company: "",
-  billing_zip: "",
-  billing_country: "US",
-  billing_address1: "",
-  billing_address2: "",
-  same_as_shipping: false
+const initialValues: CheckoutValues = {
+  name: "",
+  phone: "",
+  comment: "",
+  deliveryType: "pickup",
+  address: "",
+  website: "",
 };
+
+const newIdempotencyKey = () =>
+  typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+    ? crypto.randomUUID()
+    : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
+
+const shortNumber = (id: string) => id.replace(/-/g, "").slice(0, 8).toUpperCase();
 
 export default function CheckoutForm() {
-  const [form] = Form.useForm<CheckoutFormValues>();
-  const router = useRouter();
-  const t = useTranslations("checkout.form");
-  const sameAsShipping = Form.useWatch("same_as_shipping", form) ?? false;
+  const [form] = Form.useForm<CheckoutValues>();
+  const t = useTranslations("checkout.order");
+  const cart = useCartItems();
+  const cartTotal = useCartTotal();
+  const clearCart = useClearCart();
+  const formatCurrency = useCurrency();
+  const whatsappPhone = useStoreWhatsAppPhone();
+  const { activeBranch, branches, locked, selectBranch } = useBranch();
+  const deliveryType = Form.useWatch("deliveryType", form) ?? "pickup";
+  const comment = Form.useWatch("comment", form) ?? "";
 
-  const handleFormSubmit = async (values: CheckoutFormValues) => {
-    const normalizedValues = values.same_as_shipping
-      ? {
-          ...values,
-          billing_name: values.shipping_name,
-          billing_email: values.shipping_email,
-          billing_contact: values.shipping_contact,
-          billing_company: values.shipping_company,
-          billing_zip: values.shipping_zip,
-          billing_country: values.shipping_country,
-          billing_address1: values.shipping_address1,
-          billing_address2: values.shipping_address2
-        }
-      : values;
+  // Один ключ на попытку оформления: повтор после сбоя/двойной клик — тот же заказ.
+  const [idempotencyKey, setIdempotencyKey] = useState(newIdempotencyKey);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState<{ number: string } | null>(null);
 
-    console.log(normalizedValues);
-    router.push("/payment");
+  const canPickStore = branches.length > 1 && !locked;
+  const whatsappOrderHref = buildCartWhatsAppOrderUrl({
+    items: cart,
+    totalLabel: formatCurrency(cartTotal),
+    comment,
+    branchName: branches.length > 1 ? activeBranch?.name : undefined,
+    phone: whatsappPhone,
+  });
+
+  const handleSubmit = async (values: CheckoutValues) => {
+    if (submitting || !cart.length) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const result = await submitStorefrontRequest(
+        {
+          type: "order",
+          items: cart.map((item) => ({
+            productId: item.productId || String(item.id),
+            variantId: item.variantId ?? null,
+            qty: item.qty,
+          })),
+          branchId: activeBranch?.id,
+          name: values.name.trim(),
+          phone: toKgE164(values.phone),
+          comment: values.comment.trim(),
+          deliveryType: values.deliveryType,
+          address: values.deliveryType === "delivery" ? values.address.trim() : "",
+          source: "website",
+          website: values.website || "",
+        },
+        { idempotencyKey },
+      );
+      clearCart();
+      setDone({ number: result.requestId ? shortNumber(result.requestId) : "" });
+      setIdempotencyKey(newIdempotencyKey());
+    } catch (e) {
+      const status = e instanceof StorefrontRequestError ? e.status : 0;
+      if (status === 429) setError(t("errors.tooMany"));
+      else if (status === 404) setError(t("errors.unavailable"));
+      else if (status === 409) setError(t("errors.busy"));
+      else if (status === 400 && e instanceof Error && e.message) setError(e.message);
+      else setError(t("errors.generic"));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const renderAddressFields = (prefix: "shipping" | "billing") => (
-    <Row gutter={[24, 0]}>
-      <Col xs={24} sm={12}>
+  if (done) {
+    return (
+      <Card1>
+        <Result
+          status="success"
+          title={t("successTitle")}
+          subTitle={
+            <>
+              {done.number ? <div>{t("successNumber", { number: done.number })}</div> : null}
+              <div>{t("successText")}</div>
+            </>
+          }
+          extra={
+            <Link href="/">
+              <Button type="primary">{t("continueShopping")}</Button>
+            </Link>
+          }
+        />
+      </Card1>
+    );
+  }
+
+  if (!cart.length) {
+    return (
+      <Card1>
+        <Typography mb="1rem">{t("emptyCart")}</Typography>
+        <Link href="/">
+          <Button type="primary">{t("continueShopping")}</Button>
+        </Link>
+      </Card1>
+    );
+  }
+
+  return (
+    <Form<CheckoutValues>
+      form={form}
+      layout="vertical"
+      initialValues={initialValues}
+      onFinish={handleSubmit}
+      requiredMark={false}>
+      <Card1 mb="2rem">
+        <Typography fontWeight="600" mb="1rem">
+          {t("contacts")}
+        </Typography>
+
         <Form.Item
-          name={`${prefix}_name`}
-          label={t("fullName")}
-          rules={[{ required: true, message: t("validation.required") }]}>
-          <Input />
+          name="name"
+          label={t("name")}
+          rules={[{ required: true, whitespace: true, message: t("errors.required") }]}>
+          <Input placeholder={t("namePlaceholder")} autoComplete="name" maxLength={100} />
         </Form.Item>
 
         <Form.Item
-          name={`${prefix}_contact`}
-          label={t("phoneNumber")}
-          rules={[{ required: true, message: t("validation.required") }]}>
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          name={`${prefix}_zip`}
-          label={t("zipCode")}
-          rules={[{ required: true, message: t("validation.required") }]}>
-          <Input inputMode="numeric" />
-        </Form.Item>
-
-        <Form.Item
-          name={`${prefix}_address1`}
-          label={t("address1")}
-          rules={[{ required: true, message: t("validation.required") }]}>
-          <Input />
-        </Form.Item>
-      </Col>
-
-      <Col xs={24} sm={12}>
-        <Form.Item
-          name={`${prefix}_email`}
-          label={t("emailAddress")}
+          name="phone"
+          label={t("phone")}
+          getValueFromEvent={(event: React.ChangeEvent<HTMLInputElement>) =>
+            formatKgPhone(event.target.value)
+          }
           rules={[
-            { required: true, message: t("validation.required") },
-            { type: "email", message: t("validation.invalidEmail") }
+            { required: true, message: t("errors.required") },
+            {
+              validator: (_rule, value: string) =>
+                !value || isValidKgPhone(value)
+                  ? Promise.resolve()
+                  : Promise.reject(new Error(t("errors.phone"))),
+            },
           ]}>
-          <Input type="email" />
+          <Input placeholder="+996 555 123 456" inputMode="tel" autoComplete="tel" />
         </Form.Item>
 
-        <Form.Item name={`${prefix}_company`} label={t("company")}>
-          <Input />
-        </Form.Item>
+        {/* Ловушка для ботов: вне экрана, без фокуса и автозаполнения. */}
+        <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
+          <Form.Item name="website" noStyle>
+            <Input tabIndex={-1} autoComplete="off" />
+          </Form.Item>
+        </div>
 
-        <Form.Item
-          name={`${prefix}_country`}
-          label={t("country")}
-          rules={[{ required: true, message: t("validation.required") }]}>
-          <Select
-            showSearch
-            options={COUNTRY_OPTIONS}
-            optionFilterProp="label"
-            placeholder={t("country")}
+        <Form.Item name="comment" label={t("comment")}>
+          <Input.TextArea rows={3} placeholder={t("commentPlaceholder")} maxLength={1000} />
+        </Form.Item>
+      </Card1>
+
+      <Card1 mb="2rem">
+        <Typography fontWeight="600" mb="1rem">
+          {t("receive")}
+        </Typography>
+
+        <Form.Item name="deliveryType">
+          <Radio.Group
+            optionType="button"
+            buttonStyle="solid"
+            options={[
+              { label: t("pickup"), value: "pickup" },
+              { label: t("delivery"), value: "delivery" },
+            ]}
           />
         </Form.Item>
 
-        <Form.Item name={`${prefix}_address2`} label={t("address2")}>
-          <Input />
-        </Form.Item>
-      </Col>
-    </Row>
-  );
+        {canPickStore ? (
+          <Form.Item label={t("store")}>
+            <Select
+              value={activeBranch?.id}
+              onChange={(id: string) => selectBranch(id)}
+              options={branches.map((branch) => ({ label: branch.name, value: branch.id }))}
+            />
+          </Form.Item>
+        ) : activeBranch ? (
+          <Typography fontWeight="600" mb="0.25rem">
+            {activeBranch.name}
+          </Typography>
+        ) : null}
 
-  return (
-    <Form<CheckoutFormValues>
-      form={form}
-      layout="vertical"
-      requiredMark={false}
-      initialValues={initialValues}
-      onFinish={handleFormSubmit}>
-      <Card1 mb="2rem">
-        <Typography fontWeight="600" mb="1rem">
-          {t("shippingAddress")}
+        {deliveryType === "pickup" && activeBranch?.address ? (
+          <Typography color="text.muted" mb="1rem">
+            {t("storeAddress", { address: activeBranch.address })}
+          </Typography>
+        ) : null}
+
+        {deliveryType === "delivery" ? (
+          <Form.Item
+            name="address"
+            label={t("address")}
+            rules={[{ required: true, whitespace: true, message: t("errors.address") }]}>
+            <Input placeholder={t("addressPlaceholder")} autoComplete="street-address" maxLength={300} />
+          </Form.Item>
+        ) : null}
+
+        <Typography fontSize="13px" color="text.muted">
+          {activeBranch && branches.length > 1
+            ? t("pricesNote", { store: activeBranch.name })
+            : t("confirmNote")}
         </Typography>
-
-        {renderAddressFields("shipping")}
       </Card1>
 
-      <Card1 mb="2rem">
-        <Typography fontWeight="600" mb="1rem">
-          {t("billingAddress")}
-        </Typography>
+      {error ? <Alert type="error" showIcon message={error} style={{ marginBottom: 16 }} /> : null}
 
-        <Form.Item name="same_as_shipping" valuePropName="checked" style={{ marginBottom: 16 }}>
-          <Checkbox>{t("sameAsShipping")}</Checkbox>
-        </Form.Item>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+        <Button type="primary" htmlType="submit" size="large" loading={submitting} style={{ flex: "1 1 220px" }}>
+          {t("submit")} · {formatCurrency(cartTotal)}
+        </Button>
+        <Button
+          size="large"
+          href={whatsappOrderHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ flex: "1 1 220px" }}>
+          {t("orWhatsApp")}
+        </Button>
+      </div>
 
-        {!sameAsShipping && renderAddressFields("billing")}
-      </Card1>
-
-      <Row gutter={[16, 16]}>
-        <Col xs={24} sm={12}>
-          <Button block onClick={() => router.push("/cart")}>
-            {t("backToCart")}
-          </Button>
-        </Col>
-
-        <Col xs={24} sm={12}>
-          <Button htmlType="submit" type="primary" block>
-            {t("proceedToPayment")}
-          </Button>
-        </Col>
-      </Row>
+      <div style={{ marginTop: 16 }}>
+        <Link href="/cart">{t("backToCart")}</Link>
+      </div>
     </Form>
   );
 }

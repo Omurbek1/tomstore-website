@@ -54,6 +54,13 @@ const buildProxyHeaders = (request: NextRequest, withClientIp: boolean) => {
   return headers;
 };
 
+// Ключ идемпотентности заказа (генерирует форма оформления): бэкенд по нему
+// не создаёт второй заказ при повторной отправке. Только безопасный формат.
+const getIdempotencyHeader = (request: NextRequest): Record<string, string> => {
+  const key = request.headers.get("idempotency-key")?.trim() || "";
+  return /^[A-Za-z0-9_-]{8,100}$/.test(key) ? { "Idempotency-Key": key } : {};
+};
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
@@ -126,6 +133,7 @@ export async function POST(
         "Content-Type": "application/json",
         ...buildProxyHeaders(request, true),
         "User-Agent": request.headers.get("user-agent") || "tomstore-website",
+        ...getIdempotencyHeader(request),
       },
       body: body || "{}",
     });

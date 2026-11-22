@@ -31,3 +31,7 @@ export function useCartItemByIdOrSlug(id: string | number, slug: string) {
 export function useChangeCartAmount() {
   return useCartStore((state) => state.changeCartAmount);
 }
+
+export function useClearCart() {
+  return useCartStore((state) => state.clearCart);
+}

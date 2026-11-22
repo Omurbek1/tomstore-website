@@ -8,8 +8,7 @@ import Stepper from "@component/Stepper";
 
 const PATH_TO_STEP_MAP = {
   "/cart": 1,
-  "/checkout": 2,
-  "/payment": 3
+  "/checkout": 2
 };
 
 export default function Layout({ children }: PropsWithChildren) {
@@ -18,9 +17,7 @@ export default function Layout({ children }: PropsWithChildren) {
   const t = useTranslations("checkout.steps");
   const stepperList = [
     { title: t("cart"), disabled: false, path: "/cart" },
-    { title: t("details"), disabled: false, path: "/checkout" },
-    { title: t("payment"), disabled: false, path: "/payment" },
-    { title: t("review"), disabled: true, path: "/orders" }
+    { title: t("details"), disabled: false, path: "/checkout" }
   ];
 
   const selectedStep = useMemo(() => PATH_TO_STEP_MAP[pathname] ?? 0, [pathname]);
