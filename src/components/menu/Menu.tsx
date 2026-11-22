@@ -9,7 +9,11 @@ import {
   useState,
 } from "react";
 import { CSSProperties } from "styled-components";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, LazyMotion, m } from "motion/react";
+// Фичи анимации грузим отдельным чанком после гидрации: в первом бандле
+// витрины (топбар на всех страницах) остаётся лёгкий `m`, а не весь motion.
+const loadMotionFeatures = () => import("./motionFeatures").then((mod) => mod.default);
+
 // STYLED COMPONENT
 import { StyledMenu } from "./styles";
 
@@ -70,18 +74,20 @@ export default function Menu({
     <StyledMenu direction={direction} className={className} style={style}>
       {renderedHandler}
 
-      <AnimatePresence>
-        {show && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.2 }}
-            className="menu-item-holder">
-            {children}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <LazyMotion features={loadMotionFeatures}>
+        <AnimatePresence>
+          {show && (
+            <m.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.2 }}
+              className="menu-item-holder">
+              {children}
+            </m.div>
+          )}
+        </AnimatePresence>
+      </LazyMotion>
     </StyledMenu>
   );
 }
