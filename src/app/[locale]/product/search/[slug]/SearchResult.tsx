@@ -17,7 +17,6 @@ import dynamic from "next/dynamic";
 
 import Box from "@component/Box";
 import Card from "@component/Card";
-import Select from "@component/Select";
 import Grid from "@component/grid/Grid";
 import FlexBox from "@component/FlexBox";
 import { IconButton } from "@component/buttons";
@@ -33,6 +32,9 @@ import type {
   StorefrontCatalogParams,
 } from "@utils/__api__/storefront";
 
+// Сортировка (react-select + emotion, ~28 КБ gzip) — отдельным чанком: разметка
+// приходит с сервера как раньше, код догружается параллельно с гидрацией.
+const Select = dynamic(() => import("@component/Select"));
 const ProductGridView = dynamic(() => import("@component/products/ProductGrid"), {
   ssr: false,
   loading: () => <ProductViewSkeleton />,
