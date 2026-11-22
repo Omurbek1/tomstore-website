@@ -35,6 +35,7 @@ export default function SaleProducts2({ products, meta }: Props) {
               price={item.price}
               title={item.title}
               off={item.discount}
+              oldPrice={item.oldPrice}
               images={item.images}
               imgUrl={item.thumbnail}
               rating={item.rating || 4}

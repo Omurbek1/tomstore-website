@@ -24,7 +24,6 @@ const ProductQuickView = dynamic(() => import("@component/products/ProductQuickV
   ssr: false,
 });
 
-import { calculateDiscount } from "@utils/utils";
 import useCurrency from "@hook/useCurrency";
 import { deviceSize } from "@utils/constants";
 import { useLocale, useTranslations } from "next-intl";
@@ -151,6 +150,8 @@ const Wrapper = styled(Card)`
 // =======================================================================
 interface ProductGridCardProps extends CardProps {
   off?: number;
+  /** Цена до скидки (зачёркнутая). `price` с бэкенда уже со скидкой. */
+  oldPrice?: number | null;
   slug: string;
   title: string;
   price: number;
@@ -165,6 +166,7 @@ interface ProductGridCardProps extends CardProps {
 export default function ProductGridCard({
   id,
   off,
+  oldPrice,
   slug,
   title,
   price,
@@ -186,6 +188,11 @@ export default function ProductGridCard({
   const [open, setOpen] = useState(false);
   const cartItem = useCartItemById(id);
   const productHref = `/${locale}/product/${slug}`;
+  // `price` — уже цена продажи (со скидкой), повторно скидку НЕ вычитаем.
+  const hasOldPrice = !!oldPrice && oldPrice > price;
+  const discountPercent = hasOldPrice
+    ? Math.round(((oldPrice - price) / oldPrice) * 100)
+    : off || 0;
 
   const toggleDialog = useCallback(() => {
     setOpen((open) => !open);
@@ -214,7 +221,7 @@ export default function ProductGridCard({
     <Fragment>
       <Wrapper borderRadius={12} {...props}>
         <div className="image-holder">
-          {!!off && (
+          {!!discountPercent && (
             <Chip
               top="10px"
               left="10px"
@@ -226,7 +233,7 @@ export default function ProductGridCard({
               color="primary.text"
               zIndex={1}
             >
-              {t("saleOff", { percent: off })}
+              {t("saleOff", { percent: discountPercent })}
             </Chip>
           )}
 
@@ -305,12 +312,12 @@ export default function ProductGridCard({
 
               <FlexBox alignItems="center" mt="10px">
                 <SemiSpan pr="0.5rem" fontWeight="600" color="primary.main">
-                  {calculateDiscount(price, off as number, locale)}
+                  {formatCurrency(price, 0)}
                 </SemiSpan>
 
-                {!!off && (
+                {hasOldPrice && (
                   <SemiSpan color="text.muted" fontWeight="600">
-                    <del>{formatCurrency(price)}</del>
+                    <del>{formatCurrency(oldPrice, 0)}</del>
                   </SemiSpan>
                 )}
               </FlexBox>

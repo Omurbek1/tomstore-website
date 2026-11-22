@@ -37,7 +37,7 @@ export default function OrderSummaryCard({
 }: Props) {
   const locale = useLocale();
   const currencyMap: Record<string, { intlLocale: string; currency: string }> = {
-    en: { intlLocale: "en-US", currency: "USD" },
+    en: { intlLocale: "en-US", currency: "KGS" },
     ru: { intlLocale: "ru-KG", currency: "KGS" },
     ky: { intlLocale: "ky-KG", currency: "KGS" }
   };

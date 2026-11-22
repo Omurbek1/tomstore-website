@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import api from "@utils/__api__/products";
 import {
   getProductBySlug,
-  getProductSlugs,
   getSafeProductBySlug,
+  getTopProductSlugs,
 } from "@utils/__api__/storefront";
 import ProductPageClient from "@component/products/ProductPageClient";
 import ProductJsonLd from "@component/seo/ProductJsonLd";
@@ -18,7 +18,7 @@ import { SITE_URL } from "@lib/siteUrl";
 
 export async function generateStaticParams() {
   try {
-    const slugs = await getProductSlugs();
+    const slugs = await getTopProductSlugs();
     return slugs.map(({ slug }) => ({ slug }));
   } catch {
     return [];

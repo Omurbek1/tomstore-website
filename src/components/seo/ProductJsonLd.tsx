@@ -36,7 +36,7 @@ export default function ProductJsonLd({ product, slug, locale = "ru" }: Props) {
     itemCondition: "https://schema.org/NewCondition",
     offers: {
       "@type": "Offer",
-      priceCurrency: locale === "en" ? "USD" : "KGS",
+      priceCurrency: "KGS",
       price: product.price,
       priceValidUntil: priceValidUntil.toISOString().split("T")[0],
       availability: product.isInStock

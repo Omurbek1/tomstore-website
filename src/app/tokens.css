@@ -8,6 +8,9 @@
   --surface-paper: #ffffff;
   --text-primary: #2b3445;
   --color-primary: #c81e3a;
+  --text-muted: #7d879c;
+  --border-color: #e3e9ef;
+  --surface-muted: #f6f9fc;
   --shadow-sm: 0px 1px 3px rgba(3, 0, 71, 0.09);
 }
 
@@ -15,5 +18,8 @@
   --surface-paper: #0f1525;
   --text-primary: #eaf0ff;
   --color-primary: #c81e3a;
+  --text-muted: #8896be;
+  --border-color: #222a42;
+  --surface-muted: #141a2f;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
 }

@@ -23,11 +23,12 @@ export default function HomeRecommendedProductsSection({
         {products.map((product, index) => (
           <Grid item lg={3} md={4} sm={6} xs={6} key={product.id}>
             <HomeProductCard
+              id={product.id}
               slug={product.slug}
               title={product.title}
               price={product.price}
               imgUrl={product.thumbnail}
-              discount={product.discount}
+              oldPrice={product.oldPrice}
               priority={index < 2}
             />
           </Grid>

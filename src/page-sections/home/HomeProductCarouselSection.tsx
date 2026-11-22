@@ -31,11 +31,12 @@ export default function HomeProductCarouselSection({
         {products.slice(0, 8).map((product) => (
           <div className={styles.cell} key={product.id}>
             <HomeProductCard
+              id={product.id}
               slug={product.slug}
               title={product.title}
               price={product.price}
               imgUrl={product.thumbnail}
-              discount={product.discount}
+              oldPrice={product.oldPrice}
             />
           </div>
         ))}

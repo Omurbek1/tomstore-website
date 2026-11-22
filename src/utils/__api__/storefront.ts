@@ -603,16 +603,49 @@ export const storefrontProductQueryOptions = (slug: string) =>
       })),
   });
 
+// Бэкенд отдаёт не больше 48 товаров на страницу, поэтому для sitemap
+// проходим все страницы каталога (пачками, с потолком), иначе в карту сайта
+// попадали только первые 48 товаров.
+const SLUGS_PAGE_SIZE = 48;
+const SLUGS_MAX_PAGES = 250; // ≈12 000 товаров — потолок, чтобы не вешать сборку
+const SLUGS_CONCURRENCY = 6;
+
+const fetchSlugPage = (page: number) =>
+  storefrontFetch<StorefrontCatalogResponse>(
+    buildCatalogPath({ pageSize: SLUGS_PAGE_SIZE, page }),
+  );
+
+const fetchAllProductSlugs = async (): Promise<{ slug: string }[]> => {
+  const first = await fetchSlugPage(1);
+  const slugs = new Set<string>();
+  const collect = (catalog: StorefrontCatalogResponse | null) => {
+    for (const product of catalog?.items || []) {
+      const slug = product.slug || product.id;
+      if (slug) slugs.add(slug);
+    }
+  };
+  collect(first);
+
+  const totalPages = Math.min(Math.max(Number(first.totalPages) || 1, 1), SLUGS_MAX_PAGES);
+  for (let start = 2; start <= totalPages; start += SLUGS_CONCURRENCY) {
+    const pages = Array.from(
+      { length: Math.min(SLUGS_CONCURRENCY, totalPages - start + 1) },
+      (_, index) => start + index,
+    );
+    const batch = await Promise.all(
+      pages.map((page) => fetchSlugPage(page).catch(() => null)),
+    );
+    batch.forEach(collect);
+  }
+
+  return Array.from(slugs, (slug) => ({ slug }));
+};
+
 export const storefrontSlugsQueryOptions = () =>
   queryOptions({
     queryKey: storefrontQueryKeys.slugs(),
     staleTime: STALE_TIME_MS,
-    queryFn: async () => {
-      const catalog = await storefrontFetch<StorefrontCatalogResponse>(
-        buildCatalogPath({ pageSize: 48 }),
-      );
-      return catalog.items.map((product) => ({ slug: product.slug || product.id }));
-    },
+    queryFn: fetchAllProductSlugs,
   });
 
 const getHeroSlides = (
@@ -796,8 +829,21 @@ export const getSafeProductBySlug = async (
   }
 };
 
+/** Все slug'и товаров (все страницы каталога) — для sitemap. */
 export const getProductSlugs = async () => {
   return getServerQueryClient().fetchQuery(storefrontSlugsQueryOptions());
+};
+
+/**
+ * Только первая страница популярных товаров — для generateStaticParams:
+ * пререндерим топ при сборке, остальные страницы товаров собираются по ISR
+ * при первом запросе (сборка не растёт вместе с каталогом).
+ */
+export const getTopProductSlugs = async (): Promise<{ slug: string }[]> => {
+  const catalog = await getServerQueryClient().fetchQuery(
+    storefrontCatalogQueryOptions({ pageSize: SLUGS_PAGE_SIZE, sort: "popular" }),
+  );
+  return catalog.items.map((product) => ({ slug: product.slug || product.id }));
 };
 
 // ─── Blog ────────────────────────────────────────────────────────────────────

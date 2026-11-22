@@ -1,14 +1,16 @@
 import { Link } from "@i18n/navigation";
-import { calculateDiscount, currency } from "@utils/utils";
+import { currency } from "@utils/utils";
 import NextImage from "@component/NextImage";
 import styles from "./HomeProductCard.module.css";
 
 type HomeProductCardProps = {
+  id?: string | number;
   slug: string;
   title: string;
   price: number;
   imgUrl: string;
-  discount?: number;
+  /** Цена до скидки. `price` с бэкенда уже со скидкой — повторно не вычитаем. */
+  oldPrice?: number | null;
   priority?: boolean;
   compact?: boolean;
   sizes?: string;
@@ -24,7 +26,7 @@ export default function HomeProductCard({
   title,
   price,
   imgUrl,
-  discount,
+  oldPrice,
   priority = false,
   compact = false,
   sizes,
@@ -65,7 +67,10 @@ export default function HomeProductCard({
       </h3>
 
       <span className={styles.price}>
-        {calculateDiscount(price, discount || 0, "ru") || currency(price, 0, "ru")}
+        {currency(price, 0, "ru")}
+        {oldPrice && oldPrice > price ? (
+          <del className={styles.oldPrice}>{currency(oldPrice, 0, "ru")}</del>
+        ) : null}
       </span>
     </Link>
   );

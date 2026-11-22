@@ -64,8 +64,10 @@ export function calculateDiscount(price: number, discount: number, locale?: stri
   return currency(afterDiscount, 2, locale);
 }
 
+// Все цены витрины — в сомах (KGS) во всех локалях: конвертации валют нет,
+// поэтому en показывает «KGS 125 000», а не «$125 000» с суммой в сомах.
 const LOCALE_CURRENCY_MAP: Record<string, { currency: string; locale: string }> = {
-  en: { currency: "USD", locale: "en-US" },
+  en: { currency: "KGS", locale: "en-US" },
   ru: { currency: "KGS", locale: "ru-KG" },
   ky: { currency: "KGS", locale: "ky-KG" }
 };

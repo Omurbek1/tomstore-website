@@ -48,3 +48,10 @@
   font-size: 14px;
   font-weight: 700;
 }
+
+.oldPrice {
+  margin-left: 6px;
+  color: var(--text-muted, #7d879c);
+  font-size: 12px;
+  font-weight: 600;
+}

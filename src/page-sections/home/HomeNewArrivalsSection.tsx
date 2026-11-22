@@ -25,11 +25,12 @@ export default function HomeNewArrivalsSection({
           {products.map((product) => (
             <Grid item lg={2} md={3} sm={4} xs={6} key={product.id} style={{ display: "flex" }}>
               <HomeProductCard
+                id={product.id}
                 slug={product.slug}
                 title={product.title}
                 price={product.price}
                 imgUrl={product.thumbnail}
-                discount={product.discount}
+                oldPrice={product.oldPrice}
                 compact
               />
             </Grid>

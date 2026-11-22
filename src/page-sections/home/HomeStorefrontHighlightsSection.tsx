@@ -45,11 +45,12 @@ export default function HomeStorefrontHighlightsSection({
                   {products.map((product) => (
                     <Grid item md={3} sm={6} xs={6} key={product.id} style={{ display: "flex" }}>
                       <HomeProductCard
+                        id={product.id}
                         slug={product.slug}
                         title={product.title}
                         price={product.price}
                         imgUrl={product.thumbnail}
-                        discount={product.discount}
+                        oldPrice={product.oldPrice}
                         compact
                       />
                     </Grid>
