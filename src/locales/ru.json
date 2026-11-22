@@ -562,5 +562,19 @@
       "regularPrice": "Обычная цена",
       "salePrice": "Цена со скидкой"
     }
+  },
+  "branch": {
+    "yourStore": "Ваш магазин:",
+    "chooseStore": "Выберите магазин",
+    "pickerHint": "Цены и наличие показываем для выбранного магазина",
+    "close": "Закрыть",
+    "main": "Основной",
+    "priceFor": "Цена для: {branch}",
+    "pricesInStores": "Цены и наличие в магазинах",
+    "inStock": "В наличии",
+    "outOfStock": "Нет в наличии",
+    "currentStore": "Ваш магазин",
+    "pickStore": "Выбрать",
+    "store": "Магазин"
   }
 }

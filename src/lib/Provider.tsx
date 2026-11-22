@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { App as AntdApp, ConfigProvider, theme as antdTheme } from "antd";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useDarkMode } from "@context/DarkModeContext";
+import { BranchProvider } from "@context/BranchContext";
 import {
   STOREFRONT_DEFAULT_GC_TIME_MS,
   STOREFRONT_DEFAULT_STALE_TIME_MS,
@@ -40,7 +41,7 @@ const Provider: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <BranchProvider>{children}</BranchProvider>
       {ReactQueryDevtools ? <ReactQueryDevtools /> : null}
     </QueryClientProvider>
   );

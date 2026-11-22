@@ -562,5 +562,19 @@
       "regularPrice": "Regular price",
       "salePrice": "Sale Price"
     }
+  },
+  "branch": {
+    "yourStore": "Your store:",
+    "chooseStore": "Choose a store",
+    "pickerHint": "Prices and stock are shown for the selected store",
+    "close": "Close",
+    "main": "Main",
+    "priceFor": "Price for: {branch}",
+    "pricesInStores": "Prices and stock by store",
+    "inStock": "In stock",
+    "outOfStock": "Out of stock",
+    "currentStore": "Your store",
+    "pickStore": "Select",
+    "store": "Store"
   }
 }

@@ -14,6 +14,7 @@ import { IconButton } from "@component/buttons";
 import Sidenav from "@component/sidenav/Sidenav";
 import Categories from "@component/categories/Categories";
 import { SearchInputWithCategory } from "@component/search-box";
+import BranchPicker from "@component/branch/BranchPicker";
 import { useCartCount } from "@hook/useCart";
 import { useWishlistCount } from "@hook/useWishlist";
 import StyledHeader from "./styles";
@@ -95,6 +96,8 @@ export default function Header({ isFixed, className }: HeaderProps) {
 
         <FlexBox className="header-right" alignItems="center">
           {/* account icon hidden temporarily */}
+
+          <BranchPicker />
 
           <Link
             href="/wish-list"

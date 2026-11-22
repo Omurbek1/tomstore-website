@@ -562,5 +562,19 @@
       "regularPrice": "Кадимки баа",
       "salePrice": "Арзандатылган баа"
     }
+  },
+  "branch": {
+    "yourStore": "Сиздин дүкөн:",
+    "chooseStore": "Дүкөндү тандаңыз",
+    "pickerHint": "Баалар жана бар болушу тандалган дүкөн боюнча көрсөтүлөт",
+    "close": "Жабуу",
+    "main": "Негизги",
+    "priceFor": "Баа: {branch}",
+    "pricesInStores": "Дүкөндөрдөгү баалар жана бар болушу",
+    "inStock": "Бар",
+    "outOfStock": "Жок",
+    "currentStore": "Сиздин дүкөн",
+    "pickStore": "Тандоо",
+    "store": "Дүкөн"
   }
 }
