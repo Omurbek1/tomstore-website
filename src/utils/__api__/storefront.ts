@@ -61,6 +61,8 @@ export type StorefrontBranchPrice = {
   price: number;
   oldPrice?: number | null;
   inStock?: boolean;
+  /** Цены видов в этом магазине (только у товара с видами): вид → цена. */
+  variantPrices?: Record<string, { price: number; oldPrice: number | null }>;
 };
 
 export type StorefrontPriceRange = { low: number; high: number };
@@ -448,7 +450,30 @@ const mapBranchPrices = (
       oldPrice:
         row.oldPrice === null || row.oldPrice === undefined ? null : Number(row.oldPrice),
       inStock: row.inStock ?? undefined,
+      ...(row.variantPrices && typeof row.variantPrices === "object"
+        ? { variantPrices: mapVariantPrices(row.variantPrices) }
+        : {}),
     }));
+
+const mapVariantPrices = (
+  raw: NonNullable<StorefrontBranchPrice["variantPrices"]>,
+): NonNullable<StorefrontBranchPrice["variantPrices"]> =>
+  Object.fromEntries(
+    Object.entries(raw).flatMap(([id, v]) =>
+      v && Number(v.price) > 0
+        ? [
+            [
+              id,
+              {
+                price: Number(v.price),
+                oldPrice:
+                  v.oldPrice === null || v.oldPrice === undefined ? null : Number(v.oldPrice),
+              },
+            ],
+          ]
+        : [],
+    ),
+  );
 
 const mapStorefrontProductDetails = (
   product: StorefrontProductDetails,

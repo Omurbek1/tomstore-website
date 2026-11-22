@@ -62,6 +62,8 @@ interface Product {
     price: number;
     oldPrice?: number | null;
     inStock?: boolean;
+    /** Цены видов в этом магазине: вид → цена (у товара с видами). */
+    variantPrices?: Record<string, { price: number; oldPrice: number | null }>;
   }>;
   priceRange?: { low: number; high: number } | null;
 }

@@ -70,7 +70,7 @@ export default function ProductPageClient({
         onVariantChange={setSelectedVariant}
         priceBranchId={shownBranchId ?? null}
         priceBranchName={showPriceBranch ? priceBranchName ?? "" : undefined}
-        afterPrice={branchPrices.length > 1 ? <BranchPricesList branchPrices={branchPrices} /> : null}
+        afterPrice={branchPrices.length > 1 ? <BranchPricesList branchPrices={branchPrices} variantId={selectedVariant?.id} /> : null}
       />
       <ProductView
         product={product}

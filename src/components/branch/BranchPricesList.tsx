@@ -8,6 +8,8 @@ import styles from "./BranchPricesList.module.css";
 
 type Props = {
   branchPrices: NonNullable<Product["branchPrices"]>;
+  /** Выбранный вид (память/цвет) — цены магазинов этого вида. */
+  variantId?: string | null;
 };
 
 /**
@@ -15,7 +17,7 @@ type Props = {
  * (данные из SSR — видны поисковикам), на клиенте лишь подсвечивается
  * выбранный магазин и можно переключиться на другой.
  */
-export default function BranchPricesList({ branchPrices }: Props) {
+export default function BranchPricesList({ branchPrices, variantId }: Props) {
   const t = useTranslations("branch");
   const locale = useLocale();
   const { activeBranch, defaultBranch, selectBranch, branches, locked } = useBranch();
@@ -34,7 +36,11 @@ export default function BranchPricesList({ branchPrices }: Props) {
       <ul className={styles.list}>
         {branchPrices.map((row) => {
           const isActive = row.branchId === activeId;
-          const hasOld = !!row.oldPrice && row.oldPrice > row.price;
+          // У вида своя цена в магазине — показываем её (иначе цена товара).
+          const own = variantId ? row.variantPrices?.[variantId] : undefined;
+          const price = own?.price ?? row.price;
+          const oldPrice = own ? own.oldPrice : row.oldPrice;
+          const hasOld = !!oldPrice && oldPrice > price;
           const canSelect = !isActive && knownBranchIds.has(row.branchId);
           return (
             <li
@@ -50,9 +56,9 @@ export default function BranchPricesList({ branchPrices }: Props) {
                 )}
               </div>
               <div className={styles.priceCell}>
-                <span className={styles.price}>{currency(row.price, 0, locale)}</span>
+                <span className={styles.price}>{currency(price, 0, locale)}</span>
                 {hasOld ? (
-                  <del className={styles.oldPrice}>{currency(row.oldPrice as number, 0, locale)}</del>
+                  <del className={styles.oldPrice}>{currency(oldPrice as number, 0, locale)}</del>
                 ) : null}
               </div>
               <div className={styles.action}>
