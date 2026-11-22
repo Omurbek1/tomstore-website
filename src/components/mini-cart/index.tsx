@@ -15,6 +15,7 @@ import { IconX } from "@tabler/icons-react";
 import { useCartItems, useCartTotal, useChangeCartAmount } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
 import { buildCartWhatsAppOrderUrl } from "@utils/whatsappOrder";
+import { useBranch } from "@context/BranchContext";
 // STYLED COMPONENT
 import { StyledMiniCart } from "./styles";
 
@@ -28,9 +29,13 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
   const changeCartAmount = useChangeCartAmount();
   const formatCurrency = useCurrency();
   const t = useTranslations("checkout.cart");
+  const tBranch = useTranslations("branch");
+  const { activeBranch, branches } = useBranch();
+  const branchName = branches.length > 1 ? activeBranch?.name : undefined;
   const whatsappOrderHref = buildCartWhatsAppOrderUrl({
     items: cart,
     totalLabel: formatCurrency(cartTotal),
+    branchName,
   });
 
   const handleCartAmountChange = (amount: number, product: any) => () => {
@@ -148,6 +153,11 @@ export default function MiniCart({ toggleSidenav = () => {} }: MiniCartProps) {
 
       {cart.length > 0 && (
         <div className="actions">
+          {branchName ? (
+            <Typography fontSize="13px" color="text.muted" mb="0.75rem">
+              {tBranch("priceFor", { branch: branchName })}
+            </Typography>
+          ) : null}
           <Button
             as="a"
             fullWidth

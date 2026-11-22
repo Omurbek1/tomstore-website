@@ -21,8 +21,16 @@ export interface CartState {
   cart: CartItem[];
 }
 
+export type CartRepriceUpdate = {
+  id: string | number;
+  price: number;
+  branchId: string | null;
+};
+
 interface CartStore extends CartState {
   changeCartAmount: (item: CartItem) => void;
+  /** Переоценка позиций под выбранный магазин (CartBranchSync). */
+  repriceItems: (updates: CartRepriceUpdate[]) => void;
 }
 
 const CART_STORAGE_KEY = "tomstore_cart";
@@ -76,6 +84,19 @@ export const useCartStore = create<CartStore>()(
 
       changeCartAmount: (item) => {
         set((state) => ({ cart: changeCartAmount(state.cart, item) }));
+      },
+
+      repriceItems: (updates) => {
+        if (!updates.length) return;
+        const byId = new Map(updates.map((update) => [String(update.id), update]));
+        set((state) => ({
+          cart: state.cart.map((item) => {
+            const update = byId.get(String(item.id));
+            return update
+              ? { ...item, price: update.price, branchId: update.branchId }
+              : item;
+          }),
+        }));
       },
     }),
     {

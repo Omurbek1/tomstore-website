@@ -19,6 +19,7 @@ import { CartProductRow } from "@component/product-cards";
 import { useCartItems, useCartTotal } from "@hook/useCart";
 import useCurrency from "@hook/useCurrency";
 import { buildCartWhatsAppOrderUrl } from "@utils/whatsappOrder";
+import { useBranch } from "@context/BranchContext";
 // CUSTOM DATA
 import countryList from "@data/countryList";
 import { Link } from "@i18n/navigation";
@@ -44,10 +45,14 @@ export default function Cart() {
   const t = useTranslations("checkout.cart");
   const formatCurrency = useCurrency();
   const [comment, setComment] = useState("");
+  const tBranch = useTranslations("branch");
+  const { activeBranch, branches } = useBranch();
+  const branchName = branches.length > 1 ? activeBranch?.name : undefined;
   const whatsappOrderHref = buildCartWhatsAppOrderUrl({
     items: cart,
     totalLabel: formatCurrency(cartTotal),
     comment,
+    branchName,
   });
 
   if (cart.length === 0) {
@@ -119,6 +124,12 @@ export default function Cart() {
                 {formatCurrency(cartTotal)}
               </Typography>
             </FlexBox>
+
+            {branchName ? (
+              <Typography fontSize="13px" color="text.muted" mb="1rem">
+                {tBranch("priceFor", { branch: branchName })}
+              </Typography>
+            ) : null}
 
             <Divider mb="1rem" />
 

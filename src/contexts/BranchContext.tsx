@@ -4,15 +4,19 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   type PropsWithChildren,
 } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   storefrontBranchesQueryOptions,
   storefrontConfigQueryOptions,
+  storefrontProductQueryOptions,
   type StorefrontBranch,
 } from "@utils/__api__/storefront";
+import { useCartStore, type CartItem, type CartRepriceUpdate } from "../store/cart.store";
 import { useBranchCookie, writeBranchCookie } from "@lib/branch/branchCookie";
 import { useBranchPricesStore, type BranchPriceEntry } from "../store/branchPrices.store";
 
@@ -85,7 +89,92 @@ export function BranchProvider({ children }: PropsWithChildren) {
     flaggedDefault,
   ]);
 
-  return <BranchContext.Provider value={value}>{children}</BranchContext.Provider>;
+  return (
+    <BranchContext.Provider value={value}>
+      <CartBranchSync />
+      {children}
+    </BranchContext.Provider>
+  );
+}
+
+const MAX_REPRICE_SLUGS = 30;
+
+/**
+ * Корзина хранит цену и магазин каждой позиции. Сменился магазин (или позиция
+ * добавлена без магазина) → переоцениваем по API (тот же запрос товара с
+ * ?branch=, что и на странице товара; кэш react-query/прокси). Итоговую цену
+ * заказа всё равно пересчитывает сервер.
+ */
+function CartBranchSync() {
+  const { activeBranch, defaultBranch, branchParam, resolved } = useContext(BranchContext);
+  const cart = useCartStore((state) => state.cart);
+  const repriceItems = useCartStore((state) => state.repriceItems);
+  const queryClient = useQueryClient();
+  // Не повторяем неудачные/неразрешимые попытки по кругу.
+  const attemptedRef = useRef(new Set<string>());
+
+  const activeId = activeBranch?.id ?? null;
+  const defaultId = defaultBranch?.id ?? null;
+
+  useEffect(() => {
+    if (!resolved || !activeId) return;
+
+    const attemptKey = (item: CartItem) => `${activeId}:${item.slug}:${item.id}`;
+    const stale = cart.filter(
+      (item) =>
+        item.slug &&
+        (item.branchId ?? defaultId) !== activeId &&
+        !attemptedRef.current.has(attemptKey(item)),
+    );
+    if (!stale.length) return;
+
+    stale.forEach((item) => attemptedRef.current.add(attemptKey(item)));
+    const slugs = Array.from(new Set(stale.map((item) => item.slug as string))).slice(
+      0,
+      MAX_REPRICE_SLUGS,
+    );
+
+    let cancelled = false;
+    Promise.all(
+      slugs.map((slug) =>
+        queryClient
+          .fetchQuery(storefrontProductQueryOptions(slug, branchParam))
+          .then((payload) => [slug, payload] as const)
+          .catch(() => [slug, null] as const),
+      ),
+    ).then((results) => {
+      if (cancelled) return;
+      const bySlug = new Map(results);
+      const updates: CartRepriceUpdate[] = [];
+
+      for (const item of stale) {
+        const payload = bySlug.get(item.slug as string);
+        if (!payload) continue;
+        const { product } = payload;
+        const variant = product.variants?.find((v) => String(v.id) === String(item.id));
+        const price =
+          String(product.id) === String(item.id)
+            ? product.price
+            : variant
+              ? variant.price
+              : product.variants?.length
+                ? null
+                : product.price;
+        if (price === null || !Number.isFinite(price)) continue;
+        updates.push({ id: item.id, price, branchId: activeId });
+      }
+
+      repriceItems(updates);
+    });
+
+    return () => {
+      cancelled = true;
+      // Прерванный проход (корзина/магазин сменились) — разрешаем повтор.
+      stale.forEach((item) => attemptedRef.current.delete(attemptKey(item)));
+    };
+  }, [activeId, branchParam, cart, defaultId, queryClient, repriceItems, resolved]);
+
+  return null;
 }
 
 export const useBranch = () => useContext(BranchContext);
