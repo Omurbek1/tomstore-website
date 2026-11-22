@@ -42,7 +42,27 @@ type StorefrontProductCard = {
   };
   updatedAt?: string;
   createdAt?: string;
+  /** Филиал, по которому посчитаны price/oldPrice (при ?branch=). */
+  priceBranchId?: string | null;
 };
+
+export type StorefrontBranch = {
+  id: string;
+  name: string;
+  address?: string | null;
+  phone?: string | null;
+  isDefault?: boolean;
+};
+
+export type StorefrontBranchPrice = {
+  branchId: string;
+  branchName: string;
+  price: number;
+  oldPrice?: number | null;
+  inStock?: boolean;
+};
+
+export type StorefrontPriceRange = { low: number; high: number };
 
 type StorefrontProductDetails = StorefrontProductCard & {
   fullDescription?: string;
@@ -51,6 +71,8 @@ type StorefrontProductDetails = StorefrontProductCard & {
   relatedProducts?: StorefrontProductCard[];
   recommendedProducts?: StorefrontProductCard[];
   videoUrl?: string | null;
+  branchPrices?: StorefrontBranchPrice[];
+  priceRange?: StorefrontPriceRange | null;
 };
 
 type StorefrontProductVariant = {
@@ -272,14 +294,29 @@ export const buildStorefrontImageUrl = (value?: string | null) =>
 
 export const storefrontQueryKeys = {
   all: ["storefront"] as const,
-  home: () => [...storefrontQueryKeys.all, "home"] as const,
+  // branch === undefined → цены филиала по умолчанию (как в SSR): ключ тот же,
+  // что был до филиалов, поэтому кэш/гидрация не меняются.
+  home: (branch?: string) =>
+    branch
+      ? ([...storefrontQueryKeys.all, "home", { branch }] as const)
+      : ([...storefrontQueryKeys.all, "home"] as const),
+  branches: () => [...storefrontQueryKeys.all, "branches"] as const,
+  config: () => [...storefrontQueryKeys.all, "config"] as const,
   categories: () => [...storefrontQueryKeys.all, "categories"] as const,
   catalog: (params: Record<string, string | number | undefined> = {}) =>
     [...storefrontQueryKeys.all, "catalog", normalizeQueryParams(params)] as const,
-  product: (slug: string) => [...storefrontQueryKeys.all, "product", slug] as const,
+  product: (slug: string, branch?: string) =>
+    branch
+      ? ([...storefrontQueryKeys.all, "product", slug, { branch }] as const)
+      : ([...storefrontQueryKeys.all, "product", slug] as const),
   slugs: () => [...storefrontQueryKeys.all, "slugs"] as const,
-  searchSuggestions: (q: string) =>
-    [...storefrontQueryKeys.all, "search-suggestions", q.trim().toLowerCase()] as const,
+  searchSuggestions: (q: string, branch?: string) =>
+    [
+      ...storefrontQueryKeys.all,
+      "search-suggestions",
+      q.trim().toLowerCase(),
+      branch || "",
+    ] as const,
 };
 
 const getServerQueryClient = cache(
@@ -373,8 +410,23 @@ export const mapStorefrontProduct = (
     labels: product.labels || [],
     categories: product.category ? [safeDecode(product.category)] : [],
     published: true,
+    priceBranchId: product.priceBranchId ?? null,
   };
 };
+
+const mapBranchPrices = (
+  rows: StorefrontBranchPrice[] | undefined,
+): StorefrontBranchPrice[] =>
+  (Array.isArray(rows) ? rows : [])
+    .filter((row) => row && row.branchId)
+    .map((row) => ({
+      branchId: String(row.branchId),
+      branchName: String(row.branchName || ""),
+      price: Number(row.price || 0),
+      oldPrice:
+        row.oldPrice === null || row.oldPrice === undefined ? null : Number(row.oldPrice),
+      inStock: row.inStock ?? undefined,
+    }));
 
 const mapStorefrontProductDetails = (
   product: StorefrontProductDetails,
@@ -386,6 +438,13 @@ const mapStorefrontProductDetails = (
   attributes: product.attributes || [],
   variants: mapStorefrontProductVariants(product),
   videoUrl: product.videoUrl || null,
+  branchPrices: mapBranchPrices(product.branchPrices),
+  priceRange:
+    product.priceRange &&
+    Number.isFinite(Number(product.priceRange.low)) &&
+    Number.isFinite(Number(product.priceRange.high))
+      ? { low: Number(product.priceRange.low), high: Number(product.priceRange.high) }
+      : null,
 });
 
 const mapStorefrontProductVariants = (
@@ -491,11 +550,74 @@ const buildCatalogPath = (params: Record<string, string | number | undefined>) =
   return `/storefront/catalog${query ? `?${query}` : ""}`;
 };
 
-export const storefrontHomeQueryOptions = () =>
+const withBranch = (path: string, branch?: string) =>
+  branch
+    ? `${path}${path.includes("?") ? "&" : "?"}branch=${encodeURIComponent(branch)}`
+    : path;
+
+export const storefrontHomeQueryOptions = (branch?: string) =>
   queryOptions({
-    queryKey: storefrontQueryKeys.home(),
+    queryKey: storefrontQueryKeys.home(branch),
     staleTime: STALE_TIME_MS,
-    queryFn: () => storefrontFetch<StorefrontHomeResponse>("/storefront/home"),
+    queryFn: () =>
+      storefrontFetch<StorefrontHomeResponse>(withBranch("/storefront/home", branch)),
+  });
+
+/** Все товары главной одним списком (для подмены цен филиала). */
+export const collectStorefrontHomeProducts = (
+  home: StorefrontHomeResponse | undefined,
+): Product[] =>
+  home
+    ? [
+        ...(home.popularProducts || []),
+        ...(home.recommendedProducts || []),
+        ...(home.hitProducts || []),
+        ...(home.saleProducts || []),
+        ...(home.newProducts || []),
+      ].map(mapStorefrontProduct)
+    : [];
+
+const BRANCHES_STALE_TIME_MS = 10 * 60 * 1000;
+
+// Пока бэкенд не отдаёт филиалы (старый деплой / 404) — пустой список:
+// сайт работает как раньше, без выбора магазина.
+export const storefrontBranchesQueryOptions = () =>
+  queryOptions({
+    queryKey: storefrontQueryKeys.branches(),
+    staleTime: BRANCHES_STALE_TIME_MS,
+    gcTime: 30 * 60 * 1000,
+    queryFn: async (): Promise<StorefrontBranch[]> => {
+      try {
+        const rows = await storefrontFetch<StorefrontBranch[]>("/storefront/branches");
+        return (Array.isArray(rows) ? rows : [])
+          .filter((row) => row && row.id && row.name)
+          .map((row) => ({
+            id: String(row.id),
+            name: String(row.name),
+            address: row.address || null,
+            phone: row.phone || null,
+            isDefault: Boolean(row.isDefault),
+          }));
+      } catch {
+        return [];
+      }
+    },
+  });
+
+export const storefrontConfigQueryOptions = () =>
+  queryOptions({
+    queryKey: storefrontQueryKeys.config(),
+    staleTime: BRANCHES_STALE_TIME_MS,
+    queryFn: async (): Promise<{ defaultBranchId: string | null }> => {
+      try {
+        const config = await storefrontFetch<{ defaultBranchId?: string | null }>(
+          "/storefront/config",
+        );
+        return { defaultBranchId: config?.defaultBranchId || null };
+      } catch {
+        return { defaultBranchId: null };
+      }
+    },
   });
 
 export const storefrontCatalogQueryOptions = (
@@ -587,13 +709,13 @@ export const storefrontCategoriesQueryOptions = () =>
       ),
   });
 
-export const storefrontProductQueryOptions = (slug: string) =>
+export const storefrontProductQueryOptions = (slug: string, branch?: string) =>
   queryOptions({
-    queryKey: storefrontQueryKeys.product(slug),
+    queryKey: storefrontQueryKeys.product(slug, branch),
     staleTime: STALE_TIME_MS,
     queryFn: () =>
       storefrontFetch<StorefrontProductDetails>(
-        `/storefront/products/${encodeURIComponent(slug)}`,
+        withBranch(`/storefront/products/${encodeURIComponent(slug)}`, branch),
       ).then((product): StorefrontProductPayload => ({
         product: mapStorefrontProductDetails(product),
         relatedProducts: (product.relatedProducts || []).map(mapStorefrontProduct),
@@ -721,12 +843,15 @@ export type SearchSuggestion = {
 export const SEARCH_SUGGESTIONS_MIN_LENGTH = 2;
 export const SEARCH_SUGGESTIONS_STALE_TIME_MS = 30_000;
 
-export const getSearchSuggestions = async (q: string): Promise<SearchSuggestion[]> => {
+export const getSearchSuggestions = async (
+  q: string,
+  branch?: string,
+): Promise<SearchSuggestion[]> => {
   const trimmed = String(q || "").trim();
   if (trimmed.length < SEARCH_SUGGESTIONS_MIN_LENGTH) return [];
   try {
     const url = buildStorefrontUrl(
-      `/storefront/search/suggestions?q=${encodeURIComponent(trimmed)}`,
+      withBranch(`/storefront/search/suggestions?q=${encodeURIComponent(trimmed)}`, branch),
     );
     const response = await fetch(url);
     if (!response.ok) return [];
@@ -736,12 +861,12 @@ export const getSearchSuggestions = async (q: string): Promise<SearchSuggestion[
   }
 };
 
-export const storefrontSearchSuggestionsQueryOptions = (q: string) => {
+export const storefrontSearchSuggestionsQueryOptions = (q: string, branch?: string) => {
   const normalized = q.trim();
   return queryOptions({
-    queryKey: storefrontQueryKeys.searchSuggestions(normalized),
+    queryKey: storefrontQueryKeys.searchSuggestions(normalized, branch),
     staleTime: SEARCH_SUGGESTIONS_STALE_TIME_MS,
-    queryFn: () => getSearchSuggestions(normalized),
+    queryFn: () => getSearchSuggestions(normalized, branch),
     enabled: normalized.length >= SEARCH_SUGGESTIONS_MIN_LENGTH,
   });
 };
@@ -844,6 +969,44 @@ export const getTopProductSlugs = async (): Promise<{ slug: string }[]> => {
     storefrontCatalogQueryOptions({ pageSize: SLUGS_PAGE_SIZE, sort: "popular" }),
   );
   return catalog.items.map((product) => ({ slug: product.slug || product.id }));
+};
+
+// ─── Заявки (POST /storefront/requests через прокси) ────────────────────────
+
+export type StorefrontRequestItem = { productId: string; qty: number };
+
+export type StorefrontRequestPayload = {
+  type?: "lead" | "order";
+  productId?: string;
+  qty?: number;
+  items?: StorefrontRequestItem[];
+  branchId?: string;
+  name?: string;
+  phone?: string;
+  comment?: string;
+  source?: string;
+  channel?: string;
+  productUrl?: string;
+};
+
+/**
+ * Отправка заявки/заказа. Цены не передаём — сервер пересчитывает их сам по
+ * branchId. Только из браузера (идёт через /api/storefront/requests).
+ */
+export const submitStorefrontRequest = async (payload: StorefrontRequestPayload) => {
+  const response = await fetch("/api/storefront/requests", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(
+      (data && typeof data === "object" && "message" in data && String(data.message)) ||
+        `Request failed: ${response.status}`,
+    );
+  }
+  return data;
 };
 
 // ─── Blog ────────────────────────────────────────────────────────────────────

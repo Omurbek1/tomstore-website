@@ -53,6 +53,17 @@ interface Product {
   attributes?: Array<{ name: string; value: string }>;
   variants?: ProductVariant[];
   videoUrl?: string | null;
+  /** Филиал, по которому посчитаны price/oldPrice (null — базовая/по умолчанию). */
+  priceBranchId?: string | null;
+  /** Цены и наличие по магазинам (только на странице товара). */
+  branchPrices?: Array<{
+    branchId: string;
+    branchName: string;
+    price: number;
+    oldPrice?: number | null;
+    inStock?: boolean;
+  }>;
+  priceRange?: { low: number; high: number } | null;
 }
 
 export default Product;
